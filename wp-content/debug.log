@@ -1,0 +1,15 @@
+[11-Aug-2026 06:46:07 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
+[11-Aug-2026 06:46:07 UTC] PHP Notice:  Function _load_textdomain_just_in_time được gọi <strong>không chính xác</strong>. Tải bản dịch cho miền <code>nntm</code> được kích hoạt quá sớm. Đây thường là dấu hiệu cho thấy một số mã trong plugin hoặc chủ đề chạy quá sớm. Bản dịch phải được tải tại hành động <code>init</code> hoặc sau đó. Vui lòng xem <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Hướng dẫn Debug trong WordPress</a> để biết thêm thông tin. (Thông điệp này đã được thêm vào trong phiên bản 6.7.0.) in /var/www/html/wp-includes/functions.php on line 6170
+[11-Aug-2026 06:46:26 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
+[11-Aug-2026 06:46:37 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
+[11-Aug-2026 06:46:47 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
+[11-Aug-2026 06:46:49 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
+[11-Aug-2026 06:46:49 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
+[11-Aug-2026 06:46:50 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
+[11-Aug-2026 06:46:51 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
+[11-Aug-2026 06:46:52 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
+[11-Aug-2026 06:47:05 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
+[11-Aug-2026 06:47:11 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
+[11-Aug-2026 06:47:11 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
+[11-Aug-2026 06:47:11 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
+[11-Aug-2026 06:47:11 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
