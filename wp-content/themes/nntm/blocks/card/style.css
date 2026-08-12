@@ -1,0 +1,247 @@
+/* =============================================================
+   nntm/card — CSS cho block "Thẻ nội dung"
+   Nguồn số đo: Figma QmYLYBVSRkqIbKuKzPUfUe, component set CARD
+   (node 6134:2530), 8 biến thể ARTICLE / SMALL / XS / DAI SI CARD /
+   ARTICLLE HOVER / VIDEO / KHOA TU / BOOKS — lấy qua Figma REST API
+   ngày 06/08/2026.
+
+   CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
+   assets/css/tokens.css. Nạp sau tokens.css/base.css qua enqueue.php
+   (front-end) hoặc add_editor_style() (trình soạn thảo).
+
+   Figma chỉ có khung desktop 1366px — các thẻ ở đây được để RỘNG
+   THEO Ô LƯỚI (không ép width cứng như khung Figma gốc) vì thẻ luôn
+   nằm trong .nntm-grid của block nntm/card-list; tỉ lệ ảnh (aspect-ratio)
+   mỗi biến thể vẫn giữ đúng theo số đo Figma để không méo ảnh.
+   ============================================================= */
+
+.nntm-card {
+	display: flex;
+	flex-direction: column;
+	/* tu Figma: itemSpacing=12 tren khung ngoai tat ca bien the — khong co
+	   bien --nntm-sp-* nao khop dung 12 (gan nhat sp-2=8 / sp-3=10) nen
+	   giu nguyen so px that de bam sat thiet ke. */
+	gap: 12px;
+	text-decoration: none;
+	color: inherit;
+	background: none;
+	width: 100%;
+}
+
+.nntm-card--empty {
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+	color: var(--nntm-chu-phu);
+	font-style: italic;
+	padding: var(--nntm-sp-4);
+	border: 1px dashed var(--nntm-duong-vien); /* hairline, khong can token rieng */
+	border-radius: var(--nntm-r-md);
+}
+
+/* ---------- Ảnh ---------- */
+.nntm-card__img {
+	position: relative;
+	display: block;
+	overflow: hidden;
+	/*
+	 * KHONG bo goc anh.
+	 *
+	 * Truoc day de r-md (10px) voi ly do "Figma chi ghi ro 10px o variant
+	 * KHOA TU, dung chung cho moi variant de dong bo" — tuc la DOAN. Da
+	 * doc node that ngay 10/08/2026 (SECTION 3 `6376:6399` va SECTION 5
+	 * `6376:6450`): trong ca hai khoi, node DUY NHAT co cornerRadius la
+	 * vien nhan chuyen muc (ARTICLE CAT/NAME = 10). Ca khung the lan anh
+	 * deu VUONG. Trung voi yeu cau anh Uy 10/08/2026 da bo bo goc anh o
+	 * nntm/article-mosaic.
+	 */
+	background-color: var(--nntm-xam); /* khop mau nen placeholder Rectangle 41 (#C4C4C4) trong Figma */
+}
+
+.nntm-card__img-el {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.nntm-card__img-placeholder {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.nntm-card__play {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 75px; /* tu Figma: VIDEO — kich thuoc icon play (Vector 75x75), khong co bien khop */
+	height: 75px;
+	border-radius: var(--nntm-r-pill);
+	background-color: var(--nntm-phu-den-30);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	pointer-events: none;
+}
+
+.nntm-card__play::after {
+	content: "";
+	/* Figma chi tra bounding-box cho Vector (khong co du lieu duong path),
+	   nen hinh tam giac play o day la uoc luong theo ty le thi giac,
+	   khong phai so do xuat truc tiep tu Figma. */
+	border-style: solid;
+	border-width: 14px 0 14px 22px;
+	border-color: transparent transparent transparent var(--nntm-trang-lanh);
+	margin-left: 6px;
+}
+
+/* ---------- Phần chữ ---------- */
+.nntm-card__body {
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-2); /* tu Figma: itemSpacing=8 trong Frame 125, khop dung */
+}
+
+.nntm-card__date {
+	display: flex;
+	align-items: center;
+	gap: var(--nntm-sp-1); /* tu Figma: itemSpacing=5 */
+	padding-inline: var(--nntm-sp-1); /* tu Figma: paddingLeft/Right=5 */
+	font-family: var(--nntm-font-sans); /* Battambang -> Be Vietnam Pro */
+	font-size: var(--nntm-fs-xs); /* tu Figma: 13px */
+	line-height: var(--nntm-lh-rong); /* Figma 23.49/13 ≈ 1.81, gan nhat voi lh-rong (1.8) */
+	color: var(--nntm-reu-nhat);
+}
+
+.nntm-card__date-icon {
+	width: 12px; /* tu Figma: Vector 12x12 trong DATE */
+	height: 12px;
+	border-radius: var(--nntm-r-sm);
+	background-color: var(--nntm-reu-nhat);
+	flex: none;
+}
+
+.nntm-card__cat {
+	display: inline-flex;
+	align-self: flex-start;
+	padding: var(--nntm-sp-2) var(--nntm-sp-4); /* tu Figma: top/bottom=8, left/right=15 */
+	border-radius: var(--nntm-r-md); /* tu Figma: cornerRadius=10 */
+	background-color: var(--nntm-dat-hong);
+	color: var(--nntm-trang);
+	font-family: var(--nntm-font-ui); /* Google Sans Flex -> Inter */
+	font-size: var(--nntm-fs-sm); /* tu Figma: 14px */
+	font-weight: 500;
+}
+
+.nntm-card__title {
+	font-family: var(--nntm-font-sans); /* Battambang -> Be Vietnam Pro */
+	font-size: var(--nntm-fs-md); /* tu Figma: 18px */
+	font-weight: 700;
+	line-height: 1.67; /* tu Figma: 30/18 = 1.667, khong co bien lh khop (lh-chat=1.16, lh-vua=1.45, lh-rong=1.8) */
+	color: var(--nntm-chu); /* Figma xuat mau den thuan #000000 — quy ve vai tro "chu chinh" de dong bo he thong mau ngu nghia */
+	/* SUY DOAN: chua co Figma mobile — gioi han 3 dong tren man nho de thẻ khong bi keo dai qua muc */
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.nntm-card__excerpt {
+	font-family: var(--nntm-font-serif); /* Baskerville -> Lora */
+	font-size: var(--nntm-fs-md); /* tu Figma: 18px */
+	font-weight: 400;
+	line-height: var(--nntm-lh-vua); /* Figma 26/18 ≈ 1.44, khop sat lh-vua (1.45) */
+	color: var(--nntm-chinh); /* Figma xuat #747766, trung mau vai tro "chinh" (reu) */
+}
+
+.nntm-card__cta {
+	display: inline-flex;
+	align-items: center;
+	align-self: flex-start;
+	gap: var(--nntm-sp-3); /* tu Figma: itemSpacing=10 */
+	padding-block: var(--nntm-sp-3); /* tu Figma: paddingTop/Bottom=10 */
+	border-radius: var(--nntm-r-pill); /* tu Figma: cornerRadius=60 */
+	font-family: var(--nntm-font-sans); /* Battambang -> Be Vietnam Pro */
+	font-size: var(--nntm-fs-15); /* tu Figma: 15px */
+	font-weight: 700;
+	line-height: var(--nntm-lh-rong); /* Figma 27.1/15 ≈ 1.81, gan nhat lh-rong (1.8) */
+	color: var(--nntm-chu);
+	transition: color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-card:hover .nntm-card__cta,
+.nntm-card:focus-visible .nntm-card__cta {
+	color: var(--nntm-chinh-hover);
+}
+
+/* ---------- Biến thể kích thước ảnh (giữ đúng tỉ lệ Figma) ---------- */
+.nntm-card--article .nntm-card__img,
+.nntm-card--article-hover .nntm-card__img {
+	aspect-ratio: 348 / 233; /* tu Figma: ARTICLE / ARTICLE HOVER */
+}
+
+.nntm-card--small .nntm-card__img {
+	aspect-ratio: 300 / 233; /* tu Figma: SMALL */
+}
+
+.nntm-card--xs .nntm-card__img {
+	aspect-ratio: 250 / 163; /* tu Figma: XS */
+}
+
+.nntm-card--dai-si .nntm-card__img {
+	aspect-ratio: 220 / 137; /* tu Figma: DAI SI CARD */
+}
+
+.nntm-card--video .nntm-card__img,
+.nntm-card--khoa-tu .nntm-card__img {
+	aspect-ratio: 348 / 203; /* tu Figma: VIDEO / KHOA TU */
+}
+
+.nntm-card--video .nntm-card__img-el,
+.nntm-card--khoa-tu .nntm-card__img-el {
+	object-fit: contain; /* Figma: scaleMode=FIT cho hai bien the nay, khac voi FILL o cac bien the con lai */
+}
+
+.nntm-card--books .nntm-card__img {
+	aspect-ratio: 1 / 1; /* tu Figma: BOOKS, anh vuong 348x348 */
+}
+
+/* ---------- Biến thể "thẻ nổi" (video / khoa-tu / books) ---------- */
+/* Ba bien the nay co khung nen + do bong rieng, khac voi cac the "phang"
+   (article/small/xs/dai-si/article-hover) nam truc tiep tren nen trang. */
+.nntm-card--video,
+.nntm-card--khoa-tu,
+.nntm-card--books {
+	padding: var(--nntm-sp-5); /* tu Figma: padding 20px ca 4 canh */
+	gap: var(--nntm-sp-4); /* tu Figma: itemSpacing=15 */
+	/* KHONG bo goc khung the — cung ly do nhu .nntm-card__img o tren:
+	   truoc day dat r-md vi "Figma khong tra cornerRadius" roi tu chon
+	   cho dong bo. Doc node that thi khung CARD khong he co bo goc. */
+	box-shadow: var(--nntm-sh-card); /* khop dung DROP_SHADOW 0 4px 20px rgba(0,0,0,0.15) cua Figma */
+	backdrop-filter: blur(10px); /* tu Figma: BACKGROUND_BLUR radius=10, khong co bien khop */
+}
+
+.nntm-card--video,
+.nntm-card--books {
+	background-color: var(--nntm-phu-den-50); /* khop dung rgba(0,0,0,0.5) */
+}
+
+.nntm-card--khoa-tu {
+	background-color: var(--nntm-nen-noi); /* Figma: trang tuyet doi, dung vai tro ngu nghia "nen noi" */
+}
+
+.nntm-card--books {
+	border: 1px solid var(--nntm-chu); /* Figma: stroke #3F3B3B, trung mau "chu" */
+}
+
+.nntm-card--video .nntm-card__title,
+.nntm-card--books .nntm-card__title {
+	color: var(--nntm-trang); /* Figma: chu trang tren nen toi cho 2 bien the nay */
+	-webkit-line-clamp: 2;
+}
+
+.nntm-card--dai-si .nntm-card__title {
+	color: var(--nntm-chinh); /* Figma: "Chủ đề 1" mau #747766, trung "chinh" */
+	-webkit-line-clamp: 1;
+}

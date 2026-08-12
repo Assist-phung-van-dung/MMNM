@@ -1,0 +1,152 @@
+/* =============================================================
+   NNTM — Bố cục dùng chung: container, lưới, tiện ích khoảng cách.
+   Mobile-first: viết mặc định cho màn nhỏ trước, min-width nới dần.
+
+   Điểm ngắt: 480 / 768 / 1024 / 1366 (khớp --nntm-w-rong).
+   Figma khách gửi CHỈ có khung desktop 1366px, CHƯA có bản mobile.
+   Mọi chỗ có suy đoán responsive được đánh dấu bằng chú thích
+   "SUY DOAN: chua co Figma mobile" ngay tại vị trí đó.
+
+   CẤM mã màu (#hex, rgb) và số px cứng ngoài breakpoint —
+   mọi giá trị lấy từ tokens.css. Nạp SAU tokens.css và base.css.
+   ============================================================= */
+
+/* ---------- Container ---------- */
+.nntm-container {
+	width: 100%;
+	max-width: var(--nntm-w-noi-dung);
+	margin-inline: auto;
+	/* SUY DOAN: chua co Figma mobile — padding ngang nho hon o man nho */
+	padding-inline: var(--nntm-sp-5);
+}
+
+.nntm-container--wide {
+	max-width: var(--nntm-w-rong);
+}
+
+@media (min-width: 768px) {
+	.nntm-container {
+		/* SUY DOAN: chua co Figma mobile — noi suy giua man nho va desktop 1366 */
+		padding-inline: var(--nntm-sp-7);
+	}
+}
+
+@media (min-width: 1024px) {
+	.nntm-container {
+		padding-inline: var(--nntm-sp-8);
+	}
+}
+
+/* ---------- Lưới ---------- */
+.nntm-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--nntm-sp-7);
+}
+
+/* SUY DOAN: chua co Figma mobile — mac dinh gop ve 1 cot o man nho,
+   mo dan so cot theo breakpoint. Figma 1366 la nguon duy nhat cho
+   so cot "day du" (--2/--3/--4). */
+.nntm-grid--2,
+.nntm-grid--3,
+.nntm-grid--4 {
+	grid-template-columns: 1fr;
+}
+
+@media (min-width: 480px) {
+	.nntm-grid--2 {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (min-width: 768px) {
+	.nntm-grid--2 {
+		gap: var(--nntm-sp-8);
+	}
+
+	.nntm-grid--3,
+	.nntm-grid--4 {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (min-width: 1024px) {
+	.nntm-grid--3 {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	.nntm-grid--4 {
+		grid-template-columns: repeat(4, 1fr);
+	}
+
+	.nntm-grid--2,
+	.nntm-grid--3,
+	.nntm-grid--4 {
+		gap: var(--nntm-sp-9);
+	}
+}
+
+@media (min-width: 1366px) {
+	.nntm-grid--4 {
+		/* Khung Figma 1366 — mật độ khoảng cách dày như thiết kế gốc. */
+		gap: var(--nntm-sp-8);
+	}
+}
+
+/* ---------- Tiện ích khoảng cách ---------- */
+/* Chỉ phủ các mốc dùng nhiều nhất trong Figma (10/20/30/40/50/60/80). */
+.nntm-mt-3 { margin-top: var(--nntm-sp-3); }
+.nntm-mt-5 { margin-top: var(--nntm-sp-5); }
+.nntm-mt-7 { margin-top: var(--nntm-sp-7); }
+.nntm-mt-8 { margin-top: var(--nntm-sp-8); }
+.nntm-mt-9 { margin-top: var(--nntm-sp-9); }
+.nntm-mt-10 { margin-top: var(--nntm-sp-10); }
+
+.nntm-mb-3 { margin-bottom: var(--nntm-sp-3); }
+.nntm-mb-5 { margin-bottom: var(--nntm-sp-5); }
+.nntm-mb-7 { margin-bottom: var(--nntm-sp-7); }
+.nntm-mb-8 { margin-bottom: var(--nntm-sp-8); }
+.nntm-mb-9 { margin-bottom: var(--nntm-sp-9); }
+.nntm-mb-10 { margin-bottom: var(--nntm-sp-10); }
+
+.nntm-p-3 { padding: var(--nntm-sp-3); }
+.nntm-p-5 { padding: var(--nntm-sp-5); }
+.nntm-p-7 { padding: var(--nntm-sp-7); }
+.nntm-p-8 { padding: var(--nntm-sp-8); }
+
+.nntm-gap-3 { gap: var(--nntm-sp-3); }
+.nntm-gap-5 { gap: var(--nntm-sp-5); }
+.nntm-gap-7 { gap: var(--nntm-sp-7); }
+
+/* ---------- Tiện ích flex nhỏ, dùng lại nhiều ở header/card ---------- */
+.nntm-flex {
+	display: flex;
+	align-items: center;
+}
+
+.nntm-flex--between {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.nntm-flex--wrap {
+	flex-wrap: wrap;
+}
+
+/* =============================================================
+   Trang ghép từ block section — <main> toàn chiều rộng.
+
+   Mỗi block section đã tự mang đệm ngoài đúng Figma (SECTION 1 của
+   Hoa Khai đệm ngang 70, SECTION 6 của Pháp Tòa đệm 80...). Bọc thêm
+   .nntm-container ở <main> sẽ thành đệm chồng đệm, làm nội dung hẹp
+   hơn thiết kế khoảng 200px trên MỌI trang phân mục.
+   Xem nntm_page_uses_section_blocks() trong inc/setup.php.
+   ============================================================= */
+
+.nntm-main--full {
+	width: 100%;
+	max-width: 100%;
+	margin: 0;
+	padding: 0;
+}

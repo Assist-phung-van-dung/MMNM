@@ -1,0 +1,137 @@
+/* =============================================================
+   nntm/cta — CSS cho block "Nút kêu gọi hành động"
+   Nguồn số đo: Figma QmYLYBVSRkqIbKuKzPUfUe, component set CTA
+   (node 6134:2330) — lấy qua Figma REST API ngày 06/08/2026.
+
+   QUAN TRỌNG — chỉ 4 biến thể CHỌN ĐƯỢC trong bảng điều khiển:
+   default / ghost / cta-text / fav-button. Ba biến thể còn lại trong
+   Figma (HOVER, GHOST HOVER, TEXT HOVER) KHÔNG phải biến thể riêng —
+   đó là trạng thái rê chuột của default/ghost/cta-text, nên được viết
+   thành :hover / :focus-visible ngay dưới mỗi biến thể tương ứng,
+   không có "value" riêng trong editor.js.
+
+   CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
+   assets/css/tokens.css.
+   ============================================================= */
+
+.nntm-cta {
+	display: inline-block;
+	border: none;
+	background: none;
+	cursor: pointer;
+	text-decoration: none;
+	font-family: var(--nntm-font-sans); /* Battambang -> Be Vietnam Pro, ca 4 bien the CTA deu dung font nay trong Figma */
+	font-size: var(--nntm-fs-15); /* tu Figma: 15px, ca 4 bien the */
+	font-weight: 700;
+	line-height: var(--nntm-lh-rong); /* Figma 27.1/15 ≈ 1.81, gan nhat lh-rong (1.8) */
+	transition: color var(--nntm-dur) var(--nntm-ease), background-color var(--nntm-dur) var(--nntm-ease), border-color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-cta__inner,
+.nntm-cta__label {
+	display: inline-flex;
+	align-items: center;
+}
+
+/* Vùng bấm tối thiểu 44x44 tren cam ung — moi bien the o day (57px/47px chieu cao)
+   da vuot 44px nen khong can them min-height rieng. */
+
+.nntm-cta:focus-visible {
+	outline: 2px solid var(--nntm-chinh);
+	outline-offset: 2px;
+}
+
+/* ---------- default (+ HOVER) ---------- */
+/* tu Figma Property 1=Default: khung 99x57 (bao gom padding), tu-co-kich-thuoc
+   theo noi dung (khong ep width/height cung) */
+.nntm-cta--default {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--nntm-sp-3); /* tu Figma: itemSpacing=10 */
+	padding: var(--nntm-sp-4) var(--nntm-sp-6); /* tu Figma: top/bottom=15, left/right=25 */
+	border-radius: var(--nntm-r-md); /* tu Figma: cornerRadius=10 */
+	background-color: var(--nntm-kem); /* tu Figma: fill #F7F1DE, trung dung --nntm-kem */
+	box-shadow: var(--nntm-sh-soft); /* khop dung DROP_SHADOW 0 5px 30px rgba(116,119,102,0.2) cua Figma */
+	color: var(--nntm-chinh); /* tu Figma: chu #747766 = "chinh" (reu) */
+}
+
+.nntm-cta--default:hover,
+.nntm-cta--default:focus-visible {
+	/* tu Figma Property 1=HOVER: dao mau nen/chu, giu nguyen radius/padding/bong */
+	background-color: var(--nntm-chinh);
+	color: var(--nntm-kem);
+}
+
+/* ---------- ghost (+ GHOST HOVER) ---------- */
+/* tu Figma Property 1=GHOST: khung 133x57, vien 2px, bo tron hoan toan */
+.nntm-cta--ghost {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--nntm-sp-3); /* tu Figma: itemSpacing=10 */
+	padding: var(--nntm-sp-4) var(--nntm-sp-5); /* tu Figma: top/bottom=15, left/right=20 */
+	border-radius: var(--nntm-r-pill); /* tu Figma: cornerRadius=60 */
+	border: 2px solid var(--nntm-chinh); /* tu Figma: strokeWeight=2, mau #747766 = "chinh" */
+	background-color: transparent;
+	color: var(--nntm-chinh);
+}
+
+.nntm-cta--ghost:hover,
+.nntm-cta--ghost:focus-visible {
+	/* tu Figma Property 1=GHOST HOVER: chi doi nen sang mau kem, VIEN VA CHU
+	   GIU NGUYEN mau chinh (du lieu Figma khong doi mau chu o trang thai nay) */
+	background-color: var(--nntm-kem);
+}
+
+/* ---------- cta-text (+ TEXT HOVER) ---------- */
+/* tu Figma Property 1=CTA TEXT: khong nen, khong vien — chi la chu dang nut,
+   padding-block 10px, KHONG co padding-inline (Figma khong khai bao trai/phai) */
+.nntm-cta--cta-text {
+	padding-block: var(--nntm-sp-3); /* tu Figma: top/bottom=10 */
+	color: var(--nntm-trang-lanh); /* tu Figma: chu #FCFDFE — mau nay chi doc duoc khi dat tren nen toi/mau; ghi chu vi du lieu Figma xuat dung vay, khong tu doi */
+}
+
+.nntm-cta--cta-text:hover,
+.nntm-cta--cta-text:focus-visible {
+	/* tu Figma Property 1=TEXT HOVER: chu doi sang gan den (#3F3B3B = "chu") */
+	color: var(--nntm-chu);
+}
+
+/* ---------- fav-button ---------- */
+/* tu Figma Property 1=FAV BUTTON: khong nen, khong vien, chi la icon + chu,
+   padding-block 10px, gap 5px giua icon va chu */
+.nntm-cta--fav-button {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--nntm-sp-1); /* tu Figma: itemSpacing=5 */
+	padding-block: var(--nntm-sp-3); /* tu Figma: top/bottom=10 */
+	color: var(--nntm-chu); /* tu Figma: icon + chu deu mau #3F3B3B = "chu" */
+}
+
+.nntm-cta__icon {
+	display: inline-flex;
+	color: inherit;
+	flex: none;
+}
+
+.nntm-cta__icon svg {
+	display: block;
+	width: 23px; /* tu Figma: Vector (trai tim) 23x21 */
+	height: 21px;
+}
+
+/* SUY DOAN: Figma chua co bien the "da bam yeu thich" rieng (chi co 1
+   FAV BUTTON tinh) — trang thai aria-pressed=true duoi day la tu dung
+   de bao hieu bang mat (to trai tim), chua duoc xac nhan boi thiet ke
+   that. Se sua lai ngay khi khach cung cap variant that. */
+.nntm-cta--fav-button[aria-pressed="true"] {
+	color: var(--nntm-chinh);
+}
+
+.nntm-cta--fav-button[aria-pressed="true"] .nntm-cta__icon svg path {
+	fill: var(--nntm-chinh);
+}
+
+.nntm-cta--fav-button:hover,
+.nntm-cta--fav-button:focus-visible {
+	color: var(--nntm-chinh-hover);
+}

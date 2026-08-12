@@ -1,0 +1,418 @@
+/**
+ * Editor script cho block nntm/card-list — JavaScript thuần, không build.
+ * Dùng biến toàn cục wp.* theo đúng quy ước dự án. Đây là block quan
+ * trọng nhất của site (docs/04-kien-truc.md mục 2): 6 trang phân mục
+ * đều ghép từ block này, nên bảng điều khiển bên phải phải dùng nhãn
+ * tiếng Việt dễ hiểu cho người không rành kỹ thuật (khảo sát câu 37).
+ */
+( function ( wp ) {
+	'use strict';
+
+	var el = wp.element.createElement;
+	var useState = wp.element.useState;
+	var useEffect = wp.element.useEffect;
+	var __ = wp.i18n.__;
+	var registerBlockType = wp.blocks.registerBlockType;
+	var useBlockProps = wp.blockEditor.useBlockProps;
+	var InspectorControls = wp.blockEditor.InspectorControls;
+	var RichText = wp.blockEditor.RichText;
+	var PanelBody = wp.components.PanelBody;
+	var SelectControl = wp.components.SelectControl;
+	var ToggleControl = wp.components.ToggleControl;
+	var RangeControl = wp.components.RangeControl;
+	var TextControl = wp.components.TextControl;
+	var TextareaControl = wp.components.TextareaControl;
+	var apiFetch = wp.apiFetch;
+	var ServerSideRender = wp.serverSideRender && wp.serverSideRender.default ? wp.serverSideRender.default : wp.serverSideRender;
+
+	var VARIANT_OPTIONS = [
+		{ label: __( 'Bài viết lớn (Article)', 'nntm' ), value: 'article' },
+		{ label: __( 'Bài viết vừa (Small)', 'nntm' ), value: 'small' },
+		{ label: __( 'Bài viết nhỏ (XS)', 'nntm' ), value: 'xs' },
+		{ label: __( 'Thẻ Đại Sĩ (chủ đề)', 'nntm' ), value: 'dai-si' },
+		{ label: __( 'Bài viết lớn — khi rê chuột (Hover)', 'nntm' ), value: 'article-hover' },
+		{ label: __( 'Video', 'nntm' ), value: 'video' },
+		{ label: __( 'Khóa Tu', 'nntm' ), value: 'khoa-tu' },
+		{ label: __( 'Ấn phẩm / Sách (Books)', 'nntm' ), value: 'books' },
+	];
+
+	var POST_TYPE_OPTIONS = [
+		{ label: __( 'Bài viết (6 phân mục)', 'nntm' ), value: 'nntm_article' },
+		{ label: __( 'Ấn phẩm (PDF / Books)', 'nntm' ), value: 'nntm_publication' },
+		{ label: __( 'Pháp Thoại', 'nntm' ), value: 'nntm_talk' },
+		{ label: __( 'Khóa Tu', 'nntm' ), value: 'nntm_retreat' },
+		{ label: __( 'Trú Xứ', 'nntm' ), value: 'nntm_abode' },
+		{ label: __( 'Video', 'nntm' ), value: 'nntm_video' },
+		{ label: __( 'Nhạc thiền', 'nntm' ), value: 'nntm_zen_track' },
+		{ label: __( 'Tin Tức / Hoằng Pháp', 'nntm' ), value: 'post' },
+	];
+
+	var ORDER_BY_OPTIONS = [
+		{ label: __( 'Mới nhất trước', 'nntm' ), value: 'newest' },
+		{ label: __( 'Cũ nhất trước', 'nntm' ), value: 'oldest' },
+		{ label: __( 'Theo tên (A-Z)', 'nntm' ), value: 'title' },
+		{ label: __( 'Thứ tự thủ công', 'nntm' ), value: 'manual' },
+	];
+
+	var COLUMN_OPTIONS = [
+		{ label: __( '2 cột', 'nntm' ), value: 2 },
+		{ label: __( '3 cột', 'nntm' ), value: 3 },
+		{ label: __( '4 cột', 'nntm' ), value: 4 },
+	];
+
+	// layout mặc định PHẢI là "grid" — khớp default trong block.json để mọi
+	// khối card-list đang có trên site (chưa từng lưu attribute này) giữ
+	// nguyên hình dạng lưới cũ.
+	var LAYOUT_OPTIONS = [
+		{ label: __( 'Lưới (Grid)', 'nntm' ), value: 'grid' },
+		{ label: __( 'Băng cuộn ngang (Carousel)', 'nntm' ), value: 'carousel' },
+	];
+
+	// Màu nền khối. Danh sách đóng — khách chỉ chọn được màu thương hiệu,
+	// không nhập được mã màu tự do (docs/04-kien-truc.md mục 2).
+	// "none" PHẢI là mặc định để mọi khối card-list đang có trên site giữ
+	// nguyên hình dạng cũ.
+	var BACKGROUND_OPTIONS = [
+		{ label: __( 'Không nền (mặc định)', 'nntm' ), value: 'none' },
+		{ label: __( 'Nền kem', 'nntm' ), value: 'kem' },
+		{ label: __( 'Nền cam', 'nntm' ), value: 'cam' },
+		{ label: __( 'Nền tối', 'nntm' ), value: 'toi' },
+	];
+
+	// Nhãn tiếng Việt cho taxonomy — khớp với class-taxonomies.php.
+	var TAXONOMY_LABELS = {
+		nntm_section: __( 'Phân mục', 'nntm' ),
+		nntm_topic: __( 'Chủ đề', 'nntm' ),
+		nntm_series: __( 'Bộ / Series', 'nntm' ),
+		category: __( 'Chuyên mục', 'nntm' ),
+		post_tag: __( 'Thẻ', 'nntm' ),
+	};
+
+	// Taxonomy lõi của WordPress có rest_base khác tên taxonomy.
+	var REST_BASE_OVERRIDES = {
+		category: 'categories',
+		post_tag: 'tags',
+	};
+
+	function restBaseFor( taxonomy ) {
+		return REST_BASE_OVERRIDES[ taxonomy ] || taxonomy;
+	}
+
+	function taxonomyLabel( taxonomy ) {
+		return TAXONOMY_LABELS[ taxonomy ] || taxonomy;
+	}
+
+	registerBlockType( 'nntm/card-list', {
+		edit: function ( props ) {
+			var attributes = props.attributes;
+			var setAttributes = props.setAttributes;
+			var blockProps = useBlockProps();
+
+			var taxonomyState = useState( [] ); // danh sách taxonomy hợp lệ cho postType hiện tại
+			var availableTaxonomies = taxonomyState[ 0 ];
+			var setAvailableTaxonomies = taxonomyState[ 1 ];
+
+			var termState = useState( [] ); // danh sách term của taxonomy đang chọn
+			var availableTerms = termState[ 0 ];
+			var setAvailableTerms = termState[ 1 ];
+
+			// Khi đổi loại nội dung: hỏi REST xem loại đó gắn được taxonomy nào.
+			useEffect(
+				function () {
+					var isCurrent = true;
+
+					apiFetch( { path: '/wp/v2/types/' + attributes.postType } )
+						.then( function ( typeInfo ) {
+							if ( ! isCurrent ) {
+								return;
+							}
+							var taxonomies = ( typeInfo && typeInfo.taxonomies ) || [];
+							setAvailableTaxonomies( taxonomies );
+
+							if ( attributes.taxonomy && taxonomies.indexOf( attributes.taxonomy ) === -1 ) {
+								setAttributes( { taxonomy: '', termId: 0 } );
+							}
+						} )
+						.catch( function () {
+							if ( isCurrent ) {
+								setAvailableTaxonomies( [] );
+							}
+						} );
+
+					return function () {
+						isCurrent = false;
+					};
+				},
+				[ attributes.postType ]
+			);
+
+			// Khi đổi taxonomy (hoặc loại nội dung làm mất taxonomy cũ): tải danh sách term.
+			useEffect(
+				function () {
+					var isCurrent = true;
+
+					if ( ! attributes.taxonomy ) {
+						setAvailableTerms( [] );
+						return undefined;
+					}
+
+					apiFetch( {
+						path: '/wp/v2/' + restBaseFor( attributes.taxonomy ) + '?per_page=100&orderby=name&order=asc&_fields=id,name',
+					} )
+						.then( function ( terms ) {
+							if ( isCurrent ) {
+								setAvailableTerms( terms || [] );
+							}
+						} )
+						.catch( function () {
+							if ( isCurrent ) {
+								setAvailableTerms( [] );
+							}
+						} );
+
+					return function () {
+						isCurrent = false;
+					};
+				},
+				[ attributes.taxonomy ]
+			);
+
+			var taxonomyOptions = [ { label: __( '— Không lọc theo mục nào —', 'nntm' ), value: '' } ].concat(
+				availableTaxonomies.map( function ( taxonomy ) {
+					return { label: taxonomyLabel( taxonomy ), value: taxonomy };
+				} )
+			);
+
+			var termOptions = [ { label: __( 'Tất cả', 'nntm' ), value: 0 } ].concat(
+				availableTerms.map( function ( term ) {
+					return { label: term.name, value: term.id };
+				} )
+			);
+
+			var previewAttributes = Object.assign( {}, attributes, { heading: '', subheading: '' } ); // tranh hien tieu de/mo ta phu 2 lan (RichText da hien o duoi)
+
+			return el(
+				'div',
+				blockProps,
+				el(
+					InspectorControls,
+					{},
+					el(
+						PanelBody,
+						{ title: __( 'Lấy nội dung từ đâu', 'nntm' ), initialOpen: true },
+						el( SelectControl, {
+							label: __( 'Lấy bài từ loại nội dung nào', 'nntm' ),
+							value: attributes.postType,
+							options: POST_TYPE_OPTIONS,
+							onChange: function ( value ) {
+								setAttributes( { postType: value, taxonomy: '', termId: 0 } );
+							},
+						} ),
+						el( SelectControl, {
+							label: __( 'Lọc theo', 'nntm' ),
+							help: __( 'Chỉ lấy bài thuộc một mục/chủ đề cụ thể. Để trống nếu muốn lấy tất cả.', 'nntm' ),
+							value: attributes.taxonomy,
+							options: taxonomyOptions,
+							onChange: function ( value ) {
+								setAttributes( { taxonomy: value, termId: 0 } );
+							},
+						} ),
+						attributes.taxonomy
+							? el( SelectControl, {
+									label: __( 'Lấy bài từ mục nào', 'nntm' ),
+									value: attributes.termId,
+									options: termOptions,
+									onChange: function ( value ) {
+										setAttributes( { termId: parseInt( value, 10 ) || 0 } );
+									},
+							  } )
+							: null
+					),
+					el(
+						PanelBody,
+						{ title: __( 'Hiển thị', 'nntm' ), initialOpen: true },
+						el( SelectControl, {
+							label: __( 'Kiểu thẻ hiển thị', 'nntm' ),
+							value: attributes.variant,
+							options: VARIANT_OPTIONS,
+							onChange: function ( value ) {
+								setAttributes( { variant: value } );
+							},
+						} ),
+						el( SelectControl, {
+							label: __( 'Kiểu hiển thị', 'nntm' ),
+							help: __( 'Lưới: xếp nhiều hàng, có thể phân trang. Băng cuộn ngang: một hàng duy nhất, khách cuộn bằng nút lùi/tiến hoặc bàn phím — hợp với Ấn Phẩm.', 'nntm' ),
+							value: attributes.layout || 'grid',
+							options: LAYOUT_OPTIONS,
+							onChange: function ( value ) {
+								setAttributes( { layout: value } );
+							},
+						} ),
+						el( SelectControl, {
+							label: __( 'Màu nền khối', 'nntm' ),
+							help: __( 'Nền tràn hết chiều rộng trang. Nền cam và nền tối tự đổi chữ tiêu đề sang màu kem cho đủ tương phản.', 'nntm' ),
+							value: attributes.background || 'none',
+							options: BACKGROUND_OPTIONS,
+							onChange: function ( value ) {
+								setAttributes( { background: value } );
+							},
+						} ),
+						// Hang bieu tuong nghe nhac o duoi cung khoi (Figma SECTION 5).
+						// De trong ca hai o thi khong hien hang nay — cac khoi
+						// card-list o trang phan muc khong bi moc them gi.
+						el( ToggleControl, {
+							label: __( 'Hiện ngày cập nhật trên thẻ', 'nntm' ),
+							checked: attributes.showDate !== false,
+							onChange: function ( value ) {
+								setAttributes( { showDate: value } );
+							},
+						} ),
+						el( ToggleControl, {
+							label: __( 'Hiện nhãn chuyên mục trên thẻ', 'nntm' ),
+							checked: attributes.showCategory !== false,
+							onChange: function ( value ) {
+								setAttributes( { showCategory: value } );
+							},
+						} ),
+						// Tieu de so le va doan chu duoi dai — tu Figma SECTION 3
+						// (bang video "Got Son"). De trong thi khoi hien binh
+						// thuong nhu cu, khong doi gi.
+						el( TextControl, {
+							label: __( 'Dòng tiêu đề đặt PHÍA TRÊN dải nền', 'nntm' ),
+							help: __( 'Dùng cho kiểu tiêu đề so le: dòng này nằm ngoài dải nền (chữ đậm màu), dòng tiêu đề chính nằm trong dải và thụt vào phải. Để trống thì tiêu đề hiện bình thường.', 'nntm' ),
+							value: attributes.headingAbove || '',
+							onChange: function ( value ) {
+								setAttributes( { headingAbove: value } );
+							},
+						} ),
+						el( TextareaControl, {
+							label: __( 'Đoạn chữ nghiêng dưới dải nền', 'nntm' ),
+							help: __( 'Nằm ngoài dải, căn giữa. Để trống thì không hiện.', 'nntm' ),
+							value: attributes.captionBelow || '',
+							onChange: function ( value ) {
+								setAttributes( { captionBelow: value } );
+							},
+						} ),
+						el( TextControl, {
+							label: __( 'Đường dẫn Spotify', 'nntm' ),
+							help: __( 'Để trống thì không hiện biểu tượng. Hàng biểu tượng nằm dưới cùng khối.', 'nntm' ),
+							type: 'url',
+							placeholder: 'https://open.spotify.com/…',
+							value: attributes.spotifyUrl || '',
+							onChange: function ( value ) {
+								setAttributes( { spotifyUrl: value } );
+							},
+						} ),
+						el( TextControl, {
+							label: __( 'Đường dẫn YouTube', 'nntm' ),
+							help: __( 'Để trống thì không hiện biểu tượng.', 'nntm' ),
+							type: 'url',
+							placeholder: 'https://www.youtube.com/…',
+							value: attributes.youtubeUrl || '',
+							onChange: function ( value ) {
+								setAttributes( { youtubeUrl: value } );
+							},
+						} ),
+						// Hai o dieu khien duoi day CHI co tac dung khi dang chon
+						// kieu bang cuon (carousel) — an di o kieu luoi, giong cach
+						// "So cot moi hang" / "Hien nut chuyen trang" da an/hien theo
+						// attributes.layout ben duoi.
+						'carousel' === attributes.layout
+							? el( ToggleControl, {
+									label: __( 'Tự động chạy băng cuộn', 'nntm' ),
+									help: __( 'Băng thẻ tự chuyển sang thẻ kế tiếp, hết thẻ cuối quay lại đầu. Tự tạm dừng khi khách rê chuột vào hoặc bấm chọn trong băng.', 'nntm' ),
+									checked: attributes.autoplay !== false,
+									onChange: function ( value ) {
+										setAttributes( { autoplay: value } );
+									},
+							  } )
+							: null,
+						'carousel' === attributes.layout && attributes.autoplay !== false
+							? el( RangeControl, {
+									label: __( 'Mỗi bao nhiêu giây chuyển một lần', 'nntm' ),
+									value: attributes.autoplayInterval || 6,
+									onChange: function ( value ) {
+										setAttributes( { autoplayInterval: value || 6 } );
+									},
+									min: 2,
+									max: 20,
+							  } )
+							: null,
+						'carousel' !== attributes.layout
+							? el( SelectControl, {
+									label: __( 'Số cột mỗi hàng', 'nntm' ),
+									value: attributes.columns,
+									options: COLUMN_OPTIONS,
+									onChange: function ( value ) {
+										setAttributes( { columns: parseInt( value, 10 ) || 3 } );
+									},
+							  } )
+							: null,
+						el( RangeControl, {
+							label: __( 'Hiển thị bao nhiêu bài', 'nntm' ),
+							value: attributes.postsPerPage,
+							onChange: function ( value ) {
+								setAttributes( { postsPerPage: value || 6 } );
+							},
+							min: 1,
+							max: 24,
+						} ),
+						el( SelectControl, {
+							label: __( 'Sắp xếp bài viết', 'nntm' ),
+							value: attributes.orderBy,
+							options: ORDER_BY_OPTIONS,
+							onChange: function ( value ) {
+								setAttributes( { orderBy: value } );
+							},
+						} ),
+						'manual' === attributes.orderBy
+							? el( TextControl, {
+									label: __( 'Thứ tự thủ công', 'nntm' ),
+									help: __( 'Nhập ID bài viết theo đúng thứ tự muốn hiển thị, cách nhau bằng dấu phẩy. Ví dụ: 12,45,78. Xem ID bài viết trên đường link (URL) khi sửa bài.', 'nntm' ),
+									value: attributes.manualOrderIds,
+									onChange: function ( value ) {
+										setAttributes( { manualOrderIds: value } );
+									},
+							  } )
+							: null,
+						'carousel' !== attributes.layout
+							? el( ToggleControl, {
+									label: __( 'Hiện nút chuyển trang (BACK / NEXT)', 'nntm' ),
+									checked: !! attributes.showPaging,
+									onChange: function ( value ) {
+										setAttributes( { showPaging: value } );
+									},
+							  } )
+							: null
+					)
+				),
+				el( RichText, {
+					tagName: 'h2',
+					className: 'nntm-card-list__heading',
+					value: attributes.heading,
+					placeholder: __( 'Nhập tiêu đề mục…', 'nntm' ),
+					onChange: function ( value ) {
+						setAttributes( { heading: value } );
+					},
+				} ),
+				el( RichText, {
+					tagName: 'p',
+					className: 'nntm-card-list__subheading',
+					value: attributes.subheading,
+					placeholder: __( 'Nhập mô tả phụ (không bắt buộc)…', 'nntm' ),
+					onChange: function ( value ) {
+						setAttributes( { subheading: value } );
+					},
+				} ),
+				el( ServerSideRender, {
+					block: 'nntm/card-list',
+					attributes: previewAttributes,
+				} )
+			);
+		},
+		save: function () {
+			// Block động: PHP (render.php) tự chạy lại WP_Query mỗi lần tải trang.
+			return null;
+		},
+	} );
+} )( window.wp );

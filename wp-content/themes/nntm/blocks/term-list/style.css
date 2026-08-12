@@ -1,0 +1,221 @@
+/* =============================================================
+   Block nntm/term-list — Figma "03. PHAP TOA" / SECTION 6
+
+   Số đo gốc từ Figma (desktop 1366, đã bóc sẵn — không gọi lại API):
+     SECTION 6   1366x669
+       CONTENT   1184x557  doc, gap 30
+         Tieu de "Phap Toa"  EB Garamond 600 52px, cao 60
+         LIST    1273x467   ngang, gap 20      <- LIST RONG HON CONTENT
+           PHAP TOA CARD  280x467
+             Anh phu kin the (mask)
+             CARD (lop chu)  280x220  doc, gap 11, padding 20 bon canh
+               Frame 125   240x142..168  doc, gap 5
+                 Ten        Battambang 700 18px   -> font sans
+                 Frame 125  240x107  doc, gap 8
+                   Mo ta    Baskerville 400 18px  -> font serif
+                   CTA "Xem them"  76x47, r=60, padding 10 tren/duoi
+                            Battambang 700 15px   -> font sans
+
+   LIST (1273) rong hon CONTENT (1184): thiet ke co y de the cuoi lo ra,
+   goi y con noi dung ben phai. Dung lai bang track cuon ngang (flex nowrap
+   + overflow-x auto): khi tong be rong cac the vuot qua khung chua, trinh
+   duyet TU NHIEN cat mep the cuoi o bien phai — dung hieu ung "lo ra" ma
+   khong can khoa cung so luong hay do rong bang JS. Neu so term it hon
+   suc chua, tong be rong khong vuot khung nen KHONG co gi bi cat — dung
+   yeu cau "chi lo khi that su tran".
+   ============================================================= */
+
+.nntm-term-list {
+	padding-block: var(--nntm-sp-10);         /* 60 — tu Figma */
+	background: var(--nntm-nen);
+}
+
+.nntm-term-list__heading {
+	margin: 0 0 var(--nntm-sp-7);              /* gap 30 giua tieu de va danh sach */
+	font-family: var(--nntm-font-display);
+	font-weight: 600;
+	font-size: var(--nntm-fs-4xl);             /* 52 */
+	line-height: var(--nntm-lh-chat);          /* 60/52 ~ 1.15 */
+	color: var(--nntm-chu);
+	text-wrap: balance;
+}
+
+.nntm-term-list__empty {
+	margin: 0;
+	color: var(--nntm-chu-phu);
+	font-family: var(--nntm-font-sans);
+}
+
+/* ---------- Track cuon ngang ---------- */
+
+.nntm-term-list__track {
+	display: flex;
+	flex-wrap: nowrap;
+	gap: var(--nntm-sp-5);                     /* 20 — tu Figma: LIST gap */
+	overflow-x: auto;
+	scroll-snap-type: x proximity;
+	/* Them khoang trong duoi de thanh cuon (neu trinh duyet hien) khong de len the. */
+	padding-bottom: var(--nntm-sp-2);
+}
+
+/* ---------- Thẻ ---------- */
+
+.nntm-term-card {
+	position: relative;
+	display: block;
+	flex: 0 0 280px;                           /* tu Figma: PHAP TOA CARD rong co dinh 280 */
+	aspect-ratio: 280 / 467;                   /* tu Figma: PHAP TOA CARD */
+	scroll-snap-align: start;
+	overflow: hidden;
+	border-radius: var(--nntm-r-md);
+	text-decoration: none;
+	color: inherit;
+	box-shadow: var(--nntm-sh-card);
+	transition: transform var(--nntm-dur) var(--nntm-ease),
+	            box-shadow var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-term-card:hover,
+.nntm-term-card:focus-visible {
+	transform: translateY(-4px);
+	box-shadow: var(--nntm-sh-lift);
+}
+
+.nntm-term-card:focus-visible {
+	outline: 2px solid var(--nntm-chinh);
+	outline-offset: 3px;
+}
+
+.nntm-term-card__img,
+.nntm-term-card__img-el,
+.nntm-term-card__img-placeholder {
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.nntm-term-card__img-el {
+	object-fit: cover;
+	transition: transform var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-term-card:hover .nntm-term-card__img-el {
+	transform: scale(1.04);
+}
+
+.nntm-term-card__img-placeholder {
+	/* Chua chon anh o term meta "_nntm_term_image": hien mau nen trung tinh,
+	   khong duoc pha bo cuc — the van giu dung ti le 280/467. */
+	background: var(--nntm-xam);
+}
+
+/*
+ * Lớp chữ đè lên đáy ảnh. Figma cho khối chữ cao 220px trong thẻ cao 467px
+ * (~47%), cao hơn nhiều so với thẻ Trú Xứ nên lớp phủ chuyển sắc phải vươn
+ * lên cao hơn để chữ luôn đọc được kể cả khi ảnh sáng.
+ */
+.nntm-term-card__overlay {
+	position: absolute;
+	inset-inline: 0;
+	bottom: 0;
+	display: flex;
+	padding: var(--nntm-sp-5);                 /* 20 — tu Figma: CARD padding */
+	background: linear-gradient(
+		to top,
+		var(--nntm-phu-den-50) 0%,
+		color-mix(in srgb, var(--nntm-phu-den-50) 65%, transparent) 65%,
+		transparent 100%
+	);
+	color: var(--nntm-trang);
+}
+
+.nntm-term-card__content {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;                                  /* tu Figma: Frame 125 gap 5 */
+	width: 100%;
+}
+
+.nntm-term-card__name {
+	font-family: var(--nntm-font-sans);
+	font-weight: 700;
+	font-size: var(--nntm-fs-md);              /* 18 */
+	line-height: 1.4;
+}
+
+.nntm-term-card__meta {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--nntm-sp-2);                     /* 8 — tu Figma: Frame 125 gap 8 */
+}
+
+.nntm-term-card__desc {
+	font-family: var(--nntm-font-serif);
+	font-weight: 400;
+	font-size: var(--nntm-fs-md);              /* 18 — tu Figma */
+	line-height: var(--nntm-lh-vua);
+	opacity: 0.92;
+	/* Mo ta co the dai hon anh thiet ke goc — gioi han 3 dong, tranh vo the. */
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+/*
+ * Nut "Xem them" — CHI la <span> (khong phai <a>), xem ly do o render.php.
+ * Kieu dang theo cung mau nen-noi/chinh nhu bien the "default" cua nntm/cta
+ * (blocks/cta/style.css) de dong bo he thong nut trong toan site.
+ */
+.nntm-term-card__cta {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--nntm-sp-3) var(--nntm-sp-5); /* 10 tren/duoi, tu Figma; 20 hai ben cho vua chu */
+	border-radius: var(--nntm-r-pill);          /* r=60 — tu Figma */
+	background: var(--nntm-nen-noi);
+	color: var(--nntm-chinh);
+	font-family: var(--nntm-font-sans);
+	font-weight: 700;
+	font-size: var(--nntm-fs-15);                /* 15 — tu Figma */
+	line-height: 1;
+	transition: background-color var(--nntm-dur) var(--nntm-ease),
+	            color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-term-card:hover .nntm-term-card__cta,
+.nntm-term-card:focus-visible .nntm-term-card__cta {
+	background: var(--nntm-chinh);
+	color: var(--nntm-kem);
+}
+
+/* ---------- Thu hẹp màn hình ---------- */
+/* SUY DOAN: chua co Figma mobile.
+   Giu nguyen kieu cuon ngang (khac voi tru-xu-list dung xuong hang) vi day
+   la hieu ung THIET KE CO Y (the lo ra) ngay tren desktop — thu hep man
+   hinh chi thu nho be rong the, khong doi sang bo cuc luoi, de giu dung
+   tinh chat "cuon ngang" ma Figma the hien. */
+
+@media (max-width: 600px) {
+	.nntm-term-card {
+		flex-basis: 220px;                      /* SUY DOAN: thu nho de vua man hinh nho */
+	}
+
+	.nntm-term-list {
+		padding-block: var(--nntm-sp-8);
+	}
+
+	.nntm-term-list__heading {
+		font-size: var(--nntm-fs-3xl);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-term-card,
+	.nntm-term-card__img-el { transition: none; }
+	.nntm-term-card:hover { transform: none; }
+	.nntm-term-card:hover .nntm-term-card__img-el { transform: none; }
+}

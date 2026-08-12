@@ -1,0 +1,699 @@
+/* =============================================================
+   NNTM — CSS cho phần đầu trang (header.php)
+
+   DỰNG LẠI theo số đo THẬT bóc từ Figma (đã được chủ dự án xác nhận —
+   KHÔNG gọi lại Figma API, đang bị rate-limit). Ba trạng thái:
+
+     A .nntm-header--guest  — chưa đăng nhập, nền trắng, menu 6 mục
+     B .nntm-header--auth   — đã đăng nhập, nền trắng 60%+mờ, menu 7 mục
+     C .nntm-header--sticky (+ .nntm-header--stuck do JS gắn khi cuộn)
+
+   CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
+   assets/css/tokens.css. Nạp sau tokens.css/base.css/layout.css qua
+   inc/enqueue.php.
+
+   Figma chỉ có khung desktop 1366px — mọi phần liên quan tới menu
+   thu gọn trên điện thoại (nút hamburger, panel trượt) được đánh dấu
+   "SUY DOAN: chua co Figma mobile" tại đúng chỗ suy đoán.
+   ============================================================= */
+
+/* ---------- Khung header ---------- */
+.nntm-header {
+	position: relative;
+	z-index: 100;
+	/*
+	 * tu Figma (node HEADER 6376:6487, doc 10/08/2026): khung ngoai cao 76,
+	 * thanh MAIN MENU ben trong cao 68 dat o y=4 — tuc con 4px tren va 4px
+	 * duoi. Truoc day chi dung 68 nen thieu 8px so voi thiet ke.
+	 */
+	padding-block: 4px;
+	/* Bo border-radius 10px theo yeu cau anh Uy 10/08/2026 — thanh header
+	   tran het chieu rong nen bo goc khong co tac dung gi ngoai viec lam
+	   ho hai goc tren. */
+}
+
+.nntm-header--sticky {
+	position: sticky;
+	top: 0;
+}
+
+/* =============================================================
+   ĐẦU TRANG ĐÈ LÊN HERO
+
+   Figma R4 dat HEADER o y=0 TRUNG CHO voi BANNER (cung y=0, cao 768):
+   dau trang noi tren anh hero chu khong phai mot dai rieng day anh
+   xuong. Truoc day header nam trong dong chay nen day hero xuong 68px
+   va tong hai khoi thanh 828 thay vi 768.
+
+   Chi ap cho trang mo dau bang hero — class do nntm_body_class_hero()
+   gan len <body>, xem inc/setup.php. Trang thuong khong co class nay
+   nen dau trang van la dai rieng nhu cu, khong bi nuot mat 76px dau
+   noi dung.
+
+   Dung `fixed` chu khong phai `absolute`: hai cach deu lay header ra
+   khoi dong chay (dieu can thiet de hero bat dau tu y=0), nhung dai
+   nay von da la `--sticky` — dinh tren cung khi cuon. `absolute` se
+   cuon mat theo trang, mat hanh vi dinh da chot.
+   ============================================================= */
+body.nntm-dau-trang-de-len .nntm-header {
+	position: fixed;
+	inset-inline: 0;
+	top: 0;
+}
+
+/*
+ * Figma to nen trang duc cho HEADER (fill #FFFFFF) ke ca khi no nam tren
+ * anh hero — KHONG phai thanh trong suot. Giu nguyen mau nen cua trang
+ * thai A/B, o day chi khai lai cho ro y de nguoi doc code sau nay khong
+ * tuong day la cho quen to nen.
+ */
+
+
+/*
+ * Trạng thái C (dính khi cuộn): chủ dự án chốt GIỮ NGUYÊN màu nền của
+ * trạng thái A/B (không có biến thể "trong suốt" nào khi dính) để phân
+ * biệt với nội dung cuộn bên dưới — nên .nntm-header--stuck chỉ thêm bóng,
+ * không đổi background-color/backdrop-filter đã khai ở dưới.
+ */
+.nntm-header--stuck {
+	box-shadow: var(--nntm-sh-card);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-header--stuck {
+		transition: none;
+	}
+}
+
+/* ---------- Trạng thái A: CHƯA ĐĂNG NHẬP ---------- */
+.nntm-header--guest {
+	background-color: var(--nntm-trang);
+	color: var(--nntm-muc-nhat); /* #4F4F4F — mau "muc" dung chung cho menu/tim kiem/dang nhap */
+}
+
+/* ---------- Trạng thái B: ĐÃ ĐĂNG NHẬP ---------- */
+.nntm-header--auth {
+	/*
+	 * "Nền trắng 60% + làm mờ nền phía sau" — color-mix() pha --nntm-trang
+	 * với trong suốt thay vì viết rgba(255,255,255,.6) cứng, để không phạm
+	 * quy ước cấm mã màu mà vẫn ra đúng hiệu ứng kính mờ (glassmorphism).
+	 */
+	background-color: color-mix(in srgb, var(--nntm-trang) 60%, transparent);
+	/* CHUA XAC NHAN: Figma chỉ ghi "làm mờ nền phía sau", không có trị số
+	   bán kính mờ cụ thể — 20px là ước lượng thị giác hợp lý, đối chiếu lại
+	   khi đọc được thuộc tính blur thật của layer. */
+	backdrop-filter: blur(20px);
+	-webkit-backdrop-filter: blur(20px);
+	color: var(--nntm-chinh); /* #747766 */
+}
+
+/* ---------- Thanh bên trong: logo — menu — khu phải ---------- */
+.nntm-header__bar {
+	display: flex;
+	align-items: center;
+	/*
+	 * Man hinh RONG HON khung thiet ke 1366.
+	 *
+	 * Figma chi ve khung 1366 va thanh header tran het be rong khung do.
+	 * Truoc day chan tran dung 1366 roi canh giua, nen tren man 1920 noi
+	 * dung co cum vao giua va thua hai dai trang moi ben ~280px — nhin
+	 * khong giong thiet ke.
+	 *
+	 * Cho thanh gian toi 1920 roi dung lai (rong hon nua thi menu va khu
+	 * phai cach nhau qua xa, doc met). Dem ngang gian theo be rong cua so,
+	 * giu dung ty le 20/1366 = 1.46%, chan trong khoang 20-28px.
+	 *
+	 * CO Y khong dung cach doi font-size goc de phong ca ban thiet ke:
+	 * da thu ngay 10/08/2026 va lam vo bo cuc, vi cac token --nntm-sp-*
+	 * va --nntm-r-* la px cung nen khong gian theo. Xem ghi chu trong
+	 * tokens.css.
+	 */
+	max-width: 1920px;
+	margin-inline: auto;
+	padding-inline: clamp(var(--nntm-sp-5), 1.46vw, var(--nntm-sp-6));
+	min-width: 0;
+}
+
+.nntm-header--guest .nntm-header__bar {
+	padding-block: var(--nntm-sp-3);    /* 10 — tu Figma: trang thai A */
+	gap: var(--nntm-sp-11);             /* 70 — tu Figma: khoang cach logo/menu/cong cu trang thai A */
+}
+
+.nntm-header--auth .nntm-header__bar {
+	padding-block: var(--nntm-sp-4);    /* 15 — tu Figma: trang thai B */
+	gap: var(--nntm-sp-10);             /* 60 — tu Figma: khoang cach logo/menu/cong cu trang thai B */
+}
+
+/*
+ * Ba phần co giãn khác nhau: logo và khu công cụ giữ nguyên kích thước,
+ * menu ở giữa được phép co lại. min-width: 0 là bắt buộc — không có nó,
+ * phần tử flex từ chối co xuống dưới kích thước nội dung và vẫn tràn,
+ * gây cuộn ngang (lỗi đã gặp ở bản dựng trước).
+ */
+.nntm-header__brand {
+	flex: 0 0 auto;
+	min-width: 0;
+}
+
+.nntm-header__nav {
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	justify-content: center;
+}
+
+/*
+ * Figma R4, khung "RIGHT":
+ *   display: flex; flex-direction: row;
+ *   justify-content: flex-end; align-items: center;
+ *   padding: 0; gap: 8px;
+ *   width: 415px; height: 46px; flex-grow: 1;
+ *
+ * flex-grow: 1 — khu phai la phan CO GIAN de day cum tim kiem/dang nhap/
+ * ngon ngu ve sat mep phai; truoc day de `flex: 0 1 auto` nen no khong
+ * gian, cum bi keo lech vao trong.
+ */
+.nntm-header__tools {
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	height: 46px;
+	padding: 0;
+	gap: var(--nntm-sp-2); /* 8 — tu Figma: khoang cach cac phan trong khu phai trang thai A */
+}
+
+/* Màn hẹp hơn khung thiết kế thì thu khoảng cách trước, giữ đủ chỗ cho chữ. */
+@media (max-width: 1365px) {
+	.nntm-header--guest .nntm-header__bar,
+	.nntm-header--auth .nntm-header__bar {
+		gap: var(--nntm-sp-8); /* 40 */
+	}
+}
+
+@media (max-width: 1200px) {
+	.nntm-header--guest .nntm-header__bar,
+	.nntm-header--auth .nntm-header__bar {
+		gap: var(--nntm-sp-5); /* 20 */
+	}
+}
+
+/* ---------- Logo chữ (khi chưa tải logo ảnh qua Tuỳ biến giao diện) ---------- */
+.nntm-header__logo {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;  /* canh giua theo chieu doc thanh header */
+	align-items: center;      /* canh giua theo chieu ngang */
+	text-align: center;       /* hai dong "NANG NHAN" / "TICH MAC" cang deu nhau */
+	width: 147px;   /* tu Figma */
+	height: 48px;   /* tu Figma */
+	font-family: var(--nntm-font-display);
+	font-weight: 600;
+	font-size: var(--nntm-fs-lg); /* ~20px — tu Figma: "khoang 20px" */
+	line-height: 1.1;             /* tu Figma: "line-height chat de vua 48px" — 2 dong x 20px x 1.1 ~ 44px, vua trong 48 */
+	text-transform: uppercase;
+	color: inherit;
+	text-decoration: none;
+}
+
+.nntm-header__logo-line {
+	display: block;
+}
+
+/* Logo ảnh do the_custom_logo() render — canh giữa theo chiều dọc thanh header. */
+.custom-logo-link {
+	display: flex;
+	align-items: center;
+}
+
+/* ---------- Nút hamburger (di động) ---------- */
+/* SUY DOAN: chua co Figma mobile — component MENU BUTTON (Default/CLOSE)
+   trong Figma chi xuat hien o khung desktop nhu mot phan tu trang tri,
+   khong ro hanh vi thuc te tren man hinh nho. An mac dinh tren desktop,
+   hien tu breakpoint nho hon 1024px cung luc menu chinh gap lai. */
+.nntm-header__menu-toggle {
+	display: none;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	padding: 0;
+	border: 0;
+	border-radius: var(--nntm-r-sm);
+	background: none;
+	color: inherit;
+	cursor: pointer;
+}
+
+.nntm-header__menu-toggle-icon,
+.nntm-header__menu-toggle-icon::before,
+.nntm-header__menu-toggle-icon::after {
+	display: block;
+	width: 24px;
+	height: 2px;
+	background-color: currentColor;
+	border-radius: var(--nntm-r-sm);
+	transition: transform var(--nntm-dur) var(--nntm-ease), opacity var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-header__menu-toggle-icon {
+	position: relative;
+}
+
+.nntm-header__menu-toggle-icon::before,
+.nntm-header__menu-toggle-icon::after {
+	content: "";
+	position: absolute;
+	left: 0;
+}
+
+.nntm-header__menu-toggle-icon::before {
+	top: -7px;
+}
+
+.nntm-header__menu-toggle-icon::after {
+	top: 7px;
+}
+
+.nntm-header--menu-open .nntm-header__menu-toggle-icon {
+	background-color: transparent;
+}
+
+.nntm-header--menu-open .nntm-header__menu-toggle-icon::before {
+	top: 0;
+	transform: rotate(45deg);
+}
+
+.nntm-header--menu-open .nntm-header__menu-toggle-icon::after {
+	top: 0;
+	transform: rotate(-45deg);
+}
+
+/* ---------- Menu chính (MAIN NAV) ---------- */
+.nntm-main-nav {
+	display: flex;
+	align-items: center;
+	gap: var(--nntm-sp-5); /* 20 — tu Figma: khoang cach cac muc menu */
+}
+
+.nntm-main-nav > li {
+	position: relative;
+	/*
+	 * Muc dang xem duoc to kieu "vien thuoc" nen the <li> cua no cao hon
+	 * cac muc khac. Neu <li> khong tu canh giua thi thanh menu canh giua
+	 * theo hop <li> se lam chu cua muc do troi len 4px so voi cac muc con
+	 * lai. Cho <li> lam flex de <a> luon nam giua, cao bao nhieu cung
+	 * thang hang.
+	 */
+	display: flex;
+	align-items: center;
+}
+
+/*
+ * Da tung phai va `li:first-child { padding-top: 8px }` o day vi muc dau
+ * bi troi len 4px. Da GO BO ngay 10/08/2026 sau khi tim ra nguyen nhan
+ * that: luat `li + li { margin-top }` trong base.css dung selector tran
+ * nen day moi muc tu thu hai tro di xuong 8px. Da khoanh lai pham vi o
+ * base.css, khong can va o day nua.
+ */
+
+.nntm-main-nav a {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	/*
+	 * Figma R4 (Frame 148 / MENU): moi muc deu "height: 29px" co dinh.
+	 *
+	 * Bat buoc phai co: neu de moi muc tu co theo chieu cao chu thi
+	 * "Dieu Thuong" (dau chong o "e" va "uo") sinh hop chu cao hon
+	 * "Phap Toa", ma container canh giua theo hop nen baseline hai muc
+	 * lech nhau. Khoa cung 29px thi moi muc cao bang nhau, chu nam giua.
+	 */
+	height: 29px;
+	font-family: var(--nntm-font-sans); /* tu Figma: "font sans" */
+	font-size: var(--nntm-fs-base);     /* 16 */
+	line-height: var(--nntm-lh-rong);   /* 29/16 — tokens.css da ghi ro "16/29" cho lh-rong */
+	/* Figma R4 (Frame 148 / MENU): color #4F4F4F "Gray 2" = --nntm-muc-nhat.
+	   Truoc day de inherit nen an theo mau chu cua thanh header, khong dung
+	   voi thiet ke. Sua 10/08/2026 theo CSS xuat tu Figma. */
+	color: var(--nntm-muc-nhat);
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.nntm-main-nav a:hover,
+.nntm-main-nav a:focus-visible {
+	color: var(--nntm-chinh-hover);
+}
+
+/* Mục đang xem — viên thuốc, giống nhau ở cả hai trạng thái A/B. */
+.nntm-main-nav .current-menu-item > a,
+.nntm-main-nav .current_page_item > a,
+.nntm-main-nav .current-menu-ancestor > a,
+.nntm-main-nav .current_page_ancestor > a {
+	background-color: var(--nntm-chinh);
+	color: var(--nntm-kem);
+	font-family: var(--nntm-font-sans);
+	font-weight: 700;
+	font-size: var(--nntm-fs-15);     /* 15 — tu Figma */
+	line-height: 1;
+	border-radius: var(--nntm-r-md); /* 10 */
+	padding: var(--nntm-sp-3) var(--nntm-sp-6); /* 10 / 25 — tu Figma */
+}
+
+.nntm-main-nav .current-menu-item > a:hover,
+.nntm-main-nav .current_page_item > a:hover,
+.nntm-main-nav .current-menu-ancestor > a:hover,
+.nntm-main-nav .current_page_ancestor > a:hover {
+	color: var(--nntm-kem);
+}
+
+/* Submenu cấp 2 (depth=2 trong wp_nav_menu).
+   CHUA XAC NHAN: component MAIN NAV trong Figma chỉ có 4 biến thể
+   Default/V2/ACTIVE/V2 ACTIVE, không thấy trạng thái "mở submenu" —
+   khối CSS dưới đây là suy đoán để wp_nav_menu depth=2 vẫn dùng được,
+   cần đối chiếu lại khi đọc được node MAIN NAV thật. */
+.nntm-main-nav .sub-menu {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	min-width: 200px;
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-2);
+	padding: var(--nntm-sp-4);
+	background-color: var(--nntm-nen-noi);
+	border-radius: var(--nntm-r-md);
+	box-shadow: var(--nntm-sh-card);
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(4px);
+	transition: opacity var(--nntm-dur) var(--nntm-ease), transform var(--nntm-dur) var(--nntm-ease), visibility var(--nntm-dur);
+}
+
+.nntm-main-nav .sub-menu a {
+	color: var(--nntm-chu);
+}
+
+.nntm-main-nav .menu-item-has-children:hover > .sub-menu,
+.nntm-main-nav .menu-item-has-children.nntm-main-nav__item--open > .sub-menu {
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0);
+}
+
+/* ---------- Khu công cụ: ngôn ngữ, tìm kiếm, đăng nhập, tài khoản ---------- */
+
+/* ----- Ô tìm kiếm (chỉ trạng thái A) ----- */
+.nntm-header__search-form {
+	display: flex;
+	align-items: center;
+	width: 263px;   /* tu Figma */
+	height: 46px;   /* tu Figma */
+	gap: var(--nntm-sp-3);            /* 10 — tu Figma */
+	padding-inline: var(--nntm-sp-3); /* 10 — tu Figma */
+	border-radius: var(--nntm-r-sm);  /* 5 */
+	background-color: var(--nntm-vien);
+}
+
+.nntm-header__search-submit {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 25px;
+	height: 25px;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: var(--nntm-muc-nhat); /* #4F4F4F — tu Figma: mau icon kinh lup */
+	cursor: pointer;
+}
+
+.nntm-header__search-field {
+	flex: 1 1 auto;
+	min-width: 0;
+	border: 0;
+	background: none;
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);  /* 14 — tu Figma */
+	line-height: 25px;             /* tu Figma: "14px/25" */
+	color: var(--nntm-muc-nhat);
+}
+
+.nntm-header__search-field::placeholder {
+	color: var(--nntm-muc-nhat); /* #4F4F4F — tu Figma */
+}
+
+.nntm-header__search-field:focus {
+	outline: none;
+}
+
+/* ----- Liên kết "Đăng nhập" (chỉ trạng thái A) ----- */
+.nntm-header__login {
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);  /* 14 — tu Figma */
+	line-height: 25px;              /* tu Figma: "14px/25" */
+	color: var(--nntm-muc-nhat);   /* #4F4F4F — tu Figma */
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.nntm-header__login:hover,
+.nntm-header__login:focus-visible {
+	color: var(--nntm-chinh-hover);
+}
+
+/* ----- Khối ngôn ngữ VI/EN (cả hai trạng thái) ----- */
+.nntm-header__lang {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 2px; /* tu Figma: "gap 2" cua khoi LANG BUTTON, khong co token khop */
+	height: 46px; /* tu Figma */
+	padding: var(--nntm-sp-1); /* 5 — tu Figma */
+	border-radius: var(--nntm-r-sm); /* 5 */
+}
+
+/*
+ * Trạng thái A: container 46×46 vuông theo Figma chỉ vừa MỘT nút ~35×35 +
+ * đệm — hai nút VI/EN cạnh nhau chắc chắn rộng hơn 46px thực tế. Không ép
+ * width:46px ở đây để tránh cắt chữ hai nút; chiều rộng tự co theo nội
+ * dung, chiều cao và các khoảng cách khác vẫn giữ đúng số đo Figma.
+ */
+.nntm-header--guest .nntm-header__lang {
+	width: auto;
+}
+
+/*
+ * Trạng thái B: nền --nntm-chinh mờ 30% — dùng color-mix() thay vì viết
+ * rgba(116,119,102,.3) cứng, đúng quy ước cấm mã màu trực tiếp. Container
+ * rộng 83px khớp khá sát với 2 nút ~35px + gap 2 + đệm 5 mỗi bên (~82px)
+ * nên áp luôn làm min-width tham khảo, không ép cứng để không cắt chữ.
+ */
+.nntm-header--auth .nntm-header__lang {
+	min-width: 83px; /* tu Figma */
+	background-color: color-mix(in srgb, var(--nntm-chinh) 30%, transparent);
+}
+
+.nntm-lang-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 35px;  /* tu Figma: "moi nut ~35x35" */
+	height: 35px;      /* tu Figma */
+	border-radius: var(--nntm-r-sm); /* 5 */
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+	font-weight: 500;
+}
+
+/*
+ * Nút đang chọn: nền --nntm-chinh, chữ --nntm-kem. Nút không chọn: KHÔNG
+ * nền, chữ --nntm-than. Figma (bản chưa đăng nhập) vẽ CẢ HAI nút đều tô
+ * nền --nntm-chinh — đối chiếu component LANG BUTTON gốc thì đây là
+ * designer vẽ sót, vì component có sẵn biến thể INACTIVE đúng như mô tả
+ * ở trên. Làm theo component (chỉ nút đang chọn mới tô nền), không theo
+ * ảnh chụp variant bị vẽ sai.
+ */
+.nntm-lang-btn--active {
+	background-color: var(--nntm-chinh);
+	color: var(--nntm-kem);
+}
+
+.nntm-lang-btn--inactive {
+	background-color: transparent;
+	color: var(--nntm-than);
+}
+
+/* ----- Icon tài khoản + menu thả xuống (chỉ trạng thái B) ----- */
+.nntm-header__account {
+	position: relative;
+}
+
+.nntm-header__account-toggle {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;  /* vung bam du lon cho chuot/ngon tay, icon that 25x25 o giua */
+	height: 44px;
+	padding: 0;
+	border: 0;
+	border-radius: var(--nntm-r-sm);
+	background: none;
+	color: var(--nntm-chinh);
+	cursor: pointer;
+}
+
+.nntm-header__account-icon {
+	width: 25px;  /* tu Figma */
+	height: 25px; /* tu Figma */
+}
+
+.nntm-header__account-panel {
+	position: absolute;
+	top: 100%;
+	right: 0;
+	z-index: 10;
+	min-width: 220px;
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-2);
+	margin-top: var(--nntm-sp-2);
+	padding: var(--nntm-sp-4);
+	background-color: var(--nntm-nen-noi);
+	border-radius: var(--nntm-r-md);
+	box-shadow: var(--nntm-sh-card);
+	color: var(--nntm-chu);
+}
+
+/*
+ * QUAN TRONG: thuoc tinh HTML "hidden" va class ".nntm-header__account-panel"
+ * co CUNG do dac ta (0,0,1,0) — quy tac display:flex o tren, vi nap SAU CSS
+ * mac dinh cua trinh duyet, se THANG va lam panel hien ngay ca khi co
+ * "hidden" (da gap loi nay khi kiem thu bang trinh duyet, panel hien san
+ * du aria-expanded="false"). Phai chan rieng bang selector do dac ta cao
+ * hon de "hidden" luon thang tuyet doi, khong phu thuoc thu tu nap CSS.
+ */
+.nntm-header__account-panel[hidden] {
+	display: none;
+}
+
+.nntm-header__account-name {
+	font-family: var(--nntm-font-sans);
+	font-weight: 700;
+	font-size: var(--nntm-fs-sm);
+	color: var(--nntm-chu);
+}
+
+.nntm-header__account-rank {
+	display: inline-flex;
+	align-self: flex-start;
+	padding: var(--nntm-sp-1) var(--nntm-sp-3);
+	border-radius: var(--nntm-r-pill);
+	background-color: var(--nntm-chinh);
+	color: var(--nntm-trang);
+	font-family: var(--nntm-font-ui);
+	font-size: var(--nntm-fs-xs);
+	font-weight: 700;
+}
+
+.nntm-header__account-menu {
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-1);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.nntm-header__account-menu a {
+	display: block;
+	padding: var(--nntm-sp-2) var(--nntm-sp-3);
+	border-radius: var(--nntm-r-sm);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+	color: var(--nntm-chu);
+	text-decoration: none;
+}
+
+.nntm-header__account-menu a:hover,
+.nntm-header__account-menu a:focus-visible {
+	background-color: var(--nntm-nga);
+	color: var(--nntm-chinh);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-header__menu-toggle-icon,
+	.nntm-header__menu-toggle-icon::before,
+	.nntm-header__menu-toggle-icon::after,
+	.nntm-main-nav .sub-menu {
+		transition: none;
+	}
+}
+
+/* ---------- SUY DOAN: chua co Figma mobile ---------- */
+/* Duoi 1024px: gap menu chinh vao panel truot tu ben phai, hien nut
+   hamburger. Day la suy doan hoan toan vi Figma chi co khung 1366px. */
+@media (max-width: 1023px) {
+	.nntm-header__menu-toggle {
+		display: inline-flex;
+	}
+
+	.nntm-header__nav {
+		position: fixed;
+		inset-block: 0;
+		right: 0;
+		width: min(320px, 85vw);
+		flex-direction: column;
+		align-items: stretch;
+		background-color: var(--nntm-nen-noi);
+		box-shadow: var(--nntm-sh-lift);
+		padding: var(--nntm-sp-9) var(--nntm-sp-5) var(--nntm-sp-5);
+		transform: translateX(100%);
+		transition: transform var(--nntm-dur) var(--nntm-ease);
+		overflow-y: auto;
+		z-index: 200;
+		color: var(--nntm-chu);
+	}
+
+	.nntm-header--menu-open .nntm-header__nav {
+		transform: translateX(0);
+	}
+
+	.nntm-main-nav {
+		flex-direction: column;
+		align-items: stretch;
+		gap: var(--nntm-sp-3);
+	}
+
+	.nntm-main-nav .sub-menu {
+		position: static;
+		opacity: 1;
+		visibility: visible;
+		transform: none;
+		box-shadow: none;
+		display: none;
+		transition: none;
+	}
+
+	.nntm-main-nav .menu-item-has-children.nntm-main-nav__item--open > .sub-menu {
+		display: flex;
+	}
+
+	.nntm-header__tools {
+		gap: var(--nntm-sp-3);
+	}
+
+	.nntm-header__search-form {
+		display: none; /* SUY DOAN: chua co Figma mobile — an o thanh header, se can cho khac (vd trang rieng) */
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-header__nav {
+		transition: none;
+	}
+}

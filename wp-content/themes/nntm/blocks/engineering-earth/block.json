@@ -1,0 +1,56 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "nntm/engineering-earth",
+	"title": "Dải phim (Engineering Earth)",
+	"category": "nntm",
+	"icon": "video-alt3",
+	"description": "Tiêu đề lớn căn giữa + dải nền đen tràn viền chứa ảnh lớn và tiêu đề phụ, kèm thẻ video nổi đè lên mép dưới dải. Dùng cho khối phim của trang chủ (Figma R4, 01_HOMEPAGE, Frame 155 y=3323).",
+	"textdomain": "nntm",
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"customClassName": true
+	},
+	"attributes": {
+		"heading": {
+			"type": "string",
+			"default": "The Drum of the True Dharma"
+		},
+		"subheading": {
+			"type": "string",
+			"default": "EARTH"
+		},
+		"bandTitle": {
+			"type": "string",
+			"default": "ENGINEERING EARTH"
+		},
+		"bandSubtitle": {
+			"type": "string",
+			"default": "WHAT WILL EARTH LOOK LIKE?"
+		},
+		"caption": {
+			"type": "string",
+			"default": ""
+		},
+		"imageId": {
+			"type": "number",
+			"default": 0
+		},
+		"imageUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"imageAlt": {
+			"type": "string",
+			"default": ""
+		},
+		"videoId": {
+			"type": "number",
+			"default": 0
+		}
+	},
+	"editorScript": "file:./editor.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

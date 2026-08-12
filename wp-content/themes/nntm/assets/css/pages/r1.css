@@ -1,0 +1,811 @@
+/* =============================================================
+   Trang R1 — dựng lại trang chủ theo Figma "DESKTOP - R1",
+   khung 01_HOMEPAGE 4231:852 (1366x3745). Bóc số đo 10/08/2026.
+
+   Chỉ nạp trên trang có slug `r1` (xem inc/enqueue.php) nên không
+   ảnh hưởng trang nào khác của site.
+
+   CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
+   assets/css/tokens.css.
+
+   Font trong Figma đã thay theo docs/05-font-thay-the.md:
+     Battambang       -> --nntm-font-sans     (Be Vietnam Pro)
+     Baskerville      -> --nntm-font-serif    (Lora)
+     Google Sans Flex -> --nntm-font-ui       (Inter)
+     Century Gothic   -> --nntm-font-geo      (Questrial)
+     EB Garamond      -> --nntm-font-display  (giữ nguyên)
+   ============================================================= */
+
+body.nntm-r1 {
+	background-color: var(--nntm-trang);
+}
+
+/* Khung nội dung chung: Figma dùng 1326 trong khung 1366 (thụt 20 mỗi bên) */
+.nntm-r1 .nntm-r1-hero,
+.nntm-r1-tong-chi,
+.nntm-r1-footer {
+	--nntm-r1-khung: 1326px;
+}
+
+/* =============================================================
+   1. ĐẦU TRANG — thanh kính mờ nổi đè lên banner
+   Figma: HEADER 4231:976 y=40, MAIN MENU 1240x80
+   ============================================================= */
+
+.nntm-r1-hero {
+	position: relative;
+}
+
+.nntm-r1-header {
+	position: absolute;
+	/* Figma: header y=40, banner y=20 -> lệch 20px so với mép banner */
+	top: var(--nntm-sp-5);
+	left: 50%;
+	transform: translateX(-50%);
+	width: min(1240px, calc(100% - var(--nntm-sp-10)));
+	z-index: 10;
+}
+
+.nntm-r1-header__bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--nntm-sp-5);
+	/* Figma: đệm 5/40/5/40 */
+	padding: var(--nntm-sp-1) var(--nntm-sp-8);
+	min-height: 80px;
+	background-color: var(--nntm-trang-60);
+	/* Kính mờ: Figma vẽ nền trắng 60% đè lên ảnh */
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	border-radius: var(--nntm-r-2xl);
+	box-shadow: var(--nntm-sh-noi);
+}
+
+.nntm-r1-header__logo {
+	display: inline-flex;
+	align-items: center;
+	color: var(--nntm-reu);
+	flex: 0 0 auto;
+}
+
+.nntm-r1-header__logo-mark {
+	/* Figma: LOGO 39x50 */
+	width: 39px;
+	height: 50px;
+	display: block;
+}
+
+.nntm-r1-header__nav {
+	display: flex;
+	align-items: center;
+	/* Figma: MENU cách 30 */
+	gap: var(--nntm-sp-7);
+	flex: 1 1 auto;
+	justify-content: flex-end;
+}
+
+.nntm-r1-header__menu {
+	display: flex;
+	align-items: center;
+	gap: var(--nntm-sp-7);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.nntm-r1-header__menu a {
+	font-family: var(--nntm-font-sans);
+	font-weight: 400;
+	font-size: var(--nntm-fs-base); /* Figma 16px */
+	line-height: var(--nntm-lh-rong); /* Figma 16/29 ≈ 1,8 */
+	color: var(--nntm-reu);
+	text-decoration: none;
+	white-space: nowrap;
+	transition: color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-r1-header__menu a:hover,
+.nntm-r1-header__menu .current-menu-item > a {
+	color: var(--nntm-chinh-hover);
+}
+
+/* Nút "Nhập Pháp Giới" — Figma 162x49, nền #1F4E79, bo 60 */
+.nntm-r1-header__cta {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--nntm-sp-3) var(--nntm-sp-5);
+	min-height: 49px;
+	background-color: var(--nntm-cham);
+	border-radius: var(--nntm-r-pill);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-base);
+	line-height: var(--nntm-lh-rong);
+	color: var(--nntm-trang);
+	text-decoration: none;
+	white-space: nowrap;
+	transition: background-color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-r1-header__cta:hover {
+	background-color: var(--nntm-chinh-hover);
+}
+
+/* Nút tìm kiếm — Figma ICON 42x42, đệm 10, bo 50 */
+.nntm-r1-header__search {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 42px;
+	height: 42px;
+	padding: var(--nntm-sp-3);
+	border-radius: 50%;
+	color: var(--nntm-reu);
+	flex: 0 0 auto;
+	transition: background-color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-r1-header__search svg {
+	width: 22px;
+	height: 22px;
+}
+
+.nntm-r1-header__search:hover {
+	background-color: var(--nntm-trang);
+}
+
+/* Banner nằm trong <main>, đã tự mang đệm nên main không chen thêm */
+.nntm-r1-main {
+	display: block;
+}
+
+/* =============================================================
+   2. GIỚI THIỆU — Figma SECTION 1 4231:853 (1366x647)
+   ============================================================= */
+
+.nntm-r1-gioi-thieu {
+	/* Figma: đệm 60/83 */
+	padding: var(--nntm-sp-10) var(--nntm-sp-12);
+	background-color: var(--nntm-trang);
+}
+
+.nntm-r1-gioi-thieu__inner {
+	max-width: 1180px; /* Figma: CONTENT 1180 */
+	margin-inline: auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--nntm-sp-5);
+}
+
+.nntm-r1-gioi-thieu__anh {
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	gap: var(--nntm-sp-5);
+}
+
+.nntm-r1-gioi-thieu__la {
+	/* Figma: lá hai bên 200x200 */
+	width: clamp(96px, 14.6vw, 200px);
+	height: auto;
+	filter: drop-shadow(var(--nntm-sh-lift));
+}
+
+.nntm-r1-gioi-thieu__la.is-lon {
+	/* Figma: lá giữa 238x238 */
+	width: clamp(114px, 17.4vw, 238px);
+}
+
+.nntm-r1-gioi-thieu__text {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	/* Figma: TEXT cách 30 */
+	gap: var(--nntm-sp-7);
+	max-width: 990px; /* Figma: TEXT 990 */
+	text-align: center;
+}
+
+.nntm-r1-gioi-thieu__tieu-de {
+	margin: 0;
+	font-family: var(--nntm-font-display);
+	font-weight: 600;
+	font-size: clamp(1.75rem, 3.8vw, var(--nntm-fs-4xl)); /* Figma 52px */
+	line-height: var(--nntm-lh-chat); /* Figma 52/60 = 1,15 */
+	color: var(--nntm-nau-dat); /* Figma #A47764 */
+	text-wrap: balance;
+}
+
+.nntm-r1-gioi-thieu__than {
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-3);
+}
+
+.nntm-r1-gioi-thieu__than p {
+	margin: 0;
+	font-family: var(--nntm-font-serif); /* thay Baskerville */
+	font-weight: 400;
+	font-size: var(--nntm-fs-md); /* Figma 18px */
+	line-height: var(--nntm-lh-vua); /* Figma 18/26 = 1,44 */
+	color: var(--nntm-reu);
+}
+
+/* =============================================================
+   3. TỔNG CHỈ — Figma TONG CHI 4231:869 (1326x714)
+   ============================================================= */
+
+.nntm-r1-tong-chi {
+	padding-inline: var(--nntm-sp-5);
+}
+
+.nntm-r1-tong-chi__khung {
+	max-width: var(--nntm-r1-khung);
+	margin-inline: auto;
+	background-color: var(--nntm-kem); /* Figma #F7F1DE */
+	border-radius: var(--nntm-r-2xl);
+	/* Figma: khung 714 = đệm trên + TITLE 80 + LIST 450 + đệm dưới
+	   -> còn 184 chia cho đệm trên/dưới và khoảng cách tiêu đề–danh sách. */
+	padding-block: var(--nntm-sp-11);
+	overflow: hidden;
+}
+
+.nntm-r1-tong-chi__tieu-de {
+	margin: 0 0 var(--nntm-sp-8);
+	text-align: center;
+	font-family: var(--nntm-font-display);
+	font-weight: 600;
+	font-size: clamp(1.75rem, 3.8vw, var(--nntm-fs-4xl)); /* Figma 52px */
+	line-height: var(--nntm-lh-chat);
+	color: var(--nntm-nau-dat);
+}
+
+.nntm-r1-tong-chi__bang {
+	position: relative;
+}
+
+.nntm-r1-tong-chi__list {
+	display: flex;
+	/* Figma: LIST cách 30, đệm trái 184 -> thẻ cuối cố ý ló mép phải */
+	gap: var(--nntm-sp-7);
+	padding: 0 var(--nntm-sp-8) 0 184px;
+	margin: 0;
+	list-style: none;
+	overflow-x: auto;
+	/* KHÔNG dùng scroll-snap: đã từng làm băng cuộn tự nhảy 110px
+	   (docs/07-ban-giao.md, mục bài học). */
+	scrollbar-width: none;
+}
+
+.nntm-r1-tong-chi__list::-webkit-scrollbar {
+	display: none;
+}
+
+.nntm-r1-tong-chi__the {
+	position: relative;
+	/* Figma: thẻ 994x450 */
+	flex: 0 0 min(994px, 75%);
+	aspect-ratio: 994 / 450;
+	border-radius: var(--nntm-r-2xl);
+	overflow: hidden;
+	background-color: var(--nntm-reu);
+}
+
+.nntm-r1-tong-chi__the-anh {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.nntm-r1-tong-chi__the-phu {
+	position: absolute;
+	inset: 0;
+	background-color: var(--nntm-phu-den-30);
+}
+
+.nntm-r1-tong-chi__the-noi {
+	position: relative;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	/* Figma: đệm 60/50, TITLE cách 20 */
+	gap: var(--nntm-sp-5);
+	padding: var(--nntm-sp-10) var(--nntm-sp-9);
+	text-align: center;
+}
+
+/* Số thứ tự — Figma: nền vector 90x70 #F7F1DE, chữ #747766 30/38 */
+.nntm-r1-tong-chi__so {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 90px;
+	height: 70px;
+	background-color: var(--nntm-kem);
+	/* Dáng khiên/ruy băng trong Figma — bo mềm hai góc dưới */
+	border-radius: var(--nntm-r-md) var(--nntm-r-md) var(--nntm-r-xl) var(--nntm-r-xl);
+	font-family: var(--nntm-font-sans);
+	font-weight: 700;
+	font-size: var(--nntm-fs-2xl); /* Figma 30px */
+	line-height: var(--nntm-lh-khit);
+	color: var(--nntm-reu);
+	flex: 0 0 auto;
+}
+
+.nntm-r1-tong-chi__chu {
+	margin: 0;
+	font-family: var(--nntm-font-sans); /* thay Battambang */
+	font-weight: 700;
+	font-size: clamp(var(--nntm-fs-lg), 2.2vw, var(--nntm-fs-2xl)); /* Figma 30px */
+	line-height: var(--nntm-lh-khit); /* Figma 30/38 = 1,27 */
+	color: var(--nntm-trang-lanh); /* Figma #FCFDFE */
+	max-width: 874px; /* Figma: Frame 135 874 */
+	text-wrap: balance;
+}
+
+/* Nút trái/phải — Figma BUTTON 58x58 */
+.nntm-r1-tong-chi__nut {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 58px;
+	height: 58px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background-color: var(--nntm-trang-lanh);
+	box-shadow: var(--nntm-sh-nut);
+	color: var(--nntm-cham); /* mũi tên #1F4E79 */
+	cursor: pointer;
+	z-index: 2;
+	transition: background-color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-r1-tong-chi__nut svg {
+	width: 20px;
+	height: 16px;
+}
+
+.nntm-r1-tong-chi__nut--truoc {
+	left: var(--nntm-sp-6);
+}
+
+.nntm-r1-tong-chi__nut--sau {
+	right: var(--nntm-sp-6);
+}
+
+.nntm-r1-tong-chi__nut:hover {
+	background-color: var(--nntm-trang);
+}
+
+.nntm-r1-tong-chi__nut:focus-visible {
+	outline: 2px solid var(--nntm-cham);
+	outline-offset: 3px;
+}
+
+.nntm-r1-tong-chi__nut[disabled] {
+	opacity: 0.35;
+	cursor: default;
+}
+
+/* =============================================================
+   4. BÀI VIẾT — Figma LIST ARTICLE 6027:4122 (1366x1220)
+   ============================================================= */
+
+.nntm-r1-bai-viet {
+	/* Figma: đệm 50/80 */
+	padding: var(--nntm-sp-9) var(--nntm-sp-12);
+	background-color: var(--nntm-trang);
+}
+
+.nntm-r1-bai-viet__inner {
+	max-width: 1206px; /* Figma: LIST 1206 */
+	margin-inline: auto;
+	display: flex;
+	flex-direction: column;
+	/* Figma: SECTION cách 30 */
+	gap: var(--nntm-sp-7);
+}
+
+.nntm-r1-bai-viet__tieu-de {
+	margin: 0;
+	text-align: center;
+	font-family: var(--nntm-font-display);
+	font-weight: 600;
+	font-size: clamp(1.75rem, 3.8vw, var(--nntm-fs-4xl)); /* Figma 52px */
+	line-height: var(--nntm-lh-chat);
+	color: var(--nntm-nau-dat);
+}
+
+/* ---------- Dải lọc ---------- */
+
+.nntm-r1-bai-viet__tabs {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: var(--nntm-sp-3); /* Figma: TABS cách 10 */
+}
+
+.nntm-r1-bai-viet__tab {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	/* Figma: đệm 15/20, cao 59 */
+	padding: var(--nntm-sp-4) var(--nntm-sp-5);
+	min-height: 59px;
+	border: 1px solid var(--nntm-cham);
+	border-radius: var(--nntm-r-md);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-base); /* Figma 16px */
+	line-height: var(--nntm-lh-rong);
+	color: var(--nntm-cham);
+	text-decoration: none;
+	white-space: nowrap;
+	transition:
+		background-color var(--nntm-dur) var(--nntm-ease),
+		color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-r1-bai-viet__tab:hover {
+	background-color: var(--nntm-nga);
+}
+
+.nntm-r1-bai-viet__tab.is-active {
+	/* Figma: nút đang chọn nền #1F4E79, chữ trắng, có bóng */
+	background-color: var(--nntm-cham);
+	color: var(--nntm-trang);
+	box-shadow: var(--nntm-sh-soft);
+}
+
+/* ---------- Lưới thẻ ---------- */
+
+.nntm-r1-bai-viet__list {
+	display: grid;
+	/* Figma: 3 cột 348, cách 70 */
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	column-gap: var(--nntm-sp-11);
+	row-gap: var(--nntm-sp-8);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.nntm-r1-bai-viet__the-lien-ket {
+	display: flex;
+	flex-direction: column;
+	/* Figma: thẻ cách 12 */
+	gap: var(--nntm-sp-3);
+	text-decoration: none;
+	height: 100%;
+}
+
+.nntm-r1-bai-viet__the-anh {
+	display: block;
+	/* Figma: ảnh 348x233 bo 20 */
+	aspect-ratio: 348 / 233;
+	border-radius: var(--nntm-r-lg);
+	overflow: hidden;
+	background-color: var(--nntm-xam);
+}
+
+.nntm-r1-bai-viet__anh {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+	transition: transform var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-r1-bai-viet__the-lien-ket:hover .nntm-r1-bai-viet__anh {
+	transform: scale(1.04);
+}
+
+.nntm-r1-bai-viet__the-noi {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--nntm-sp-2); /* Figma: Frame 125 cách 8 */
+}
+
+/* Nhãn chuyên mục — Figma 119x34, nền #C4ADA7, bo 10, đệm 8/15 */
+.nntm-r1-bai-viet__chip {
+	display: inline-flex;
+	align-items: center;
+	padding: var(--nntm-sp-2) var(--nntm-sp-4);
+	background-color: var(--nntm-dat-hong);
+	border-radius: var(--nntm-r-md);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-trang);
+}
+
+.nntm-r1-bai-viet__the-tieu-de {
+	font-family: var(--nntm-font-sans); /* thay Battambang */
+	font-weight: 700;
+	font-size: var(--nntm-fs-md); /* Figma 18px */
+	line-height: var(--nntm-lh-khit); /* Figma 18/30 */
+	color: var(--nntm-reu);
+}
+
+.nntm-r1-bai-viet__the-lien-ket:hover .nntm-r1-bai-viet__the-tieu-de {
+	color: var(--nntm-chinh-hover);
+}
+
+.nntm-r1-bai-viet__ngay {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--nntm-sp-1); /* Figma: DATE cách 5 */
+	font-family: var(--nntm-font-ui); /* thay Google Sans Flex */
+	font-size: var(--nntm-fs-xs); /* Figma 12px */
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-nau-dat); /* Figma #A47764 */
+	margin-top: auto;
+}
+
+.nntm-r1-bai-viet__ngay svg {
+	width: 12px;
+	height: 12px;
+	flex: 0 0 auto;
+}
+
+.nntm-r1-bai-viet__trong {
+	margin: 0;
+	text-align: center;
+	font-family: var(--nntm-font-sans);
+	color: var(--nntm-chu-phu);
+}
+
+/* ---------- Phân trang ---------- */
+
+.nntm-r1-paging {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--nntm-sp-5);
+}
+
+.nntm-r1-paging__nut {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	/* Figma: BUTTON 58x58 */
+	width: 58px;
+	height: 58px;
+	border-radius: 50%;
+	background-color: var(--nntm-trang-lanh);
+	box-shadow: var(--nntm-sh-nut);
+	color: var(--nntm-cham);
+	text-decoration: none;
+	transition: background-color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-r1-paging__nut svg {
+	width: 20px;
+	height: 16px;
+}
+
+.nntm-r1-paging__nut:hover {
+	background-color: var(--nntm-trang);
+}
+
+.nntm-r1-paging__nut.is-tat {
+	opacity: 0.35;
+}
+
+.nntm-r1-paging__so {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 32px;
+	font-family: var(--nntm-font-geo); /* thay Century Gothic */
+	font-size: var(--nntm-fs-base); /* Figma 16px */
+	color: var(--nntm-xam-chu); /* Figma #828282 */
+	text-decoration: none;
+	transition: color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-r1-paging__so:hover {
+	color: var(--nntm-cham);
+}
+
+.nntm-r1-paging__so.is-active {
+	color: var(--nntm-cham);
+	font-weight: 700;
+}
+
+/* =============================================================
+   5. CHÂN TRANG — Figma FOOTER 6027:4330 (1326x424)
+   ============================================================= */
+
+.nntm-r1-footer {
+	padding: var(--nntm-sp-5);
+}
+
+.nntm-r1-footer__khung {
+	max-width: var(--nntm-r1-khung);
+	margin-inline: auto;
+	background-color: var(--nntm-reu); /* Figma #747766 */
+	border-radius: var(--nntm-r-2xl);
+	padding: var(--nntm-sp-9) var(--nntm-sp-9) var(--nntm-sp-5);
+}
+
+.nntm-r1-footer__tren {
+	display: flex;
+	justify-content: space-between;
+	/* Figma: Frame 97 cách 90 */
+	gap: var(--nntm-sp-12);
+	flex-wrap: wrap;
+}
+
+.nntm-r1-footer__col {
+	min-width: 0;
+}
+
+.nntm-r1-footer__col--gioi-thieu {
+	position: relative;
+	/* Figma: COL 1 chữ rộng 504 */
+	flex: 1 1 504px;
+	max-width: 717px;
+}
+
+.nntm-r1-footer__tieu-de {
+	margin: 0 0 var(--nntm-sp-1);
+	font-family: var(--nntm-font-sans); /* thay Battambang */
+	font-weight: 700;
+	font-size: var(--nntm-fs-md); /* Figma 18px */
+	line-height: 46px; /* Figma 18/46 — khoảng thở lớn, giữ nguyên */
+	color: var(--nntm-hong-dao); /* Figma #E9B9A5 */
+}
+
+.nntm-r1-footer__than {
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-3);
+	max-width: 504px;
+}
+
+.nntm-r1-footer__than p {
+	margin: 0;
+	font-family: var(--nntm-font-serif); /* thay Baskerville */
+	font-size: var(--nntm-fs-15); /* Figma 15px */
+	line-height: var(--nntm-lh-vua); /* Figma 15/22 = 1,47 */
+	color: var(--nntm-trang);
+}
+
+/* Biểu tượng chìm — Figma Vector 183x232 #999D86, nằm bên phải cột 1 */
+.nntm-r1-footer__dau-an {
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 183px;
+	height: 232px;
+	color: var(--nntm-reu-sang);
+	pointer-events: none;
+}
+
+.nntm-r1-footer__menu {
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.nntm-r1-footer__menu a {
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-base); /* Figma 16px */
+	line-height: var(--nntm-lh-rong); /* Figma 16/30 */
+	color: var(--nntm-trang);
+	text-decoration: none;
+	transition: color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-r1-footer__menu a:hover {
+	color: var(--nntm-hong-dao);
+}
+
+.nntm-r1-footer__duoi {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--nntm-sp-5);
+	flex-wrap: wrap;
+	margin-top: var(--nntm-sp-7);
+	padding-top: var(--nntm-sp-4);
+	/* Figma: Line 3 — đường kẻ #F7F1DE 1px */
+	border-top: 1px solid var(--nntm-kem);
+}
+
+.nntm-r1-footer__ban-quyen,
+.nntm-r1-footer__phap-ly {
+	margin: 0;
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-base); /* Figma 16px */
+	line-height: var(--nntm-lh-vua); /* Figma 16/22 */
+	color: var(--nntm-trang);
+}
+
+.nntm-r1-footer__phap-ly a {
+	color: var(--nntm-trang);
+	text-decoration: none;
+}
+
+.nntm-r1-footer__phap-ly a:hover {
+	color: var(--nntm-hong-dao);
+	text-decoration: underline;
+}
+
+/* =============================================================
+   Màn hình hẹp — Figma chỉ có khung desktop 1366, các mốc dưới đây
+   là suy ra để trang không vỡ, không phải số đo từ thiết kế.
+   ============================================================= */
+
+@media (max-width: 1024px) {
+	.nntm-r1-bai-viet__list {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		column-gap: var(--nntm-sp-8);
+	}
+
+	.nntm-r1-tong-chi__list {
+		padding-left: var(--nntm-sp-8);
+	}
+
+	.nntm-r1-footer__dau-an {
+		display: none;
+	}
+}
+
+@media (max-width: 782px) {
+	.nntm-r1-header {
+		width: calc(100% - var(--nntm-sp-6));
+		top: var(--nntm-sp-3);
+	}
+
+	.nntm-r1-header__bar {
+		padding: var(--nntm-sp-3) var(--nntm-sp-4);
+		min-height: 0;
+	}
+
+	/* Menu ngang không đủ chỗ trên điện thoại — ẩn danh sách mục, giữ
+	   logo + nút chính + tìm kiếm. Menu di động đầy đủ là việc của
+	   assets/js/header.js ở bản chính thức, ngoài phạm vi trang R1. */
+	.nntm-r1-header__menu {
+		display: none;
+	}
+
+	.nntm-r1-gioi-thieu,
+	.nntm-r1-bai-viet {
+		padding-inline: var(--nntm-sp-5);
+	}
+
+	.nntm-r1-bai-viet__list {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.nntm-r1-tong-chi__the {
+		flex-basis: 88%;
+	}
+
+	.nntm-r1-tong-chi__nut {
+		display: none;
+	}
+
+	.nntm-r1-footer__khung {
+		padding: var(--nntm-sp-7) var(--nntm-sp-5) var(--nntm-sp-5);
+	}
+
+	.nntm-r1-footer__tren {
+		gap: var(--nntm-sp-7);
+	}
+}

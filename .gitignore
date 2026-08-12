@@ -1,0 +1,48 @@
+# === Bi mat ===
+.env
+.env.*
+!.env.example
+wp-config.php
+
+# === Loi WordPress: khong commit, cai lai bang ban tai ve ===
+/wp-admin/
+/wp-includes/
+/index.php
+/wp-*.php
+/xmlrpc.php
+/license.txt
+/readme.html
+
+# === wp-content: chi commit code CUA MINH ===
+/wp-content/*
+!/wp-content/themes/
+/wp-content/themes/*
+!/wp-content/themes/nntm/
+!/wp-content/plugins/
+/wp-content/plugins/*
+!/wp-content/plugins/nntm-*/
+
+# Du lieu chay
+/wp-content/uploads/
+/wp-content/cache/
+/wp-content/upgrade*/
+/wp-content/languages/
+/wp-content/debug.log
+
+# === Build ===
+node_modules/
+vendor/
+dist/
+*.log
+
+# === Figma cache (keo ve tu API) ===
+/design/raw/
+
+# === OS ===
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# File rac ten "nul" o goc thu muc — ten thiet bi danh rieng cua Windows,
+# lam gay "git add -A" (mmap failed) neu vo tinh dinh vao.
+/nul

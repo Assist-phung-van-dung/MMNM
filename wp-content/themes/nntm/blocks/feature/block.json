@@ -1,0 +1,49 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "nntm/feature",
+	"title": "Tông chỉ (Feature)",
+	"category": "nntm",
+	"icon": "align-pull-left",
+	"description": "Khối nội dung nổi bật: cột chữ hẹp (nhãn nhỏ + tiêu đề + nội dung) ghép với một ảnh lớn bên cạnh. Dùng cho SECTION 4 \"Tông chỉ\" và các khối tương tự.",
+	"textdomain": "nntm",
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"customClassName": true
+	},
+	"attributes": {
+		"eyebrow": {
+			"type": "string",
+			"default": ""
+		},
+		"heading": {
+			"type": "string",
+			"default": "Tông chỉ"
+		},
+		"content": {
+			"type": "string",
+			"default": ""
+		},
+		"imageId": {
+			"type": "number",
+			"default": 0
+		},
+		"imageUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"imageAlt": {
+			"type": "string",
+			"default": ""
+		},
+		"mediaPosition": {
+			"type": "string",
+			"enum": [ "left", "right" ],
+			"default": "right"
+		}
+	},
+	"editorScript": "file:./editor.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

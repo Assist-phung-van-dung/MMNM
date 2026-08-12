@@ -1,0 +1,135 @@
+/* =============================================================
+   nntm/paging — CSS cho block "Phân trang" (nút BACK / NEXT)
+   Nguồn số đo: Figma QmYLYBVSRkqIbKuKzPUfUe —
+     - component set BUTTON (node 6134:2484, biến thể BACK/NEXT):
+       hình tròn 58x58, vòng cung mũi tên.
+     - component PAGING (node 6334:1926): itemSpacing=20 giữa các phần tử.
+   Lấy qua Figma REST API ngày 06/08/2026.
+
+   GHI CHÚ QUAN TRỌNG — lệch dữ liệu giữa hai node: bản thân component
+   PAGING dựng sẵn trong Figma dùng CÙNG MỘT kiểu tô (nền màu chinh + mũi
+   tên trắng, đúng kiểu variant "NEXT") cho cả hai nút hai đầu, không
+   phân biệt sáng/tối theo hướng. Nhưng component set BUTTON lại đặt tên
+   rõ ràng hai biến thể riêng biệt BACK (nền sáng, mũi tên màu chinh) và
+   NEXT (nền màu chinh, mũi tên trắng) — đúng quy tắc "biến thể trùng tên
+   Figma" ở docs/04-kien-truc.md mục 2. Ở đây CHỌN dùng đúng hai biến thể
+   BACK/NEXT phân biệt (nút lùi nhẹ nhàng hơn, nút tới nổi bật hơn) vì đó
+   là điều component set đặt tên tường minh; trạng thái hover đổi cả hai
+   về kiểu "nổi bật" để nhất quán với thao tác click sắp tới.
+
+   CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
+   assets/css/tokens.css.
+   ============================================================= */
+
+.nntm-paging {
+	display: flex;
+	align-items: center;
+	gap: var(--nntm-sp-5); /* tu Figma PAGING: itemSpacing=20 */
+}
+
+.nntm-paging--left {
+	justify-content: flex-start;
+}
+
+.nntm-paging--center {
+	justify-content: center;
+}
+
+.nntm-paging--right {
+	justify-content: flex-end;
+}
+
+.nntm-paging__btn {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--nntm-sp-4); /* SUY DOAN: Figma khong co chu canh icon trong PAGING/BUTTON — muon 15px lay tu thang do chung cua he thong (sp-4) cho de nhin, chua duoc Figma xac nhan */
+	text-decoration: none;
+	font-family: var(--nntm-font-sans); /* dong bo voi kieu chu BACK/NEXT da dung trong nntm-card-list */
+	font-size: var(--nntm-fs-sm); /* 14px, dong bo voi .nntm-card-list__paging-btn */
+	font-weight: 700;
+	letter-spacing: 0.05em;
+	color: var(--nntm-chu);
+	transition: color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-paging__btn--disabled {
+	pointer-events: none;
+	opacity: 0.4;
+}
+
+.nntm-paging__btn:focus-visible {
+	outline: 2px solid var(--nntm-chinh);
+	outline-offset: 2px;
+	border-radius: var(--nntm-r-sm);
+}
+
+/* ---------- Vòng tròn mũi tên ---------- */
+/* tu Figma: Ellipse 58x58 — vung bam nay da vuot muc toi thieu 44x44px
+   tren cam ung nen khong can chinh rieng cho mobile. */
+.nntm-paging__icon {
+	position: relative;
+	flex: none;
+	width: 58px;
+	height: 58px;
+	border-radius: var(--nntm-r-pill);
+	transition: background-color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-paging__icon::before {
+	/* SUY DOAN: Figma chi tra bounding-box cho Vector mui ten (khong co du
+	   lieu duong path), nen hinh mui ten o day la uoc luong bang CSS
+	   border, giong cach lam voi icon play cua nntm-card (xem
+	   blocks/card/style.css), khong phai so do xuat truc tiep tu Figma. */
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 10px;
+	height: 10px;
+	border-style: solid;
+	border-width: 2px 2px 0 0;
+	border-color: currentColor;
+}
+
+.nntm-paging__btn--prev .nntm-paging__icon::before {
+	transform: translate(-35%, -50%) rotate(-135deg); /* mui ten chi trai */
+}
+
+.nntm-paging__btn--next .nntm-paging__icon::before {
+	transform: translate(-65%, -50%) rotate(45deg); /* mui ten chi phai */
+}
+
+/* BACK: tu Figma Property 1=BACK — nen #FCFDFE (trang-lanh), mui ten mau chinh */
+.nntm-paging__btn--prev .nntm-paging__icon {
+	background-color: var(--nntm-trang-lanh);
+	color: var(--nntm-chinh);
+}
+
+/* NEXT: tu Figma Property 1=NEXT — nen mau chinh, mui ten mau trang */
+.nntm-paging__btn--next .nntm-paging__icon {
+	background-color: var(--nntm-chinh);
+	color: var(--nntm-trang);
+}
+
+.nntm-paging__btn--prev:hover .nntm-paging__icon,
+.nntm-paging__btn--prev:focus-visible .nntm-paging__icon {
+	background-color: var(--nntm-chinh);
+	color: var(--nntm-trang);
+}
+
+.nntm-paging__btn--next:hover .nntm-paging__icon,
+.nntm-paging__btn--next:focus-visible .nntm-paging__icon {
+	background-color: var(--nntm-chinh-hover);
+}
+
+/* SUY DOAN: chua co Figma mobile — thu gon khoang cach + chu tren man nho */
+@media (max-width: 480px) {
+	.nntm-paging {
+		gap: var(--nntm-sp-4);
+	}
+
+	.nntm-paging__btn {
+		gap: var(--nntm-sp-2);
+		font-size: var(--nntm-fs-xs);
+	}
+}

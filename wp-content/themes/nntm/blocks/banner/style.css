@@ -1,0 +1,336 @@
+/* =============================================================
+   nntm/banner — Băng chuyền ảnh lớn đầu trang (bản R1)
+
+   Nguồn số đo: Figma QmYLYBVSRkqIbKuKzPUfUe, trang "DESKTOP - R1",
+   khung BANNER 4231:941 — bóc ngày 10/08/2026:
+
+     BANNER      1326x700  bo góc 40
+     IMG         phủ kín khung
+     DOTS        84x12, flex ngang, cách 10, canh giữa
+                 chấm đang xem 12x12 #FFFFFF · chấm thường 8x8 #747766
+     TEXT        809x324, flex dọc, cách 10, canh giữa
+       Vector    105x134  #F7F1DE
+       Frame 132 809x180, flex dọc, cách 20, canh giữa
+         tiêu đề  EB Garamond 600 58/68  #FFFFFF  canh giữa
+         phụ đề   Battambang   400 18/24  #FFFFFF  canh giữa
+
+   Battambang bị loại (font Khmer, thiếu dấu tiếng Việt) → dùng
+   --nntm-font-sans (Be Vietnam Pro). Xem docs/05-font-thay-the.md.
+
+   CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
+   assets/css/tokens.css.
+
+   Figma chỉ có khung desktop 1366 → dùng aspect-ratio và clamp() để co
+   giãn được xuống màn hình nhỏ.
+   ============================================================= */
+
+.nntm-banner {
+	/* Figma: khung 1326 nằm giữa khung thiết kế 1366 → thụt 20px mỗi bên.
+	   Block tự mang đệm, template không canh lề hộ (kiến trúc mục 11). */
+	padding-inline: var(--nntm-sp-5);
+	padding-block: var(--nntm-sp-5) 0;
+}
+
+.nntm-banner__stage {
+	position: relative;
+	max-width: var(--nntm-w-rong);
+	margin-inline: auto;
+	/* Figma 1326x700 */
+	aspect-ratio: 1326 / 700;
+	/* Không để băng chuyền cao quá màn hình khi cửa sổ rất rộng */
+	max-height: 88vh;
+	border-radius: var(--nntm-r-2xl);
+	overflow: hidden;
+	background-color: var(--nntm-reu);
+}
+
+/* ---------- Từng tấm: chồng lên nhau, làm mờ chồng khi chuyển ---------- */
+
+.nntm-banner__slide {
+	position: absolute;
+	inset: 0;
+	opacity: 0;
+	/* visibility để tấm đang ẩn không nhận được tiêu điểm bàn phím */
+	visibility: hidden;
+	transition:
+		opacity var(--nntm-dur) var(--nntm-ease),
+		visibility 0s linear var(--nntm-dur);
+}
+
+.nntm-banner__slide.is-active {
+	opacity: 1;
+	visibility: visible;
+	transition:
+		opacity var(--nntm-dur) var(--nntm-ease),
+		visibility 0s;
+}
+
+/* Chỉ có một tấm thì không cần định vị tuyệt đối */
+.nntm-banner__stage > .nntm-banner__slide:only-of-type {
+	position: absolute;
+	opacity: 1;
+	visibility: visible;
+}
+
+.nntm-banner__img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+/* Lớp phủ tối nhẹ: chữ trắng đè lên ảnh phong cảnh sáng (mặt trời mọc)
+   nếu không có lớp này sẽ không đủ tương phản để đọc. */
+.nntm-banner__overlay {
+	position: absolute;
+	inset: 0;
+	background-color: var(--nntm-phu-den-30);
+	pointer-events: none;
+}
+
+/* ---------- Khối chữ canh giữa ---------- */
+
+.nntm-banner__text {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: var(--nntm-sp-3); /* Figma: TEXT gap 10 */
+	padding-inline: var(--nntm-sp-8);
+	/* Chừa chỗ cho dãy chấm ở đáy để chữ không đè lên */
+	padding-bottom: var(--nntm-sp-10);
+	text-align: center;
+}
+
+.nntm-banner__emblem {
+	/* Figma: Vector 105x134 */
+	width: clamp(64px, 7.7vw, 105px);
+	height: auto;
+	display: block;
+}
+
+.nntm-banner__text-inner {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--nntm-sp-5); /* Figma: Frame 132 gap 20 */
+	/* Figma: 809 trong khung 1366 */
+	max-width: 59.2%;
+}
+
+.nntm-banner__heading {
+	margin: 0;
+	font-family: var(--nntm-font-display);
+	font-weight: 600;
+	/* Figma 58px — thu nhỏ dần trên màn hình hẹp */
+	font-size: clamp(1.75rem, 4.25vw, var(--nntm-fs-5xl));
+	line-height: var(--nntm-lh-chat); /* Figma 58/68 = 1,17 */
+	color: var(--nntm-trang);
+	text-wrap: balance;
+}
+
+.nntm-banner__sub {
+	margin: 0;
+	font-family: var(--nntm-font-sans); /* thay Battambang */
+	font-weight: 400;
+	font-size: clamp(var(--nntm-fs-sm), 1.32vw, var(--nntm-fs-md));
+	line-height: var(--nntm-lh-khit); /* Figma 18/24 = 1,33 */
+	color: var(--nntm-trang);
+}
+
+/* ---------- Dãy chấm ---------- */
+
+.nntm-banner__dots {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	/* Figma: DOTS cách đáy khung 700 - (600 + 12) ≈ 88 → dùng thang có sẵn */
+	bottom: var(--nntm-sp-7);
+	display: flex;
+	align-items: center;
+	gap: var(--nntm-sp-3); /* Figma: gap 10 */
+	z-index: 2;
+}
+
+.nntm-banner__dot {
+	/* Figma: chấm thường 8x8 #747766 */
+	width: 8px;
+	height: 8px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background-color: var(--nntm-reu);
+	cursor: pointer;
+	transition:
+		width var(--nntm-dur) var(--nntm-ease),
+		height var(--nntm-dur) var(--nntm-ease),
+		background-color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-banner__dot.is-active {
+	/* Figma: chấm đang xem 12x12 #FFFFFF */
+	width: 12px;
+	height: 12px;
+	background-color: var(--nntm-trang);
+}
+
+.nntm-banner__dot:hover {
+	background-color: var(--nntm-trang);
+}
+
+.nntm-banner__dot:focus-visible {
+	outline: 2px solid var(--nntm-trang);
+	outline-offset: 3px;
+}
+
+/* ---------- Nhắc trong trình soạn thảo khi chưa có tấm nào ---------- */
+
+.nntm-banner--empty {
+	padding: var(--nntm-sp-10) var(--nntm-sp-8);
+	border: 1px dashed var(--nntm-duong-vien);
+	border-radius: var(--nntm-r-2xl);
+	background-color: var(--nntm-nen);
+}
+
+.nntm-banner__empty-notice {
+	margin: 0;
+	text-align: center;
+	font-family: var(--nntm-font-sans);
+	color: var(--nntm-chu-phu);
+}
+
+/* ---------- Màn hình hẹp ---------- */
+
+@media (max-width: 782px) {
+	.nntm-banner {
+		padding-inline: var(--nntm-sp-3);
+		padding-block: var(--nntm-sp-3) 0;
+	}
+
+	.nntm-banner__stage {
+		/* Khung 1326x700 quá dẹt trên điện thoại — chuyển sang khung đứng hơn */
+		aspect-ratio: 3 / 4;
+		border-radius: var(--nntm-r-xl);
+	}
+
+	.nntm-banner__text-inner {
+		max-width: 100%;
+	}
+}
+
+/* Người dùng đã bật giảm chuyển động: bỏ hiệu ứng mờ chồng.
+   (view.js đồng thời không tạo bộ đếm giờ tự chạy nào.) */
+@media (prefers-reduced-motion: reduce) {
+	.nntm-banner__slide,
+	.nntm-banner__dot {
+		transition: none;
+	}
+}
+
+/* =============================================================
+   Xem trước trong TRÌNH SOẠN THẢO
+
+   editor.js chỉ vẽ tấm đầu tiên (tĩnh, không tự chạy) để khách thấy
+   ngay bố cục thật mà không bị ảnh nhấp nháy khi đang sửa nội dung.
+   block.json khai file này ở "style" nên nó có mặt ở cả hai nơi.
+   ============================================================= */
+
+.nntm-banner-editor__stage {
+	position: relative;
+	aspect-ratio: 1326 / 700;
+	border-radius: var(--nntm-r-2xl);
+	overflow: hidden;
+	background-color: var(--nntm-reu);
+}
+
+.nntm-banner-editor__img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.nntm-banner-editor__no-img {
+	width: 100%;
+	height: 100%;
+	background-color: var(--nntm-reu-nhat);
+}
+
+.nntm-banner-editor__overlay {
+	position: absolute;
+	inset: 0;
+	background-color: var(--nntm-phu-den-30);
+}
+
+.nntm-banner-editor__text {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: var(--nntm-sp-3);
+	padding-inline: var(--nntm-sp-8);
+	padding-bottom: var(--nntm-sp-10);
+	text-align: center;
+}
+
+.nntm-banner-editor__emblem {
+	width: clamp(64px, 7.7vw, 105px);
+	height: auto;
+}
+
+.nntm-banner-editor__heading {
+	margin: 0;
+	font-family: var(--nntm-font-display);
+	font-weight: 600;
+	font-size: clamp(1.5rem, 3.6vw, var(--nntm-fs-5xl));
+	line-height: var(--nntm-lh-chat);
+	color: var(--nntm-trang);
+	max-width: 59.2%;
+}
+
+.nntm-banner-editor__sub {
+	margin: 0;
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-md);
+	line-height: var(--nntm-lh-khit);
+	color: var(--nntm-trang);
+	max-width: 59.2%;
+}
+
+.nntm-banner-editor__dots {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	bottom: var(--nntm-sp-7);
+	display: flex;
+	align-items: center;
+	gap: var(--nntm-sp-3);
+}
+
+.nntm-banner-editor__dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background-color: var(--nntm-reu);
+}
+
+.nntm-banner-editor__dot.is-active {
+	width: 12px;
+	height: 12px;
+	background-color: var(--nntm-trang);
+}
+
+.nntm-banner-editor__empty {
+	margin: 0;
+	padding: var(--nntm-sp-10) var(--nntm-sp-8);
+	text-align: center;
+	border: 1px dashed var(--nntm-duong-vien);
+	border-radius: var(--nntm-r-2xl);
+	background-color: var(--nntm-nen);
+	font-family: var(--nntm-font-sans);
+	color: var(--nntm-chu-phu);
+}

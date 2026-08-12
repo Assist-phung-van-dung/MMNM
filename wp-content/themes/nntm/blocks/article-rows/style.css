@@ -1,0 +1,283 @@
+/* =============================================================
+   nntm/article-rows — CSS cho block "Danh sách bài viết so le"
+   Nguồn số đo: Figma "03. PHAP TOA - NGUYEN THUY", SECTION 6
+   (1366x2308) — số đo đã bóc sẵn, xem mô tả nhiệm vụ, không gọi
+   lại Figma API.
+
+   CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
+   assets/css/tokens.css. Số đo hình học Figma chưa có biến tương
+   ứng thì dùng px kèm chú thích "tu Figma".
+   ============================================================= */
+
+.nntm-article-rows {
+	display: block;
+}
+
+.nntm-article-rows__inner {
+	/* tu Figma: SECTION rong 1366 = khop dung --nntm-w-rong (khung desktop) */
+	max-width: var(--nntm-w-rong);
+	margin-inline: auto;
+	/* tu Figma: SECTION padding 60/91/60/91 — 60 khop dung sp-10, 91 khong
+	   khop bien nao nen giu nguyen so px that. */
+	padding: var(--nntm-sp-10) 91px;
+}
+
+.nntm-article-rows__heading {
+	/* tu Figma: TITLE — EB Garamond 600 52px, khop dung fs-4xl (52px) */
+	font-family: var(--nntm-font-display);
+	font-size: var(--nntm-fs-4xl);
+	font-weight: 600;
+	color: var(--nntm-chu);
+	/* tu Figma: SECTION gap=30 giua TITLE va CONTENT, khop dung sp-7 */
+	margin: 0 0 var(--nntm-sp-7);
+}
+
+.nntm-article-rows__list {
+	display: flex;
+	flex-direction: column;
+	/* tu Figma: CONTENT gap=40, khop dung sp-8 — moi bai la 1 hang */
+	gap: var(--nntm-sp-8);
+	/* tu Figma: CONTENT padding-bottom=60, khop dung sp-10 */
+	padding-bottom: var(--nntm-sp-10);
+}
+
+.nntm-article-rows__empty {
+	font-family: var(--nntm-font-sans);
+	color: var(--nntm-chu-phu);
+	font-style: italic;
+}
+
+/* ---------- Hàng (CARD 1184x358, NGANG, gap 40) ---------- */
+/*
+ * Đảo bên bằng CSS, KHÔNG đảo HTML: mỗi <article> luôn xuất ẢNH rồi
+ * mới tới CHỮ trong DOM (xem render.php) để bàn phím / trình đọc màn
+ * hình luôn gặp ảnh trước, chữ sau — bất kể hàng hiển thị đảo bên hay
+ * không. Việc đảo bên chỉ đổi bằng grid-template-columns + order:
+ * cả hai đều là thuộc tính trình bày (presentation), không đổi thứ
+ * tự đọc/focus vì trình duyệt tab theo thứ tự DOM, không theo "order".
+ *
+ * Tỉ lệ cột lấy đúng theo Figma: IMG 534 / TEXT 610 trên tổng 1184,
+ * dùng "fr" để co giãn theo khung chứa thay vì khóa cứng px.
+ */
+.nntm-article-rows__row {
+	display: grid;
+	grid-template-columns: 534fr 610fr;
+	align-items: stretch;
+	/* tu Figma: CARD gap=40, khop dung sp-8 */
+	gap: var(--nntm-sp-8);
+}
+
+.nntm-article-rows__row .nntm-article-rows__img {
+	order: 1;
+}
+
+.nntm-article-rows__row .nntm-article-rows__text {
+	order: 2;
+}
+
+.nntm-article-rows__row--reversed {
+	/* Doi ti le cot: cot dau gio danh cho TEXT (610fr) o ben trai, cot sau
+	   danh cho IMG (534fr) o ben phai — dung ti le voi vai tro cua no du
+	   thu tu hien thi doi cho. */
+	grid-template-columns: 610fr 534fr;
+}
+
+.nntm-article-rows__row--reversed .nntm-article-rows__img {
+	order: 2;
+}
+
+.nntm-article-rows__row--reversed .nntm-article-rows__text {
+	order: 1;
+}
+
+/* ---------- Ảnh (IMG 534x358) ---------- */
+.nntm-article-rows__img {
+	display: block;
+	position: relative;
+	overflow: hidden;
+	border-radius: var(--nntm-r-md);
+	background-color: var(--nntm-xam); /* nen placeholder khi chua co anh */
+	aspect-ratio: 534 / 358; /* tu Figma: IMG 534x358 */
+}
+
+.nntm-article-rows__img-el {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.nntm-article-rows__img-placeholder {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+/* ---------- Chữ (TEXT 610x175, doc, gap 10) ---------- */
+.nntm-article-rows__text {
+	display: flex;
+	flex-direction: column;
+	align-self: center; /* can giua theo chieu doc so voi anh cao hon */
+	/* tu Figma: TEXT gap=10, khop dung sp-3 */
+	gap: var(--nntm-sp-3);
+}
+
+/* ARTICLE CAT: 82x34, r=10, padding 8/15 — khop dung phong cach
+   .nntm-card__cat cua block nntm/card (cung mot he thong nhan chuyen
+   muc), viet lai voi tien to rieng cho block nay. */
+.nntm-article-rows__cat {
+	display: inline-flex;
+	align-self: flex-start;
+	padding: var(--nntm-sp-2) var(--nntm-sp-4); /* tu Figma: top/bottom=8, left/right=15 */
+	border-radius: var(--nntm-r-md); /* tu Figma: cornerRadius=10 */
+	background-color: var(--nntm-dat-hong);
+	color: var(--nntm-trang);
+	font-family: var(--nntm-font-ui); /* Google Sans Flex -> Inter */
+	font-size: var(--nntm-fs-sm); /* tu Figma: 14px */
+	font-weight: 500;
+}
+
+.nntm-article-rows__title {
+	margin: 0;
+	font-family: var(--nntm-font-sans); /* Battambang -> Be Vietnam Pro */
+	font-size: var(--nntm-fs-md); /* tu Figma: 18px */
+	font-weight: 700;
+	line-height: 1.67; /* tu Figma: 30/18 ≈ 1.667, khong co bien lh khop dung */
+}
+
+.nntm-article-rows__title a {
+	color: var(--nntm-chu);
+	text-decoration: none;
+	/* SUY DOAN: chua co Figma mobile — gioi han 2 dong de khong pha bo cuc
+	   hang khi tieu de qua dai. */
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.nntm-article-rows__title a:hover,
+.nntm-article-rows__title a:focus-visible {
+	color: var(--nntm-chinh-hover);
+}
+
+.nntm-article-rows__excerpt {
+	margin: 0;
+	font-family: var(--nntm-font-serif); /* Baskerville -> Lora */
+	font-size: var(--nntm-fs-md); /* tu Figma: 18px */
+	font-weight: 400;
+	line-height: var(--nntm-lh-vua); /* Figma 26/18 ≈ 1.44, gan nhat lh-vua (1.45) */
+	color: var(--nntm-chinh);
+	/* SUY DOAN: chua co Figma mobile — gioi han 3 dong de khop khung TEXT 175px cao */
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+/* ---------- Frame 165 (216x47, ngang, gap 40) — hai nút CTA ---------- */
+.nntm-article-rows__ctas {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	/* tu Figma: Frame 165 gap=40, khop dung sp-8 */
+	gap: var(--nntm-sp-8);
+	margin-top: var(--nntm-sp-1);
+}
+
+/*
+ * SUY DOAN: Figma chỉ cho bounding-box (100x47 / 76x47, r=10) của hai nút,
+ * không kèm dữ liệu màu nền/viền riêng. Chiều cao 47px suy ra đúng khớp
+ * font-size fs-15 + line-height lh-rong (~27px chữ) cộng padding-block
+ * sp-3 (10px) hai đầu = 47px — nên dùng lại chính xác cặp token đó.
+ * Chiều rộng KHÔNG khóa cứng 100px/76px (nút phải co giãn theo nội dung
+ * để không vỡ khi đổi nhãn) — padding-inline dưới đây chỉ ước lượng để
+ * gần đúng tỉ lệ hiển thị trong Figma. Màu sắc mượn đúng ngôn ngữ
+ * default/ghost đã có ở block nntm/cta (blocks/cta/style.css) để đồng
+ * bộ hệ thống, sẽ đối chiếu lại khi khách xác nhận màu thật của biến
+ * thể CARD CTA.
+ */
+.nntm-article-rows__cta {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: var(--nntm-r-md); /* tu Figma: cornerRadius=10, ca hai nut */
+	padding: var(--nntm-sp-3) var(--nntm-sp-6); /* chieu doc tu Figma (10px); chieu ngang uoc luong */
+	font-family: var(--nntm-font-sans); /* Battambang -> Be Vietnam Pro */
+	font-size: var(--nntm-fs-15); /* tu Figma: 15px */
+	font-weight: 700;
+	line-height: var(--nntm-lh-rong); /* Figma ~27.1/15 ≈ 1.81, gan nhat lh-rong (1.8) */
+	text-decoration: none;
+	transition: color var(--nntm-dur) var(--nntm-ease), background-color var(--nntm-dur) var(--nntm-ease), border-color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-article-rows__cta:focus-visible {
+	outline: 2px solid var(--nntm-chinh);
+	outline-offset: 2px;
+}
+
+.nntm-article-rows__cta--primary {
+	background-color: var(--nntm-kem);
+	color: var(--nntm-chinh);
+	box-shadow: var(--nntm-sh-soft);
+}
+
+.nntm-article-rows__cta--primary:hover,
+.nntm-article-rows__cta--primary:focus-visible {
+	background-color: var(--nntm-chinh);
+	color: var(--nntm-kem);
+}
+
+.nntm-article-rows__cta--secondary {
+	background-color: transparent;
+	border: 2px solid var(--nntm-chinh);
+	color: var(--nntm-chinh);
+	/* bu lai 2px border de chieu cao tong the khop voi nut primary (border-box) */
+	padding-block: calc(var(--nntm-sp-3) - 2px);
+}
+
+.nntm-article-rows__cta--secondary:hover,
+.nntm-article-rows__cta--secondary:focus-visible {
+	background-color: var(--nntm-kem);
+}
+
+/* =============================================================
+   SUY DOAN: chua co Figma mobile — Figma chi co khung desktop 1366px.
+   Duoi diem ngat nay: xep doc MOI hang (anh tren, chu duoi), bo so le
+   hoan toan de tranh cot qua hep lam vo bo cuc / vo chu.
+   ============================================================= */
+@media (max-width: 1024px) {
+	.nntm-article-rows__inner {
+		padding: var(--nntm-sp-8) var(--nntm-sp-5);
+	}
+
+	.nntm-article-rows__row,
+	.nntm-article-rows__row--reversed {
+		grid-template-columns: 1fr;
+		gap: var(--nntm-sp-5);
+	}
+
+	.nntm-article-rows__row .nntm-article-rows__img,
+	.nntm-article-rows__row--reversed .nntm-article-rows__img {
+		order: 1;
+	}
+
+	.nntm-article-rows__row .nntm-article-rows__text,
+	.nntm-article-rows__row--reversed .nntm-article-rows__text {
+		order: 2;
+	}
+
+	.nntm-article-rows__text {
+		align-self: stretch;
+	}
+}
+
+@media (max-width: 480px) {
+	.nntm-article-rows__ctas {
+		gap: var(--nntm-sp-5);
+	}
+
+	.nntm-article-rows__cta {
+		flex: 1 1 auto;
+	}
+}

@@ -1,0 +1,134 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 3,
+  "settings": {
+    "appearanceTools": true,
+    "useRootPaddingAwareAlignments": true,
+    "layout": {
+      "contentSize": "1220px",
+      "wideSize": "1366px"
+    },
+    "color": {
+      "custom": false,
+      "customDuotone": false,
+      "customGradient": false,
+      "defaultDuotone": false,
+      "defaultGradients": false,
+      "defaultPalette": false,
+      "palette": [
+        { "slug": "kem",       "name": "Kem (nền chính)",   "color": "#F7F1DE" },
+        { "slug": "nga",       "name": "Ngà",               "color": "#F0EEE9" },
+        { "slug": "kem-dam",   "name": "Kem đậm",           "color": "#F0E7C9" },
+        { "slug": "trang",     "name": "Trắng",             "color": "#FFFFFF" },
+        { "slug": "muc",       "name": "Mực (chữ chính)",   "color": "#3F3B3B" },
+        { "slug": "muc-nhat",  "name": "Mực nhạt",          "color": "#4F4F4F" },
+        { "slug": "reu",       "name": "Rêu (chủ đạo)",     "color": "#747766" },
+        { "slug": "reu-dam",   "name": "Rêu đậm",           "color": "#AAAE99" },
+        { "slug": "reu-nhat",  "name": "Rêu nhạt",          "color": "#B4B7A7" },
+        { "slug": "dat-hong",  "name": "Đất hồng",          "color": "#C4ADA7" },
+        { "slug": "nau-dat",   "name": "Nâu đất",           "color": "#A47764" },
+        { "slug": "dao",       "name": "Đào",               "color": "#FEBE98" },
+        { "slug": "cham",      "name": "Chàm",              "color": "#1F4E79" },
+        { "slug": "vien",      "name": "Viền",              "color": "#E0E0E0" },
+        { "slug": "xam",       "name": "Xám",               "color": "#C4C4C4" }
+      ]
+    },
+    "typography": {
+      "customFontSize": false,
+      "fluid": true,
+      "lineHeight": true,
+      "dropCap": false,
+      "fontFamilies": [
+        {
+          "slug": "sans",
+          "name": "Thân bài (Be Vietnam Pro)",
+          "fontFamily": "'Be Vietnam Pro', system-ui, sans-serif"
+        },
+        {
+          "slug": "serif",
+          "name": "Trích dẫn (Lora)",
+          "fontFamily": "Lora, Georgia, serif"
+        },
+        {
+          "slug": "display",
+          "name": "Tiêu đề lớn (EB Garamond)",
+          "fontFamily": "'EB Garamond', Georgia, serif"
+        },
+        {
+          "slug": "ui",
+          "name": "Giao diện (Inter)",
+          "fontFamily": "Inter, system-ui, sans-serif"
+        },
+        {
+          "slug": "geo",
+          "name": "Nhấn hình học (Questrial)",
+          "fontFamily": "Questrial, system-ui, sans-serif"
+        }
+      ],
+      "fontSizes": [
+        { "slug": "xs",   "name": "XS 13",  "size": "0.8125rem" },
+        { "slug": "sm",   "name": "S 14",   "size": "0.875rem" },
+        { "slug": "base", "name": "M 16",   "size": "1rem" },
+        { "slug": "md",   "name": "L 18",   "size": "1.125rem" },
+        { "slug": "lg",   "name": "XL 20",  "size": "1.25rem" },
+        { "slug": "xl",   "name": "2XL 23", "size": "1.4375rem" },
+        { "slug": "2xl",  "name": "3XL 30", "size": "1.875rem", "fluid": { "min": "1.5rem",   "max": "1.875rem" } },
+        { "slug": "3xl",  "name": "4XL 38", "size": "2.375rem", "fluid": { "min": "1.75rem",  "max": "2.375rem" } },
+        { "slug": "4xl",  "name": "5XL 52", "size": "3.25rem",  "fluid": { "min": "2.25rem",  "max": "3.25rem" } },
+        { "slug": "5xl",  "name": "6XL 58", "size": "3.625rem", "fluid": { "min": "2.5rem",   "max": "3.625rem" } }
+      ]
+    },
+    "spacing": {
+      "customSpacingSize": false,
+      "units": ["px", "rem", "%", "vw"],
+      "spacingSizes": [
+        { "slug": "10", "name": "5",  "size": "5px" },
+        { "slug": "20", "name": "8",  "size": "8px" },
+        { "slug": "30", "name": "10", "size": "10px" },
+        { "slug": "40", "name": "15", "size": "15px" },
+        { "slug": "50", "name": "20", "size": "20px" },
+        { "slug": "60", "name": "30", "size": "30px" },
+        { "slug": "70", "name": "40", "size": "40px" },
+        { "slug": "80", "name": "50", "size": "50px" },
+        { "slug": "90", "name": "60", "size": "60px" },
+        { "slug": "95", "name": "80", "size": "80px" }
+      ]
+    },
+    "shadow": {
+      "defaultPresets": false,
+      "presets": [
+        { "slug": "card",  "name": "Thẻ",     "shadow": "0px 4px 20px rgba(0,0,0,0.15)" },
+        { "slug": "soft",  "name": "Mềm",     "shadow": "0px 5px 30px rgba(116,119,102,0.20)" },
+        { "slug": "lift",  "name": "Nổi cao", "shadow": "0px 20px 40px rgba(116,119,102,0.20)" }
+      ]
+    },
+    "border": { "radius": true, "color": true, "style": true, "width": true },
+    "blocks": {
+      "core/paragraph": { "typography": { "customFontSize": false } }
+    }
+  },
+  "styles": {
+    "color": { "background": "var(--wp--preset--color--kem)", "text": "var(--wp--preset--color--muc)" },
+    "typography": {
+      "fontFamily": "var(--wp--preset--font-family--sans)",
+      "fontSize": "var(--wp--preset--font-size--base)",
+      "lineHeight": "1.8"
+    },
+    "spacing": {
+      "padding": { "left": "20px", "right": "20px" },
+      "blockGap": "30px"
+    },
+    "elements": {
+      "link": {
+        "color": { "text": "var(--wp--preset--color--reu)" },
+        ":hover": { "color": { "text": "var(--wp--preset--color--nau-dat)" } }
+      },
+      "h1": { "typography": { "fontFamily": "var(--wp--preset--font-family--display)", "fontSize": "var(--wp--preset--font-size--4xl)", "fontWeight": "600", "lineHeight": "1.16" } },
+      "h2": { "typography": { "fontFamily": "var(--wp--preset--font-family--display)", "fontSize": "var(--wp--preset--font-size--3xl)", "fontWeight": "600", "lineHeight": "1.16" } },
+      "h3": { "typography": { "fontFamily": "var(--wp--preset--font-family--display)", "fontSize": "var(--wp--preset--font-size--2xl)", "fontWeight": "600", "lineHeight": "1.27" } },
+      "h4": { "typography": { "fontFamily": "var(--wp--preset--font-family--sans)", "fontSize": "var(--wp--preset--font-size--xl)", "fontWeight": "700", "lineHeight": "1.83" } },
+      "h5": { "typography": { "fontFamily": "var(--wp--preset--font-family--sans)", "fontSize": "var(--wp--preset--font-size--lg)", "fontWeight": "700", "lineHeight": "1.5" } },
+      "h6": { "typography": { "fontFamily": "var(--wp--preset--font-family--sans)", "fontSize": "var(--wp--preset--font-size--md)", "fontWeight": "700", "lineHeight": "1.67" } }
+    }
+  }
+}

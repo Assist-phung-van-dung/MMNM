@@ -1,0 +1,65 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "nntm/hero-slider",
+	"title": "Băng chuyền đầu trang chủ (Hero Slider)",
+	"category": "nntm",
+	"icon": "images-alt2",
+	"description": "Băng chuyền ảnh lớn đầu trang chủ, chữ đè lên ảnh, tự chạy. Khách tự thêm/xoá/sắp lại từng tấm, chỉnh thẻ nhỏ góc phải và dải liên kết nhanh trong bảng điều khiển bên phải, không cần lập trình viên. Dùng cho ảnh thiết kế trang chủ 1366x648.",
+	"textdomain": "nntm",
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"customClassName": true
+	},
+	"attributes": {
+		"slides": {
+			"type": "array",
+			"default": [],
+			"items": {
+				"type": "object",
+				"properties": {
+					"imageId": { "type": "number" },
+					"imageUrl": { "type": "string" },
+					"imageAlt": { "type": "string" },
+					"heading": { "type": "string" },
+					"text": { "type": "string" },
+					"ctaLabel": { "type": "string" },
+					"ctaUrl": { "type": "string" }
+				}
+			}
+		},
+		"autoplay": {
+			"type": "boolean",
+			"default": true
+		},
+		"interval": {
+			"type": "number",
+			"default": 6
+		},
+		"sideCardHeading": {
+			"type": "string",
+			"default": ""
+		},
+		"sideCardText": {
+			"type": "string",
+			"default": ""
+		},
+		"sideCardCtaLabel": {
+			"type": "string",
+			"default": "Xem thêm"
+		},
+		"sideCardCtaUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"quickLinksParentTermId": {
+			"type": "number",
+			"default": 0
+		}
+	},
+	"editorScript": "file:./editor.js",
+	"viewScript": "file:./view.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

@@ -1,0 +1,183 @@
+/* =============================================================
+   NNTM — Design token
+   Nguồn: Figma QmYLYBVSRkqIbKuKzPUfUe / page "DESKTOP - R3 CODING"
+
+   CẤM viết mã màu, cỡ chữ, khoảng cách trực tiếp trong file component.
+   Mọi giá trị phải lấy từ biến ở đây.
+   ============================================================= */
+
+:root {
+  /* ---------- Màu ---------- */
+  --nntm-kem:        #F7F1DE;  /* nền chính toàn site */
+  --nntm-nga:        #F0EEE9;
+  --nntm-kem-dam:    #F0E7C9;
+  --nntm-trang:      #FFFFFF;
+  --nntm-spotify:    #1ED760;
+  --nntm-trang-lanh: #FCFDFE;
+
+  --nntm-muc:        #3F3B3B;  /* chữ chính */
+  --nntm-muc-nhat:   #4F4F4F;
+  --nntm-than:       #333333;
+
+  --nntm-reu:        #747766;  /* màu chủ đạo */
+  --nntm-reu-dam:    #AAAE99;
+  --nntm-reu-nhat:   #B4B7A7;
+
+  --nntm-dat-hong:   #C4ADA7;
+  --nntm-nau-dat:    #A47764;
+  --nntm-dao:        #FEBE98;
+  --nntm-cham:       #1F4E79;
+
+  --nntm-vien:       #E0E0E0;
+  --nntm-xam:        #C4C4C4;
+  --nntm-xam-nhat:   #D9D9D9;
+
+  --nntm-phu-den-50: rgba(0,0,0,0.50);
+  --nntm-phu-den-30: rgba(30,30,30,0.30);
+  --nntm-phu-nga-80: rgba(240,238,233,0.80);
+  /* R4: thẻ nhỏ góc phải hero — Figma đặt tên lớp là "GLASS",
+     kem #F7F1DE ở 20% kèm backdrop-filter: blur(5px). */
+  --nntm-phu-kem-20: rgba(247,241,222,0.20);
+
+  /* Bổ sung từ trang Figma "DESKTOP - R1" (bóc ngày 10/08/2026).
+     Bốn giá trị này không có trên R3 nên chưa từng khai ở trên. */
+  --nntm-hong-dao:   #E9B9A5;  /* tiêu đề cột chân trang R1 */
+  --nntm-reu-sang:   #999D86;  /* biểu tượng chìm trong chân trang R1 */
+  --nntm-xam-chu:    #828282;  /* số trang chưa chọn ở dải phân trang */
+  --nntm-trang-60:   rgba(255,255,255,0.60);  /* nền kính mờ của thanh menu R1 */
+
+  /* Bổ sung từ trang Figma "DESKTOP - R4 (UPDATED 6AUG)", khung
+     01_HOMEPAGE 6376:6322. Đo bằng tools/png-do.mjs trên ảnh xuất
+     (endpoint đọc node đang bị chặn tốc độ) ngày 10/08/2026. */
+  --nntm-cam:        #FB5102;  /* nền khối GITA CENTER */
+  /* Nền dải phim "ENGINEERING EARTH" — Figma Frame 145 (node 6376:6412)
+     khai fill #000000 đặc, và thẻ video trên đó là #000000 mờ 70%.
+     Đây là màu đen DUY NHẤT của thiết kế; --nntm-than #333333 là màu chữ,
+     không dùng thay được. */
+  --nntm-den:        #000000;
+
+  /* Vai trò ngữ nghĩa — component dùng nhóm này, không dùng tên màu thô */
+  --nntm-nen:            var(--nntm-kem);
+  --nntm-nen-noi:        var(--nntm-trang);
+  --nntm-chu:            var(--nntm-muc);
+  --nntm-chu-phu:        var(--nntm-muc-nhat);
+  --nntm-chinh:          var(--nntm-reu);
+  --nntm-chinh-hover:    var(--nntm-nau-dat);
+  --nntm-duong-vien:     var(--nntm-vien);
+
+  /* ---------- Chữ ---------- */
+  /* Battambang / Baskerville / Google Sans Flex / Century Gothic trong Figma
+     KHÔNG dùng được trên web (thiếu tiếng Việt hoặc phải mua giấy phép).
+     Bộ dưới đây đã kiểm tra: cả 5 họ đều có bộ chữ tiếng Việt đầy đủ.
+     Xem docs/05-font-thay-the.md */
+  --nntm-font-sans:    'Be Vietnam Pro', system-ui, -apple-system, sans-serif;  /* thay Battambang */
+  --nntm-font-serif:   'Lora', Georgia, serif;                                  /* thay Baskerville */
+  --nntm-font-display: 'EB Garamond', Georgia, serif;                           /* giữ nguyên */
+  --nntm-font-ui:      'Inter', system-ui, sans-serif;                          /* thay Google Sans Flex */
+  --nntm-font-geo:     'Questrial', system-ui, sans-serif;                      /* thay Century Gothic */
+
+  --nntm-fs-xs:   0.8125rem;  /* 13 */
+  --nntm-fs-sm:   0.875rem;   /* 14 */
+  --nntm-fs-15:   0.9375rem;  /* 15 */
+  --nntm-fs-base: 1rem;       /* 16 */
+  --nntm-fs-md:   1.125rem;   /* 18 */
+  --nntm-fs-lg:   1.25rem;    /* 20 */
+  --nntm-fs-xl:   1.4375rem;  /* 23 */
+  --nntm-fs-2xl:  1.875rem;   /* 30 */
+  --nntm-fs-3xl:  2.375rem;   /* 38 */
+  --nntm-fs-4xl:  3.25rem;    /* 52 */
+  --nntm-fs-5xl:  3.625rem;   /* 58 */
+
+  --nntm-lh-chat:  1.16;  /* tiêu đề lớn */
+  --nntm-lh-khit:  1.27;  /* R1: thẻ Tổng Chỉ 30/38, tiêu đề thẻ bài viết */
+  --nntm-lh-vua:   1.45;
+  --nntm-lh-rong:  1.8;   /* thân bài — Figma dùng 16/29, 18/30 */
+
+  /* ---------- Khoảng cách ---------- */
+  /* Figma dùng dày đặc 10 và 20; 5/8/15 cho chi tiết nhỏ */
+  --nntm-sp-1:   5px;
+  --nntm-sp-2:   8px;
+  --nntm-sp-3:  10px;
+  --nntm-sp-4:  15px;
+  --nntm-sp-5:  20px;
+  --nntm-sp-6:  25px;
+  --nntm-sp-7:  30px;
+  --nntm-sp-8:  40px;
+  --nntm-sp-9:  50px;
+  --nntm-sp-10: 60px;
+  --nntm-sp-11: 70px;
+  --nntm-sp-12: 80px;
+
+  /* ---------- Bo góc ---------- */
+  --nntm-r-sm:   5px;
+  --nntm-r-md:  10px;   /* mặc định, dùng nhiều nhất trong Figma */
+  --nntm-r-lg:  20px;
+  --nntm-r-xl:  30px;
+  --nntm-r-2xl: 40px;
+  --nntm-r-pill: 60px;  /* nút bo tròn hoàn toàn */
+
+  /* ---------- Đổ bóng ---------- */
+  --nntm-sh-card: 0 4px 20px rgba(0,0,0,0.15);
+  --nntm-sh-soft: 0 5px 30px rgba(116,119,102,0.20);
+  --nntm-sh-lift: 0 20px 40px rgba(116,119,102,0.20);
+  --nntm-sh-noi:  0 5px 30px rgba(16,16,16,0.20);    /* R1: thanh menu nổi trên ảnh */
+  --nntm-sh-nut:  0 5px 30px rgba(85,110,158,0.20);  /* R1: nút tròn trái/phải */
+
+  /* ---------- Bố cục ---------- */
+  --nntm-w-noi-dung: 1220px;  /* khớp FAQ / TRU XU CARD trong Figma */
+  --nntm-w-rong:     1366px;  /* khung thiết kế desktop */
+  --nntm-header-h:   160px;
+
+  /* ---------- Đơn vị thiết kế — CHƯA DÙNG, ĐỪNG BẬT LẠI MỘT NỬA ----------
+     Đã thử ngày 10/08/2026 rồi GỠ BỎ vì làm vỡ bố cục.
+
+     Nguyên nhân: chỉ đổi font-size gốc theo tỷ lệ thì mọi giá trị `rem`
+     (cỡ chữ) phồng lên 1,4 lần trong khi --nntm-sp-* và --nntm-r-* vẫn là
+     px cứng nên KHÔNG giãn theo → chữ tràn ra ngoài khung, logo bị cắt.
+
+     Muốn phóng cả bản thiết kế thì phải đổi ĐỒNG THỜI cả ba nhóm token
+     (cỡ chữ + khoảng cách + bo góc) sang calc(N * var(--nntm-dv)), rồi đo
+     lại ở 1366 / 1440 / 1920. Làm nửa vời là vỡ.
+  --nntm-dv: calc(clamp(1366px, 100vw, 1920px) / 1366);
+  ---------- (giữ lại phần ghi chú bên dưới cho lần sau) ----------
+     Figma chỉ vẽ khung desktop 1366. Trước đây mọi khung đều chặn trần
+     1366/1220 rồi canh giữa, nên trên màn 1920 bản thiết kế vẫn hiện
+     đúng cỡ gốc và thừa ra hai dải trắng — tỷ lệ thụt vào trông khác
+     Figma.
+
+     --nntm-dv = bề rộng thật của MỘT đơn vị trong Figma.
+       màn <= 1366  ->  1px   (giữ nguyên như cũ, không phá mobile)
+       màn 1920     ->  1.405px  (phóng đều toàn bộ bố cục)
+     Chặn trần 1920 để trên màn siêu rộng (2560/3440) chữ không to bất
+     thường.
+
+     Dùng: max-width: calc(1220 * var(--nntm-dv)); */
+  --nntm-dv: calc(clamp(1366px, 100vw, 1920px) / 1366);
+
+  /* ---------- Chuyển động ---------- */
+  --nntm-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --nntm-dur:  220ms;
+}
+
+/* =============================================================
+   Hai bộ giao diện theo cấp thành viên.
+   KHÔNG nhân đôi template — chỉ đảo biến ngữ nghĩa.
+   Class gắn lên <body> bởi nntm-core.
+   ============================================================= */
+
+body.is-dai-si {
+  --nntm-chinh:       var(--nntm-nau-dat);
+  --nntm-chinh-hover: var(--nntm-reu);
+  --nntm-nen:         var(--nntm-kem);
+}
+
+body.is-kim-cuong {
+  --nntm-chinh:       var(--nntm-cham);
+  --nntm-chinh-hover: var(--nntm-reu-dam);
+  --nntm-nen:         var(--nntm-nga);
+}
+
+/* Người dùng đã bật giảm chuyển động thì tắt hết hiệu ứng */
+@media (prefers-reduced-motion: reduce) {
+  :root { --nntm-dur: 0ms; }
+}

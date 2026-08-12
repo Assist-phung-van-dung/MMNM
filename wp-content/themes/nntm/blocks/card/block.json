@@ -1,0 +1,41 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "nntm/card",
+	"title": "Thẻ nội dung (Card)",
+	"category": "nntm",
+	"icon": "id-alt",
+	"description": "Một thẻ hiển thị bài viết theo các biến thể thiết kế Figma (Article, Small, XS, Đại Sĩ, Article Hover, Video, Khóa Tu, Books).",
+	"textdomain": "nntm",
+	"supports": {
+		"html": false,
+		"align": false,
+		"customClassName": true
+	},
+	"attributes": {
+		"variant": {
+			"type": "string",
+			"enum": [ "article", "small", "xs", "dai-si", "article-hover", "video", "khoa-tu", "books" ],
+			"default": "article"
+		},
+		"postId": {
+			"type": "number",
+			"default": 0
+		},
+		"showDate": {
+			"type": "boolean",
+			"default": true
+		},
+		"showExcerpt": {
+			"type": "boolean",
+			"default": true
+		},
+		"showCategory": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"editorScript": "file:./editor.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

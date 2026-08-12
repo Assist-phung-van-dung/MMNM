@@ -1,0 +1,113 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "nntm/card-list",
+	"title": "Danh sách thẻ (Card List)",
+	"category": "nntm",
+	"icon": "layout",
+	"description": "Danh sách thẻ nội dung ghép thành một section — khối xương sống ghép nên các trang phân mục. Khách tự chọn nguồn bài, biến thể thẻ, số cột và cách sắp xếp, không cần lập trình viên.",
+	"textdomain": "nntm",
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"customClassName": true
+	},
+	"attributes": {
+		"heading": {
+			"type": "string",
+			"default": "Tiêu đề mục"
+		},
+		"postType": {
+			"type": "string",
+			"enum": [ "nntm_article", "nntm_publication", "nntm_talk", "nntm_retreat", "nntm_abode", "nntm_video", "nntm_zen_track", "post" ],
+			"default": "nntm_article"
+		},
+		"taxonomy": {
+			"type": "string",
+			"default": ""
+		},
+		"termId": {
+			"type": "number",
+			"default": 0
+		},
+		"variant": {
+			"type": "string",
+			"enum": [ "article", "small", "xs", "dai-si", "article-hover", "video", "khoa-tu", "books" ],
+			"default": "article"
+		},
+		"columns": {
+			"type": "number",
+			"enum": [ 2, 3, 4 ],
+			"default": 3
+		},
+		"postsPerPage": {
+			"type": "number",
+			"default": 6
+		},
+		"orderBy": {
+			"type": "string",
+			"enum": [ "newest", "oldest", "title", "manual" ],
+			"default": "newest"
+		},
+		"manualOrderIds": {
+			"type": "string",
+			"default": ""
+		},
+		"showPaging": {
+			"type": "boolean",
+			"default": false
+		},
+		"subheading": {
+			"type": "string",
+			"default": ""
+		},
+		"layout": {
+			"type": "string",
+			"enum": [ "grid", "carousel" ],
+			"default": "grid"
+		},
+		"autoplay": {
+			"type": "boolean",
+			"default": true
+		},
+		"autoplayInterval": {
+			"type": "number",
+			"default": 6,
+			"minimum": 2,
+			"maximum": 20
+		},
+		"background": {
+			"type": "string",
+			"enum": [ "none", "kem", "cam", "toi" ],
+			"default": "none"
+		},
+		"showDate": {
+			"type": "boolean",
+			"default": true
+		},
+		"showCategory": {
+			"type": "boolean",
+			"default": true
+		},
+		"headingAbove": {
+			"type": "string",
+			"default": ""
+		},
+		"captionBelow": {
+			"type": "string",
+			"default": ""
+		},
+		"spotifyUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"youtubeUrl": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"editorScript": "file:./editor.js",
+	"viewScript": "file:./view.js",
+	"style": [ "file:./style.css", "file:../card/style.css" ],
+	"render": "file:./render.php"
+}

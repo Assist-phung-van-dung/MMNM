@@ -1,0 +1,399 @@
+/* =============================================================
+   nntm/hero-slider — CSS cho block "Băng chuyền đầu trang chủ"
+   Nguồn số đo: ảnh thiết kế trang chủ xuất tỉ lệ 1:1 (1366x648), Figma API
+   bị chặn tốc độ nên không gọi lại được — số đo dưới đây đo trực tiếp
+   trên ảnh, sai số ước lượng ~1px, đánh dấu "do tu anh".
+
+   CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
+   assets/css/tokens.css. Không có token màu-trắng-trong-suốt nào sẵn có
+   cho chấm/lớp phủ nhạt hơn, nên dùng thuộc tính CSS "opacity" trên nền
+   var(--nntm-trang) đặc — không viết rgba()/#hex trực tiếp.
+
+   Block tự mang đệm ngoài, tràn hết chiều rộng (docs/04-kien-truc.md
+   mục 11) — template KHÔNG canh lề hộ, KHÔNG bó trong khung 1220.
+   ============================================================= */
+
+.nntm-hero-slider {
+	display: block;
+}
+
+/* ---------- Khung băng chuyền ---------- */
+.nntm-hero-slider__stage {
+	position: relative;
+	width: 100%;
+	overflow: hidden;
+	background-color: var(--nntm-xam); /* nen placeholder khi anh chua nap xong */
+	/* tu anh: HERO 1366x648, tran het chieu rong -> giu ti le nay khi khung co gian */
+	/* Figma R4, khung BANNER: width 1366px; height 768px; top 0.
+	   Truoc day de 1366/648 vi do tu anh mau hero-1.png (1366x648) chu
+	   khong phai tu thiet ke — sai 120px chieu cao. Sua 10/08/2026. */
+	aspect-ratio: 1366 / 768;
+}
+
+.nntm-hero-slider__track {
+	position: absolute;
+	inset: 0;
+}
+
+/* ---------- Từng tấm — chuyển bằng làm mờ chồng (fade), không trượt ngang ---------- */
+.nntm-hero-slider__slide {
+	position: absolute;
+	inset: 0;
+	opacity: 0;
+	visibility: hidden;
+	/* Fade cham hon token goc (220ms) mot chut de doi tam de chiu hon voi
+	   chu ky tu chay ~6s — van xuat phat tu bien --nntm-dur, khong tu bay
+	   so cung. */
+	transition: opacity calc( var(--nntm-dur) * 3 ) var(--nntm-ease);
+}
+
+.nntm-hero-slider__slide.is-active {
+	opacity: 1;
+	visibility: visible;
+	z-index: 1;
+}
+
+.nntm-hero-slider__img,
+.nntm-hero-slider__img-placeholder {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+
+.nntm-hero-slider__img {
+	object-fit: cover;
+	object-position: center;
+}
+
+/*
+ * Lớp phủ chuyển sắc — BẮT BUỘC để chữ đọc được kể cả khi ảnh nền sáng
+ * (yêu cầu nhiệm vụ). Đậm hơn ở nửa trái (nơi có chữ), nhạt dần sang phải;
+ * thêm dải tối ở đáy để dải liên kết nhanh + chấm cũng đủ tương phản.
+ * Dùng hai token phủ đen có sẵn (--nntm-phu-den-50 / --nntm-phu-den-30),
+ * không tự pha màu mới.
+ */
+.nntm-hero-slider__overlay {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	pointer-events: none;
+	background-image:
+		linear-gradient( 180deg, transparent 55%, var(--nntm-phu-den-30) 100% ),
+		linear-gradient( 90deg, var(--nntm-phu-den-50) 0%, var(--nntm-phu-den-30) 45%, transparent 75% );
+}
+
+/* ---------- Chữ đè lên ảnh, góc trái ---------- */
+.nntm-hero-slider__content {
+	position: absolute;
+	z-index: 2;
+	/* tu anh: le trai ~93 */
+	left: 93px; /* do tu anh */
+	right: 420px; /* do tu anh: nhuong cho the mo goc phai, tranh chu de len the */
+	/* tu anh: dong dau tieu de ~127/648 chieu cao */
+	top: 19%; /* do tu anh */
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-4);
+	max-width: 620px;
+}
+
+.nntm-hero-slider__heading {
+	margin: 0;
+	/* tu anh: EB Garamond ~48px trang, 2 dong */
+	font-family: var(--nntm-font-display);
+	font-weight: 600;
+	font-size: var(--nntm-fs-4xl); /* 52 — gan nhat voi ~48px do tu anh */
+	line-height: var(--nntm-lh-chat);
+	color: var(--nntm-trang);
+}
+
+.nntm-hero-slider__text {
+	margin: 0;
+	/* tu anh: ~18px trang */
+	font-family: var(--nntm-font-serif);
+	font-size: var(--nntm-fs-md);
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-trang);
+	max-width: 32em;
+}
+
+.nntm-hero-slider__cta {
+	width: fit-content;
+	/* tu anh: ~15px, dam, trang */
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-15);
+	font-weight: 700;
+	color: var(--nntm-trang);
+	text-decoration: none;
+	text-underline-offset: 4px;
+	transition: opacity var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-hero-slider__cta:hover,
+.nntm-hero-slider__cta:focus-visible {
+	text-decoration: underline;
+}
+
+/* ---------- Chấm chuyển tấm ---------- */
+.nntm-hero-slider__dots {
+	position: absolute;
+	z-index: 2;
+	left: 93px; /* do tu anh: cung cot voi khoi chu */
+	/* tu anh: cham o khoang 411/648 chieu cao */
+	top: 63%; /* do tu anh */
+	display: flex;
+	align-items: center;
+	gap: var(--nntm-sp-2);
+}
+
+.nntm-hero-slider__dot {
+	flex: none;
+	width: 8px; /* do tu anh: cham thuong nho hon cham dang xem */
+	height: 8px;
+	padding: 0;
+	border: none;
+	border-radius: 50%;
+	background-color: var(--nntm-trang);
+	/* "nho hon va mo" o cham thuong = giam opacity, KHONG pha mau rgba moi */
+	opacity: 0.45;
+	transform: scale(1);
+	cursor: pointer;
+	transition: opacity var(--nntm-dur) var(--nntm-ease), transform var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-hero-slider__dot:hover {
+	opacity: 0.75;
+}
+
+.nntm-hero-slider__dot.is-active {
+	/* "to va dac" — do tu anh: duong kinh ~12 = 8px * 1.5 */
+	opacity: 1;
+	transform: scale(1.5);
+}
+
+.nntm-hero-slider__dot:focus-visible {
+	outline: 2px solid var(--nntm-trang);
+	outline-offset: 3px;
+}
+
+/* ---------- Dải liên kết nhanh, đáy trái ---------- */
+.nntm-hero-slider__quicklinks {
+	position: absolute;
+	z-index: 2;
+	left: 93px; /* do tu anh */
+	bottom: var(--nntm-sp-9); /* 50 — do tu anh: uoc luong tu day anh */
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--nntm-sp-3);
+	max-width: calc( 100% - 186px ); /* do tu anh: doi xung le trai 93 hai ben */
+}
+
+.nntm-hero-slider__quicklink {
+	display: inline-flex;
+	align-items: center;
+	/* Do tu Figma R4, node 6376:6351 ("Nguyen Thuy"), bang tools/png-do.mjs
+	   ngay 10/08/2026 — endpoint doc node dang bi chan toc do 429:
+	     cao   45
+	     vien  1px #B4B7A7  (= --nntm-reu-nhat)
+	     chu      #F7F1DE  (= --nntm-kem)
+	     nen   trong suot
+	     bo goc rat nhe, KHONG phai vien thuoc
+	   Truoc day dung --nntm-r-pill (bo tron han hai dau) va mau trang nen
+	   lech han so voi thiet ke. */
+	min-height: 45px;
+	padding: var(--nntm-sp-2) var(--nntm-sp-5);
+	border: 1px solid var(--nntm-reu-nhat);
+	/* Bo border-radius theo yeu cau anh Uy 10/08/2026 — vien vuong goc.
+	   Truoc do da bo tu --nntm-r-pill (vien thuoc) ve --nntm-r-sm (5px)
+	   theo do tu Figma, gio bo han ve 0. */
+	border-radius: 0;
+	background-color: transparent;
+	color: var(--nntm-kem);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+	font-weight: 400;
+	text-decoration: none;
+	transition: background-color var(--nntm-dur) var(--nntm-ease), color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-hero-slider__quicklink:hover,
+.nntm-hero-slider__quicklink:focus-visible {
+	background-color: var(--nntm-kem);
+	color: var(--nntm-chu);
+	border-color: var(--nntm-kem);
+}
+
+.nntm-hero-slider__quicklink:focus-visible {
+	outline: 2px solid var(--nntm-kem);
+	outline-offset: 3px;
+}
+
+/* ---------- Thẻ mờ góc phải dưới ---------- */
+/*
+ * Figma R4, khung "CARD" trong hero — CSS xuat tu Figma:
+ *   display: flex; flex-direction: column; align-items: flex-start;
+ *   padding: 20px; gap: 11px;
+ *   position: absolute; width: 388px; height: 162px;
+ *   left: 958px; top: 577px;
+ *   background: rgba(247, 241, 222, 0.2);
+ *   backdrop-filter: blur(5px);            <- Figma dat ten lop la "GLASS"
+ *
+ * Suy ra vi tri trong khung hero 1366x768:
+ *   phai  = 1366 - 958 - 388 = 20   -> 20/1366 = 1.46%
+ *   duoi  =  768 - 577 - 162 = 29   -> 29/768  = 3.78%
+ * Dung phan tram thay vi px de the giu dung vi tri khi hero co gian
+ * (hero khoa bang aspect-ratio nen no doi kich thuoc theo be rong).
+ *
+ * Truoc day: nen den 50% dac, bo goc 20, le phai/duoi 50px — deu la
+ * "uoc luong tu anh" chu khong phai so tu thiet ke.
+ */
+.nntm-hero-slider__sidecard {
+	position: absolute;
+	z-index: 2;
+	right: 1.46%;
+	bottom: 3.78%;
+	/* Figma 388 trong khung 1366 -> 28.4%, khong phai 32% nhu uoc luong cu */
+	width: 28.4%;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--nntm-sp-3); /* Figma 11 — sai 1px so voi thang token, khong dang de le */
+	padding: var(--nntm-sp-5); /* Figma 20 deu bon phia */
+	border-radius: 0;
+	background-color: var(--nntm-phu-kem-20);
+	backdrop-filter: blur(5px);
+	-webkit-backdrop-filter: blur(5px);
+	color: var(--nntm-trang);
+}
+
+.nntm-hero-slider__sidecard-heading {
+	margin: 0;
+	/* tu anh: ~17px dam, trang, 2 dong */
+	font-family: var(--nntm-font-sans);
+	font-weight: 700;
+	font-size: var(--nntm-fs-md); /* 18 — gan nhat voi ~17px do tu anh */
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-trang);
+}
+
+.nntm-hero-slider__sidecard-text {
+	margin: 0;
+	/* tu anh: mot dong chu nghieng */
+	font-family: var(--nntm-font-serif);
+	font-style: italic;
+	font-size: var(--nntm-fs-sm);
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-trang);
+}
+
+.nntm-hero-slider__sidecard-cta {
+	width: fit-content;
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-15);
+	font-weight: 700;
+	color: var(--nntm-trang);
+	text-decoration: none;
+	text-underline-offset: 4px;
+}
+
+.nntm-hero-slider__sidecard-cta:hover,
+.nntm-hero-slider__sidecard-cta:focus-visible {
+	text-decoration: underline;
+}
+
+.nntm-hero-slider__cta:focus-visible,
+.nntm-hero-slider__sidecard-cta:focus-visible {
+	outline: 2px solid var(--nntm-trang);
+	outline-offset: 3px;
+}
+
+/* ---------- Chưa có tấm nào (chỉ hiện trong trình soạn thảo) ---------- */
+.nntm-hero-slider--empty {
+	display: block;
+}
+
+.nntm-hero-slider__empty-notice {
+	margin: 0;
+	padding: var(--nntm-sp-8);
+	border-radius: var(--nntm-r-lg);
+	background-color: var(--nntm-nen-noi);
+	font-family: var(--nntm-font-sans);
+	color: var(--nntm-chu-phu);
+	font-style: italic;
+	text-align: center;
+}
+
+/* =============================================================
+   SUY DOAN: chua co Figma mobile — chi co khung desktop 1366px.
+   Duoi diem ngat nay: bo khoa aspect-ratio de anh khong bi bop qua thap,
+   cac khoi chu/cham/lien ket nhanh/the phai xep lai theo chieu doc uoc
+   luong, giu du khong gian khong de chong len nhau.
+   ============================================================= */
+@media (max-width: 1024px) {
+	.nntm-hero-slider__stage {
+		aspect-ratio: auto;
+		min-height: 760px; /* SUY DOAN */
+	}
+
+	.nntm-hero-slider__content {
+		left: var(--nntm-sp-5);
+		right: var(--nntm-sp-5);
+		top: var(--nntm-sp-9);
+		max-width: none;
+	}
+
+	.nntm-hero-slider__heading {
+		font-size: var(--nntm-fs-3xl);
+	}
+
+	.nntm-hero-slider__dots {
+		left: var(--nntm-sp-5);
+		top: auto;
+		bottom: 260px; /* SUY DOAN */
+	}
+
+	.nntm-hero-slider__quicklinks {
+		left: var(--nntm-sp-5);
+		right: var(--nntm-sp-5);
+		bottom: 170px; /* SUY DOAN */
+		max-width: none;
+	}
+
+	.nntm-hero-slider__sidecard {
+		left: var(--nntm-sp-5);
+		right: var(--nntm-sp-5);
+		bottom: var(--nntm-sp-5);
+		width: auto;
+	}
+}
+
+@media (max-width: 480px) {
+	.nntm-hero-slider__stage {
+		min-height: 820px; /* SUY DOAN */
+	}
+
+	.nntm-hero-slider__heading {
+		font-size: var(--nntm-fs-2xl);
+	}
+
+	.nntm-hero-slider__quicklinks {
+		gap: var(--nntm-sp-2);
+	}
+
+	.nntm-hero-slider__quicklink {
+		padding: var(--nntm-sp-1) var(--nntm-sp-4);
+		font-size: var(--nntm-fs-xs);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-hero-slider__slide,
+	.nntm-hero-slider__dot,
+	.nntm-hero-slider__cta,
+	.nntm-hero-slider__quicklink,
+	.nntm-hero-slider__sidecard-cta {
+		transition: none;
+	}
+}

@@ -1,0 +1,405 @@
+/* =============================================================
+   nntm/thien-duong — CSS cho block "Thiền Đường" (trình phát nhạc thiền)
+   Nguồn số đo: Figma "04. LIEN DAN", SECTION 5 "Thiền Đường"
+   (1366x636, gap 30, padding 60/50/60/50) — số đo đã bóc sẵn, xem mô tả
+   nhiệm vụ, KHÔNG gọi lại Figma API.
+
+   CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
+   assets/css/tokens.css. Số đo hình học Figma chưa có biến tương ứng thì
+   dùng px kèm chú thích "tu Figma".
+
+   Block tự mang đệm ngoài (docs/04-kien-truc.md mục 11) — template KHÔNG
+   canh lề hộ.
+   ============================================================= */
+
+.nntm-thien-duong {
+	display: block;
+}
+
+.nntm-thien-duong__inner {
+	/* tu Figma: SECTION rong 1366 = khop dung --nntm-w-rong */
+	max-width: var(--nntm-w-rong);
+	margin-inline: auto;
+	/* tu Figma: SECTION padding 60/50/60/50 (tren/phai/duoi/trai), khop dung sp-10 (60) / sp-9 (50) */
+	padding: var(--nntm-sp-10) var(--nntm-sp-9);
+	display: flex;
+	flex-direction: column;
+	/* tu Figma: SECTION gap=30, khop dung sp-7 */
+	gap: var(--nntm-sp-7);
+}
+
+/* ---------- TIEU DE ---------- */
+.nntm-thien-duong__header {
+	display: flex;
+	flex-direction: column;
+	/* tu Figma: TIEU DE gap=10, khop dung sp-3 */
+	gap: var(--nntm-sp-3);
+}
+
+.nntm-thien-duong__heading {
+	margin: 0;
+	/* tu Figma: "Thiền Đường" — EB Garamond 600 52px, khop dung fs-4xl */
+	font-family: var(--nntm-font-display);
+	font-size: var(--nntm-fs-4xl);
+	font-weight: 600;
+	color: var(--nntm-chu);
+}
+
+.nntm-thien-duong__subheading {
+	margin: 0;
+	/* tu Figma: mo ta phu — Baskerville 400 18px, khop dung fs-md + font-serif (Lora) */
+	font-family: var(--nntm-font-serif);
+	font-size: var(--nntm-fs-md);
+	font-weight: 400;
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-chu-phu);
+}
+
+/* ---------- EMBED CONTENT: ảnh bìa + trình phát ---------- */
+/*
+ * Ti le 453:817 lay dung theo Figma (IMG 453x416 / khu trinh phat 817x416),
+ * dung "fr" de co gian theo khung chua thay vi khoa cung px — dung yeu cau
+ * "bo cuc co gian: dung ti le", KHONG dung 453px/817px co dinh.
+ */
+.nntm-thien-duong__embed {
+	display: grid;
+	grid-template-columns: 453fr 817fr;
+	align-items: stretch;
+	/* tu Figma: EMBED CONTENT gap=10, khop dung sp-3 */
+	gap: var(--nntm-sp-3);
+}
+
+.nntm-thien-duong__cover {
+	display: block;
+	position: relative;
+	overflow: hidden;
+	border-radius: var(--nntm-r-lg);
+	background-color: var(--nntm-xam); /* nen placeholder khi chua chon anh bia */
+	/* tu Figma: IMG 453x416 */
+	aspect-ratio: 453 / 416;
+}
+
+.nntm-thien-duong__cover-img,
+.nntm-thien-duong__cover-placeholder {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.nntm-thien-duong__cover-img {
+	object-fit: cover;
+}
+
+/*
+ * TAM DUNG: Figma chi co anh chup man hinh dan vao ("Screenshot 2026-08-04
+ * at 14.33.57"), chua co thiet ke that cho khu trinh phat 817x416. Khung
+ * duoi day dung theo token + ty le tham khao Figma, KHONG phai chep lai
+ * anh chup — se thay lai khi khach gui thiet ke thuc.
+ */
+.nntm-thien-duong__player {
+	display: flex;
+	flex-direction: column;
+	border-radius: var(--nntm-r-lg);
+	background-color: var(--nntm-nen-noi);
+	box-shadow: var(--nntm-sh-card);
+	overflow: hidden;
+	/* tu Figma: khu trinh phat 817x416 — chi la khung tham khao, xem chu thich tren */
+	aspect-ratio: 817 / 416;
+}
+
+/* ---------- Lời mời đăng nhập (chưa đăng nhập) ---------- */
+.nntm-thien-duong__invite {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	/* tu Figma: CONTENT padding=10, khop dung sp-3, mo rong them cho de tho hon khi thay the anh chup */
+	padding: var(--nntm-sp-8);
+	gap: var(--nntm-sp-5);
+}
+
+.nntm-thien-duong__invite-text {
+	margin: 0;
+	max-width: 32em;
+	font-family: var(--nntm-font-serif);
+	font-size: var(--nntm-fs-md);
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-chu);
+}
+
+.nntm-thien-duong__invite-cta {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: var(--nntm-r-pill);
+	padding: var(--nntm-sp-3) var(--nntm-sp-7);
+	background-color: var(--nntm-kem);
+	color: var(--nntm-chinh);
+	box-shadow: var(--nntm-sh-soft);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-15);
+	font-weight: 700;
+	line-height: var(--nntm-lh-rong);
+	text-decoration: none;
+	transition: color var(--nntm-dur) var(--nntm-ease), background-color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-thien-duong__invite-cta:hover,
+.nntm-thien-duong__invite-cta:focus-visible {
+	background-color: var(--nntm-chinh);
+	color: var(--nntm-kem);
+}
+
+/* ---------- Trình phát đầy đủ (đã đăng nhập) ---------- */
+.nntm-thien-duong__empty {
+	margin: 0;
+	padding: var(--nntm-sp-8);
+	font-family: var(--nntm-font-sans);
+	color: var(--nntm-chu-phu);
+	font-style: italic;
+	text-align: center;
+}
+
+.nntm-thien-duong__player-inner {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: 0; /* cho phep .nntm-thien-duong__tracklist ben trong cuon rieng thay vi day tran khung */
+	padding: var(--nntm-sp-5);
+	gap: var(--nntm-sp-4);
+}
+
+.nntm-thien-duong__now-title {
+	margin: 0;
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-15);
+	font-weight: 700;
+	color: var(--nntm-chu);
+}
+
+/* ---------- Cụm điều khiển ---------- */
+.nntm-thien-duong__controls {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--nntm-sp-4);
+}
+
+.nntm-thien-duong__btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: none;
+	width: 40px; /* SUY DOAN: chua co Figma cho kich thuoc nut, uoc luong theo ty le CTA trong he thong */
+	height: 40px;
+	border: none;
+	border-radius: 50%;
+	background-color: var(--nntm-chinh);
+	color: var(--nntm-kem);
+	cursor: pointer;
+	transition: background-color var(--nntm-dur) var(--nntm-ease), transform var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-thien-duong__btn:hover,
+.nntm-thien-duong__btn:focus-visible {
+	background-color: var(--nntm-chinh-hover);
+}
+
+.nntm-thien-duong__btn:focus-visible {
+	outline: 2px solid var(--nntm-chinh);
+	outline-offset: 2px;
+}
+
+.nntm-thien-duong__btn:active {
+	transform: scale(0.94);
+}
+
+.nntm-thien-duong__btn--play {
+	width: 48px;
+	height: 48px;
+}
+
+.nntm-thien-duong__btn-icon {
+	font-size: var(--nntm-fs-lg);
+	line-height: 1;
+}
+
+.nntm-thien-duong__progress,
+.nntm-thien-duong__volume {
+	display: flex;
+	align-items: center;
+	gap: var(--nntm-sp-2);
+}
+
+.nntm-thien-duong__progress {
+	flex: 1 1 220px;
+	min-width: 0;
+}
+
+.nntm-thien-duong__volume {
+	flex: 0 1 140px;
+}
+
+.nntm-thien-duong__range-label {
+	/* Nhan co ban buoc phai co (khong bat buoc hien thi) — an truc quan nhung
+	   trinh doc man hinh van doc duoc, dung ky thuat "screen-reader-text" quen
+	   thuoc cua WordPress. */
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(1px, 1px, 1px, 1px);
+	white-space: nowrap;
+}
+
+.nntm-thien-duong__range {
+	flex: 1 1 auto;
+	min-width: 0;
+	accent-color: var(--nntm-chinh);
+	cursor: pointer;
+}
+
+.nntm-thien-duong__time {
+	flex: none;
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-xs);
+	color: var(--nntm-chu-phu);
+	white-space: nowrap;
+}
+
+/* ---------- Chỗ cắm Soketi: xem inc/render-thien-duong.php + view.js ---------- */
+.nntm-thien-duong__presence {
+	margin: 0;
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-xs);
+	color: var(--nntm-chu-phu);
+	font-style: italic;
+}
+
+/* ---------- Danh sách bài ---------- */
+.nntm-thien-duong__tracklist {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-1);
+	overflow-y: auto; /* danh sach co the dai hon khung tham khao 817x416, cuon rieng ben trong */
+	min-height: 0;
+}
+
+.nntm-thien-duong__track-item {
+	margin: 0;
+}
+
+.nntm-thien-duong__track {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	gap: var(--nntm-sp-3);
+	border: none;
+	border-radius: var(--nntm-r-md);
+	padding: var(--nntm-sp-2) var(--nntm-sp-3);
+	background-color: transparent;
+	color: var(--nntm-chu);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+	text-align: left;
+	cursor: pointer;
+	transition: background-color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-thien-duong__track:hover {
+	background-color: var(--nntm-nga);
+}
+
+.nntm-thien-duong__track:focus-visible {
+	outline: 2px solid var(--nntm-chinh);
+	outline-offset: 2px;
+}
+
+/*
+ * Bài đang phát: KHÔNG chỉ báo hiệu bằng màu (yêu cầu bắt buộc) — nền đổi
+ * màu CHỈ là gợi ý phụ, dấu hiệu chính là chữ "Đang phát" hiện ra trong
+ * .nntm-thien-duong__track-status (đổi qua view.js) và ký hiệu ⏸/▶ trên nút
+ * phát chính, không phải màu đơn thuần.
+ */
+.nntm-thien-duong__track.is-playing {
+	background-color: var(--nntm-kem-dam);
+	font-weight: 700;
+}
+
+.nntm-thien-duong__track-index {
+	flex: none;
+	width: 1.75em;
+	color: var(--nntm-chu-phu);
+	font-variant-numeric: tabular-nums;
+}
+
+.nntm-thien-duong__track-title {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.nntm-thien-duong__track-status {
+	flex: none;
+	font-size: var(--nntm-fs-xs);
+	font-weight: 700;
+	color: var(--nntm-chinh);
+	text-transform: uppercase;
+}
+
+/* =============================================================
+   SUY DOAN: chua co Figma mobile — Figma chi co khung desktop 1366px.
+   Duoi diem ngat nay: anh bia va trinh phat xep doc, bo khoa aspect-ratio
+   cua trinh phat de danh sach bai co du cho hien thi tren man hep.
+   ============================================================= */
+@media (max-width: 1024px) {
+	.nntm-thien-duong__inner {
+		padding: var(--nntm-sp-8) var(--nntm-sp-5);
+	}
+
+	.nntm-thien-duong__embed {
+		grid-template-columns: 1fr;
+	}
+
+	.nntm-thien-duong__cover {
+		aspect-ratio: 453 / 300; /* SUY DOAN: thap hon de khong chiem qua nhieu chieu cao man hinh doc */
+	}
+
+	.nntm-thien-duong__player {
+		aspect-ratio: auto;
+		min-height: 320px;
+	}
+}
+
+@media (max-width: 480px) {
+	.nntm-thien-duong__heading {
+		font-size: var(--nntm-fs-3xl);
+	}
+
+	.nntm-thien-duong__controls {
+		gap: var(--nntm-sp-3);
+	}
+
+	.nntm-thien-duong__volume {
+		flex: 1 1 100%;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-thien-duong__btn,
+	.nntm-thien-duong__invite-cta,
+	.nntm-thien-duong__track {
+		transition: none;
+	}
+
+	.nntm-thien-duong__btn:active {
+		transform: none;
+	}
+}

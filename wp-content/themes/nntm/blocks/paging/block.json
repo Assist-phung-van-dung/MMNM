@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "nntm/paging",
+	"title": "Phân trang (Paging)",
+	"category": "nntm",
+	"icon": "controls-forward",
+	"description": "Nút BACK / NEXT chuyển trang, theo component BUTTON và PAGING trong Figma. Dùng độc lập cho các danh sách theo truy vấn chính (query mặc định của trang) — không liên quan đến phân trang riêng đã có sẵn bên trong nntm/card-list.",
+	"textdomain": "nntm",
+	"supports": {
+		"html": false,
+		"align": false,
+		"customClassName": true
+	},
+	"attributes": {
+		"alignment": {
+			"type": "string",
+			"enum": [ "left", "center", "right" ],
+			"default": "center"
+		},
+		"labelPrev": {
+			"type": "string",
+			"default": "BACK"
+		},
+		"labelNext": {
+			"type": "string",
+			"default": "NEXT"
+		}
+	},
+	"editorScript": "file:./editor.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

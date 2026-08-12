@@ -1,0 +1,29 @@
+/* SINH TU DONG boi tools/figma-sync.mjs — DUNG SUA TAY.
+   Nguon: Figma QmYLYBVSRkqIbKuKzPUfUe / page 6134:2075
+   Sua mau thi sua trong Figma roi chay lai: node tools/figma-sync.mjs */
+
+:root {
+  --nntm-c-trang: #FFFFFF;
+  --nntm-c-reu: #747766;
+  --nntm-c-reu-nhat: #B4B7A7;
+  --nntm-c-muc-nhat: #4F4F4F;
+  --nntm-c-xam: #C4C4C4;
+  --nntm-c-dat-hong: #C4ADA7;
+  --nntm-c-muc: #3F3B3B;
+  --nntm-c-den: #000000;
+  --nntm-c-kem: #F7F1DE;
+  --nntm-c-vien: #E0E0E0;
+  --nntm-c-trang-lanh: #FCFDFE;
+  --nntm-c-than: #333333;
+  --nntm-c-reu-dam: #AAAE99;
+  --nntm-c-cham: #1F4E79;
+  --nntm-c-xam-nhat: #D9D9D9;
+  --nntm-c-dao: #FEBE98;
+  --nntm-c-nau-dat: #A47764;
+}
+
+/* Mau chua duoc dat ten — kiem tra xem co phai mau thuong hieu that khong,
+   neu phai thi them vao COLOR_NAMES trong tools/figma-sync.mjs:
+ * #FCFCFC  (dung 38 lan)
+ * #8A38F5  (dung 13 lan)
+ */

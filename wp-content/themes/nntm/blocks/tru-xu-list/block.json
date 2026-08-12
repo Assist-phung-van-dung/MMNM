@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "nntm/tru-xu-list",
+	"title": "Danh sách Trú Xứ (Tru Xu List)",
+	"category": "nntm",
+	"icon": "admin-home",
+	"description": "Danh sách các Trú Xứ (nntm_abode) hiển thị dạng thẻ ảnh phủ kín, tên và địa điểm đè lên đáy ảnh — dùng cho SECTION 6 \"Trú Xứ\".",
+	"textdomain": "nntm",
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"customClassName": true
+	},
+	"attributes": {
+		"heading": {
+			"type": "string",
+			"default": "Trú Xứ"
+		},
+		"postsPerPage": {
+			"type": "number",
+			"default": 4
+		},
+		"orderBy": {
+			"type": "string",
+			"enum": [ "newest", "oldest", "title" ],
+			"default": "newest"
+		}
+	},
+	"editorScript": "file:./editor.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

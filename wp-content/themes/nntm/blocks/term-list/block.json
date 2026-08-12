@@ -1,0 +1,40 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "nntm/term-list",
+	"title": "Danh sách phân mục con (Term List)",
+	"category": "nntm",
+	"icon": "screenoptions",
+	"description": "Liệt kê các term con của một term cha trong nntm_section, dạng thẻ ảnh cao có chữ đè lên đáy — dùng cho SECTION 6 \"Pháp Toà\" và tái dùng cho 5 phân mục còn lại.",
+	"textdomain": "nntm",
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"customClassName": true
+	},
+	"attributes": {
+		"heading": {
+			"type": "string",
+			"default": "Pháp Toà"
+		},
+		"parentTermId": {
+			"type": "number",
+			"default": 0
+		},
+		"showDescription": {
+			"type": "boolean",
+			"default": true
+		},
+		"ctaLabel": {
+			"type": "string",
+			"default": "Xem thêm"
+		},
+		"maxItems": {
+			"type": "number",
+			"default": 8
+		}
+	},
+	"editorScript": "file:./editor.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

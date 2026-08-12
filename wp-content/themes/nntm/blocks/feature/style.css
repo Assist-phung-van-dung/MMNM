@@ -1,0 +1,154 @@
+/* =============================================================
+   nntm/feature — CSS cho block "Tông chỉ" (Feature)
+   Nguồn số đo: Figma QmYLYBVSRkqIbKuKzPUfUe, trang "02. DIEU THUONG",
+   SECTION 4 "Tông chỉ" (1366x485), bóc số đo tay ngày 06/08/2026 —
+   xem phần "Số đo đã bóc sẵn từ Figma" trong yêu cầu nhiệm vụ.
+
+   CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
+   assets/css/tokens.css. Nạp sau tokens.css/base.css qua block.json
+   "style" (front-end) hoặc add_editor_style() (trình soạn thảo).
+
+   Figma chỉ có khung desktop 1366px — bố cục dùng tỉ lệ (fr) và
+   aspect-ratio thay vì px cứng để co giãn được, xem chú thích từng chỗ.
+   ============================================================= */
+
+.nntm-feature {
+	display: block;
+	/* tu Figma: SECTION 4 padding 60/80/60/80 — khop voi cap sp-10 (60) / sp-12 (80) */
+	padding-block: var(--nntm-sp-10);
+}
+
+.nntm-feature .nntm-container {
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-5); /* tu Figma: SECTION 4 gap=20 giua tieu de section (neu co) va CONTENT */
+}
+
+/* ---------- Cột chữ + ảnh (LIST trong Figma) ---------- */
+.nntm-feature__content {
+	display: grid;
+	/* tu Figma: MAIN ARTICLE 349 / IMG 811 — dung ty le (fr) thay vi px
+	   cung de co giãn theo container, van giu dung dang Figma. */
+	grid-template-columns: 349fr 811fr;
+	gap: var(--nntm-sp-5); /* tu Figma: LIST itemSpacing=20 */
+	align-items: stretch;
+}
+
+/* Vị trí ảnh mặc định = phải (right): DOM giữ thứ tự chữ trước — ảnh sau,
+   khớp track 1 (349fr) cho chữ, track 2 (811fr) cho ảnh, không cần "order". */
+
+/* Vị trí ảnh = trái: đổi track rộng/hẹp + đảo thứ tự hiển thị (order),
+   giữ nguyên thứ tự DOM (chữ trước) để không xáo trộn thứ tự đọc màn hình. */
+.nntm-feature--media-left .nntm-feature__content {
+	grid-template-columns: 811fr 349fr;
+}
+
+.nntm-feature--media-left .nntm-feature__text {
+	order: 2;
+}
+
+.nntm-feature--media-left .nntm-feature__media {
+	order: 1;
+}
+
+/* ---------- Cột chữ (MAIN ARTICLE) ---------- */
+.nntm-feature__text {
+	display: flex;
+	flex-direction: column;
+	padding-left: 30px; /* tu Figma: MAIN ARTICLE paddingLeft=30 */
+}
+
+.nntm-feature__text-inner {
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-7); /* tu Figma: Frame 140 itemSpacing=30 */
+	padding-top: var(--nntm-sp-7); /* tu Figma: Frame 140 paddingTop=30 */
+}
+
+.nntm-feature__eyebrow {
+	display: inline-flex;
+	align-self: flex-start;
+	padding-inline: var(--nntm-sp-1); /* tu Figma: DATE paddingLeft/Right=5 */
+	font-family: var(--nntm-font-sans); /* Battambang -> Be Vietnam Pro */
+	font-size: var(--nntm-fs-xs); /* tu Figma: 13px */
+	color: var(--nntm-chu-phu);
+}
+
+.nntm-feature__heading {
+	margin: 0;
+	font-family: var(--nntm-font-display); /* EB Garamond, giu nguyen nhu Figma */
+	font-size: var(--nntm-fs-4xl); /* tu Figma: 52px */
+	font-weight: 600;
+	line-height: var(--nntm-lh-chat); /* Figma 60/52 ≈ 1.15, gan nhat lh-chat (1.16) */
+	color: var(--nntm-chu);
+}
+
+.nntm-feature__body {
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-3); /* khoang cach giua cac doan van, chua co so do rieng tu Figma cho khoi noi dung */
+	font-family: var(--nntm-font-serif); /* Baskerville -> Lora, dong bo voi nntm-card__excerpt */
+	font-size: var(--nntm-fs-md); /* tu Figma: khop voi co chu than bai cac khoi khac (18px) */
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-chinh);
+}
+
+.nntm-feature__body p {
+	margin: 0;
+}
+
+/* ---------- Ảnh lớn (IMG) ---------- */
+.nntm-feature__media {
+	position: relative;
+	display: block;
+	overflow: hidden;
+	border-radius: var(--nntm-r-md);
+	background-color: var(--nntm-xam); /* mau nen placeholder, dong bo voi nntm-card__img */
+}
+
+.nntm-feature__media-img,
+.nntm-feature__media-placeholder {
+	display: block;
+	width: 100%;
+	height: 100%;
+	/* tu Figma: IMG 811x354 trong khung CONTENT cao 354 — giu dung ty le
+	   bang aspect-ratio de anh khong bi meo khi co giãn responsive. */
+	aspect-ratio: 811 / 354;
+	object-fit: cover;
+}
+
+/* ---------- Responsive ---------- */
+/* SUY DOAN: chua co Figma mobile. Chon xep doc — anh luon o TREN, chu o
+   DUOI — bat ke mediaPosition (trai/phai) dang chon o desktop, vi tren
+   man hep khai niem "trai/phai" khong con y nghia; xep anh len truoc giup
+   nguoi doc thay ngay diem nhan thi giac truoc khi doc chu, giong cach
+   Figma van dat anh lam trong tam o cac section khac. */
+@media (max-width: 767px) {
+	.nntm-feature__content {
+		grid-template-columns: 1fr;
+		gap: var(--nntm-sp-7);
+	}
+
+	.nntm-feature--media-left .nntm-feature__content {
+		grid-template-columns: 1fr;
+	}
+
+	.nntm-feature__media,
+	.nntm-feature--media-left .nntm-feature__media {
+		order: -1;
+	}
+
+	.nntm-feature__text,
+	.nntm-feature--media-left .nntm-feature__text {
+		order: 0;
+		padding-left: 0;
+	}
+
+	.nntm-feature__text-inner {
+		padding-top: 0;
+	}
+
+	.nntm-feature__heading {
+		font-size: var(--nntm-fs-3xl); /* thu nho tieu de o man hep, chua co so do Figma mobile */
+	}
+}

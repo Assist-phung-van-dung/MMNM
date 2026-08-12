@@ -1,0 +1,46 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "nntm/thien-duong",
+	"title": "Thiền Đường (Zen Track Player)",
+	"category": "nntm",
+	"icon": "controls-play",
+	"description": "Trình phát nhạc thiền, bắt buộc đăng nhập mới nghe được. Chưa đăng nhập chỉ thấy ảnh bìa + lời mời đăng nhập, không xuất đường dẫn âm thanh ra HTML. Dùng cho Figma \"04. LIEN DAN\" SECTION 5.",
+	"textdomain": "nntm",
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"customClassName": true
+	},
+	"attributes": {
+		"heading": {
+			"type": "string",
+			"default": "Thiền Đường"
+		},
+		"subheading": {
+			"type": "string",
+			"default": ""
+		},
+		"coverImageId": {
+			"type": "number",
+			"default": 0
+		},
+		"coverImageUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"tracksPerPage": {
+			"type": "number",
+			"default": 20
+		},
+		"orderBy": {
+			"type": "string",
+			"enum": [ "newest", "oldest", "title" ],
+			"default": "newest"
+		}
+	},
+	"editorScript": "file:./editor.js",
+	"viewScript": "file:./view.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

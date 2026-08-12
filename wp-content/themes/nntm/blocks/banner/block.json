@@ -1,0 +1,40 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "nntm/banner",
+	"title": "Băng chuyền ảnh lớn (Banner R1)",
+	"category": "nntm",
+	"icon": "format-image",
+	"description": "Ảnh lớn bo góc đầu trang, biểu tượng + tiêu đề + phụ đề canh giữa, tự chạy. Khách tự thêm/xoá/sắp lại từng tấm trong bảng điều khiển bên phải, không cần lập trình viên. Dựng theo Figma DESKTOP - R1, khung BANNER 1326x700.",
+	"textdomain": "nntm",
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"customClassName": true
+	},
+	"attributes": {
+		"slides": {
+			"type": "array",
+			"default": [],
+			"items": {
+				"type": "object",
+				"properties": {
+					"imageId": { "type": "number" },
+					"imageUrl": { "type": "string" },
+					"imageAlt": { "type": "string" },
+					"heading": { "type": "string" },
+					"text": { "type": "string" }
+				}
+			}
+		},
+		"emblemId": { "type": "number", "default": 0 },
+		"emblemUrl": { "type": "string", "default": "" },
+		"emblemAlt": { "type": "string", "default": "" },
+		"autoplay": { "type": "boolean", "default": true },
+		"interval": { "type": "number", "default": 6 }
+	},
+	"editorScript": "file:./editor.js",
+	"viewScript": "file:./view.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

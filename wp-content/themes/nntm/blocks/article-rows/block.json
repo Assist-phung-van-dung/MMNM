@@ -1,0 +1,67 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "nntm/article-rows",
+	"title": "Danh sách bài viết so le (Article Rows)",
+	"category": "nntm",
+	"icon": "align-pull-left",
+	"description": "Danh sách bài viết xếp thành hàng ngang, ảnh và chữ đảo bên luân phiên — dùng cho trang chi tiết truyền thống (Figma: 03. PHAP TOA - NGUYEN THUY). Khách tự chọn nguồn bài, số lượng, cách sắp xếp, không cần lập trình viên.",
+	"textdomain": "nntm",
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"customClassName": true
+	},
+	"attributes": {
+		"heading": {
+			"type": "string",
+			"default": "Nguyên Thuỷ"
+		},
+		"postType": {
+			"type": "string",
+			"enum": [ "nntm_article", "nntm_publication", "nntm_talk", "nntm_video", "post" ],
+			"default": "nntm_article"
+		},
+		"taxonomy": {
+			"type": "string",
+			"default": ""
+		},
+		"termId": {
+			"type": "number",
+			"default": 0
+		},
+		"postsPerPage": {
+			"type": "number",
+			"default": 4
+		},
+		"orderBy": {
+			"type": "string",
+			"enum": [ "newest", "oldest", "title" ],
+			"default": "newest"
+		},
+		"startSide": {
+			"type": "string",
+			"enum": [ "left", "right" ],
+			"default": "left"
+		},
+		"showCategory": {
+			"type": "boolean",
+			"default": true
+		},
+		"showExcerpt": {
+			"type": "boolean",
+			"default": true
+		},
+		"primaryCtaLabel": {
+			"type": "string",
+			"default": "Đọc bài"
+		},
+		"secondaryCtaLabel": {
+			"type": "string",
+			"default": "Xem thêm"
+		}
+	},
+	"editorScript": "file:./editor.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}
