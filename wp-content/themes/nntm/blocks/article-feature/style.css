@@ -52,29 +52,51 @@
 	 */
 	width: min(1180px, 100% - 2 * var(--nntm-sp-11));
 	margin-inline: auto;
-	padding-block: var(--nntm-sp-10); /* tu Figma: padding trên/dưới 60 */
+	/*
+	 * SỬA 12/08/2026 lần 3 — đối chiếu ảnh Figma thật (fig-feature.png vs
+	 * web-feature.png) cho thấy cột chữ đang bị CĂN GIỮA THEO CHIỀU DỌC
+	 * (align-items: center cũ) nên tiêu đề rơi xuống giữa khối, phía trên
+	 * trống hoác — sai hẳn thiết kế: Figma căn TRÊN, dấu ngoặc kép y 75,
+	 * tiêu đề y 160 (đo từ đầu khối). Đổi align-items: center -> start.
+	 *
+	 * padding-top/bottom KHÔNG còn bằng nhau nữa — tách riêng để tiêu đề
+	 * (item đầu tiên trong dòng chảy của cột chữ, ngay sau padding-top)
+	 * rơi đúng khoảng y 150–170 như spec, mà TỔNG chiều cao khối vẫn giữ
+	 * nguyên ~1097 (công thức đã xác nhận bằng trình duyệt ở lần sửa
+	 * trước: tổng cao = anh cao nhất cột (~812) + padding-top + padding-bottom).
+	 * padding-top=160 (khớp mốc tiêu đề y160), padding-bottom=118 để tổng
+	 * vẫn ~1097 — ĐÃ ĐO LẠI BẰNG TRÌNH DUYỆT THẬT sau khi sửa, xem báo cáo.
+	 */
+	padding-top: 160px;
+	padding-bottom: 118px;
 	display: grid;
 	/*
-	 * tu Figma: hai cột 618 và 532, cách nhau 30 (tổng 1180). Dùng fr để
-	 * co giãn theo khung chứa thay vì khoá px cứng.
+	 * tu Figma (do lai 12/08/2026 lan 3, so chinh xac hon): hai cot 617 va
+	 * 534, cach nhau 30 (tong 1181 ~ 1180). Dung fr de co gian theo khung
+	 * chua thay vi khoa px cung.
 	 */
-	grid-template-columns: 618fr 532fr;
-	/* tu Figma: Frame 150 justify=CENTER — cột chữ căn giữa theo chiều dọc
-	   so với cột ảnh (thật ra 122..943 so với ảnh 126..945). */
-	align-items: center;
+	grid-template-columns: 617fr 534fr;
+	/*
+	 * align-items: start — SỬA 12/08/2026 (xem chú thích padding ở trên).
+	 * Trước đây "center" theo đúng CSS Figma xuất ra (Frame 150
+	 * justify=CENTER), nhưng so ảnh thật cho thấy phải căn TRÊN mới đúng
+	 * vị trí tiêu đề/dấu ngoặc kép — có thể node Figma đó đã lỗi thời so
+	 * với ảnh xuất mới nhất. Ưu tiên khớp ảnh thật theo yêu cầu anh Úy.
+	 */
+	align-items: start;
 	gap: var(--nntm-sp-7); /* tu Figma: gap 30 */
 }
 
 /*
- * tu Figma: dấu ngoặc kép là VECTOR 69x51 đặt ở x=23 y=47 tính từ góc
- * trên trái SECTION — tức NGOÀI vùng đệm, đè lên góc chứ không nằm trong
- * dòng chảy nội dung. Toạ độ quy về mốc là khung CONTENT (bắt đầu ở
- * x=93): 23 - 93 = -70.
+ * tu Figma: dấu ngoặc kép là VECTOR 69x51. SỬA 12/08/2026: so ảnh thật cho
+ * thấy dấu nháy bị đẩy sát mép trên, cắt cụt — đổi top: 47px -> 75px để
+ * khớp đúng mốc y 75→135 theo spec đo lại (đo từ đầu khối, không đổi theo
+ * padding vì phần tử position:absolute lấy mốc padding-box của .inner).
  */
 .nntm-article-feature__quote {
 	position: absolute;
 	left: -70px;
-	top: 47px;
+	top: 75px;
 	width: 69px;
 	height: 51px;
 }
@@ -84,7 +106,7 @@
    ở mọi biến thể. Cùng nguyên tắc đã chốt cho nntm/article-rows
    (docs/04-kien-truc.md mục 10). */
 .nntm-article-feature--media-left .nntm-article-feature__inner {
-	grid-template-columns: 532fr 618fr;
+	grid-template-columns: 534fr 617fr;
 }
 
 .nntm-article-feature--media-left .nntm-article-feature__text {
@@ -182,6 +204,15 @@
 	margin-top: var(--nntm-sp-5); /* tu Figma: Frame 150 gap 20 */
 	padding: var(--nntm-sp-7);    /* tu Figma: TEXT padding 30 */
 	background-color: var(--nntm-kem); /* tu Figma: fill #F7F1DE */
+	/*
+	 * tu Figma (do lai 12/08/2026 lan 3): khung TEXT cao 657 (y 318->975).
+	 * Dat min-height thay vi height co dinh de bai that DAI hon van giai
+	 * het duoc, khong bi cat noi dung — chi bai QUA NGAN moi can san nay
+	 * de khong bi hut ngan hon thiet ke. Bai mau hien tai (seed Hoa Khai)
+	 * da duoc noi dai them o tools/seed-hoa-khai-bai-viet.php de khung
+	 * thuc su day nhu Figma, khong chi dua vao min-height trong rong.
+	 */
+	min-height: 657px;
 }
 
 .nntm-article-feature__body {
@@ -193,6 +224,17 @@
 	line-height: 26px;                    /* tu Figma: 26/18 */
 	letter-spacing: 0;
 	color: var(--nntm-chu);              /* tu Figma: #3F3B3B */
+	/*
+	 * "CẮT THEO SỐ DÒNG NẾU BÀI QUÁ DÀI" (yêu cầu anh Úy 12/08/2026, mục
+	 * B4) — nntm_article_feature_get_paragraphs() đã giới hạn theo SỐ ĐOẠN
+	 * (maxParagraphs), nhưng bài có đoạn dài vẫn có thể đẩy khung kem cao
+	 * vượt xa 657px của Figma (đã đo bằng trình duyệt thật: có bài đẩy
+	 * khối lên 1214px). Khoá thêm một trần bằng PX + overflow:hidden ở đây
+	 * làm lưới an toàn cuối: 657 (khung) - 60 (padding 2×30) - 10 (margin
+	 * trên nút) - 24 (dòng nút "Xem tiếp") = 563.
+	 */
+	max-height: 563px;
+	overflow: hidden;
 }
 
 .nntm-article-feature__body > p {
@@ -241,9 +283,10 @@
 	position: relative;
 	overflow: hidden;
 	min-height: 0;
-	/* tu Figma: IMG 532x819 trong cột 532 — khoá tỉ lệ thay vì chiều cao
-	   px để cột co giãn theo khung chứa mà ảnh không méo. */
-	aspect-ratio: 532 / 819;
+	/* tu Figma (do lai 12/08/2026 lan 3, chinh xac hon): IMG 534x812 trong
+	   cot 534 — khoa ti le thay vi chieu cao px de cot co gian theo khung
+	   chua ma anh khong meo. */
+	aspect-ratio: 534 / 812;
 	background-color: var(--nntm-xam); /* nền giữ chỗ khi ảnh chưa tải */
 }
 

@@ -15,6 +15,21 @@
  *       do header.js gắn qua IntersectionObserver): giữ nguyên nền màu của
  *       trạng thái A/B (không có nền "trong suốt" nào cả), chỉ thêm bóng nhẹ.
  *
+ * CHỈ ĐẠO MỚI 12/08/2026 (spec-trang-chu.md, mục H1) — chồng thêm lên ba
+ * trạng thái trên, không thay thế:
+ *
+ *   .nntm-header--trong : ở đỉnh trang, CHỈ gắn cho trang có banner ảnh
+ *       ngay dưới đầu trang (dùng lại nntm_page_starts_with_hero(), cùng
+ *       hàm mà inc/setup.php dùng để gắn class nntm-dau-trang-de-len lên
+ *       <body>). Nền trong suốt, đè lên banner, chữ/icon không có nền
+ *       riêng (menu, logo, "Đăng nhập", icon tài khoản) đổi sang màu sáng.
+ *   .nntm-header--dac    : nền trắng đặc, chữ theo đúng màu trạng thái A/B
+ *       như cũ. Trang KHÔNG có banner nhận thẳng class này, không cần JS.
+ *
+ * assets/js/header-scroll.js đổi qua lại hai class này bằng
+ * IntersectionObserver khi cuộn quá 80px — chỉ hoạt động nếu header bắt
+ * đầu ở .nntm-header--trong; trang không có banner thì script tự bỏ qua.
+ *
  * Mục menu đang xem hiển thị dạng viên thuốc qua class current-menu-item /
  * current_page_item mà WordPress tự gắn — xem header.css.
  */
@@ -23,6 +38,18 @@ defined( 'ABSPATH' ) || exit;
 
 $nntm_logged_in   = is_user_logged_in();
 $nntm_header_class = 'nntm-header ' . ( $nntm_logged_in ? 'nntm-header--auth' : 'nntm-header--guest' );
+
+/*
+ * H1: trạng thái trong suốt chỉ áp cho trang mở đầu bằng banner ảnh ngay
+ * dưới đầu trang (tái dùng nntm_page_starts_with_hero(), đã có sẵn trong
+ * inc/setup.php cho đúng mục đích này — không viết hàm mới trùng việc).
+ * Trang thường (không hero) nhận .nntm-header--dac ngay, trắng từ đầu.
+ */
+$nntm_has_hero = ( is_front_page() || is_page() )
+	&& function_exists( 'nntm_page_starts_with_hero' )
+	&& nntm_page_starts_with_hero( get_queried_object() );
+
+$nntm_header_class .= $nntm_has_hero ? ' nntm-header--trong' : ' nntm-header--dac';
 
 if ( apply_filters( 'nntm_header_sticky', true ) ) {
 	$nntm_header_class .= ' nntm-header--sticky';

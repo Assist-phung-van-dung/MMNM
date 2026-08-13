@@ -2,8 +2,16 @@
 /**
  * Template phần chân trang.
  *
- * Dựng theo component FOOTER và giữ lời mời phản hồi
- * "Hãy chia sẻ Ý kiến của bạn" theo thiết kế được duyệt.
+ * Dựng theo component FOOTER, đối chiếu ảnh cắt vùng chân trang
+ * fig-footer.png (chỉ đạo anh Úy 13/08/2026): một khối nền xám
+ * --nntm-muc-nhat thụt vào khỏi mép trái/phải, phía trên/dưới là nền
+ * trắng của <footer>; bên trong khối là một đường kẻ mảnh ở trên, rồi
+ * đến hàng logo + 3 liên kết (trái) và bản quyền (phải).
+ *
+ * ĐÃ GỠ 13/08/2026: khối "Hãy chia sẻ Ý kiến của bạn" cùng ô liên kết của
+ * nó. Bản Figma chân trang (fig-footer.png) KHÔNG có khối này — quyết
+ * định giữ lại ở phiên 10/08 đã bị anh Úy huỷ hôm nay để làm đúng thiết
+ * kế. KHÔNG khôi phục lại khối này trừ khi có chỉ đạo mới bằng văn bản.
  *
  * Số đo lấy bằng cách xuất ảnh khung ở tỉ lệ 2x rồi đo pixel (API đọc node
  * đang bị Figma chặn tốc độ). Sai số khoảng 1px. Mọi con số đo bằng ảnh đều
@@ -25,14 +33,6 @@ defined( 'ABSPATH' ) || exit;
 	<footer id="colophon" class="nntm-footer">
 		<div class="nntm-footer__bar">
 			<div class="nntm-footer__inner">
-
-				<div class="nntm-footer__share">
-					<span><?php esc_html_e( 'Hãy chia sẻ', 'nntm' ); ?></span>
-					<a class="nntm-footer__share-link" href="<?php echo esc_url( home_url( '/lien-he/' ) ); ?>">
-						<?php esc_html_e( 'Ý kiến', 'nntm' ); ?>
-					</a>
-					<span><?php esc_html_e( 'của bạn', 'nntm' ); ?></span>
-				</div>
 
 				<hr class="nntm-footer__rule">
 

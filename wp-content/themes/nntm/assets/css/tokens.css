@@ -126,7 +126,11 @@
   /* ---------- Bố cục ---------- */
   --nntm-w-noi-dung: 1220px;  /* khớp FAQ / TRU XU CARD trong Figma */
   --nntm-w-rong:     1366px;  /* khung thiết kế desktop */
-  --nntm-header-h:   160px;
+  /* Sua 12/08/2026 theo spec-trang-chu.md: 160px la sai, header thuc do
+     duoc tren khung dong nhat (frame coords) cao dung 76px. Da grep toan
+     bo theme — bien nay khong duoc dung o noi nao khac ngoai khai bao nay,
+     nen sua khong lam vo gi ca. */
+  --nntm-header-h:   76px;
 
   /* ---------- Đơn vị thiết kế — CHƯA DÙNG, ĐỪNG BẬT LẠI MỘT NỬA ----------
      Đã thử ngày 10/08/2026 rồi GỠ BỎ vì làm vỡ bố cục.

@@ -1,15 +1,21 @@
-[11-Aug-2026 06:46:07 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
-[11-Aug-2026 06:46:07 UTC] PHP Notice:  Function _load_textdomain_just_in_time được gọi <strong>không chính xác</strong>. Tải bản dịch cho miền <code>nntm</code> được kích hoạt quá sớm. Đây thường là dấu hiệu cho thấy một số mã trong plugin hoặc chủ đề chạy quá sớm. Bản dịch phải được tải tại hành động <code>init</code> hoặc sau đó. Vui lòng xem <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Hướng dẫn Debug trong WordPress</a> để biết thêm thông tin. (Thông điệp này đã được thêm vào trong phiên bản 6.7.0.) in /var/www/html/wp-includes/functions.php on line 6170
-[11-Aug-2026 06:46:26 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
-[11-Aug-2026 06:46:37 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
-[11-Aug-2026 06:46:47 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
-[11-Aug-2026 06:46:49 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
-[11-Aug-2026 06:46:49 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
-[11-Aug-2026 06:46:50 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
-[11-Aug-2026 06:46:51 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
-[11-Aug-2026 06:46:52 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
-[11-Aug-2026 06:47:05 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
-[11-Aug-2026 06:47:11 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
-[11-Aug-2026 06:47:11 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
-[11-Aug-2026 06:47:11 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
-[11-Aug-2026 06:47:11 UTC] PHP Parse error:  syntax error, unexpected identifier "lấy", expecting ")" in /var/www/html/wp-content/themes/nntm/inc/blocks.php on line 99
+[12-Aug-2026 09:47:28 UTC] Automatic updates starting...
+[12-Aug-2026 09:47:28 UTC] Automatic updates complete.
+[13-Aug-2026 01:11:23 UTC] PHP Warning:  mysqli_real_connect(): (HY000/2002): No connection could be made because the target machine actively refused it in C:\xampp8_2\htdocs\NNTM\wp-includes\class-wpdb.php on line 1988
+[13-Aug-2026 01:11:54 UTC] Automatic updates starting...
+[13-Aug-2026 01:11:56 UTC] Automatic updates complete.
+[13-Aug-2026 03:57:13 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function nntm_article_mosaic_render_secondary_card(), 4 passed in C:\xampp8_2\htdocs\NNTM\wp-content\themes\nntm\blocks\article-mosaic\render.php on line 323 and exactly 5 expected in C:\xampp8_2\htdocs\NNTM\wp-content\themes\nntm\blocks\article-mosaic\inc\render-article-mosaic.php:91
+Stack trace:
+#0 C:\xampp8_2\htdocs\NNTM\wp-content\themes\nntm\blocks\article-mosaic\render.php(323): nntm_article_mosaic_render_secondary_card(Object(WP_Post), 'medium', false, false)
+#1 C:\xampp8_2\htdocs\NNTM\wp-includes\blocks.php(571): require('C:\\xampp8_2\\htd...')
+#2 C:\xampp8_2\htdocs\NNTM\wp-includes\class-wp-block.php(596): {closure}(Array, '', Object(WP_Block))
+#3 C:\xampp8_2\htdocs\NNTM\wp-includes\blocks.php(2438): WP_Block->render()
+#4 C:\xampp8_2\htdocs\NNTM\wp-includes\blocks.php(2521): render_block(Array)
+#5 C:\xampp8_2\htdocs\NNTM\wp-includes\class-wp-hook.php(341): do_blocks('<!-- wp:nntm/he...')
+#6 C:\xampp8_2\htdocs\NNTM\wp-includes\plugin.php(205): WP_Hook->apply_filters('<!-- wp:nntm/he...', Array)
+#7 C:\xampp8_2\htdocs\NNTM\wp-includes\post-template.php(256): apply_filters('the_content', '<!-- wp:nntm/he...')
+#8 C:\xampp8_2\htdocs\NNTM\wp-content\themes\nntm\page.php(34): the_content()
+#9 C:\xampp8_2\htdocs\NNTM\wp-includes\template-loader.php(132): include('C:\\xampp8_2\\htd...')
+#10 C:\xampp8_2\htdocs\NNTM\wp-blog-header.php(19): require_once('C:\\xampp8_2\\htd...')
+#11 C:\xampp8_2\htdocs\NNTM\index.php(17): require('C:\\xampp8_2\\htd...')
+#12 {main}
+  thrown in C:\xampp8_2\htdocs\NNTM\wp-content\themes\nntm\blocks\article-mosaic\inc\render-article-mosaic.php on line 91

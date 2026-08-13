@@ -34,6 +34,38 @@
 	var apiFetch = wp.apiFetch;
 	var ServerSideRender = wp.serverSideRender && wp.serverSideRender.default ? wp.serverSideRender.default : wp.serverSideRender;
 
+	// Danh sách trắng loại nội dung cho thẻ "tin mới nhất" góc phải dưới —
+	// trùng với block.json và render.php.
+	var SIDECARD_POST_TYPE_OPTIONS = [
+		{ label: __( 'Bài viết (6 phân mục)', 'nntm' ), value: 'nntm_article' },
+		{ label: __( 'Tin Tức / Hoằng Pháp', 'nntm' ), value: 'post' },
+		{ label: __( 'Ấn phẩm (PDF / Books)', 'nntm' ), value: 'nntm_publication' },
+		{ label: __( 'Pháp Thoại', 'nntm' ), value: 'nntm_talk' },
+		{ label: __( 'Video', 'nntm' ), value: 'nntm_video' },
+	];
+
+	// Nhãn tiếng Việt cho taxonomy — khớp với class-taxonomies.php.
+	var SIDECARD_TAXONOMY_LABELS = {
+		nntm_section: __( 'Phân mục', 'nntm' ),
+		nntm_topic: __( 'Chủ đề', 'nntm' ),
+		nntm_series: __( 'Bộ / Series', 'nntm' ),
+		category: __( 'Chuyên mục', 'nntm' ),
+		post_tag: __( 'Thẻ', 'nntm' ),
+	};
+
+	var SIDECARD_REST_BASE_OVERRIDES = {
+		category: 'categories',
+		post_tag: 'tags',
+	};
+
+	function sidecardRestBaseFor( taxonomy ) {
+		return SIDECARD_REST_BASE_OVERRIDES[ taxonomy ] || taxonomy;
+	}
+
+	function sidecardTaxonomyLabel( taxonomy ) {
+		return SIDECARD_TAXONOMY_LABELS[ taxonomy ] || taxonomy;
+	}
+
 	/**
 	 * Một tấm trống — dùng khi bấm "Thêm tấm". render.php tự bỏ qua tấm
 	 * hoàn toàn trống (nntm_hero_slider_clean_slide()) nên không sợ hiện
@@ -63,6 +95,88 @@
 			var parentTermState = useState( [] );
 			var parentTerms = parentTermState[ 0 ];
 			var setParentTerms = parentTermState[ 1 ];
+
+			// Taxonomy hợp lệ + danh sách term cho nguồn "thẻ tin mới nhất"
+			// góc phải dưới — cùng cơ chế REST tầng nối tầng như
+			// blocks/article-mosaic/editor.js.
+			var sideTaxState = useState( [] );
+			var sideAvailableTaxonomies = sideTaxState[ 0 ];
+			var setSideAvailableTaxonomies = sideTaxState[ 1 ];
+
+			var sideTermState = useState( [] );
+			var sideAvailableTerms = sideTermState[ 0 ];
+			var setSideAvailableTerms = sideTermState[ 1 ];
+
+			useEffect(
+				function () {
+					var isCurrent = true;
+
+					apiFetch( { path: '/wp/v2/types/' + attributes.sideCardPostType } )
+						.then( function ( typeInfo ) {
+							if ( ! isCurrent ) {
+								return;
+							}
+							var taxonomies = ( typeInfo && typeInfo.taxonomies ) || [];
+							setSideAvailableTaxonomies( taxonomies );
+
+							if ( attributes.sideCardTaxonomy && taxonomies.indexOf( attributes.sideCardTaxonomy ) === -1 ) {
+								setAttributes( { sideCardTaxonomy: '', sideCardTermId: 0 } );
+							}
+						} )
+						.catch( function () {
+							if ( isCurrent ) {
+								setSideAvailableTaxonomies( [] );
+							}
+						} );
+
+					return function () {
+						isCurrent = false;
+					};
+				},
+				[ attributes.sideCardPostType ]
+			);
+
+			useEffect(
+				function () {
+					var isCurrent = true;
+
+					if ( ! attributes.sideCardTaxonomy ) {
+						setSideAvailableTerms( [] );
+						return undefined;
+					}
+
+					apiFetch( {
+						path: '/wp/v2/' + sidecardRestBaseFor( attributes.sideCardTaxonomy ) + '?per_page=100&orderby=name&order=asc&_fields=id,name',
+					} )
+						.then( function ( terms ) {
+							if ( isCurrent ) {
+								setSideAvailableTerms( terms || [] );
+							}
+						} )
+						.catch( function () {
+							if ( isCurrent ) {
+								setSideAvailableTerms( [] );
+							}
+						} );
+
+					return function () {
+						isCurrent = false;
+					};
+				},
+				[ attributes.sideCardTaxonomy ]
+			);
+
+			var sideTaxonomyOptions = [ { label: __( '— Không lọc theo mục nào —', 'nntm' ), value: '' } ].concat(
+				sideAvailableTaxonomies.map( function ( taxonomy ) {
+					return { label: sidecardTaxonomyLabel( taxonomy ), value: taxonomy };
+				} )
+			);
+
+			var sideTermOptions = [ { label: __( 'Tất cả', 'nntm' ), value: 0 } ].concat(
+				sideAvailableTerms.map( function ( term ) {
+					return { label: term.name, value: term.id };
+				} )
+			);
 
 			useEffect(
 				function () {
@@ -292,41 +406,71 @@
 							onChange: function ( value ) {
 								setAttributes( { interval: value || 6 } );
 							},
+						} ),
+						el( ToggleControl, {
+							label: __( 'Hiện nút mũi tên trái/phải', 'nntm' ),
+							help: __( 'Thiết kế gốc chỉ có chấm — nút mũi tên là tuỳ chọn thêm để khách bấm chuyển tấm dễ hơn. Chỉ hiện khi có từ 2 tấm trở lên.', 'nntm' ),
+							checked: attributes.arrowsEnabled !== false,
+							onChange: function ( value ) {
+								setAttributes( { arrowsEnabled: value } );
+							},
 						} )
 					),
 					el(
 						PanelBody,
-						{ title: __( 'Thẻ nhỏ góc phải dưới', 'nntm' ), initialOpen: false },
-						el( TextareaControl, {
-							label: __( 'Tiêu đề thẻ (Enter để xuống dòng)', 'nntm' ),
-							value: attributes.sideCardHeading,
-							rows: 2,
+						{ title: __( 'Thẻ nhỏ góc phải dưới (tin mới nhất)', 'nntm' ), initialOpen: false },
+						el(
+							'p',
+							{ className: 'components-base-control__help' },
+							__( 'Tự lấy bài MỚI NHẤT từ nguồn đã chọn — không nhập tay tiêu đề/mô tả nữa. Admin đăng bài mới trong nguồn này thì thẻ tự đổi theo, không cần sửa lại trang chủ.', 'nntm' )
+						),
+						el( ToggleControl, {
+							label: __( 'Hiện thẻ này', 'nntm' ),
+							checked: attributes.sideCardEnabled !== false,
 							onChange: function ( value ) {
-								setAttributes( { sideCardHeading: value } );
+								setAttributes( { sideCardEnabled: value } );
 							},
 						} ),
-						el( TextControl, {
-							label: __( 'Mô tả (hiện chữ nghiêng)', 'nntm' ),
-							value: attributes.sideCardText,
-							onChange: function ( value ) {
-								setAttributes( { sideCardText: value } );
-							},
-						} ),
-						el( TextControl, {
-							label: __( 'Nhãn nút', 'nntm' ),
-							value: attributes.sideCardCtaLabel,
-							onChange: function ( value ) {
-								setAttributes( { sideCardCtaLabel: value } );
-							},
-						} ),
-						el( TextControl, {
-							label: __( 'Đường dẫn nút', 'nntm' ),
-							type: 'url',
-							value: attributes.sideCardCtaUrl,
-							onChange: function ( value ) {
-								setAttributes( { sideCardCtaUrl: value } );
-							},
-						} )
+						attributes.sideCardEnabled !== false
+							? el(
+									Fragment,
+									{},
+									el( SelectControl, {
+										label: __( 'Lấy bài từ loại nội dung nào', 'nntm' ),
+										value: attributes.sideCardPostType,
+										options: SIDECARD_POST_TYPE_OPTIONS,
+										onChange: function ( value ) {
+											setAttributes( { sideCardPostType: value, sideCardTaxonomy: '', sideCardTermId: 0 } );
+										},
+									} ),
+									el( SelectControl, {
+										label: __( 'Lọc theo', 'nntm' ),
+										help: __( 'Chỉ lấy bài thuộc một mục/chủ đề cụ thể. Để trống nếu muốn lấy bài mới nhất của cả loại nội dung.', 'nntm' ),
+										value: attributes.sideCardTaxonomy,
+										options: sideTaxonomyOptions,
+										onChange: function ( value ) {
+											setAttributes( { sideCardTaxonomy: value, sideCardTermId: 0 } );
+										},
+									} ),
+									attributes.sideCardTaxonomy
+										? el( SelectControl, {
+												label: __( 'Lấy bài từ mục nào', 'nntm' ),
+												value: attributes.sideCardTermId,
+												options: sideTermOptions,
+												onChange: function ( value ) {
+													setAttributes( { sideCardTermId: parseInt( value, 10 ) || 0 } );
+												},
+										  } )
+										: null,
+									el( TextControl, {
+										label: __( 'Nhãn nút', 'nntm' ),
+										value: attributes.sideCardCtaLabel,
+										onChange: function ( value ) {
+											setAttributes( { sideCardCtaLabel: value } );
+										},
+									} )
+							  )
+							: null
 					),
 					el(
 						PanelBody,

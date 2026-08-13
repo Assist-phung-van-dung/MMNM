@@ -91,16 +91,41 @@ $nntm_hs_interval = max( 2, min( 30, $nntm_hs_interval ) );
 // — đúng yêu cầu nhiệm vụ).
 $nntm_hs_show_live_region = $nntm_hs_has_multiple && ! $nntm_hs_autoplay;
 
+// Nút mũi tên trái/phải — mặc định BẬT, khách có thể tắt trong bảng điều
+// khiển (yêu cầu anh Úy 12/08/2026: thiết kế chỉ có chấm, không có mũi
+// tên, nên bổ sung nút tự dựng). Chỉ có ý nghĩa khi có nhiều hơn một tấm.
+$nntm_hs_show_nav = $nntm_hs_has_multiple && ( ! isset( $attributes['arrowsEnabled'] ) || ! empty( $attributes['arrowsEnabled'] ) );
+
 $nntm_hs_quicklinks_parent_id = isset( $attributes['quickLinksParentTermId'] ) ? absint( $attributes['quickLinksParentTermId'] ) : 0;
 $nntm_hs_quicklinks_html      = nntm_hero_slider_render_quicklinks( $nntm_hs_quicklinks_parent_id );
 
-$nntm_hs_sidecard_html = nntm_hero_slider_render_sidecard(
-	// sanitize_textarea_field() de giu \n — the phai cung co tieu de 2 dong.
-	isset( $attributes['sideCardHeading'] ) ? sanitize_textarea_field( (string) $attributes['sideCardHeading'] ) : '',
-	isset( $attributes['sideCardText'] ) ? sanitize_text_field( (string) $attributes['sideCardText'] ) : '',
-	isset( $attributes['sideCardCtaLabel'] ) ? sanitize_text_field( (string) $attributes['sideCardCtaLabel'] ) : '',
-	isset( $attributes['sideCardCtaUrl'] ) ? esc_url_raw( (string) $attributes['sideCardCtaUrl'] ) : ''
-);
+/*
+ * Thẻ mờ góc phải dưới — TIN MỚI NHẤT lấy từ CSDL (yêu cầu anh Úy
+ * 12/08/2026, mục H2). Truy vấn qua nntm_core_get_latest_posts() của
+ * plugin nntm-core, KHÔNG tự viết WP_Query ở đây — đúng nguyên tắc "logic
+ * dữ liệu gom về plugin" (docs/04-kien-truc.md mục 9). Thiếu plugin (chưa
+ * kích hoạt) thì bỏ hẳn thẻ, không làm trang chết.
+ */
+$nntm_hs_sidecard_enabled  = ! isset( $attributes['sideCardEnabled'] ) || ! empty( $attributes['sideCardEnabled'] );
+$nntm_hs_sidecard_article  = null;
+
+if ( $nntm_hs_sidecard_enabled && function_exists( 'nntm_core_get_latest_posts' ) ) {
+	$nntm_hs_sidecard_posts = nntm_core_get_latest_posts(
+		array(
+			'post_type' => isset( $attributes['sideCardPostType'] ) ? sanitize_key( (string) $attributes['sideCardPostType'] ) : 'nntm_article',
+			'taxonomy'  => isset( $attributes['sideCardTaxonomy'] ) ? sanitize_key( (string) $attributes['sideCardTaxonomy'] ) : 'nntm_section',
+			'term_id'   => isset( $attributes['sideCardTermId'] ) ? absint( $attributes['sideCardTermId'] ) : 0,
+			'number'    => 1,
+		)
+	);
+	$nntm_hs_sidecard_article = ! empty( $nntm_hs_sidecard_posts ) ? $nntm_hs_sidecard_posts[0] : null;
+}
+
+$nntm_hs_sidecard_cta_label = isset( $attributes['sideCardCtaLabel'] ) && '' !== trim( (string) $attributes['sideCardCtaLabel'] )
+	? sanitize_text_field( (string) $attributes['sideCardCtaLabel'] )
+	: __( 'Xem thêm', 'nntm' );
+
+$nntm_hs_sidecard_html = nntm_hero_slider_render_sidecard( $nntm_hs_sidecard_article, $nntm_hs_sidecard_cta_label );
 
 $nntm_hs_wrapper_attributes = get_block_wrapper_attributes(
 	array(
@@ -123,6 +148,10 @@ $nntm_hs_wrapper_attributes = get_block_wrapper_attributes(
 				<?php echo nntm_hero_slider_render_slide( $nntm_hs_slide, $nntm_hs_index, $nntm_hs_slide_count, $nntm_hs_has_multiple ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
 			<?php endforeach; ?>
 		</div>
+
+		<?php if ( $nntm_hs_show_nav ) : ?>
+			<?php echo nntm_hero_slider_render_nav(); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
+		<?php endif; ?>
 
 		<?php if ( '' !== $nntm_hs_sidecard_html ) : ?>
 			<?php echo $nntm_hs_sidecard_html; // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>

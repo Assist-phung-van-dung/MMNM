@@ -36,6 +36,8 @@
 		var dotsWrap = root.querySelector( '[data-nntm-hero-dots]' );
 		var dots = root.querySelectorAll( '.nntm-hero-slider__dot' );
 		var statusEl = root.querySelector( '[data-nntm-hero-status]' );
+		var prevBtn = root.querySelector( '[data-nntm-hero-prev]' );
+		var nextBtn = root.querySelector( '[data-nntm-hero-next]' );
 
 		if ( ! stage || slides.length < 2 ) {
 			// Chỉ 1 tấm (hoặc không tìm thấy khung) -> không có gì để tự
@@ -100,6 +102,16 @@
 			goTo( currentIndex - 1 );
 		}
 
+		// Bấm chấm/mũi tên là một tương tác chủ động — khởi động lại đếm
+		// giờ tự chạy từ đầu để không nhảy tấm quá gần ngay sau khi khách
+		// vừa tự chọn.
+		function restartTimerAfterInteraction() {
+			if ( autoplayAllowed && ! isPaused ) {
+				stopTimer();
+				startTimer();
+			}
+		}
+
 		function startTimer() {
 			if ( ! autoplayAllowed || isPaused || null !== timerId || document.hidden ) {
 				return;
@@ -153,15 +165,24 @@
 			( function ( index ) {
 				dots[ index ].addEventListener( 'click', function () {
 					goTo( index );
-					// Bấm chấm là một tương tác chủ động — khởi động lại
-					// đếm giờ tự chạy từ đầu để không nhảy tấm quá gần
-					// ngay sau khi khách vừa tự chọn.
-					if ( autoplayAllowed && ! isPaused ) {
-						stopTimer();
-						startTimer();
-					}
+					restartTimerAfterInteraction();
 				} );
 			} )( t );
+		}
+
+		// ---------- Nút mũi tên trái/phải bấm chuyển tấm ----------
+		if ( prevBtn ) {
+			prevBtn.addEventListener( 'click', function () {
+				goPrev();
+				restartTimerAfterInteraction();
+			} );
+		}
+
+		if ( nextBtn ) {
+			nextBtn.addEventListener( 'click', function () {
+				goNext();
+				restartTimerAfterInteraction();
+			} );
 		}
 
 		// ---------- Phím mũi tên trái/phải khi băng chuyền có tiêu điểm ----------

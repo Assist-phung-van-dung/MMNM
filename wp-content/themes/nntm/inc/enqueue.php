@@ -99,6 +99,17 @@ function nntm_enqueue_assets(): void {
 	// Menu di động (hamburger), bẫy tiêu điểm, header dính khi cuộn.
 	$header_js_path = NNTM_THEME_DIR . '/assets/js/header.js';
 	wp_enqueue_script( 'nntm-header', NNTM_THEME_URI . '/assets/js/header.js', array(), nntm_asset_version( $header_js_path ), true );
+
+	/*
+	 * H1 (12/08/2026): đầu trang đổi màu theo cuộn. Tách riêng khỏi
+	 * header.js (script trên lo menu/tài khoản/dính khi cuộn — một việc
+	 * khác) để sau này đổi ngưỡng 80px hay bỏ hẳn tính năng này không phải
+	 * đụng vào các hành vi còn lại. Tự thoát sớm ở phía JS trên trang
+	 * không có banner nên enqueue ở mọi trang cũng không tốn gì.
+	 */
+	$header_scroll_js_path = NNTM_THEME_DIR . '/assets/js/header-scroll.js';
+	wp_enqueue_script( 'nntm-header-scroll', NNTM_THEME_URI . '/assets/js/header-scroll.js', array(), nntm_asset_version( $header_scroll_js_path ), true );
+	wp_script_add_data( 'nntm-header-scroll', 'strategy', 'defer' );
 }
 add_action( 'wp_enqueue_scripts', 'nntm_enqueue_assets' );
 
@@ -138,6 +149,7 @@ function nntm_enqueue_r1_assets(): void {
 	wp_dequeue_style( 'nntm-header' );
 	wp_dequeue_style( 'nntm-footer' );
 	wp_dequeue_script( 'nntm-header' );
+	wp_dequeue_script( 'nntm-header-scroll' );
 }
 add_action( 'wp_enqueue_scripts', 'nntm_enqueue_r1_assets', 20 );
 

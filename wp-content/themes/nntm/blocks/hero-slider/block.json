@@ -33,25 +33,34 @@
 			"type": "boolean",
 			"default": true
 		},
+		"arrowsEnabled": {
+			"type": "boolean",
+			"default": true
+		},
 		"interval": {
 			"type": "number",
 			"default": 6
 		},
-		"sideCardHeading": {
-			"type": "string",
-			"default": ""
+		"sideCardEnabled": {
+			"type": "boolean",
+			"default": true
 		},
-		"sideCardText": {
+		"sideCardPostType": {
 			"type": "string",
-			"default": ""
+			"enum": [ "post", "nntm_article", "nntm_publication", "nntm_talk", "nntm_video" ],
+			"default": "nntm_article"
+		},
+		"sideCardTaxonomy": {
+			"type": "string",
+			"default": "nntm_section"
+		},
+		"sideCardTermId": {
+			"type": "number",
+			"default": 0
 		},
 		"sideCardCtaLabel": {
 			"type": "string",
 			"default": "Xem thêm"
-		},
-		"sideCardCtaUrl": {
-			"type": "string",
-			"default": ""
 		},
 		"quickLinksParentTermId": {
 			"type": "number",

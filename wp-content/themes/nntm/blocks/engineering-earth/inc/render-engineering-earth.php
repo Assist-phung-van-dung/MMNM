@@ -2,10 +2,25 @@
 /**
  * Hàm dựng HTML dùng chung cho render.php của block nntm/engineering-earth.
  *
- * Tách sang inc/ vì render.php của block bị WordPress core `require`
- * (KHÔNG phải `require_once`) mỗi lần render — khai hàm thẳng trong
- * render.php sẽ "Cannot redeclare function" khi block xuất hiện lần thứ
- * hai trên cùng trang. Xem docs/07-ban-giao.md mục "Bài học rút ra".
+ * D1 — khối "The Drum of the True Dharma" (docs/spec-trang-chu.md mục D1):
+ * nguồn video là link YouTube admin dán vào block (KHÔNG dùng YouTube Data
+ * API, giống G1 ở nntm/card-list).
+ *
+ * SỬA 13/08/2026 (đối chiếu lại với ảnh Figma thật, xem render.php mục
+ * "LỖI 1" trong ghi chú của điều phối viên): bố cục KHÔNG phải 2 khe xếp
+ * dọc tỉ lệ 3:1 như bản trước — mà là:
+ *   - Khung media LỚN bên trái, cao gần hết dải đen (590x~299) = video CHÍNH.
+ *   - Chữ "ENGINEERING EARTH" bên phải.
+ *   - MỘT THẺ NHỎ (350x197, tỉ lệ 16:9) ĐÈ LÊN góc dưới-phải, tràn xuống
+ *     DƯỚI mép dải đen ~43px = video NỀN (tự phát/câm/lặp/không điều khiển).
+ * Nhấp vào thẻ nào cũng đổi vai trò cho thẻ kia (xem view.js) — style.css
+ * quyết định khe nào to/khe nào nhỏ dựa theo class --main/--bg, nên JS chỉ
+ * cần đổi class, không cần biết toạ độ.
+ *
+ * Tách sang inc/ vì render.php bị WordPress core `require` (KHÔNG phải
+ * `require_once`) mỗi lần render — khai hàm thẳng trong render.php sẽ
+ * "Cannot redeclare function" khi block xuất hiện lần thứ hai trên cùng
+ * trang. Xem docs/07-ban-giao.md mục "Bài học rút ra".
  *
  * @package NNTM
  */
@@ -13,25 +28,134 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Dựng ảnh lớn trong dải đen.
+ * Tách ID YouTube (11 ký tự) từ một chuỗi dán vào — chấp nhận link đầy đủ
+ * (watch?v=, youtu.be/, embed/, shorts/) hoặc ID trần.
  *
- * Ưu tiên ID thư viện (có srcset, ảnh responsive); chỉ rơi về URL thô khi
- * ban quản trị dán đường dẫn ngoài. Không có gì thì trả ô giữ chỗ để dải
- * đen vẫn đủ chiều cao, không bị sụp.
+ * Trùng logic với nntm_card_list_extract_youtube_id() ở
+ * blocks/card-list/inc/render-card-list-youtube.php — cố ý KHÔNG gọi
+ * chéo sang thư mục block khác (phạm vi nhiệm vụ chỉ được sửa trong
+ * blocks/engineering-earth/**, không đụng blocks/card-list/**), nên giữ
+ * một bản riêng ở đây. Nếu sau này tách ra tiện ích dùng chung thì gộp lại.
  *
- * @param int    $image_id  ID ảnh trong Thư viện.
- * @param string $image_url URL ảnh ngoài (dự phòng).
- * @param string $image_alt Chữ thay ảnh.
+ * @param string $raw Chuỗi dán vào (URL hoặc ID trần).
+ * @return string ID hợp lệ, hoặc chuỗi rỗng nếu không nhận diện được.
+ */
+function nntm_engineering_earth_extract_youtube_id( string $raw ): string {
+	$value = trim( $raw );
+
+	if ( '' === $value ) {
+		return '';
+	}
+
+	if ( preg_match( '/^[A-Za-z0-9_-]{11}$/', $value ) ) {
+		return $value;
+	}
+
+	if ( preg_match( '#(?:youtube(?:-nocookie)?\.com/(?:watch\?v=|embed/|shorts/|v/)|youtu\.be/)([A-Za-z0-9_-]{11})#i', $value, $matches ) ) {
+		return $matches[1];
+	}
+
+	return '';
+}
+
+/**
+ * Dựng phần "bên trong" của một khe video: ảnh giữ chỗ (poster/ảnh tĩnh
+ * dự phòng/icon) + <div> rỗng để JS (view.js) tự chèn <iframe> — dùng
+ * chung cho cả khe main và khe bg, khác nhau ở nguồn ảnh dự phòng.
+ *
+ * @param string $video_id   ID YouTube — rỗng nếu chưa dán link.
+ * @param string $fallback_image_html HTML <img> tĩnh dự phòng khi KHÔNG có
+ *                           video (đã escape sẵn ở nơi gọi) — rỗng thì dùng
+ *                           icon khay phim chung.
  * @return string HTML đã escape.
  */
-function nntm_engineering_earth_render_image( int $image_id, string $image_url, string $image_alt ): string {
+function nntm_engineering_earth_render_slot_media( string $video_id, string $fallback_image_html ): string {
+	$poster_url = '' !== $video_id ? esc_url( 'https://img.youtube.com/vi/' . $video_id . '/hqdefault.jpg' ) : '';
+
+	ob_start();
+	?>
+	<?php if ( '' !== $poster_url ) : ?>
+		<img class="nntm-engineering-earth__video-poster" src="<?php echo $poster_url; // phpcs:ignore WordPress.Security.EscapeOutput -- da esc_url() truoc do. ?>" alt="" loading="lazy" decoding="async" />
+	<?php elseif ( '' !== $fallback_image_html ) : ?>
+		<?php echo $fallback_image_html; // phpcs:ignore WordPress.Security.EscapeOutput -- da escape o noi goi (wp_get_attachment_image()/esc_url()). ?>
+	<?php else : ?>
+		<span class="nntm-engineering-earth__video-poster nntm-engineering-earth__video-poster--rong" aria-hidden="true">
+			<svg viewBox="0 0 48 48" width="30" height="30" fill="none" focusable="false">
+				<rect x="4" y="10" width="40" height="28" rx="4" stroke="currentColor" stroke-width="2" />
+				<path d="M20 18 L30 24 L20 30 Z" fill="currentColor" />
+			</svg>
+		</span>
+	<?php endif; ?>
+	<div class="nntm-engineering-earth__video-embed" aria-hidden="true"></div>
+	<?php if ( '' !== $video_id ) : ?>
+		<span class="nntm-engineering-earth__video-play" aria-hidden="true">
+			<svg viewBox="0 0 60 60" width="44" height="44" fill="none" focusable="false">
+				<circle cx="30" cy="30" r="28" stroke="currentColor" stroke-width="2" />
+				<path d="M24 19 L42 30 L24 41 Z" fill="currentColor" />
+			</svg>
+		</span>
+	<?php endif; ?>
+	<?php
+	// Icon nút play chỉ HIỆN với CSS scope theo class --bg (khe nhỏ, xem
+	// style.css .video-slot--bg .video-play) — khe main không hiện, dù HTML
+	// giống nhau; khi JS đổi vai trò (đổi class) thì icon tự bật/tắt theo.
+	return trim( (string) ob_get_clean() );
+}
+
+/**
+ * Dựng một "khe" video (main hoặc bg).
+ *
+ * Chưa có video (admin chưa dán link):
+ *   - Khe MAIN: hiện ảnh tĩnh dự phòng (mainImageId/mainImageUrl của
+ *     block, admin tự chọn trong trình soạn thảo) — KHÔI PHỤC khả năng
+ *     đặt ảnh nền cho khung lớn theo yêu cầu 13/08/2026. Không có ảnh
+ *     thì hiện icon khay phim, không để ô đen trống trơn.
+ *   - Khe BG: hiện icon khay phim (không có ảnh dự phòng riêng cho khe
+ *     nhỏ — Figma không yêu cầu).
+ *
+ * @param string $video_id ID YouTube.
+ * @param string $role     'main' hoặc 'bg'.
+ * @param string $label    Chữ mô tả cho aria-label / trình đọc màn hình.
+ * @param string $fallback_image_html HTML <img> tĩnh dự phòng (chỉ dùng cho role=main), đã escape sẵn.
+ * @return string HTML đã escape.
+ */
+function nntm_engineering_earth_render_video_slot( string $video_id, string $role, string $label, string $fallback_image_html = '' ): string {
+	$is_main    = ( 'main' === $role );
+	$role_class = $is_main ? 'nntm-engineering-earth__video-slot--main' : 'nntm-engineering-earth__video-slot--bg';
+
+	ob_start();
+	?>
+	<div
+		class="nntm-engineering-earth__video-slot <?php echo esc_attr( $role_class ); ?>"
+		data-role="<?php echo esc_attr( $role ); ?>"
+		data-video-id="<?php echo esc_attr( $video_id ); ?>"
+		<?php echo '' !== $video_id ? 'tabindex="0" role="button"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput -- gia tri co dinh, khong tu du lieu ngoai. ?>
+		aria-label="<?php echo esc_attr( $label ); ?>"
+	>
+		<?php echo nntm_engineering_earth_render_slot_media( $video_id, $is_main ? $fallback_image_html : '' ); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong. ?>
+	</div>
+	<?php
+	return trim( (string) ob_get_clean() );
+}
+
+/**
+ * Dựng ảnh tĩnh dự phòng cho khung media LỚN khi chưa dán link video —
+ * ưu tiên ID ảnh trong Thư viện (có srcset), rơi về URL ngoài nếu có,
+ * không có gì thì trả rỗng (khi đó render_video_slot() tự hiện icon).
+ *
+ * @param int    $image_id  ID ảnh trong Thư viện.
+ * @param string $image_url URL ảnh ngoài (dự phòng khi không chọn từ Thư viện).
+ * @param string $image_alt Chữ thay ảnh.
+ * @return string HTML <img> đã escape, hoặc rỗng.
+ */
+function nntm_engineering_earth_render_main_fallback_image( int $image_id, string $image_url, string $image_alt ): string {
 	if ( $image_id > 0 ) {
 		$html = wp_get_attachment_image(
 			$image_id,
 			'large',
 			false,
 			array(
-				'class'   => 'nntm-engineering-earth__img-el',
+				'class'   => 'nntm-engineering-earth__video-poster',
 				'loading' => 'lazy',
 				'alt'     => $image_alt,
 			)
@@ -43,89 +167,39 @@ function nntm_engineering_earth_render_image( int $image_id, string $image_url, 
 
 	if ( '' !== $image_url ) {
 		return sprintf(
-			'<img class="nntm-engineering-earth__img-el" src="%s" alt="%s" loading="lazy" />',
+			'<img class="nntm-engineering-earth__video-poster" src="%s" alt="%s" loading="lazy" />',
 			esc_url( $image_url ),
 			esc_attr( $image_alt )
 		);
 	}
 
-	return '<span class="nntm-engineering-earth__img-placeholder" aria-hidden="true"></span>';
+	return '';
 }
 
 /**
- * Dựng thẻ video nổi đè lên mép dưới dải đen.
+ * Dựng cả sân khấu 2 video (main + bg) của dải đen.
  *
- * Figma: CARD 388x243, nền #000000 mờ 70%, đệm 20, bên trong chỉ có ảnh
- * 348x203 và nút phát 75x75 — hai lớp `DATE` và `Frame 125` (nhãn chuyên
- * mục + tiêu đề) đều visible=false nên KHÔNG hiện chữ gì.
- *
- * Chưa chọn video thì trả chuỗi rỗng: thà thiếu thẻ còn hơn để một khung
- * xám rỗng đè lên dải đen.
- *
- * @param int $video_id ID bài video (CPT nntm_video hoặc bất kỳ bài nào).
+ * @param string $main_video_url_or_id Link/ID YouTube video chính.
+ * @param string $bg_video_url_or_id   Link/ID YouTube video nền.
+ * @param int    $main_image_id  ID ảnh Thư viện dự phòng cho khung lớn (khi chưa có mainVideoUrl).
+ * @param string $main_image_url URL ảnh ngoài dự phòng cho khung lớn.
+ * @param string $main_image_alt Chữ thay ảnh dự phòng.
  * @return string HTML đã escape.
  */
-function nntm_engineering_earth_render_video_card( int $video_id ): string {
-	if ( $video_id <= 0 ) {
-		return '';
-	}
+function nntm_engineering_earth_render_video_stage( string $main_video_url_or_id, string $bg_video_url_or_id, int $main_image_id, string $main_image_url, string $main_image_alt ): string {
+	$main_id = nntm_engineering_earth_extract_youtube_id( $main_video_url_or_id );
+	$bg_id   = nntm_engineering_earth_extract_youtube_id( $bg_video_url_or_id );
 
-	$video = get_post( $video_id );
-	if ( ! $video instanceof WP_Post || 'publish' !== $video->post_status ) {
-		return '';
-	}
-
-	$permalink = get_permalink( $video );
-	$title     = get_the_title( $video );
-	$thumbnail = get_the_post_thumbnail(
-		$video,
-		'medium_large',
-		array(
-			'class'   => 'nntm-engineering-earth__card-img-el',
-			'loading' => 'lazy',
-			'alt'     => '',
-		)
-	);
+	$main_fallback_image = ( '' === $main_id )
+		? nntm_engineering_earth_render_main_fallback_image( $main_image_id, $main_image_url, $main_image_alt )
+		: '';
 
 	ob_start();
 	?>
-	<a class="nntm-engineering-earth__card" href="<?php echo esc_url( $permalink ); ?>">
-		<span class="nntm-engineering-earth__card-media">
-			<?php
-			if ( $thumbnail ) {
-				echo wp_kses_post( $thumbnail );
-			} else {
-				echo '<span class="nntm-engineering-earth__card-placeholder" aria-hidden="true"></span>';
-			}
-			?>
-			<?php
-			/*
-			 * Nút phát: Figma vẽ vector 75x75 màu #FCFCFC. Dựng bằng SVG
-			 * thay vì ảnh để đổi màu theo biến CSS và không thêm một lượt
-			 * tải tệp.
-			 */
-			?>
-			<span class="nntm-engineering-earth__card-play" aria-hidden="true">
-				<svg viewBox="0 0 75 75" width="75" height="75" fill="none" focusable="false">
-					<circle cx="37.5" cy="37.5" r="35" stroke="currentColor" stroke-width="3" />
-					<path d="M30 24.5 L54 37.5 L30 50.5 Z" fill="currentColor" />
-				</svg>
-			</span>
-		</span>
-		<?php
-		/*
-		 * Thẻ chỉ có ảnh nên không có chữ nào để trình đọc màn hình bám
-		 * vào. Tên bài để ở đây, chỉ trình đọc màn hình nghe thấy — nếu
-		 * không thì liên kết này hoàn toàn câm.
-		 */
-		?>
-		<span class="nntm-sr-only">
-			<?php
-			/* translators: %s: tên video. */
-			echo esc_html( sprintf( __( 'Xem video %s', 'nntm' ), $title ) );
-			?>
-		</span>
-	</a>
+	<div class="nntm-engineering-earth__video-stage" data-nntm-ee-stage="1">
+		<?php echo nntm_engineering_earth_render_video_slot( $main_id, 'main', __( 'Video chính — nhấp thẻ nhỏ để đổi', 'nntm' ), $main_fallback_image ); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong. ?>
+		<?php echo nntm_engineering_earth_render_video_slot( $bg_id, 'bg', __( 'Video nền — nhấp để xem làm video chính', 'nntm' ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong. ?>
+	</div>
 	<?php
 	return trim( (string) ob_get_clean() );
 }

@@ -102,6 +102,15 @@
 		return TAXONOMY_LABELS[ taxonomy ] || taxonomy;
 	}
 
+	// Nguồn video cho biến thể "băng Netflix" (G1 — dải "Gót Son"). Anh Úy
+	// chốt 12/08/2026: dán link YouTube trực tiếp, KHÔNG dùng YouTube Data
+	// API. "posts" là mặc định nên mọi khối card-list đang có trên site
+	// (chưa từng lưu attribute này) giữ nguyên hành vi cũ.
+	var VIDEO_SOURCE_OPTIONS = [
+		{ label: __( 'Bài viết trong CSDL (mặc định)', 'nntm' ), value: 'posts' },
+		{ label: __( 'Dán link YouTube', 'nntm' ), value: 'youtube' },
+	];
+
 	registerBlockType( 'nntm/card-list', {
 		edit: function ( props ) {
 			var attributes = props.attributes;
@@ -201,53 +210,88 @@
 						PanelBody,
 						{ title: __( 'Lấy nội dung từ đâu', 'nntm' ), initialOpen: true },
 						el( SelectControl, {
-							label: __( 'Lấy bài từ loại nội dung nào', 'nntm' ),
-							value: attributes.postType,
-							options: POST_TYPE_OPTIONS,
+							label: __( 'Nguồn video / bài viết', 'nntm' ),
+							help: __( 'Dùng cho băng thẻ kiểu Netflix (dải "Gót Son"): chọn "Dán link YouTube" để tự nhập danh sách video, không lấy từ bài viết trong CSDL.', 'nntm' ),
+							value: attributes.videoSource || 'posts',
+							options: VIDEO_SOURCE_OPTIONS,
 							onChange: function ( value ) {
-								setAttributes( { postType: value, taxonomy: '', termId: 0 } );
+								setAttributes( { videoSource: value } );
 							},
 						} ),
-						el( SelectControl, {
-							label: __( 'Lọc theo', 'nntm' ),
-							help: __( 'Chỉ lấy bài thuộc một mục/chủ đề cụ thể. Để trống nếu muốn lấy tất cả.', 'nntm' ),
-							value: attributes.taxonomy,
-							options: taxonomyOptions,
-							onChange: function ( value ) {
-								setAttributes( { taxonomy: value, termId: 0 } );
-							},
-						} ),
-						attributes.taxonomy
-							? el( SelectControl, {
-									label: __( 'Lấy bài từ mục nào', 'nntm' ),
-									value: attributes.termId,
-									options: termOptions,
+						'youtube' === attributes.videoSource
+							? el( TextareaControl, {
+									label: __( 'Danh sách link YouTube', 'nntm' ),
+									help: __( 'Mỗi dòng một video. Dán link dạng youtube.com/watch?v=…, youtu.be/… hoặc chỉ ID video đều được. Muốn tự đặt tiêu đề hiện dưới thẻ thì gõ thêm " | Tiêu đề" ngay trên cùng dòng (ví dụ: https://youtu.be/abc123 | TẬP 18 - CHÂN SƯ HIỆN THÁNH TƯỚNG); không gõ thì tự lấy tên video từ YouTube. Ảnh nền thẻ lấy trực tiếp từ YouTube, không cần tải ảnh lên.', 'nntm' ),
+									value: attributes.youtubeItems || '',
+									rows: 6,
 									onChange: function ( value ) {
-										setAttributes( { termId: parseInt( value, 10 ) || 0 } );
+										setAttributes( { youtubeItems: value } );
 									},
 							  } )
-							: null
+							: [
+									el( SelectControl, {
+										key: 'postType',
+										label: __( 'Lấy bài từ loại nội dung nào', 'nntm' ),
+										value: attributes.postType,
+										options: POST_TYPE_OPTIONS,
+										onChange: function ( value ) {
+											setAttributes( { postType: value, taxonomy: '', termId: 0 } );
+										},
+									} ),
+									el( SelectControl, {
+										key: 'taxonomy',
+										label: __( 'Lọc theo', 'nntm' ),
+										help: __( 'Chỉ lấy bài thuộc một mục/chủ đề cụ thể. Để trống nếu muốn lấy tất cả.', 'nntm' ),
+										value: attributes.taxonomy,
+										options: taxonomyOptions,
+										onChange: function ( value ) {
+											setAttributes( { taxonomy: value, termId: 0 } );
+										},
+									} ),
+									attributes.taxonomy
+										? el( SelectControl, {
+												key: 'termId',
+												label: __( 'Lấy bài từ mục nào', 'nntm' ),
+												value: attributes.termId,
+												options: termOptions,
+												onChange: function ( value ) {
+													setAttributes( { termId: parseInt( value, 10 ) || 0 } );
+												},
+										  } )
+										: null,
+							  ]
 					),
 					el(
 						PanelBody,
 						{ title: __( 'Hiển thị', 'nntm' ), initialOpen: true },
-						el( SelectControl, {
-							label: __( 'Kiểu thẻ hiển thị', 'nntm' ),
-							value: attributes.variant,
-							options: VARIANT_OPTIONS,
-							onChange: function ( value ) {
-								setAttributes( { variant: value } );
-							},
-						} ),
-						el( SelectControl, {
-							label: __( 'Kiểu hiển thị', 'nntm' ),
-							help: __( 'Lưới: xếp nhiều hàng, có thể phân trang. Băng cuộn ngang: một hàng duy nhất, khách cuộn bằng nút lùi/tiến hoặc bàn phím — hợp với Ấn Phẩm.', 'nntm' ),
-							value: attributes.layout || 'grid',
-							options: LAYOUT_OPTIONS,
-							onChange: function ( value ) {
-								setAttributes( { layout: value } );
-							},
-						} ),
+						'youtube' === attributes.videoSource
+							? el(
+									'p',
+									{ className: 'components-base-control__help' },
+									__( 'Nguồn "Dán link YouTube" luôn hiện thành băng cuộn tự chạy kiểu Netflix — không dùng các tuỳ chọn "Kiểu thẻ hiển thị" / "Kiểu hiển thị" bên dưới.', 'nntm' )
+							  )
+							: null,
+						'youtube' === attributes.videoSource
+							? null
+							: el( SelectControl, {
+									label: __( 'Kiểu thẻ hiển thị', 'nntm' ),
+									value: attributes.variant,
+									options: VARIANT_OPTIONS,
+									onChange: function ( value ) {
+										setAttributes( { variant: value } );
+									},
+							  } ),
+						'youtube' === attributes.videoSource
+							? null
+							: el( SelectControl, {
+									label: __( 'Kiểu hiển thị', 'nntm' ),
+									help: __( 'Lưới: xếp nhiều hàng, có thể phân trang. Băng cuộn ngang: một hàng duy nhất, khách cuộn bằng nút lùi/tiến hoặc bàn phím — hợp với Ấn Phẩm.', 'nntm' ),
+									value: attributes.layout || 'grid',
+									options: LAYOUT_OPTIONS,
+									onChange: function ( value ) {
+										setAttributes( { layout: value } );
+									},
+							  } ),
 						el( SelectControl, {
 							label: __( 'Màu nền khối', 'nntm' ),
 							help: __( 'Nền tràn hết chiều rộng trang. Nền cam và nền tối tự đổi chữ tiêu đề sang màu kem cho đủ tương phản.', 'nntm' ),
@@ -260,20 +304,24 @@
 						// Hang bieu tuong nghe nhac o duoi cung khoi (Figma SECTION 5).
 						// De trong ca hai o thi khong hien hang nay — cac khoi
 						// card-list o trang phan muc khong bi moc them gi.
-						el( ToggleControl, {
-							label: __( 'Hiện ngày cập nhật trên thẻ', 'nntm' ),
-							checked: attributes.showDate !== false,
-							onChange: function ( value ) {
-								setAttributes( { showDate: value } );
-							},
-						} ),
-						el( ToggleControl, {
-							label: __( 'Hiện nhãn chuyên mục trên thẻ', 'nntm' ),
-							checked: attributes.showCategory !== false,
-							onChange: function ( value ) {
-								setAttributes( { showCategory: value } );
-							},
-						} ),
+						'youtube' === attributes.videoSource
+							? null
+							: el( ToggleControl, {
+									label: __( 'Hiện ngày cập nhật trên thẻ', 'nntm' ),
+									checked: attributes.showDate !== false,
+									onChange: function ( value ) {
+										setAttributes( { showDate: value } );
+									},
+							  } ),
+						'youtube' === attributes.videoSource
+							? null
+							: el( ToggleControl, {
+									label: __( 'Hiện nhãn chuyên mục trên thẻ', 'nntm' ),
+									checked: attributes.showCategory !== false,
+									onChange: function ( value ) {
+										setAttributes( { showCategory: value } );
+									},
+							  } ),
 						// Tieu de so le va doan chu duoi dai — tu Figma SECTION 3
 						// (bang video "Got Son"). De trong thi khoi hien binh
 						// thuong nhu cu, khong doi gi.

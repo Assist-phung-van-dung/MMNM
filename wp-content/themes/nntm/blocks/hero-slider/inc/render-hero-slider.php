@@ -243,6 +243,50 @@ if ( ! function_exists( 'nntm_hero_slider_render_dots' ) ) {
 	}
 }
 
+if ( ! function_exists( 'nntm_hero_slider_render_nav' ) ) {
+	/**
+	 * Dựng cặp nút mũi tên trái/phải chuyển tấm — chỉ được gọi khi có nhiều
+	 * hơn một tấm và khách không tắt tuỳ chọn "arrowsEnabled" trong bảng
+	 * điều khiển (render.php tự kiểm tra hai điều kiện này trước, hàm này
+	 * không tự kiểm tra lại).
+	 *
+	 * Thiết kế Figma của khối hero (6376-6322) không có mũi tên, chỉ có
+	 * chấm — nên đây là hai nút tự dựng, bắt chước đúng ngôn ngữ nút tròn
+	 * đã có sẵn ở nơi khác trong site (template-parts/r1/tong-chi.php +
+	 * assets/css/pages/r1.css): nút tròn nổi, đổ bóng --nntm-sh-nut, mũi
+	 * tên SVG contour bằng currentColor. view.js gắn hành vi bấm chuyển
+	 * tấm (data-nntm-hero-prev / data-nntm-hero-next).
+	 *
+	 * @return string HTML đã escape.
+	 */
+	function nntm_hero_slider_render_nav(): string {
+		ob_start();
+		?>
+		<button
+			type="button"
+			class="nntm-hero-slider__nav nntm-hero-slider__nav--prev"
+			data-nntm-hero-prev
+			aria-label="<?php esc_attr_e( 'Tấm trước', 'nntm' ); ?>"
+		>
+			<svg viewBox="0 0 20 16" aria-hidden="true" focusable="false">
+				<path d="M8 1 1 8l7 7M1 8h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+			</svg>
+		</button>
+		<button
+			type="button"
+			class="nntm-hero-slider__nav nntm-hero-slider__nav--next"
+			data-nntm-hero-next
+			aria-label="<?php esc_attr_e( 'Tấm sau', 'nntm' ); ?>"
+		>
+			<svg viewBox="0 0 20 16" aria-hidden="true" focusable="false">
+				<path d="M12 1l7 7-7 7M19 8H1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+			</svg>
+		</button>
+		<?php
+		return trim( (string) ob_get_clean() );
+	}
+}
+
 if ( ! function_exists( 'nntm_hero_slider_render_quicklinks' ) ) {
 	/**
 	 * Dựng dải nút liên kết nhanh ở đáy trái — lấy term con của
@@ -304,38 +348,48 @@ if ( ! function_exists( 'nntm_hero_slider_render_quicklinks' ) ) {
 
 if ( ! function_exists( 'nntm_hero_slider_render_sidecard' ) ) {
 	/**
-	 * Dựng thẻ mờ góc phải dưới — nội dung tĩnh (không đổi theo tấm đang
-	 * xem), lấy từ 4 thuộc tính sideCard* của block. Không có tiêu đề và
-	 * không có mô tả thì trả về chuỗi rỗng (không dựng khối rỗng xấu).
+	 * Dựng thẻ mờ góc phải dưới — TIN MỚI NHẤT lấy từ CSDL (yêu cầu anh Úy
+	 * 12/08/2026, mục H2: trước đây là chữ chết nhập tay, không được nữa).
 	 *
-	 * @param string $heading   sideCardHeading đã làm sạch.
-	 * @param string $text      sideCardText đã làm sạch.
-	 * @param string $cta_label sideCardCtaLabel đã làm sạch.
-	 * @param string $cta_url   sideCardCtaUrl đã làm sạch.
-	 * @return string HTML đã escape (rỗng nếu không có gì để hiện).
+	 * $article do render.php truy vấn sẵn bằng nntm_core_get_latest_posts()
+	 * (plugin nntm-core) — hàm này chỉ lo phần DỰNG HTML, không tự truy
+	 * vấn, đúng nguyên tắc "logic dữ liệu gom về plugin" (docs/04-kien-truc.md
+	 * mục 9). Không tìm được bài nào thì trả về chuỗi rỗng — không dựng
+	 * khối rỗng xấu.
+	 *
+	 * @param WP_Post|null $article   Bài mới nhất đã lấy sẵn, null nếu chưa có bài nào.
+	 * @param string       $cta_label sideCardCtaLabel đã làm sạch.
+	 * @return string HTML đã escape (rỗng nếu không có bài).
 	 */
-	function nntm_hero_slider_render_sidecard( string $heading, string $text, string $cta_label, string $cta_url ): string {
-		$has_heading = '' !== trim( $heading );
-		$has_text    = '' !== trim( $text );
-		$has_cta     = '' !== trim( $cta_label ) && '' !== $cta_url;
-
-		if ( ! $has_heading && ! $has_text ) {
+	function nntm_hero_slider_render_sidecard( ?WP_Post $article, string $cta_label ): string {
+		if ( null === $article ) {
 			return '';
 		}
+
+		$permalink = get_permalink( $article );
+		$title     = get_the_title( $article );
+
+		if ( '' === trim( $title ) || ! $permalink ) {
+			return '';
+		}
+
+		// Dòng mô tả ngắn — tóm tắt nhập tay của bài, không có thì bỏ qua
+		// dòng này (không tự bịa chữ từ thân bài, tránh trùng lặp máy móc).
+		$excerpt = trim( wp_strip_all_tags( (string) $article->post_excerpt ) );
 
 		ob_start();
 		?>
 		<aside class="nntm-hero-slider__sidecard">
-			<?php if ( $has_heading ) : ?>
-				<p class="nntm-hero-slider__sidecard-heading"><?php echo nntm_hero_slider_multiline( $heading ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?></p>
+			<p class="nntm-hero-slider__sidecard-heading nntm-cat-2-dong">
+				<a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( $title ); ?></a>
+			</p>
+
+			<?php if ( '' !== $excerpt ) : ?>
+				<p class="nntm-hero-slider__sidecard-text"><?php echo esc_html( wp_trim_words( $excerpt, 16, '…' ) ); ?></p>
 			<?php endif; ?>
 
-			<?php if ( $has_text ) : ?>
-				<p class="nntm-hero-slider__sidecard-text"><?php echo esc_html( $text ); ?></p>
-			<?php endif; ?>
-
-			<?php if ( $has_cta ) : ?>
-				<a class="nntm-hero-slider__sidecard-cta" href="<?php echo esc_url( $cta_url ); ?>">
+			<?php if ( '' !== trim( $cta_label ) ) : ?>
+				<a class="nntm-hero-slider__sidecard-cta" href="<?php echo esc_url( $permalink ); ?>">
 					<?php echo esc_html( $cta_label ); ?>
 				</a>
 			<?php endif; ?>

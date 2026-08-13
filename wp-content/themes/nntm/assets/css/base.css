@@ -193,6 +193,22 @@ hr {
 	color: var(--nntm-trang);
 }
 
+/*
+ * Cắt tiêu đề tối đa 2 dòng, quá thì hiện "…" — yêu cầu anh Úy 12/08/2026
+ * (spec trang chủ mục M1.4 / D): "mọi ô có chữ trên/dưới ảnh" phải giới
+ * hạn 2 dòng, kể cả các thẻ đã có min-height giữ chỗ — clamp cắt PHẦN
+ * HIỂN THỊ, min-height (nếu có) vẫn tiếp tục giữ chỗ để card không xô
+ * lệch khi tiêu đề ngắn. Dùng chung cho mọi block có tiêu đề trên/dưới
+ * ảnh (article-mosaic, card-list, card, …) — gắn thẳng class này lên
+ * phần tử tiêu đề, không cần viết lại -webkit-line-clamp ở từng file.
+ */
+.nntm-cat-2-dong {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	overflow: hidden;
+}
+
 /* Ẩn nội dung nhưng vẫn đọc được bằng trình đọc màn hình. */
 .nntm-sr-only {
 	position: absolute;

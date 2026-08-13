@@ -30,6 +30,10 @@
 			"type": "number",
 			"default": 0
 		},
+		"pinnedPostId": {
+			"type": "number",
+			"default": 0
+		},
 		"leadMedia": {
 			"type": "string",
 			"enum": [ "tall", "short" ],
@@ -68,10 +72,6 @@
 		"showDate": {
 			"type": "boolean",
 			"default": true
-		},
-		"ctaLabel": {
-			"type": "string",
-			"default": "Xem thêm"
 		}
 	},
 	"editorScript": "file:./editor.js",

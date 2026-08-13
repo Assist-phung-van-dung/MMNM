@@ -29,28 +29,32 @@
 			"type": "string",
 			"default": "WHAT WILL EARTH LOOK LIKE?"
 		},
-		"caption": {
+		"mainVideoUrl": {
 			"type": "string",
-			"default": ""
+			"default": "https://www.youtube.com/watch?v=gJAbDSse5WM&list=RDgJAbDSse5WM&start_radio=1",
+			"description": "LINK TAM (mau) do anh Uy chot 13/08/2026 - se thay khi khach gui link that. Video chinh mac dinh cho khoi engineering-earth moi chen vao."
 		},
-		"imageId": {
+		"bgVideoUrl": {
+			"type": "string",
+			"default": "https://www.youtube.com/watch?v=gJAbDSse5WM&list=RDgJAbDSse5WM&start_radio=1",
+			"description": "LINK TAM (mau) do anh Uy chot 13/08/2026 - se thay khi khach gui link that. Video nen mac dinh cho khoi engineering-earth moi chen vao."
+		},
+		"mainImageId": {
 			"type": "number",
-			"default": 0
+			"default": 0,
+			"description": "Anh tinh du phong cho khung media lon (ben trai) khi CHUA dan link mainVideoUrl — khoi phuc lai kha nang chon anh tu Thu vien (yeu cau 13/08/2026), tranh khung den trong."
 		},
-		"imageUrl": {
+		"mainImageUrl": {
 			"type": "string",
 			"default": ""
 		},
-		"imageAlt": {
+		"mainImageAlt": {
 			"type": "string",
 			"default": ""
-		},
-		"videoId": {
-			"type": "number",
-			"default": 0
 		}
 	},
 	"editorScript": "file:./editor.js",
+	"viewScript": "file:./view.js",
 	"style": "file:./style.css",
 	"render": "file:./render.php"
 }

@@ -104,6 +104,16 @@
 		"youtubeUrl": {
 			"type": "string",
 			"default": ""
+		},
+		"videoSource": {
+			"type": "string",
+			"enum": [ "posts", "youtube" ],
+			"default": "posts"
+		},
+		"youtubeItems": {
+			"type": "string",
+			"default": "https://www.youtube.com/watch?v=gJAbDSse5WM&list=RDgJAbDSse5WM&start_radio=1",
+			"description": "LINK TAM (mau) do anh Uy chot 13/08/2026 - se thay bang danh sach that khi khach gui. Moi khoi card-list moi chen vao trang deu co san 1 dong video mau nay de chay ngay."
 		}
 	},
 	"editorScript": "file:./editor.js",

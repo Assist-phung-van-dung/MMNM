@@ -25,75 +25,64 @@
 
    Cong chieu cao: 20+20+10 + (ke 0 + 21 + hang 46) + 10+20+20 = 167.
 
+   GHI CHU 12/08/2026: cay "do node rieng" o tren da bi spec moi hon
+   (spec-trang-chu.md, do truc tiep tren khung 01_HOMEPAGE) thay the — spec
+   moi khong thay lop den 1366x167 boc ngoai, chi ghi mot dai #4F4F4F cao
+   127px. Da sua theo spec moi luc do (mot mau #4F4F4F day het chieu ngang).
+
+   GHI CHU 13/08/2026: ban 12/08 nói trên CŨNG SAI — anh Uy cat rieng anh
+   fig-footer.png cho thay khoi xam KHONG day het chieu ngang, ma thut vao
+   ca hai ben, phia tren/duoi khoi la nen TRANG. Cay "do node rieng" 10/08
+   ban dau (FOOTER den boc Frame 158 xam) hoa ra dung VE CAU TRUC (hai lop
+   long nhau), chi SAI MAU o lop ngoai (den → phai la trang). Da sua theo
+   dung cau truc hai lop: .nntm-footer nen trang lam lop ngoai (kem dem
+   ngang tao khoang thut), .nntm-footer__bar nen xam lam lop trong — xem
+   chu thich ngay tren khai bao hai class nay phia duoi. Khoi "Hay chia se
+   Y kien" cung da go theo chi dao nay — xem footer.php.
+
    CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
    assets/css/tokens.css. Mã màu trong chú thích chỉ để tra cứu.
    ============================================================= */
 
-/* Lớp ngoài cùng: nền ĐEN, đệm 20 — chính là lớp bản dựng trước bỏ sót,
-   nguyên nhân chân trang thấp hơn thiết kế 36px. */
+/*
+ * SUA 13/08/2026 — chi dao anh Uy, doi chieu anh cat rieng vung chan trang
+ * fig-footer.png (thay cho bang do dai ngang tren toan khung homepage dung
+ * truoc do): chan trang KHONG phai mot dai #4F4F4F day het chieu ngang.
+ * Dung la HAI lop:
+ *
+ *   .nntm-footer      nen TRANG (--nntm-trang), day het chieu rong; dem
+ *                     ngang tao khoang THUT vao ~20px cho khoi xam ben
+ *                     trong; dem doc tao khoang trang phia tren/duoi khoi.
+ *   .nntm-footer__bar nen XAM (--nntm-muc-nhat), la khoi thut le do —
+ *                     chinh no moi la "khoi nen xam" trong anh Figma.
+ *
+ * Khoi "Hay chia se Y kien cua ban" DA GO (xem chu thich dau footer.php) —
+ * anh Figma khong co khoi nay, day la quyet dinh moi cua anh Uy 13/08/2026
+ * thay cho quyet dinh giu lai truoc do.
+ */
 .nntm-footer {
-	background-color: var(--nntm-den); /* tu Figma: #000000 */
+	background-color: var(--nntm-trang); /* tu Figma: nen trang phia tren/duoi khoi xam */
 	color: var(--nntm-vien);
-	padding: var(--nntm-sp-5); /* tu Figma: padding 20 */
+	padding-inline: var(--nntm-sp-5); /* 20 — tao khoang thut cho khoi xam ben trong so voi mep trai/phai */
+	padding-block: var(--nntm-sp-4);  /* 15 — khoang trang phia tren/duoi khoi xam */
 }
 
-/* Thanh xám nằm trong nền đen. */
 .nntm-footer__bar {
 	max-width: none;
 	margin-inline: auto;
-	padding: var(--nntm-sp-5);               /* tu Figma: padding 20 */
-	background-color: var(--nntm-muc-nhat);  /* tu Figma: #4F4F4F */
+	background-color: var(--nntm-muc-nhat); /* tu Figma: khoi nen xam #4F4F4F, thut le nho dem ngang o .nntm-footer */
+	padding: var(--nntm-sp-5); /* 20 — dem trong khoi xam, quanh duong ke + hang noi dung */
 }
 
 .nntm-footer__inner {
 	max-width: 1286px;             /* tu Figma: Frame 147 */
 	margin-inline: auto;
-	padding: var(--nntm-sp-3);     /* tu Figma: padding 10 */
-}
-
-.nntm-footer__share {
-	display: flex;
-	align-items: center;
-	flex-wrap: wrap;
-	gap: var(--nntm-sp-3);
-	margin-bottom: var(--nntm-sp-8);
-	font-family: var(--nntm-font-display);
-	font-size: 38px;
-	font-weight: 600;
-	line-height: 44px;
-	color: var(--nntm-kem);
-}
-
-.nntm-footer__share-link {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	min-height: 50px;
-	padding: 3px var(--nntm-sp-5);
-	border-radius: 4px;
-	background-color: var(--nntm-vien);
-	font-family: var(--nntm-font-serif);
-	font-size: var(--nntm-fs-md);
-	font-style: italic;
-	font-weight: 400;
-	line-height: var(--nntm-lh-vua);
-	color: var(--nntm-muc-nhat);
-	text-decoration: none;
-}
-
-.nntm-footer__share-link:hover,
-.nntm-footer__share-link:focus-visible {
-	background-color: var(--nntm-trang);
-}
-
-.nntm-footer__share-link:focus-visible {
-	outline: 2px solid var(--nntm-kem);
-	outline-offset: 3px;
+	padding: 0;
 }
 
 .nntm-footer__rule {
 	width: 100%;
-	margin: 0;
+	margin: 0 0 var(--nntm-sp-4) 0; /* 15 — khoang cach tu duong ke xuong hang noi dung */
 	border: 0;
 	border-top: 1px solid var(--nntm-reu-dam); /* hairline */
 }
@@ -103,7 +92,6 @@
 	align-items: center;
 	gap: var(--nntm-sp-5);       /* tu Figma: Frame 156 gap 20 */
 	min-height: 46px;            /* tu Figma: Frame 146 cao 46 */
-	margin-top: 21px;            /* tu Figma: 71 - 50 = 21, khong co token khop */
 }
 
 /* ---------- Logo chữ 2 dòng ---------- */
@@ -210,15 +198,12 @@
 
 @media (max-width: 1365px) {
 	.nntm-footer {
-		padding: var(--nntm-sp-3);
+		padding-inline: var(--nntm-sp-3);
+		padding-block: var(--nntm-sp-3);
 	}
 
 	.nntm-footer__bar {
 		padding: var(--nntm-sp-4);
-	}
-
-	.nntm-footer__inner {
-		padding-inline: var(--nntm-sp-3);
 	}
 }
 
@@ -240,11 +225,6 @@
 }
 
 @media (max-width: 600px) {
-	.nntm-footer__share {
-		font-size: var(--nntm-fs-2xl);
-		line-height: var(--nntm-lh-chat);
-	}
-
 	.nntm-footer-nav {
 		flex-direction: column;
 		align-items: flex-start;

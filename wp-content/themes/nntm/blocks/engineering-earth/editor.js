@@ -11,8 +11,6 @@
 	'use strict';
 
 	var el = wp.element.createElement;
-	var useState = wp.element.useState;
-	var useEffect = wp.element.useEffect;
 	var __ = wp.i18n.__;
 	var registerBlockType = wp.blocks.registerBlockType;
 	var useBlockProps = wp.blockEditor.useBlockProps;
@@ -22,72 +20,13 @@
 	var PanelBody = wp.components.PanelBody;
 	var Button = wp.components.Button;
 	var TextControl = wp.components.TextControl;
-	var TextareaControl = wp.components.TextareaControl;
-	var SelectControl = wp.components.SelectControl;
-	var apiFetch = wp.apiFetch;
 	var ServerSideRender = wp.serverSideRender && wp.serverSideRender.default ? wp.serverSideRender.default : wp.serverSideRender;
-
-	// REST trả tiêu đề dạng HTML đã mã hoá. Giải mã để danh sách thả xuống
-	// hiện đúng chữ như trên trang.
-	function plainTitle( post ) {
-		var raw = ( post && post.title && post.title.rendered ) || '';
-		var box = document.createElement( 'textarea' );
-		box.innerHTML = raw;
-		return box.value.trim() || __( '(bài không có tiêu đề)', 'nntm' );
-	}
 
 	registerBlockType( 'nntm/engineering-earth', {
 		edit: function ( props ) {
 			var attributes = props.attributes;
 			var setAttributes = props.setAttributes;
 			var blockProps = useBlockProps();
-
-			var videoState = useState( [] );
-			var availableVideos = videoState[ 0 ];
-			var setAvailableVideos = videoState[ 1 ];
-
-			// Danh sách video để chọn. Lấy CPT nntm_video; chưa có bài nào
-			// thì danh sách rỗng và ô chỉ còn "Không hiện thẻ video".
-			useEffect( function () {
-				var isCurrent = true;
-
-				apiFetch( { path: '/wp/v2/nntm_video?per_page=100&orderby=date&order=desc&_fields=id,title' } )
-					.then( function ( posts ) {
-						if ( isCurrent ) {
-							setAvailableVideos(
-								( posts || [] ).map( function ( one ) {
-									return { id: one.id, title: plainTitle( one ) };
-								} )
-							);
-						}
-					} )
-					.catch( function () {
-						if ( isCurrent ) {
-							setAvailableVideos( [] );
-						}
-					} );
-
-				return function () {
-					isCurrent = false;
-				};
-			}, [] );
-
-			var videoOptions = [ { label: __( '— Không hiện thẻ video —', 'nntm' ), value: 0 } ].concat(
-				availableVideos.map( function ( one ) {
-					return { label: one.title, value: one.id };
-				} )
-			);
-			// Video đã chọn có thể đã bị xoá hoặc chuyển nháp — vẫn phải hiện
-			// trong ô, nếu không ban quản trị mở ra tưởng mình chưa chọn gì.
-			var daBiet = availableVideos.some( function ( one ) {
-				return one.id === attributes.videoId;
-			} );
-			if ( attributes.videoId && ! daBiet ) {
-				videoOptions.push( {
-					label: __( 'Video số ', 'nntm' ) + attributes.videoId + __( ' (không còn trong danh sách)', 'nntm' ),
-					value: attributes.videoId,
-				} );
-			}
 
 			return el(
 				'div',
@@ -126,52 +65,72 @@
 								setAttributes( { bandSubtitle: value } );
 							},
 						} ),
-						el( TextareaControl, {
-							label: __( 'Đoạn chú thích dưới dải', 'nntm' ),
-							help: __( 'Để trống thì không hiện đoạn này.', 'nntm' ),
-							value: attributes.caption,
+					),
+					el(
+						PanelBody,
+						{ title: __( 'Video (D1 — dán link YouTube)', 'nntm' ), initialOpen: true },
+						el(
+							'p',
+							{ className: 'components-base-control__help' },
+							__( 'Anh Úy chốt: dán link/ID YouTube trực tiếp, KHÔNG dùng YouTube Data API. Ảnh giữ chỗ lấy trực tiếp từ YouTube, không cần tải ảnh lên.', 'nntm' )
+						),
+						el( TextControl, {
+							label: __( 'Video chính (khung media lớn)', 'nntm' ),
+							help: __( 'Dán link dạng youtube.com/watch?v=…, youtu.be/… hoặc chỉ ID video. Chưa dán thì khung lớn hiện ảnh dự phòng ở panel bên dưới.', 'nntm' ),
+							value: attributes.mainVideoUrl || '',
 							onChange: function ( value ) {
-								setAttributes( { caption: value } );
+								setAttributes( { mainVideoUrl: value } );
+							},
+						} ),
+						el( TextControl, {
+							label: __( 'Video nền (thẻ nhỏ tràn mép, nhấp để đổi làm video chính)', 'nntm' ),
+							help: __( 'Cùng định dạng như trên. Nhấp vào video nào trên trang thì video đó thành video chính.', 'nntm' ),
+							value: attributes.bgVideoUrl || '',
+							onChange: function ( value ) {
+								setAttributes( { bgVideoUrl: value } );
 							},
 						} )
 					),
 					el(
 						PanelBody,
-						{ title: __( 'Ảnh lớn trên dải đen', 'nntm' ), initialOpen: true },
+						{ title: __( 'Ảnh dự phòng khung lớn', 'nntm' ), initialOpen: false },
+						el(
+							'p',
+							{ className: 'components-base-control__help' },
+							__( 'Chỉ hiện khi CHƯA dán "Video chính" ở panel trên — tránh khung media lớn trống trơn trước khi có link YouTube.', 'nntm' )
+						),
 						el(
 							MediaUploadCheck,
 							{},
 							el( MediaUpload, {
 								allowedTypes: [ 'image' ],
-								value: attributes.imageId,
+								value: attributes.mainImageId,
 								onSelect: function ( media ) {
 									setAttributes( {
-										imageId: media.id,
-										imageUrl: media.url,
-										// Lấy sẵn chữ thay ảnh đã nhập trong Thư viện;
-										// chưa có thì để ban quản trị nhập ở ô dưới.
-										imageAlt: media.alt || attributes.imageAlt || '',
+										mainImageId: media.id,
+										mainImageUrl: media.url,
+										mainImageAlt: media.alt || attributes.mainImageAlt || '',
 									} );
 								},
 								render: function ( o ) {
 									return el(
 										Button,
 										{ variant: 'secondary', onClick: o.open },
-										attributes.imageId
+										attributes.mainImageId
 											? __( 'Đổi ảnh', 'nntm' )
 											: __( 'Chọn ảnh từ Thư viện', 'nntm' )
 									);
 								},
 							} )
 						),
-						attributes.imageId
+						attributes.mainImageId
 							? el(
 									Button,
 									{
 										variant: 'tertiary',
 										isDestructive: true,
 										onClick: function () {
-											setAttributes( { imageId: 0, imageUrl: '', imageAlt: '' } );
+											setAttributes( { mainImageId: 0, mainImageUrl: '', mainImageAlt: '' } );
 										},
 									},
 									__( 'Bỏ ảnh', 'nntm' )
@@ -179,10 +138,9 @@
 							: null,
 						el( TextControl, {
 							label: __( 'Chữ thay ảnh (cho người khiếm thị)', 'nntm' ),
-							help: __( 'Mô tả ngắn nội dung ảnh. Ảnh chỉ để trang trí thì để trống.', 'nntm' ),
-							value: attributes.imageAlt || '',
+							value: attributes.mainImageAlt || '',
 							onChange: function ( value ) {
-								setAttributes( { imageAlt: value } );
+								setAttributes( { mainImageAlt: value } );
 							},
 						} ),
 						el( TextControl, {
@@ -190,22 +148,9 @@
 							help: __( 'Chỉ dùng khi ảnh không nằm trong Thư viện. Chọn ảnh ở trên thì bỏ qua ô này.', 'nntm' ),
 							type: 'url',
 							placeholder: 'https://…',
-							value: attributes.imageUrl || '',
+							value: attributes.mainImageUrl || '',
 							onChange: function ( value ) {
-								setAttributes( { imageUrl: value } );
-							},
-						} )
-					),
-					el(
-						PanelBody,
-						{ title: __( 'Thẻ video nổi', 'nntm' ), initialOpen: true },
-						el( SelectControl, {
-							label: __( 'Video hiển thị', 'nntm' ),
-							help: __( 'Thẻ chỉ hiện ảnh đại diện và nút phát, đúng theo thiết kế — không hiện tên hay ngày.', 'nntm' ),
-							value: attributes.videoId,
-							options: videoOptions,
-							onChange: function ( value ) {
-								setAttributes( { videoId: parseInt( value, 10 ) || 0 } );
+								setAttributes( { mainImageUrl: value } );
 							},
 						} )
 					)

@@ -62,8 +62,52 @@
      "Gót Son"        y=-68  x=93   58/68  #000000  <- TREN dai
      "Xuyên Vạn Kiếp" y=0    x=200  58/68  #FCFDFE  <- TRONG dai, thut phai
      doan chu nghieng y=554  x=142  18/26  #3F3B3B  italic, can giua
+
+   SỬA 12/08/2026 (theo yêu cầu chỉnh lại A1 sau khi đo trên trang thật):
+   ".nntm-card-list--nen-toi" đo được 669px KỂ CẢ heading-above + caption-below
+   (668.75px thực đo, ứng với y=2699→3242 trong bảng dải Figma) — vì cả hai
+   đoạn chữ này nằm TRONG cùng thẻ <section> với dải đen, nên chiều cao box
+   của <section> = heading-above + band + caption-below cộng lại, dù mắt
+   nhìn thấy heading/caption đứng NGOÀI dải đen.
+
+   Đây đúng là ý Figma: "Gót Son" ở y=-68 tức NẰM TRÊN, đè lên phần cuối
+   của SECTION TRƯỚC (trích dẫn, nền trắng — không lệch màu); đoạn chữ
+   nghiêng ở y=554 tức đè xuống phần đầu của SECTION SAU (dải "Drum of the
+   True Dharma", cũng nền trắng). Cả hai section liền kề đều nền trắng nên
+   phần chữ đè lên không lộ viền/lỗi màu gì — ĐÚNG Ý ĐỒ THIẾT KẾ, không phải
+   hộp trống.
+
+   Cách làm cho <section> "co lại" đúng 544 (chỉ còn = dải đen) mà chữ vẫn
+   hiện đủ: đưa heading-above/caption-below ra khỏi LUỒNG (position:absolute)
+   — phần tử absolute không được tính vào chiều cao của phần tử cha, nhưng
+   vẫn vẽ đè lên đúng chỗ nhờ neo theo mép trên/dưới của <section> (mốc là
+   .nntm-card-list:has(...) đặt position:relative bên dưới).
    ============================================================= */
+.nntm-card-list:has(> .nntm-card-list__heading-above),
+.nntm-card-list:has(> .nntm-card-list__caption-below) {
+	position: relative;
+	/*
+	 * z-index cho riêng trường hợp caption-below: caption đè XUỐNG section
+	 * KẾ TIẾP trên trang (DOM sau ta) — thứ tự vẽ mặc định của trình duyệt
+	 * ưu tiên phần tử ĐỨNG SAU trong DOM (section kế tiếp) vẽ trên section
+	 * này, nên nếu không có z-index thì caption sẽ bị section sau che mất.
+	 */
+	z-index: 1;
+}
+
 .nntm-card-list__heading-above {
+	/*
+	 * position:absolute + bottom:100% = mép DƯỚI của heading-above đặt
+	 * đúng mép TRÊN của <section> (mốc position:relative ở trên) — khớp
+	 * chính xác số đo Figma "Gót Son bottom edge = band top edge, y=-68
+	 * đến y=0", KHÔNG cần đo/đoán chiều cao chữ thật (chữ 1-2 dòng vẫn
+	 * đúng vị trí). Absolute cũng khiến phần tử này KHÔNG cộng vào chiều
+	 * cao của <section> — đúng yêu cầu "cao 544 kể cả heading/caption".
+	 */
+	position: absolute;
+	bottom: 100%;
+	left: 0;
+	right: 0;
 	max-width: var(--nntm-w-rong); /* 1366 */
 	margin: 0 auto;
 	background-color: white;
@@ -88,19 +132,25 @@
 }
 
 .nntm-card-list__caption-below {
+	/*
+	 * position:absolute, neo top:calc(100% + 10px) tính TỪ MÉP DƯỚI cua
+	 * <section> (mốc position:relative ở trên) — 10px la khoang cach
+	 * "554 - 544" cua Figma. Tuong tu heading-above, KHONG cong vao chieu
+	 * cao <section> du noi dung dai bao nhieu dong.
+	 */
+	position: absolute;
+	top: calc(100% + var(--nntm-sp-3));
+	left: 0;
+	right: 0;
 	max-width: 1082px; /* tu Figma: Frame 151 rong 1082 */
-	margin: var(--nntm-sp-3) auto 0; /* tu Figma: 554 - 544 = 10 duoi day dai */
+	margin-inline: auto;
+	background-color: var(--nntm-trang); /* section KE TIEP cung nen trang — de chu khong bi de len noi dung khac mau */
 	font-family: var(--nntm-font-serif); /* tu Figma: Baskerville -> Lora */
 	font-size: var(--nntm-fs-md);        /* tu Figma: 18 */
 	font-style: italic;                  /* tu Figma: italic */
 	line-height: var(--nntm-lh-vua);     /* tu Figma: 26/18 */
 	color: var(--nntm-chu);              /* tu Figma: #3F3B3B */
 	text-align: center;
-}
-
-/* Nen trang phu toan bo vung quanh caption, khong chi nam sat khung chu. */
-.nntm-card-list:has(> .nntm-card-list__caption-below) {
-	background-color: white;
 }
 
 /* =============================================================
@@ -132,9 +182,17 @@
  *   113..473 LIST VIDEO cao 360
  *   473..544 con 71 duoi
  * Truoc day dai nay an dem 50/50 cua SECTION 5 — sai ca hai dau.
+ *
+ * SỬA 13/08/2026 (đo thật trên trang, không còn suy đoán): thẻ trong băng
+ * co từ 360 xuống 198 + thêm dòng tiêu đề dưới thẻ (xem khối
+ * ".nntm-card-list__yt-*" phía dưới) — đo được tổng dải thật khi CÓ tiêu
+ * đề (Xuyên Vạn Kiếp) + băng thật:
+ *   h2(67.27) + margin-bottom(45) + cell(241.53, gồm the 198 + gap 8 +
+ *   tieu de 2 dong ~35.5) + padding-bottom(X) = tong dai (dich 524–564).
+ * Giải X để tổng ≈ 544: X = 544 − 67.27 − 45 − 241.53 ≈ 190.
  */
 .nntm-card-list:has(> .nntm-card-list__heading-above) > .nntm-card-list__band {
-	padding-block: 0 71px;
+	padding-block: 0 190px;
 }
 
 .nntm-card-list:has(> .nntm-card-list__heading-above) .nntm-card-list__heading {
@@ -147,6 +205,14 @@
 }
 
 /* ---------- SECTION 5: khối GITA ---------- */
+/*
+ * SỬA 13/08/2026: lượt trước từng ép GITA CENTER dùng thẻ 348×198 giống
+ * Gót Son (SAI — điều phối viên xác nhận sau khi cắt riêng vùng GITA từ
+ * Figma) nên phải bù thêm đệm dưới (164px). Nay GITA CENTER dùng thẻ
+ * KHUNG 388×360 (gần bằng thẻ bài viết thật 388×~356 trước đây), tổng dải
+ * tự khớp lại ~662 KHÔNG cần bù thêm — đã gỡ quy tắc bù đệm cũ, xem đo đạc
+ * thật trong báo cáo lượt này.
+ */
 .nntm-card-list--nen-cam .nntm-card-list__heading,
 .nntm-card-list--nen-cam .nntm-card-list__subheading {
 	padding-inline: var(--nntm-sp-9); /* tu Figma: CONTENT 1266 giua khung 1366 */
@@ -624,5 +690,239 @@
 @media (prefers-reduced-motion: reduce) {
 	.nntm-card-list__nav {
 		transition: none;
+	}
+}
+
+/* =============================================================
+   Băng "Netflix" — nguồn video = link YouTube dán tay (videoSource=youtube)
+   G1 — dải "Gót Son" (docs/spec-trang-chu.md mục G1).
+
+   Kỹ thuật marquee: danh sách thẻ được LẶP HAI LẦN trong render.php
+   (inc/render-card-list-youtube.php) rồi dịch translateX(-50%) bằng hoạt
+   ảnh CSS tuyến tính vô hạn — nửa sau giống hệt nửa trước nên lúc dịch
+   hết nửa đầu thì hình ảnh liền mạch, không giật.
+
+   CỐ Ý KHÔNG dùng scroll-snap: bài học cũ (xem phần carousel phía trên)
+   là scroll-snap từng làm băng tự "resnap" nhảy 110px ngay lúc tải trang.
+   Marquee này không cho người dùng cuộn tay — chỉ có hoạt ảnh translateX —
+   nên không đụng lại lỗi đó.
+
+   SỬA 12/08/2026 (đo lại chính xác từ ảnh Figma băng "Xuyên Vạn Kiếp"):
+   thẻ THẬT là 348×198 (đúng tỉ lệ 16:9), KHÔNG phải 388×360 như suy đoán
+   ban đầu; khoảng cách giữa hai thẻ ~60, thẻ đầu bắt đầu ở x=93; VÀ mỗi
+   thẻ có TIÊU ĐỀ chữ trắng in hoa dưới thẻ (tối đa 2 dòng, dùng chung
+   class .nntm-cat-2-dong ở assets/css/base.css) — bản trước thiếu hẳn
+   phần tiêu đề này.
+
+   Bọc thêm .nntm-card-list__yt-cell (thẻ + tiêu đề xếp dọc) làm đơn vị
+   lặp trong băng, thay vì chỉ mỗi .yt-item như bản cũ — để tiêu đề cuộn
+   cùng thẻ, không tách rời khi marquee chạy.
+
+   Chiều cao dải (padding-bottom của .__band) đã CÂN LẠI cho khớp 524–564
+   sau khi thẻ co từ 360 xuống 198 (xem .nntm-card-list:has(...) .__band
+   phía trên, quy tắc padding-block).
+   ============================================================= */
+.nntm-card-list__yt-marquee {
+	overflow: hidden;
+	/* Không có nút bấm nào của marquee — rê chuột dừng cả dải, nên không
+	   cần padding chừa chỗ nút như carousel nguồn bài viết. */
+	padding-inline-start: 93px; /* tu Figma (Got Son): the dau bat dau o x=93 */
+}
+
+/* GITA CENTER (thẻ khung, xem khối ".yt-item--framed" phía dưới): lề trái
+   và khoảng cách giữa hai thẻ KHÁC Gót Son — đo riêng từ fig-gita.png. */
+.nntm-card-list__yt-marquee--framed {
+	padding-inline-start: 90px; /* tu Figma (GITA): the dau bat dau o x~90 */
+}
+
+.nntm-card-list__yt-track {
+	display: flex;
+	align-items: flex-start;
+	width: max-content;
+	gap: var(--nntm-sp-10); /* 60 — tu Figma (Got Son): khoang cach giua hai the ~60 */
+	animation: nntm-yt-marquee linear infinite;
+	animation-duration: var(--nntm-yt-duration, 30s);
+	will-change: transform;
+}
+
+.nntm-card-list__yt-marquee--framed .nntm-card-list__yt-track {
+	gap: var(--nntm-sp-5); /* 20 — tu Figma (GITA): khoang cach giua hai the ~20 */
+}
+
+/* Dừng hẳn khi rê chuột vào BẤT KỲ đâu trong băng, hoặc khi tiêu điểm
+   bàn phím đang ở trong băng (Tab tới một thẻ). */
+.nntm-card-list__yt-marquee:hover .nntm-card-list__yt-track,
+.nntm-card-list__yt-marquee:focus-within .nntm-card-list__yt-track {
+	animation-play-state: paused;
+}
+
+@keyframes nntm-yt-marquee {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		/* Nhân đôi danh sách ở render.php -> dịch đúng một nửa la het
+		   dung mot vong, noi tiep vao chinh no, khong khoang trong. */
+		transform: translateX(-50%);
+	}
+}
+
+.nntm-card-list__yt-cell {
+	flex: 0 0 348px; /* tu Figma: the rong 348 */
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-2); /* 8 — SUY DOAN, chua co so do Figma rieng cho khoang cach the/tieu de */
+}
+
+.nntm-card-list__yt-item {
+	position: relative;
+	width: 348px;
+	height: 198px; /* tu Figma: the 348x198, dung ti le 16:9 */
+	overflow: hidden;
+	border-radius: var(--nntm-r-md);
+	cursor: pointer;
+	background-color: var(--nntm-xam); /* nen giu cho khi anh chua tai */
+	transition: transform var(--nntm-dur) var(--nntm-ease), box-shadow var(--nntm-dur) var(--nntm-ease);
+}
+
+/* =============================================================
+   Thẻ KHUNG NỀN TỐI (GITA CENTER) — SỬA 13/08/2026
+
+   Đối chiếu lại Figma của GITA CENTER (fig-gita.png) với Gót Son
+   (fig-gotson.png): hai băng KHÔNG giống nhau như suy đoán trước —
+   GITA CENTER có khung thẻ nền tối 388×360 bọc ảnh 348×196 (thụt đều
+   20px = padding của chính khung) + tiêu đề TỐI ĐA 3 DÒNG bên trong
+   khung; Gót Son thì ảnh 348×198 trần, tiêu đề 2 dòng NẰM NGOÀI ảnh.
+
+   .yt-cell--framed / .yt-item--framed CHỈ đổi kích thước/đệm — base
+   ".yt-item" (position/overflow/cursor/transition/border-radius) vẫn
+   dùng chung, không lặp lại.
+   ============================================================= */
+.nntm-card-list__yt-cell--framed {
+	flex: 0 0 388px; /* tu Figma: khung the rong 388 */
+}
+
+.nntm-card-list__yt-item--framed {
+	width: 388px;
+	height: 360px; /* tu Figma: khung the 388x360 */
+	padding: var(--nntm-sp-5); /* 20 — tu Figma: anh thut deu 20px tu mep the */
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-3); /* 10 — SUY DOAN, Figma khong tach rieng khoang cach anh/tieu de trong khung */
+	/* tu Figma: khung nen toi — dung lai dung mau 70% den nhu the video cu
+	   cua GITA CENTER (xem quy tac .nntm-card-list--nen-cam .nntm-card--video
+	   phia duoi), khong bia mau moi. */
+	background-color: color-mix(in srgb, var(--nntm-den) 70%, transparent);
+}
+
+.nntm-card-list__yt-media {
+	position: relative;
+	width: 100%;
+	height: 196px; /* tu Figma: anh 348x196 (rong = 388 - 2*20 = 348, khop dung) */
+	overflow: hidden;
+	border-radius: var(--nntm-r-sm);
+	flex: 0 0 auto;
+}
+
+.nntm-card-list__yt-title {
+	margin: 0;
+	max-width: 348px;
+	font-family: var(--nntm-font-display); /* tu Figma: serif in hoa */
+	font-weight: 700;
+	font-size: var(--nntm-fs-sm);      /* 14 — SUY DOAN, Figma khong ghi co chu rieng cho dong tieu de nay */
+	line-height: var(--nntm-lh-khit);
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	color: var(--nntm-trang);          /* tu Figma: chu trang */
+}
+
+/*
+ * Tiêu đề trong khung GITA CENTER tối đa 3 DÒNG (không phải 2 như
+ * .nntm-cat-2-dong dùng chung ở base.css) — class dùng chung không đáp
+ * ứng được số dòng riêng này nên viết class riêng ở đây, đúng quy ước
+ * "chưa có thì tự viết trong CSS của block và ghi chú" (docs/spec-trang-chu.md).
+ */
+.nntm-card-list__yt-title--3-dong {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	overflow: hidden;
+}
+
+.nntm-card-list__yt-item:hover,
+.nntm-card-list__yt-item:focus-visible,
+.nntm-card-list__yt-item.is-playing {
+	/* tu yeu cau: phong to nhe 1.05-1.08 kieu Netflix khi re chuot/focus */
+	transform: scale(1.06);
+	z-index: 2;
+	box-shadow: var(--nntm-sh-lift);
+}
+
+.nntm-card-list__yt-item:focus-visible {
+	outline: 2px solid var(--nntm-trang-lanh);
+	outline-offset: 2px;
+}
+
+.nntm-card-list__yt-thumb {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: opacity var(--nntm-dur) var(--nntm-ease);
+}
+
+/* Khi iframe da chen vao (dang phat thu), lui anh nen xuong duoi de
+   khong lo vien khi iframe tai cham mot chut. */
+.nntm-card-list__yt-item.is-playing .nntm-card-list__yt-thumb {
+	opacity: 0;
+}
+
+.nntm-card-list__yt-play {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--nntm-trang-lanh);
+	transition: opacity var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-card-list__yt-item.is-playing .nntm-card-list__yt-play {
+	opacity: 0;
+}
+
+.nntm-card-list__yt-frame {
+	position: absolute;
+	inset: 0;
+}
+
+.nntm-card-list__yt-frame iframe {
+	display: block;
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-card-list__yt-track {
+		animation: none;
+	}
+
+	.nntm-card-list__yt-item {
+		transition: none;
+	}
+}
+
+/* SUY DOAN: chua co Figma mobile — thu gon vien trai va giu the 348px
+   (khong thu nho them de anh YouTube khong bi meo qua muc). */
+@media (max-width: 1024px) {
+	.nntm-card-list__yt-marquee {
+		padding-inline-start: var(--nntm-sp-7);
+	}
+
+	.nntm-card-list__yt-track {
+		gap: var(--nntm-sp-7); /* 30 — thu gon tu 60 tren desktop */
 	}
 }

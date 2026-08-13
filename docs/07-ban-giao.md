@@ -18,89 +18,125 @@ Tài liệu này để mở đầu phiên chat mới. Đọc file này trước,
 
 ### ⚠️ Figma — điểm quan trọng nhất
 
-File Figma có **ba trang**:
+**Cập nhật 12/08/2026 — bản dùng là R5.**
 
-```
-DESKTOP - R1                      4231:851   (bản cũ nhất, bỏ qua)
-DESKTOP - R3                      6134:2075  (bản cũ)
-DESKTOP - R4 (UPDATED 6AUG)       6376:6205  ← BẢN CHÍNH THỨC
-```
+File giờ **chỉ còn MỘT page**: `6376:6205` = `DESKTOP - R5 (UPDATED 11 AUG)`, sửa lần cuối
+11/08/2026 14:37 UTC. Các page R1 / R3 / R4 **đã bị khách xoá** — khách cập nhật đè lên
+chính node của R4, nên **mọi node id cũ vẫn còn hiệu lực**, chỉ khác là các frame nay
+được gom vào 8 nhóm.
 
-**Chỉ dùng R4.**
+Token đang dùng: `figd_xxxxxxxxxxxxxxxxxxxxxxxxx`
+File key: `QmYLYBVSRkqIbKuKzPUfUe`
 
-Node R4 hay dùng:
-- Trang chủ `6376:6322` (1366×5734) · Header `6376:7302` · Footer `6376:7384`
-- Diệu Thượng `6376:6694` · Pháp Toà `6376:6727` · Liên Đàn `6376:6744`
-- Hoa Khai `6376:6603` · Vườn Xoài `6386:5177` · Nhập Pháp Giới `6376:6488`
-- Viên phân mục `6376:6351` · Login `6497:7151`
+#### Tám nhóm cấp một trong R5
 
-**Figma API chặn tốc độ (429) ở endpoint đọc node.** Giới hạn tính theo *file và tài khoản* — đổi token cùng tài khoản **không gỡ được** (đã thử 3 token ngày 10/08). Endpoint xuất ảnh thì không bị chặn.
+| Node | Nhóm | Nội dung |
+|---|---|---|
+| `6376:6206` | 01_HOMEPAGE - VERSION 2 | 🆕 trang chủ bản 2, cao 6530 (bản 1 cao 5874) |
+| `6588:10178` | DESKTOP | 23 frame: 6 phân mục, listing, bài chi tiết, khoá tu, Đại Sĩ / Kim Cương, popup |
+| `6588:9644` | TEMPLATE PAGES | 🆕 template bài chi tiết, listing, trang tĩnh |
+| `6588:10046` | FUNCTION PAGES | 🆕 đăng nhập, đăng ký, quên mật khẩu, gửi chuỗi trì |
+| `6588:8344` | 09. KIM CUONG HANH GIA | bản rời, **khác** bản trong DESKTOP (`6376:7066`) |
+| `6588:9389` | COMPONENTS | component set dùng chung |
+| `6376:7183` | 01_VIEMNAONHATBAN | mẫu trang nội dung dài |
+| `6588:9645` | IMG | kho ảnh nguồn |
 
-**Cách hiệu quả nhất trong thực tế:** nhờ anh Úy mở **Dev Mode** rồi dán CSS của từng lớp vào chat. Phiên 10/08 sửa đúng ngay lần đầu ở mọi chỗ có CSS thật, và sai ở mọi chỗ tự suy từ ảnh chụp.
+#### Frame nội dung (nhóm DESKTOP `6588:10178`)
 
-**Số đo R4 homepage đã bóc được** (toạ độ thiết kế, khung 1366×5734):
-
-| y | Khối | Cao | Nền |
+| Node | Frame | Cao R5 | Cao R4 (cũ) |
 |---|---|---|---|
-| 0 | Hero slider | 768 | ảnh |
-| 768 | Mosaic "Chúng sanh tranh đấu…" | 834 | `#F7F1DE` |
-| 1602 | Bài nổi bật toàn văn | 1097 | trắng |
-| 2699 | Băng video "Gót Son" | 544 | đen |
-| 3243 | The Drum of the True Dharma | 254 | trắng |
-| 3497 | ENGINEERING EARTH | 418 | đen |
-| 3915 | Hoạt động – Sự kiện | 986 | trắng |
-| 4901 | GITA CENTER | 666 | `#FB5102` |
-| 5567 | Footer | 168 | `#4F4F4F` |
+| `6376:6322` | 01_HOMEPAGE | 5874 | — |
+| `6376:6694` | 02. DIEU THUONG | **1032** | 1125 |
+| `6376:6727` | 03. PHAP TOA | **776** | 843 |
+| `6376:6984` | 03. PHAP TOA - NGUYEN THUY | 2491 | — |
+| `6376:6744` | 04. LIEN DAN | **1807** | 1932 |
+| `6386:4484` | LIEN DAN - KHOA TU LISTING | 2440 | — |
+| `6376:6603` | 05. HOA KHAI | **2637** | 2547 |
+| `6386:5177` | 06. VUON XOAI | **2909** | 2836 |
+| `6387:5535` | VUON XOAI LISTING | 2491 | — |
+| `6376:6488` | 07. NHAP PHAP GIOI | 2352 | — |
+| `6376:7048` | 08. DAI SI HANH GIA | 2185 | — |
+| `6376:7066` | 09. KIM CUONG HANH GIA | 3861 | — |
+| `6376:6874` · `6387:5673` | KHOA TU CHI TIET (2 bản) | 2305 | — |
+| `6376:6956` | BAI CHI TIET | 2375 | — |
+| `6376:6902` | BAI CHI TIET — ĐẠI SĨ | 2329 | — |
+| `6376:6929` | BAI CHI TIET — KIM CƯƠNG | 2374 | — |
+| `6588:9878` | LISTING TEMPLATE (bản sao) | 2491 | — |
+| `6376:7137` · `6452:6256` | POPUP VIDEO · POPUP PHOTO | 768 | — |
+| `6376:7158` | FLOATING BAR | 65 | — |
+| `6376:7160` | NOI DUNG 2: THƠ | 888 | — |
+
+**Cả 5 trang phân mục đều đổi chiều cao lần nữa ở R5** — bản dựng theo R4 vẫn phải đối chiếu lại.
+
+#### Màn chức năng mới R5 vừa cấp (trước đây là khoảng trống F)
+
+| Node | Frame | Kích thước |
+|---|---|---|
+| `6588:10221` | LOGIN | 1366×770 |
+| `6588:10263` | REGISTRATION | 1366×1096 |
+| `6588:10548` | FORGOT PASSWORD | 1366×770 |
+| `6613:10636` | GUI CHUOI TRI | 1366×770 |
+| `6588:9526` | TRANG CHI TIET (template bài) | 1366×2305 |
+| `6493:6340` | LISTING TEMPLATE | 1366×2491 |
+| `6588:10047` | CONTENT: ABOUT US, CHINH SACH | 1366×1804 |
+
+**Vẫn CHƯA có thiết kế:** trình đọc PDF, trang Thư Viện PDF, player Pháp Thoại, Thiền Đường,
+trang kết quả tìm kiếm, trang tài khoản, dashboard Cộng Tu, và toàn bộ mobile/tablet.
+
+#### Component (nhóm `6588:9389`)
+
+`HEADER 6376:7302` · `FOOTER 6376:7384` · `CTA 6376:7354` · `MENU 6376:7377` ·
+`BUTTON 6376:7401` · `CARD 6376:7408` · `MENU FLOATING ITEM 6376:7576` ·
+`LANG BUTTON 6376:7583` · `MENU FLOATING BAR 6376:7601` · `TRU XU CARD 6376:7602` ·
+`PHAP TOA CARD 6376:7651` · `PAGING 6376:7674` · `CARD DAI SI/KIM CUONG 6376:7675` ·
+`ICON 6509:7719` · `ROW 6337:4509`
+🆕 R5 thêm: `TEXT INPUT 6588:10206` · `LOGGED IN 6613:10626` · `TICK 6588:10458` ·
+`NOTE 6585:7887 / 7888 / 7890`
+
+`LOGGED IN` là bằng chứng cho điểm chờ xác nhận số 2 ở mục 3 — header có trạng thái riêng
+khi đã đăng nhập.
+
+#### Cách gọi API mà không bị chặn
+
+**Giới hạn 429 tính theo file + tài khoản, đổi token KHÔNG gỡ được.** Kinh nghiệm 12/08:
+
+1. `GET /v1/files/{key}?depth=3` — **lấy được cả cây page → nhóm → frame trong MỘT lệnh**.
+   Đây là cách rẻ nhất, dùng lệnh này trước tiên. Kết quả đã lưu ở
+   `design/figma/r5-tree-depth3.json`.
+2. `GET /v1/files/{key}/nodes?ids=...` — **dễ dính 429 nhất**, chỉ gọi khi cần đo chi tiết
+   bên trong một frame, luôn kèm `depth`.
+3. `GET /v1/images` — xuất PNG, hạn mức riêng nhưng **cũng bị chặn** sau khoảng 20 ảnh
+   liên tiếp. Gộp nhiều id vào một lệnh, nghỉ giữa các đợt.
+
+Ảnh đã xuất sẵn nằm ở `design/figma/<node-id>@1x.png` (dùng dấu `-` thay `:`).
 
 ---
 
 ## 2. Đã làm được trong phiên 10/08/2026
 
-### Môi trường
-Chuyển từ XAMPP sang **Docker**, PHP lên **8.3** — hết nợ cam kết báo giá (trước là 8.1). Database nạp sẵn, đổi URL sang cổng mới. Chi tiết cách chạy: `06-chay-local.md`.
+- WordPress **7.0.3** tiếng Việt, database `nntm_dev`, tiền tố bảng `wp_`
+- PHP local **8.1** — ⚠️ báo giá cam kết **8.3**, phải nâng trước khi lên staging
+- Quản trị: `nntm_admin` / `NntmDev!2026` (chỉ dùng local)
+- Chạy: xem `docs/06-chay-local.md`
 
-### Trang chủ R4
 
-| Chỗ | Đã sửa gì |
-|---|---|
-| Hero | `aspect-ratio` `1366/648` → **`1366/768`**. Số 648 trước đó đo từ ảnh mẫu `hero-1.png` chứ không từ thiết kế — **hụt 120px** |
-| Thẻ nhỏ hero | Hộp đen đặc bo góc 20 → **kính mờ** `rgba(247,241,222,.2)` + `blur(5px)`, rộng 388, lề 20/29, bo góc 0. Toàn bộ số cũ là "ước lượng từ ảnh" |
-| Viên phân mục | Bỏ dạng viên thuốc → bo góc 0, viền `#B4B7A7`, chữ `#F7F1DE`, cao 45 |
-| GITA CENTER | Nền cam **`#FB5102`**, và thêm tuỳ chọn `background` (không nền / kem / cam / tối) cho `nntm/card-list` — trước đây block băng cuộn không có cách nào đổi màu nền |
-| Mosaic SECTION 1 | Nền `#F7F1DE` khai rõ (trước ăn theo `body`) · gap hàng nhỏ 20→**65** · bỏ tiêu đề khối · bỏ nhãn chuyên mục và ngày cập nhật · bỏ link ở tiêu đề thẻ vừa/nhỏ · bỏ bo góc mọi ảnh · thêm nút "Xem Tất cả" · hàng ảnh nhỏ xê lên. Chiều cao từ 1148 → **873** (Figma 834) |
-| Ảnh | 8 ảnh thật của anh Úy vào `uploads/`, có tiêu đề và alt tiếng Việt, thay ảnh xám mẫu |
-
-### Đầu trang
-
-| Chỗ | Đã sửa gì |
-|---|---|
-| **Menu chính** | Tìm ra **gốc lỗi ảnh hưởng toàn site**: `base.css` có `li + li { margin-top }` dùng selector trần nên dính vào mọi danh sách — menu bị đẩy 8px từ mục thứ hai, `nav` cao 37px thay vì 29px, mục đầu trồi lên 4px. Đã khoanh về `ul:not([class]) > li + li`. Chân trang và mọi danh sách có class trước đó cũng dính 8px thừa mà không ai để ý |
-| Màu menu | `inherit` → `#4F4F4F` theo Figma |
-| Khu phải | `flex: 0 1 auto` → **`1 1 auto`** + `justify-content: flex-end` + cao 46 |
-| Nút ngôn ngữ | Cặp VI/EN → **một nút**, suy theo `get_locale()`. Chốt được điểm 1 trong "ba điểm đầu trang chờ xác nhận" |
-| Logo | Căn giữa hai dòng |
-| Bo góc | Bỏ `border-radius` của `.nntm-header` |
-| Màn > 1366 | Thanh giãn tới 1920 rồi chặn trần, đệm ngang theo tỷ lệ 1,46%. Không đụng cỡ chữ |
-
-### Block mới và công cụ
-- Block **`nntm/banner`** — băng chuyền ảnh lớn, tự chạy, dãy chấm bấm được bằng bàn phím, khách tự thêm/xoá/sắp lại tấm
-- **`tools/figma-node.mjs`** — đọc một node Figma ra cây bố cục kèm số đo; có chế độ đọc lại từ JSON đã lưu (không gọi API) và chế độ chỉ xuất ảnh (không bị 429)
-- **`tools/png-do.mjs`** — đọc PNG thuần, quét cột/hàng ra ranh giới và chiều cao từng khối, lấy màu tại điểm. Dùng khi Figma API bị chặn. Độ tin cậy đã kiểm chứng: quét dọc R4 homepage ra tổng chiều cao khớp đúng 5734 như Figma khai
-
-### Bản R1 — đã thử rồi bỏ
-Anh Úy đổi hướng sang R1, đã dựng đủ trang tại `/r1` (block `nntm/banner`, `page-r1.php`, 5 template part, `assets/css/pages/r1.css`, `assets/js/r1.js`), rồi quay lại R4.
-
-Trang `r1` (ID 111) **đã chuyển nháp, không xoá file nào** — dự án không phải git repo nên xoá là mất hẳn. `page-r1.php` chỉ kích hoạt khi có trang slug `r1`; CSS/JS chỉ nạp khi `is_page('r1')`. Nằm im, không tốn byte nào. Muốn xem lại thì đăng trang đó lên.
-
----
-
-## 3. Đang có gì
+**Nhập lại CSDL ngày 12/08/2026** từ `nntm_dev_20260810.sql` (bản của máy Ubuntu,
+siteurl `localhost:8082`). Ba việc bắt buộc khi nhập lại:
+1. Dump do MariaDB 10.11 sinh, **dòng đầu `/*M!999999\- enable the sandbox mode */`
+   làm client 10.4 của XAMPP báo `Unknown command '\-'`** → phải cắt bỏ dòng đầu.
+2. `permalink_structure` trong dump bị Git Bash bẻ thành
+   `/C:/Program%20Files/Git/%postname%/` → đặt lại `/%postname%/`.
+3. Đổi `localhost:8082` → `localhost:8080` ở options, posts, guid, postmeta, termmeta,
+   usermeta. Hai chuỗi **dài bằng nhau** nên `REPLACE()` thuần SQL không vỡ dữ liệu
+   serialize.
 
 ### Plugin `nntm-core` (dữ liệu — không phụ thuộc theme)
 Không đổi so với bản 07/08: 7 CPT, 3 taxonomy, 2 vai trò, 5 bảng riêng, term meta ảnh + thứ tự, post meta, `nntm_sort_terms_by_order()`.
 
-### Theme `nntm` — 12 block
-`card` · `card-list` · `cta` · `paging` · `feature` · `tru-xu-list` · `term-list` · `article-rows` · `article-mosaic` · `thien-duong` · `hero-slider` · **`banner`**
+
+### Theme `nntm` — 14 block *(cập nhật 12/08)*
+`card` · `card-list` (lưới + băng cuộn tự chạy) · `cta` · `paging` · `feature` · `tru-xu-list` · `term-list` · `article-rows` · `article-mosaic` · `thien-duong` · `hero-slider` · `article-feature` · `banner` · `engineering-earth`
+
 
 Đầu trang và chân trang là **PHP template**, không phải block.
 
@@ -160,6 +196,83 @@ Tấm thứ 3 của `hero-slider` và `nntm/banner` vẫn dùng `hero-3.png` —
 Điểm 1 (nút ngôn ngữ) **đã chốt và đã sửa**. Còn:
 2. Viên "Nhập Pháp Giới": R4 để nó là mục cuối và chỉ thành nút khi **đã đăng nhập**. Hiện dựng theo hướng "mục đang xem" — có thể sai.
 3. Bản dính khi cuộn: nền tối thật hay chỉ là nền đen của khung Figma lộ ra?
+
+
+=======
+### ✅ Trang chủ — đã chuẩn hoá xong 13/08/2026
+
+Ba việc còn thiếu ghi ở đây trước kia (khối ENGINEERING EARTH, nền cam GITA,
+vai trò tiêu đề "Chúng sanh tranh đấu…") **đã xong** trong hai ngày 08–10/08.
+
+Ngày 12–13/08 chuẩn hoá theo số đo pixel thật của frame `01_HOMEPAGE`
+(`6376:6322`). Số đo cuối, đo trong trình duyệt ở viewport 1366:
+
+| Dải | Figma | Thực tế |
+|---|---|---|
+| header | 76 | 74 |
+| hero | 692 | 684 |
+| mosaic bài nổi bật | 834 | 830 |
+| feature (trích dẫn) | 1097 | 1097 |
+| Gót Son | 544 | 543 |
+| Drum + ENGINEERING EARTH | 254 + 418 | 254 + 418 |
+| Hoạt động – Sự kiện | 986 | 972 |
+| GITA CENTER | 666 | 666 |
+| chân trang | 127 | 132 |
+
+**Đợt soi bố cục 13/08** (anh Úy yêu cầu "làm đúng như thiết kế Figma"), đã sửa:
+
+- `article-mosaic`: bỏ hết liên kết "Xem thêm" (Figma không có), chữ ô nhỏ đổi sang
+  **serif nâu-xám nhạt** thay vì sans in đậm, ảnh hàng trên 258 / hàng dưới 160.
+- `article-feature`: cột trái **canh trên** thay vì canh giữa — tiêu đề y=160, dấu
+  nháy kép y=75, ảnh phải 534×812. Khung nền kem chặn **cả sàn lẫn trần** (min 657,
+  thân max 563) vì đặt mỗi sàn thì bài dài làm khối phồng lên 1214.
+- `card-list`: **hai băng KHÁC NHAU** — Gót Son ảnh 348×198 trần trên nền đen + tiêu
+  đề 2 dòng; GITA là **thẻ nền tối 388×360** bọc ảnh 348×196 + tiêu đề 3 dòng.
+  Tên video lấy tự động qua **oEmbed YouTube** (không cần API key), cache transient
+  1 tuần / hỏng thì 1 giờ; admin gõ `link | Tiêu đề` để đè tay.
+- `engineering-earth`: dựng đúng hình học Figma — khung media lớn 590×298 ở x140
+  y59, cột chữ phải ở x750 (tiêu đề y66, dòng nghiêng y197), **thẻ video nhỏ
+  350×197 ở x885 y264 tràn xuống dưới mép dải đen 44px**.
+- Chân trang: **gỡ khối "Hãy chia sẻ ý kiến"** (Figma không có), dựng lại hai lớp —
+  nền trắng bọc ngoài, khối xám `#4F4F4F` thụt lề 20px, có đường kẻ mảnh.
+
+⚠️ Bài học: **bảng đo dải ngang cho đúng chiều cao nhưng KHÔNG cho biết cấu trúc
+lồng nhau.** Bản sửa 12/08 dựa vào bảng đo đã làm mất lớp nền bọc ngoài chân trang
+và dựng sai hẳn khối ENGINEERING EARTH. Phải cắt ảnh Figma từng vùng ra nhìn.
+
+Chức năng anh Úy chốt ngày 12–13/08, đã dựng:
+
+- **Đầu trang đổi màu theo cuộn** — ở đỉnh trang có banner thì trong suốt, chữ
+  trắng; cuộn quá 80px thì nền trắng, chữ `#4F4F4F`. Trang không có banner thì
+  trắng ngay. Class `.nntm-header--trong` ↔ `.nntm-header--dac`,
+  `assets/js/header-scroll.js`.
+- **Thẻ nổi góc phải hero = bài mới nhất**, lấy từ CSDL, có link thật.
+- **`article-mosaic` + `article-feature` lấy tin mới nhất từ phân mục Hoa Khai**,
+  admin đổi được nguồn / số lượng / ghim bài trong trình soạn thảo. Hàm truy vấn
+  nằm ở plugin (`nntm_core_get_latest_posts`).
+- **Cắt tiêu đề đúng 2 dòng kèm `…`** — class dùng chung `.nntm-cat-2-dong`
+  trong `assets/css/base.css`.
+- **Gót Son**: băng marquee tự chạy phải→trái, rê chuột phóng nhẹ + tự phát
+  video ngắn kiểu Netflix (iframe chỉ tạo sau 500ms rê chuột, gỡ khi rời chuột).
+- **The Drum of the True Dharma**: 1 video lớn + 1 video chạy nền kiểu awwwards,
+  bấm để đổi vùng xem.
+- **Hero slider có nút mũi tên trái/phải** — Figma KHÔNG vẽ mũi tên, đây là bổ
+  sung theo yêu cầu anh Úy 13/08; cỡ nút 48px là số tự chọn.
+
+**Link YouTube hiện là LINK TẠM** `gJAbDSse5WM` (anh Úy cấp 13/08), đặt làm giá
+trị mặc định trong `block.json` của `card-list` và `engineering-earth`, và điền
+vào trang chủ bằng `tools/seed-video-mau-trang-chu.php`. **Khi khách gửi danh
+sách link thật thì sửa script đó rồi chạy lại.**
+
+Còn nợ kiểm chứng bằng mắt: đầu trang tự đổi màu khi cuộn, và hiệu ứng phóng to
+khi rê chuột — công cụ trình duyệt tự động trong phiên không dựng khung hình nên
+`scroll` / `requestAnimationFrame` / `:hover` không kích hoạt được.
+
+### 🟡 Điểm mờ chờ khách trả lời (từ phiếu khảo sát)
+- **Thiền Đường và Thư Viện PDF**: chỉ cần đăng nhập, hay phải là Đại Sĩ / Kim Cương? Phiếu khảo sát nói đăng nhập, tài liệu kiến trúc nói theo cấp. Hiện theo phiếu khảo sát, có sẵn filter `nntm_thien_duong_can_access` để đổi bằng một dòng.
+- **Câu 16**: khách tích "tìm bằng ảnh ngay ngày ra mắt" nhưng báo giá xếp Phase 2 — cần xác nhận bằng văn bản.
+- **Câu 19, 21**: chưa biết số lượng PDF và bài audio → chưa chốt được gói VPS/CDN.
+
 
 ### 🟡 Hạng mục lớn chưa động tới
 Thư Viện PDF (30tr, nặng nhất Phase 1) · Pháp Thoại + Soketi · Hệ thống thành viên + đăng nhập Google/Facebook · Tìm kiếm không dấu + autocomplete · Song ngữ Polylang · Bảo mật & golive

@@ -7,6 +7,26 @@
  * lại từ $attributes hiện tại. Khách đổi nguồn bài / số cột / biến thể
  * trên trang, không cần lập trình viên.
  *
+ * HƯỚNG DẪN ADMIN DÁN LINK YOUTUBE (G1 — băng "Gót Son", chưa ai dán link
+ * nào tính đến 12/08/2026, xem docs/spec-trang-chu.md mục G1):
+ *   1. Mở block này trong trình soạn thảo (Gutenberg) → panel bên phải
+ *      "Lấy nội dung từ đâu" → ô "Nguồn video / bài viết" → chọn
+ *      "Dán link YouTube".
+ *   2. Một ô nhập nhiều dòng ("Danh sách link YouTube") sẽ hiện ra — dán
+ *      MỖI VIDEO MỘT DÒNG, chấp nhận cả 3 dạng: link đầy đủ
+ *      (youtube.com/watch?v=…), link rút gọn (youtu.be/…), hoặc chỉ ID
+ *      video (11 ký tự sau "v=" hoặc sau "youtu.be/").
+ *   3. TIÊU ĐỀ hiện dưới mỗi thẻ (tối đa 2 dòng, thừa thì "…") — gõ kèm
+ *      trên CÙNG một dòng, ngăn với link bằng dấu "|", ví dụ:
+ *        https://www.youtube.com/watch?v=abc123 | TẬP 18 - CHÂN SƯ HIỆN THÁNH TƯỚNG
+ *      Không gõ tiêu đề thì tự lấy qua oEmbed công khai của YouTube (không
+ *      cần API key), có lưu đệm 1 tuần — xem
+ *      nntm_card_list_get_video_title() trong inc/render-card-list-youtube.php.
+ *   4. Không cần tải ảnh lên — ảnh nền thẻ tự lấy từ img.youtube.com.
+ *   5. KHÔNG dùng YouTube Data API (anh Úy chốt 12/08/2026) — mọi thứ xử
+ *      lý bằng cách tách ID từ chuỗi dán vào, xem
+ *      inc/render-card-list-youtube.php.
+ *
  * @package NNTM
  * @var array    $attributes Thuộc tính của block.
  * @var string   $content    Nội dung InnerBlocks (không dùng ở block này).
@@ -16,6 +36,7 @@
 defined( 'ABSPATH' ) || exit;
 
 require_once get_template_directory() . '/blocks/card/inc/render-card.php';
+require_once __DIR__ . '/inc/render-card-list-youtube.php';
 
 // ---------- Đọc & làm sạch thuộc tính ----------
 
@@ -64,6 +85,21 @@ $autoplay_interval = max( 2, min( 20, $autoplay_interval ? $autoplay_interval : 
 
 $taxonomy = isset( $attributes['taxonomy'] ) ? sanitize_key( (string) $attributes['taxonomy'] ) : '';
 $term_id  = isset( $attributes['termId'] ) ? absint( $attributes['termId'] ) : 0;
+
+/*
+ * Nguồn video cho biến thể "băng Netflix" (G1 — dải "Gót Son"). Anh Úy
+ * chốt 12/08/2026: admin dán link/ID YouTube trực tiếp vào block, KHÔNG
+ * dùng YouTube Data API. Khi videoSource=youtube, khối này bỏ hẳn WP_Query
+ * và hiện băng cuộn tự chạy dựng từ danh sách ID YouTube — xem
+ * inc/render-card-list-youtube.php.
+ */
+$video_source = isset( $attributes['videoSource'] ) ? sanitize_key( (string) $attributes['videoSource'] ) : 'posts';
+if ( ! in_array( $video_source, array( 'posts', 'youtube' ), true ) ) {
+	$video_source = 'posts';
+}
+$is_youtube_source  = ( 'youtube' === $video_source );
+$youtube_items_raw  = isset( $attributes['youtubeItems'] ) ? (string) $attributes['youtubeItems'] : '';
+$youtube_video_items = $is_youtube_source ? nntm_card_list_parse_youtube_items( $youtube_items_raw ) : array();
 
 // Trang hiện tại cho phân trang — dùng query var "paged" chuẩn của WordPress.
 // Giới hạn đã biết: nếu một trang có NHIỀU hơn một card-list đang bật phân
@@ -139,7 +175,8 @@ if ( '' !== $taxonomy && taxonomy_exists( $taxonomy ) && $term_id > 0 ) {
 	);
 }
 
-$query = new WP_Query( $query_args );
+// Nguồn YouTube không cần WP_Query — bỏ hẳn để không truy vấn CSDL vô ích.
+$query = $is_youtube_source ? null : new WP_Query( $query_args );
 
 /*
  * Màu nền khối. Chỉ nhận bốn giá trị đã khai trong block.json — khách
@@ -212,7 +249,25 @@ $wrapper_attributes = get_block_wrapper_attributes(
 			<p class="nntm-card-list__subheading"><?php echo wp_kses_post( $subheading ); ?></p>
 		<?php endif; ?>
 
-		<?php if ( $query->have_posts() ) : ?>
+		<?php if ( $is_youtube_source ) : ?>
+
+			<?php if ( ! empty( $youtube_video_items ) ) : ?>
+				<?php
+				/*
+				 * Gót Son (nền tối) và GITA CENTER (nền cam) dùng CHUNG hàm
+				 * render nhưng thẻ KHÁC HÌNH DẠNG (điều phối viên đối chiếu
+				 * lại Figma 13/08/2026): GITA CENTER có khung thẻ nền tối
+				 * 388×360 bọc ảnh 348×196 thụt 20px + tiêu đề 3 dòng bên
+				 * trong; Gót Son ảnh 348×198 trần, tiêu đề 2 dòng nằm ngoài.
+				 */
+				$framed_cards = ( 'cam' === $background );
+				echo nntm_card_list_render_youtube_marquee( $youtube_video_items, $framed_cards ); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong.
+				?>
+			<?php else : ?>
+				<p class="nntm-card-list__empty"><?php esc_html_e( 'Chưa dán đường dẫn YouTube nào — vào trình soạn thảo, ô "Danh sách link YouTube" để thêm.', 'nntm' ); ?></p>
+			<?php endif; ?>
+
+		<?php elseif ( $query->have_posts() ) : ?>
 
 			<?php if ( $is_carousel ) : ?>
 

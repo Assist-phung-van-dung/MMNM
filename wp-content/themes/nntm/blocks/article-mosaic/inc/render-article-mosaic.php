@@ -79,8 +79,14 @@ function nntm_article_mosaic_render_date( WP_Post $mosaic_post ): string {
 }
 
 /**
- * Dựng HTML một thẻ vừa/nhỏ ở cột phải (không có nút CTA riêng — chỉ
- * tiêu đề là liên kết, tránh lồng <a> trong <a> ở toàn khối).
+ * Dựng HTML một thẻ vừa/nhỏ ở cột phải.
+ *
+ * SỬA 12/08/2026: đối chiếu ảnh Figma thật (fig-mosaic1.png) cho thấy
+ * KHÔNG có chữ "Xem thêm" dưới bất kỳ ô nào — trước đây có một liên kết
+ * "Xem thêm" riêng vì tiêu đề cố ý để là CHỮ THƯỜNG (yêu cầu 10/08/2026).
+ * Quyết định đó nay đổi lại: bỏ hẳn liên kết "Xem thêm", tiêu đề tự làm
+ * liên kết duy nhất của thẻ — không còn lồng hai liên kết trong cùng một
+ * thẻ (không có <a> nào khác bên trong để lồng).
  *
  * @param WP_Post $mosaic_post   Bài viết.
  * @param string  $variant       'medium' hoặc 'small' — quyết định class ảnh/khối.
@@ -88,7 +94,7 @@ function nntm_article_mosaic_render_date( WP_Post $mosaic_post ): string {
  * @param bool    $show_date     Có hiện ngày cập nhật không.
  * @return string HTML đã escape.
  */
-function nntm_article_mosaic_render_secondary_card( WP_Post $mosaic_post, string $variant, bool $show_category, bool $show_date, string $cta_label ): string {
+function nntm_article_mosaic_render_secondary_card( WP_Post $mosaic_post, string $variant, bool $show_category, bool $show_date ): string {
 	$permalink = get_permalink( $mosaic_post );
 	$title     = get_the_title( $mosaic_post );
 	$img_class = 'nntm-article-mosaic__' . $variant . '-img';
@@ -113,19 +119,9 @@ function nntm_article_mosaic_render_secondary_card( WP_Post $mosaic_post, string
 			endif;
 			?>
 
-			<?php
-			/*
-			 * Tieu de the vua/nho chi la CHU, KHONG phai lien ket — theo
-			 * dung thiet ke Figma R4 SECTION 1 (yeu cau anh Uy 10/08/2026).
-			 * Truoc day boc trong <a href> nen chu bi gach chan/doi mau khi
-			 * ro chuot, khong giong thiet ke.
-			 */
-			?>
-			<h3 class="nntm-article-mosaic__<?php echo esc_attr( $variant ); ?>-title"><?php echo esc_html( $title ); ?></h3>
-
-			<a class="nntm-article-mosaic__card-cta" href="<?php echo esc_url( $permalink ); ?>">
-				<?php echo esc_html( $cta_label ); ?>
-			</a>
+			<h3 class="nntm-article-mosaic__<?php echo esc_attr( $variant ); ?>-title nntm-cat-2-dong">
+				<a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( $title ); ?></a>
+			</h3>
 		</div>
 	</article>
 	<?php

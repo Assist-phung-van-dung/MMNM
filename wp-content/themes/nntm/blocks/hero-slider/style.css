@@ -23,11 +23,13 @@
 	width: 100%;
 	overflow: hidden;
 	background-color: var(--nntm-xam); /* nen placeholder khi anh chua nap xong */
-	/* tu anh: HERO 1366x648, tran het chieu rong -> giu ti le nay khi khung co gian */
-	/* Figma R4, khung BANNER: width 1366px; height 768px; top 0.
-	   Truoc day de 1366/648 vi do tu anh mau hero-1.png (1366x648) chu
-	   khong phai tu thiet ke — sai 120px chieu cao. Sua 10/08/2026. */
-	aspect-ratio: 1366 / 768;
+	/*
+	 * Spec do lai tu anh thiet ke ngay 12/08/2026 (dai "hero": y 76 -> 767,
+	 * cao 692), do truc tiep tren 6376-6322@1x.png — chinh xac hon so voi
+	 * 768 doc tu node BANNER truoc day (sai lech ~68-76px khi do thuc te
+	 * tren trang). Doi tu 1366/768 sang 1366/692.
+	 */
+	aspect-ratio: 1366 / 692;
 }
 
 .nntm-hero-slider__track {
@@ -134,6 +136,60 @@
 .nntm-hero-slider__cta:hover,
 .nntm-hero-slider__cta:focus-visible {
 	text-decoration: underline;
+}
+
+/* ---------- Nút mũi tên trái/phải ---------- */
+/*
+ * Thiết kế Figma của hero (6376-6322) không vẽ mũi tên, chỉ có chấm — nút
+ * này tự dựng theo đúng ngôn ngữ "nút tròn nổi" đã dùng ở nơi khác trong
+ * site (assets/css/pages/r1.css .nntm-r1-tong-chi__nut): nền trắng, đổ
+ * bóng --nntm-sh-nut, bo tròn hoàn toàn --nntm-r-pill, mũi tên SVG contour
+ * bằng currentColor. Absolute đè lên ảnh — không chen vào luồng, không đổi
+ * chiều cao khối hero (aspect-ratio ở .nntm-hero-slider__stage giữ nguyên).
+ */
+.nntm-hero-slider__nav {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 2;
+	width: 48px; /* SUY DOAN: Figma khong ve nut nay, chon co gan voi cham .nntm-r1-tong-chi__nut (58px) nhung nho hon mot chut cho vua ty le hero */
+	height: 48px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: 0;
+	border-radius: var(--nntm-r-pill);
+	background-color: var(--nntm-trang);
+	box-shadow: var(--nntm-sh-nut);
+	color: var(--nntm-chinh);
+	cursor: pointer;
+	opacity: 0.85;
+	transition: opacity var(--nntm-dur) var(--nntm-ease), background-color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-hero-slider__nav svg {
+	width: 20px;
+	height: 16px;
+}
+
+.nntm-hero-slider__nav--prev {
+	left: var(--nntm-sp-6); /* dong cot voi kieu do cua .nntm-r1-tong-chi__nut--truoc */
+}
+
+.nntm-hero-slider__nav--next {
+	right: var(--nntm-sp-6);
+}
+
+.nntm-hero-slider__nav:hover {
+	opacity: 1;
+	background-color: var(--nntm-trang);
+}
+
+.nntm-hero-slider__nav:focus-visible {
+	opacity: 1;
+	outline: 2px solid var(--nntm-trang);
+	outline-offset: 3px;
 }
 
 /* ---------- Chấm chuyển tấm ---------- */
@@ -278,6 +334,23 @@
 	color: var(--nntm-trang);
 }
 
+/*
+ * Tieu de gio la LIEN KET sang bai (yeu cau anh Uy 12/08/2026, muc H2 —
+ * truoc day chi la chu tinh, khong co lien ket). color: inherit +
+ * text-decoration: none de khong bi doi mau/gach chan boi luat "a" chung
+ * o base.css. .nntm-cat-2-dong (base.css) cat toi da 2 dong — tieu de bai
+ * thuc te co the dai hon chu tinh truoc day.
+ */
+.nntm-hero-slider__sidecard-heading a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.nntm-hero-slider__sidecard-heading a:hover,
+.nntm-hero-slider__sidecard-heading a:focus-visible {
+	text-decoration: underline;
+}
+
 .nntm-hero-slider__sidecard-text {
 	margin: 0;
 	/* tu anh: mot dong chu nghieng */
@@ -354,6 +427,19 @@
 		bottom: 260px; /* SUY DOAN */
 	}
 
+	.nntm-hero-slider__nav {
+		width: 40px; /* SUY DOAN: thu gon mot chut tren man hep */
+		height: 40px;
+	}
+
+	.nntm-hero-slider__nav--prev {
+		left: var(--nntm-sp-4);
+	}
+
+	.nntm-hero-slider__nav--next {
+		right: var(--nntm-sp-4);
+	}
+
 	.nntm-hero-slider__quicklinks {
 		left: var(--nntm-sp-5);
 		right: var(--nntm-sp-5);
@@ -391,6 +477,7 @@
 @media (prefers-reduced-motion: reduce) {
 	.nntm-hero-slider__slide,
 	.nntm-hero-slider__dot,
+	.nntm-hero-slider__nav,
 	.nntm-hero-slider__cta,
 	.nntm-hero-slider__quicklink,
 	.nntm-hero-slider__sidecard-cta {

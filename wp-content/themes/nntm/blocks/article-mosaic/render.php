@@ -85,9 +85,9 @@ $show_date     = ! isset( $attributes['showDate'] ) || ! empty( $attributes['sho
 
 $heading = isset( $attributes['heading'] ) ? (string) $attributes['heading'] : '';
 
-$cta_label = isset( $attributes['ctaLabel'] ) && '' !== trim( (string) $attributes['ctaLabel'] )
-	? (string) $attributes['ctaLabel']
-	: __( 'Xem thêm', 'nntm' );
+// KHÔNG còn "ctaLabel" — sửa 12/08/2026: Figma không có chữ "Xem thêm"
+// dưới bất kỳ ô nào (xem chú thích ở __lead-cta cũ, đã xoá). Tiêu đề của
+// mỗi ô tự là liên kết.
 
 $taxonomy = isset( $attributes['taxonomy'] ) ? sanitize_key( (string) $attributes['taxonomy'] ) : '';
 $term_id  = isset( $attributes['termId'] ) ? absint( $attributes['termId'] ) : 0;
@@ -188,9 +188,34 @@ if ( '' !== $taxonomy && taxonomy_exists( $taxonomy ) && $term_id > 0 ) {
 	);
 }
 
+/*
+ * GHIM TAY một bài lên ô lớn (yêu cầu anh Úy 12/08/2026, mục M1.3) — admin
+ * chọn đúng một bài trong bảng điều khiển, bài đó luôn nằm ở vị trí nổi
+ * bật, các ô còn lại vẫn tự lấy tin mới nhất như cũ.
+ *
+ * KHÔNG kết hợp với "Tự chọn thứ tự từng bài" (orderBy=manual): ở đó admin
+ * đã tự quyết định TOÀN BỘ thứ tự bằng danh sách ID, ghim thêm vào sẽ chỉ
+ * gây rối — admin muốn ghim thì đặt bài đó lên đầu danh sách thủ công.
+ *
+ * Việc kiểm tra bài ghim còn hợp lệ hay không (còn tồn tại, đã xuất bản,
+ * đúng loại nội dung) nằm ở plugin nntm-core (nntm_core_validate_pinned_post())
+ * — dùng chung với các block khác có tính năng ghim (docs/04-kien-truc.md
+ * mục 9), không tự viết lại kiểm tra này ở từng block.
+ */
+$pinned_post_id = isset( $attributes['pinnedPostId'] ) ? absint( $attributes['pinnedPostId'] ) : 0;
+$pinned_post    = null;
+if ( $pinned_post_id > 0 && 'manual' !== $order_by_choice && function_exists( 'nntm_core_validate_pinned_post' ) ) {
+	$pinned_post = nntm_core_validate_pinned_post( $pinned_post_id, $post_type );
+}
+
+if ( $pinned_post ) {
+	$query_args['posts_per_page'] = max( 0, $query_args['posts_per_page'] - 1 );
+	$query_args['post__not_in']   = array( $pinned_post->ID );
+}
+
 $query = new WP_Query( $query_args );
 
-$mosaic_posts = $query->posts;
+$mosaic_posts = $pinned_post ? array_merge( array( $pinned_post ), $query->posts ) : $query->posts;
 $total_posts  = count( $mosaic_posts );
 
 // bài 1 = nổi bật, bài 2–3 = thẻ vừa, bài 4–6 = thẻ nhỏ. array_slice() tự
@@ -260,7 +285,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 								endif;
 								?>
 
-								<h3 class="nntm-article-mosaic__lead-title">
+								<h3 class="nntm-article-mosaic__lead-title nntm-cat-2-dong">
 									<a href="<?php echo esc_url( $lead_permalink ); ?>"><?php echo esc_html( $lead_title ); ?></a>
 								</h3>
 
@@ -270,10 +295,15 @@ $wrapper_attributes = get_block_wrapper_attributes(
 									</p>
 								<?php endif; ?>
 							</div>
-
-							<a class="nntm-article-mosaic__lead-cta" href="<?php echo esc_url( $lead_permalink ); ?>">
-								<?php echo esc_html( $cta_label ); ?>
-							</a>
+							<?php
+							/*
+							 * KHÔNG có liên kết "Xem thêm" riêng — sửa 12/08/2026 sau khi đối
+							 * chiếu ảnh Figma thật (fig-mosaic1.png): thiết kế không có chữ
+							 * "Xem thêm" dưới bất kỳ ô nào, kể cả ô nổi bật. Tiêu đề ở trên
+							 * (nntm-article-mosaic__lead-title) đã tự là liên kết, đủ để bấm
+							 * vào bài — không cần thêm nút/chữ nào khác.
+							 */
+							?>
 						</div>
 					</article>
 
@@ -282,7 +312,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 							<?php if ( ! empty( $grid_posts ) ) : ?>
 								<div class="nntm-article-mosaic__grid">
 									<?php foreach ( $grid_posts as $grid_post ) : ?>
-										<?php echo nntm_article_mosaic_render_secondary_card( $grid_post, 'small', $show_category, $show_date, $cta_label ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
+										<?php echo nntm_article_mosaic_render_secondary_card( $grid_post, 'small', $show_category, $show_date ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
 									<?php endforeach; ?>
 								</div>
 							<?php endif; ?>
@@ -290,7 +320,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 							<?php if ( ! empty( $medium_posts ) ) : ?>
 								<div class="nntm-article-mosaic__medium-row">
 									<?php foreach ( $medium_posts as $medium_post ) : ?>
-										<?php echo nntm_article_mosaic_render_secondary_card( $medium_post, 'medium', $show_category, $show_date, $cta_label ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
+										<?php echo nntm_article_mosaic_render_secondary_card( $medium_post, 'medium', $show_category, $show_date ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
 									<?php endforeach; ?>
 								</div>
 							<?php endif; ?>
@@ -298,7 +328,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 							<?php if ( ! empty( $small_posts ) ) : ?>
 								<div class="nntm-article-mosaic__small-row">
 									<?php foreach ( $small_posts as $small_post ) : ?>
-										<?php echo nntm_article_mosaic_render_secondary_card( $small_post, 'small', $show_category, $show_date, $cta_label ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
+										<?php echo nntm_article_mosaic_render_secondary_card( $small_post, 'small', $show_category, $show_date ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
 									<?php endforeach; ?>
 								</div>
 							<?php endif; ?>

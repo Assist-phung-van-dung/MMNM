@@ -271,6 +271,21 @@
 				} )
 			);
 
+			// Danh sách chọn "Ghim tay một bài lên ô lớn" — cùng nguồn dữ liệu
+			// candidatePosts đã tải cho ô "Tự chọn thứ tự" ở dưới. Bài đã ghim
+			// nằm ngoài bộ lọc hiện tại vẫn hiện dạng "#28" thay vì biến mất.
+			var pinnedPostOptions = [ { label: __( '— Tự động (mới nhất) —', 'nntm' ), value: 0 } ].concat(
+				candidatePosts.map( function ( one ) {
+					return { label: one.title, value: one.id };
+				} )
+			);
+			if ( attributes.pinnedPostId && candidatePosts.every( function ( one ) { return one.id !== attributes.pinnedPostId; } ) ) {
+				pinnedPostOptions.push( {
+					label: __( 'Bài số ', 'nntm' ) + attributes.pinnedPostId + __( ' (ngoài bộ lọc hiện tại)', 'nntm' ),
+					value: attributes.pinnedPostId,
+				} );
+			}
+
 			var previewAttributes = Object.assign( {}, attributes, { heading: '' } ); // tranh hien tieu de 2 lan (RichText da hien o duoi)
 
 			return el(
@@ -308,7 +323,25 @@
 										setAttributes( { termId: parseInt( value, 10 ) || 0 } );
 									},
 							  } )
-							: null
+							: null,
+						// Ghim tay MOT bai len o lon (yeu cau anh Uy 12/08/2026, muc M1.3).
+						// Dung lai danh sach candidatePosts da tai theo dung nguon dang
+						// chon o tren — admin khong phai di tra so ID o dau khac.
+						'manual' !== attributes.orderBy
+							? el( SelectControl, {
+									label: __( 'Ghim tay một bài lên ô lớn', 'nntm' ),
+									help: __( 'Bài này luôn hiện ở ô nổi bật, các ô còn lại vẫn tự lấy tin mới nhất. Để "Tự động" thì ô lớn cũng lấy bài mới nhất như các ô khác.', 'nntm' ),
+									value: attributes.pinnedPostId || 0,
+									options: pinnedPostOptions,
+									onChange: function ( value ) {
+										setAttributes( { pinnedPostId: parseInt( value, 10 ) || 0 } );
+									},
+							  } )
+							: el(
+									'p',
+									{ className: 'components-base-control__help' },
+									__( 'Không dùng ghim tay khi đang "Tự chọn thứ tự từng bài" — muốn ghim thì đặt bài đó lên đầu danh sách thủ công bên dưới.', 'nntm' )
+							  )
 					),
 					el(
 						PanelBody,
@@ -381,13 +414,6 @@
 							checked: !! attributes.showExcerpt,
 							onChange: function ( value ) {
 								setAttributes( { showExcerpt: value } );
-							},
-						} ),
-						el( TextControl, {
-							label: __( 'Nhãn nút bài nổi bật', 'nntm' ),
-							value: attributes.ctaLabel,
-							onChange: function ( value ) {
-								setAttributes( { ctaLabel: value } );
 							},
 						} ),
 						// Nut "Xem Tat ca" o duoi cung khoi (Figma R4 SECTION 1).

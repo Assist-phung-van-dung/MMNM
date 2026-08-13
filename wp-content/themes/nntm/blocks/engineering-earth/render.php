@@ -1,21 +1,42 @@
 <?php
 /**
- * Render động cho block nntm/engineering-earth — "dải phim".
+ * Render động cho block nntm/engineering-earth — "dải phim" trang chủ.
  *
- * Figma R4, khung 01_HOMEPAGE 6376:6322, node Frame 155 `6376:6412`
- * (y=3323, cao 714). Đọc node thật ngày 10/08/2026.
+ * Cập nhật 12/08/2026 (docs/spec-trang-chu.md mục A + D1): tách đúng 2 dải
+ * theo Figma (trước đây gộp làm một khối cao 709):
+ *   - Dải TRẮNG cao 254px: tiêu đề lớn "The Drum of the True Dharma" + dòng phụ.
+ *   - Dải ĐEN cao 418px: khung media LỚN bên trái (590x~299) + chữ
+ *     "ENGINEERING EARTH" bên phải + MỘT THẺ NHỎ (350x197, tỉ lệ 16:9) đè
+ *     lên góc dưới-phải, TRÀN XUỐNG dưới mép dải đen ~43px.
  *
- * Bố cục:
- *   - Tiêu đề lớn + dòng phụ, căn giữa.
- *   - Dải nền đen TRÀN VIỀN (rộng 1366 trong khi nội dung trang rộng
- *     1180) chứa ảnh lớn bên trái và tiêu đề phụ bên phải.
- *   - Đoạn chú thích nằm dưới dải, bên trái.
- *   - Thẻ video nổi ĐÈ LÊN mép dưới dải, lệch sang phải.
+ * SỬA 13/08/2026 (đối chiếu ảnh chụp trang thật với Figma — bản 12/08/2026
+ * dựng SAI cấu trúc: hai khe xếp DỌC theo tỉ lệ 3:1, không giống Figma):
+ *   - Khung media lớn  = video CHÍNH  (nếu chưa dán link thì hiện ẢNH TĨNH
+ *     dự phòng — xem mainImageId/mainImageUrl bên dưới, KHÔI PHỤC khả năng
+ *     này sau khi lượt trước đã gỡ nhầm).
+ *   - Thẻ nhỏ tràn mép  = video NỀN   (tự phát, câm tiếng, lặp, không thanh
+ *     điều khiển).
+ *   - Nhấp vào thẻ nào cũng đổi vai trò cho thẻ kia (xem view.js).
  *
- * XỬ LÝ THIẾU DỮ LIỆU, không được vỡ bố cục:
- *   không có ảnh    -> ô giữ chỗ màu xám, dải vẫn đủ chiều cao.
- *   không chọn video -> bỏ hẳn thẻ video, không để khung rỗng đè lên dải.
- *   video không ảnh  -> vẫn hiện thẻ với ô giữ chỗ + nút phát.
+ * HƯỚNG DẪN ADMIN DÁN LINK YOUTUBE (D1 — chưa ai dán link nào tính đến
+ * 12/08/2026, CSDL hiện KHÔNG có video nào lưu URL YouTube — 12 bài CPT
+ * nntm_video mẫu chỉ có ảnh đại diện, không dùng được, xem
+ * docs/spec-trang-chu.md mục D1):
+ *   1. Mở block này trong trình soạn thảo (Gutenberg) → panel bên phải
+ *      "Video (D1 — dán link YouTube)".
+ *   2. Ô "Video chính (khung lớn)": dán 1 link/ID cho video LỚN. Chưa dán
+ *      thì có thể chọn ẢNH TĨNH thay thế ở panel "Ảnh dự phòng khung lớn".
+ *   3. Ô "Video nền (thẻ nhỏ tràn mép)": dán 1 link/ID cho video NHỎ.
+ *   4. Chấp nhận cả 3 dạng: link đầy đủ (youtube.com/watch?v=…), link rút
+ *      gọn (youtu.be/…), hoặc chỉ ID video (11 ký tự).
+ *   5. KHÔNG dùng YouTube Data API (anh Úy chốt 12/08/2026, giống G1 ở
+ *      nntm/card-list) — mọi thứ xử lý bằng cách tách ID từ chuỗi dán
+ *      vào, xem inc/render-engineering-earth.php.
+ *
+ * XỬ LÝ THIẾU DỮ LIỆU, không được vỡ bố cục: chưa dán link nào -> khung
+ * lớn hiện ảnh tĩnh dự phòng (hoặc icon khay phim nếu cũng chưa chọn ảnh),
+ * thẻ nhỏ hiện icon khay phim — không để ô đen trống trơn. Hai dải vẫn
+ * đúng 254/418.
  *
  * @package NNTM
  * @var array    $attributes Thuộc tính của block.
@@ -33,19 +54,23 @@ $heading       = isset( $attributes['heading'] ) ? (string) $attributes['heading
 $subheading    = isset( $attributes['subheading'] ) ? (string) $attributes['subheading'] : '';
 $band_title    = isset( $attributes['bandTitle'] ) ? (string) $attributes['bandTitle'] : '';
 $band_subtitle = isset( $attributes['bandSubtitle'] ) ? (string) $attributes['bandSubtitle'] : '';
-$caption       = isset( $attributes['caption'] ) ? (string) $attributes['caption'] : '';
 
-$image_id  = isset( $attributes['imageId'] ) ? absint( $attributes['imageId'] ) : 0;
-$image_url = isset( $attributes['imageUrl'] ) ? esc_url_raw( (string) $attributes['imageUrl'] ) : '';
-$image_alt = isset( $attributes['imageAlt'] ) ? sanitize_text_field( (string) $attributes['imageAlt'] ) : '';
+$main_video_url = isset( $attributes['mainVideoUrl'] ) ? (string) $attributes['mainVideoUrl'] : '';
+$bg_video_url   = isset( $attributes['bgVideoUrl'] ) ? (string) $attributes['bgVideoUrl'] : '';
 
-$video_id = isset( $attributes['videoId'] ) ? absint( $attributes['videoId'] ) : 0;
+// Ảnh tĩnh dự phòng cho khung media LỚN khi CHƯA dán mainVideoUrl — khôi
+// phục lại theo yêu cầu 13/08/2026 (trước đó đã gỡ, khiến khung lớn trống
+// trơn khi chưa có video).
+$main_image_id  = isset( $attributes['mainImageId'] ) ? absint( $attributes['mainImageId'] ) : 0;
+$main_image_url = isset( $attributes['mainImageUrl'] ) ? esc_url_raw( (string) $attributes['mainImageUrl'] ) : '';
+$main_image_alt = isset( $attributes['mainImageAlt'] ) ? sanitize_text_field( (string) $attributes['mainImageAlt'] ) : '';
 
 $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'nntm-engineering-earth' ) );
 ?>
 <section <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput -- get_block_wrapper_attributes() da tu esc_attr() tung thuoc tinh. ?>>
-	<div class="nntm-engineering-earth__inner">
 
+	<?php // ---------- Dải 1: TRẮNG, cao 254px — tiêu đề lớn ---------- ?>
+	<div class="nntm-engineering-earth__white">
 		<?php if ( '' !== trim( $heading ) || '' !== trim( $subheading ) ) : ?>
 			<div class="nntm-engineering-earth__heading-group">
 				<?php if ( '' !== trim( $heading ) ) : ?>
@@ -57,51 +82,32 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'nntm-engi
 				<?php endif; ?>
 			</div>
 		<?php endif; ?>
+	</div>
 
-		<?php
-		/*
-		 * Dải đen tràn viền. Figma: Frame 145 rộng 1366 đặt ở x=-93 so với
-		 * khung nội dung rộng 1180 — tức thò đều 93px mỗi bên. CSS lo phần
-		 * tràn này (xem style.css), HTML không cần biết.
-		 */
-		?>
-		<div class="nntm-engineering-earth__band">
-			<div class="nntm-engineering-earth__band-inner">
+	<?php
+	/*
+	 * Dải 2: ĐEN, cao 418px — tràn viền (rộng 1366 trong khi nội dung
+	 * trang rộng 1180). CSS lo phần tràn này (xem style.css), HTML không
+	 * cần biết.
+	 */
+	?>
+	<div class="nntm-engineering-earth__band">
+		<div class="nntm-engineering-earth__band-inner">
 
-				<div class="nntm-engineering-earth__media">
-					<?php echo nntm_engineering_earth_render_image( $image_id, $image_url, $image_alt ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
+			<?php echo nntm_engineering_earth_render_video_stage( $main_video_url, $bg_video_url, $main_image_id, $main_image_url, $main_image_alt ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
+
+			<?php if ( '' !== trim( $band_title ) || '' !== trim( $band_subtitle ) ) : ?>
+				<div class="nntm-engineering-earth__band-text">
+					<?php if ( '' !== trim( $band_title ) ) : ?>
+						<h3 class="nntm-engineering-earth__band-title"><?php echo wp_kses_post( $band_title ); ?></h3>
+					<?php endif; ?>
+
+					<?php if ( '' !== trim( $band_subtitle ) ) : ?>
+						<p class="nntm-engineering-earth__band-subtitle"><?php echo wp_kses_post( $band_subtitle ); ?></p>
+					<?php endif; ?>
 				</div>
+			<?php endif; ?>
 
-				<?php if ( '' !== trim( $band_title ) || '' !== trim( $band_subtitle ) ) : ?>
-					<div class="nntm-engineering-earth__band-text">
-						<?php if ( '' !== trim( $band_title ) ) : ?>
-							<h3 class="nntm-engineering-earth__band-title"><?php echo wp_kses_post( $band_title ); ?></h3>
-						<?php endif; ?>
-
-						<?php if ( '' !== trim( $band_subtitle ) ) : ?>
-							<p class="nntm-engineering-earth__band-subtitle"><?php echo wp_kses_post( $band_subtitle ); ?></p>
-						<?php endif; ?>
-					</div>
-				<?php endif; ?>
-
-			</div>
 		</div>
-
-		<?php if ( '' !== trim( $caption ) ) : ?>
-			<p class="nntm-engineering-earth__caption"><?php echo wp_kses_post( $caption ); ?></p>
-		<?php endif; ?>
-
-		<?php
-		/*
-		 * Thẻ video nổi đè lên mép dưới dải đen.
-		 *
-		 * Trong Figma, thẻ này là CARD biến thể VIDEO nhưng hai lớp `DATE`
-		 * và `Frame 125` (nhãn chuyên mục + tiêu đề) đều visible=false —
-		 * tức thẻ CHỈ có ảnh và nút phát. Đừng thấy tên lớp mà thêm chữ
-		 * vào, sẽ khác thiết kế.
-		 */
-		echo nntm_engineering_earth_render_video_card( $video_id ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong.
-		?>
-
 	</div>
 </section>

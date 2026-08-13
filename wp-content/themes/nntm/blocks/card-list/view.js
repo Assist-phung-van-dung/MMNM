@@ -249,9 +249,128 @@
 		}
 	}
 
-	if ( 'loading' === document.readyState ) {
-		document.addEventListener( 'DOMContentLoaded', nntmInitAllCardListCarousels );
-	} else {
+	/**
+	 * Băng "Netflix" nguồn YouTube (G1 — dải "Gót Son", xem render.php +
+	 * inc/render-card-list-youtube.php + style.css khối .nntm-card-list__yt-*).
+	 *
+	 * Việc của khối dưới đây:
+	 *  - Ảnh nền lấy trực tiếp từ img.youtube.com/…/maxresdefault.jpg — video
+	 *    nào không có bản độ phân giải cao thì ảnh đó lỗi (404), tự đổi sang
+	 *    hqdefault.jpg (luôn có).
+	 *  - Rê chuột/focus liên tục vào một thẻ ĐÚNG 500ms mới chèn <iframe>
+	 *    YouTube phát thử (autoplay, câm tiếng, không thanh điều khiển) —
+	 *    tránh tạo hàng loạt iframe cùng lúc làm nặng trang. Rời chuột/blur
+	 *    thì gỡ iframe ngay, trả lại ảnh tĩnh.
+	 *  - prefers-reduced-motion: reduce -> KHÔNG chèn iframe (không tự phát
+	 *    video gì cả), băng cũng không tự chạy (xử lý ở style.css).
+	 *  - Băng tự chạy liên tục phải->trái bằng hoạt ảnh CSS (style.css); JS
+	 *    ở đây KHÔNG đụng vào việc cuộn, chỉ lo ảnh + video từng thẻ.
+	 */
+	var NNTM_YT_HOVER_DELAY_MS = 500;
+
+	function nntmPrefersReducedMotion() {
+		return !! ( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches );
+	}
+
+	function nntmYoutubeEmbedUrl( videoId ) {
+		return 'https://www.youtube.com/embed/' + encodeURIComponent( videoId ) +
+			'?autoplay=1&mute=1&controls=0&modestbranding=1&playsinline=1&rel=0';
+	}
+
+	/**
+	 * @param {Element} item Phần tử ".nntm-card-list__yt-item".
+	 */
+	function nntmInitYoutubeItem( item ) {
+		var videoId = item.getAttribute( 'data-video-id' );
+		var frame   = item.querySelector( '.nntm-card-list__yt-frame' );
+		var thumb   = item.querySelector( '.nntm-card-list__yt-thumb' );
+		var hoverTimerId = null;
+
+		// Anh maxresdefault.jpg khong ton tai voi video khong co ban do
+		// phan giai cao -> tra ve 404. Chi doi mot lan, tranh vong lap loi
+		// vo han neu ca hqdefault cung loi (rat hiem nhung phai chan).
+		if ( thumb ) {
+			var triedFallback = false;
+			thumb.addEventListener( 'error', function () {
+				if ( triedFallback ) {
+					return;
+				}
+				triedFallback = true;
+				var fallbackUrl = thumb.getAttribute( 'data-fallback' );
+				if ( fallbackUrl ) {
+					thumb.src = fallbackUrl;
+				}
+			} );
+		}
+
+		function clearHoverTimer() {
+			if ( hoverTimerId ) {
+				window.clearTimeout( hoverTimerId );
+				hoverTimerId = null;
+			}
+		}
+
+		function removeEmbed() {
+			clearHoverTimer();
+			item.classList.remove( 'is-playing' );
+			if ( frame ) {
+				frame.innerHTML = '';
+			}
+		}
+
+		function insertEmbed() {
+			if ( ! frame || ! videoId || nntmPrefersReducedMotion() ) {
+				return;
+			}
+			if ( frame.firstChild ) {
+				return; // da co iframe roi (vd focus roi hover them), khong tao trung.
+			}
+
+			var iframe = document.createElement( 'iframe' );
+			iframe.src = nntmYoutubeEmbedUrl( videoId );
+			iframe.setAttribute( 'title', item.getAttribute( 'aria-label' ) || '' );
+			iframe.setAttribute( 'frameborder', '0' );
+			iframe.setAttribute( 'allow', 'autoplay; encrypted-media' );
+			iframe.setAttribute( 'tabindex', '-1' );
+			frame.appendChild( iframe );
+			item.classList.add( 'is-playing' );
+		}
+
+		function scheduleEmbed() {
+			if ( nntmPrefersReducedMotion() ) {
+				return;
+			}
+			clearHoverTimer();
+			hoverTimerId = window.setTimeout( insertEmbed, NNTM_YT_HOVER_DELAY_MS );
+		}
+
+		// Chuot: rê vào bắt đầu đếm 500ms, rời ra là gỡ ngay (dù đã phát
+		// hay chưa kịp phát).
+		item.addEventListener( 'mouseenter', scheduleEmbed );
+		item.addEventListener( 'mouseleave', removeEmbed );
+
+		// Bàn phím: focus vào thẻ (Tab tới) phải chạy được như hover, theo
+		// đúng yêu cầu khả năng tiếp cận của G1.
+		item.addEventListener( 'focus', scheduleEmbed );
+		item.addEventListener( 'blur', removeEmbed );
+	}
+
+	function nntmInitAllYoutubeMarquees() {
+		var items = document.querySelectorAll( '.nntm-card-list__yt-item' );
+
+		for ( var i = 0; i < items.length; i++ ) {
+			nntmInitYoutubeItem( items[ i ] );
+		}
+	}
+
+	function nntmInitCardListView() {
 		nntmInitAllCardListCarousels();
+		nntmInitAllYoutubeMarquees();
+	}
+
+	if ( 'loading' === document.readyState ) {
+		document.addEventListener( 'DOMContentLoaded', nntmInitCardListView );
+	} else {
+		nntmInitCardListView();
 	}
 } )();
