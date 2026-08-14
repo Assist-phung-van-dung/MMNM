@@ -1,0 +1,128 @@
+/* =============================================================
+   NNTM — Cộng Tu "chuỗi trì": trang Tham gia / Cam kết thêm / Khai báo.
+
+   Tái sử dụng lớp CSS của auth.css (.nntm-auth-page, .nntm-auth-card,
+   .nntm-auth-form, .nntm-auth-field, .nntm-auth-btn, .nntm-auth-checkbox,
+   .nntm-auth-alert…) — file này CHỈ bổ sung phần còn thiếu, không chép lại.
+
+   ---------------------------------------------------------------
+   SỐ ĐO THẬT từ design/figma/6613-10636@1x.png (node Figma 6613:10636,
+   "GUI CHUOI TRI", khung 1366×770 — xem docs/07-ban-giao.md).
+   Máy này không có GD/Imagick nên đo bằng so màu từng điểm ảnh qua
+   Pillow (python), không dựng lại bằng công cụ đo tự động của dự án
+   (tools/png-do.mjs) — số đo dưới đây làm tròn theo token gần nhất khi
+   sai lệch dưới 2px, GIỮ NGUYÊN số đo thật khi lệch nhiều hơn:
+     - Thẻ kính mờ: rộng 484px, cao ~417px, NẰM GIỮA khung 1366×770
+       (lề trái/phải đo được đều 441px, lề trên/dưới ~177px/176px —
+       tức là căn giữa cả hai chiều, khớp đúng .nntm-auth-page hiện có
+       display:grid; place-items:center).
+     - Đệm ngang trong thẻ: ~40px (thẻ trái 441 → nội dung trái 481).
+     - Tiêu đề: đo được cao ~38px chữ, ước lượng cỡ chữ ~32px.
+     - Ảnh đại diện tròn: đường kính ~40px.
+     - Ô nhập số: cao ~35px (làm tròn 36px cho gần khung 44 của
+       .nntm-auth-field__control có sẵn — KHÔNG ép về 44 vì lệch quá 2px).
+     - Nút "Xác Nhận…": cao ~54px.
+   Trang "Khai Báo Chuỗi Trì" KHÔNG có thiết kế — mọi số đo ở phần đó là
+   SUY DOAN theo cùng ngôn ngữ thiết kế, ghi rõ trong từng khối bên dưới.
+   ============================================================= */
+
+/* ---------- Thẻ rộng hơn thẻ đăng nhập mặc định (360px) ---------- */
+.nntm-auth-card--cong-tu {
+	width: 484px;
+	padding: 44px 40px;
+}
+
+.nntm-auth-card__title--cong-tu {
+	color: var(--nntm-reu);
+	font-size: 32px;
+	margin-bottom: var(--nntm-sp-6);
+}
+
+/* ---------- Dòng chào: ảnh đại diện tròn + "Xin chào" / pháp danh ---------- */
+.nntm-cong-tu__chao {
+	display: flex;
+	align-items: center;
+	gap: var(--nntm-sp-3);
+	margin-bottom: var(--nntm-sp-6);
+}
+
+.nntm-cong-tu__avatar {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	object-fit: cover;
+	flex: 0 0 auto;
+}
+
+.nntm-cong-tu__chao-text {
+	display: flex;
+	flex-direction: column;
+	font-family: var(--nntm-font-sans);
+}
+
+.nntm-cong-tu__chao-text em {
+	font-style: normal;
+	font-size: var(--nntm-fs-sm);
+	color: var(--nntm-muc-nhat);
+}
+
+.nntm-cong-tu__chao-text strong {
+	font-size: var(--nntm-fs-md);
+	color: var(--nntm-muc);
+}
+
+/* ---------- Dòng hiện trạng ("đã cam kết N…", "hôm nay đã ghi N…") ---------- */
+.nntm-cong-tu__hien-trang {
+	margin: 0 0 var(--nntm-sp-4);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+	color: var(--nntm-muc-nhat);
+}
+
+/* ---------- Ba nút bấm nhanh 10/20/50 (SUY DOAN — chỉ ở màn Khai Báo) ---------- */
+.nntm-cong-tu__nhanh {
+	display: flex;
+	gap: var(--nntm-sp-3);
+	margin: -8px 0 var(--nntm-sp-4);
+}
+
+.nntm-cong-tu__nhanh-btn {
+	flex: 1 1 0;
+	height: 36px;
+	border: 1px solid var(--nntm-vien);
+	background: transparent;
+	color: var(--nntm-muc);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+	font-weight: 700;
+	cursor: pointer;
+	transition: background var(--nntm-dur) var(--nntm-ease), color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-cong-tu__nhanh-btn:hover,
+.nntm-cong-tu__nhanh-btn:focus-visible {
+	background: var(--nntm-muc);
+	color: var(--nntm-trang);
+}
+
+/* ---------- Dòng tổng kết cuối form khai báo ---------- */
+.nntm-cong-tu__tong-ket {
+	margin: var(--nntm-sp-4) 0 0;
+	font-family: var(--nntm-font-sans);
+	font-size: 12px;
+	color: var(--nntm-muc-nhat);
+	text-align: center;
+}
+
+.nntm-cong-tu__submit {
+	margin-top: var(--nntm-sp-2);
+}
+
+/* ---------- Mobile ---------- */
+/* SUY DOAN: chưa có Figma mobile cho cả hai màn. */
+@media (max-width: 600px) {
+	.nntm-auth-card--cong-tu {
+		width: 100%;
+		padding: 36px 24px;
+	}
+}

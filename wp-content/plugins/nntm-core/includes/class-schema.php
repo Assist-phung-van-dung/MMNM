@@ -149,17 +149,22 @@ class Schema {
 			KEY user_id (user_id)
 		) {$charset_collate};";
 
-		// nntm_kpi_log — khai báo công phu (Phase 2, tạo bảng sẵn từ Phase 1).
+		// nntm_kpi_log — khai báo công phu Cộng Tu "chuỗi trì" (docs/07-ban-giao.md).
+		// program_id thêm ở schema 1.1.0 để tách số liệu theo từng chương trình
+		// (nntm_program) — dự án sẽ có NHIỀU chương trình theo thời gian.
 		$table = self::table( 'kpi_log' );
 		$sql[] = "CREATE TABLE {$table} (
 			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+			program_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
 			user_id BIGINT UNSIGNED NOT NULL,
 			log_date DATE NOT NULL,
 			metric VARCHAR(50) NOT NULL,
 			value INT NOT NULL DEFAULT 0,
 			created_at DATETIME NOT NULL,
 			PRIMARY KEY  (id),
-			KEY user_date (user_id, log_date)
+			KEY user_date (user_id, log_date),
+			KEY ct_nguoi_metric (program_id, user_id, metric),
+			KEY ct_metric (program_id, metric)
 		) {$charset_collate};";
 
 		return $sql;

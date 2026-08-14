@@ -25,7 +25,7 @@ define( 'NNTM_CORE_VERSION', '0.1.0' );
 define( 'NNTM_CORE_DIR', plugin_dir_path( __FILE__ ) );
 define( 'NNTM_CORE_URL', plugin_dir_url( __FILE__ ) );
 define( 'NNTM_CORE_FILE', __FILE__ );
-define( 'NNTM_CORE_SCHEMA_VERSION', '1.0.0' );
+define( 'NNTM_CORE_SCHEMA_VERSION', '1.1.0' );
 
 /**
  * Nạp các file lớp của plugin.
@@ -38,6 +38,7 @@ require_once NNTM_CORE_DIR . 'includes/class-roles.php';
 require_once NNTM_CORE_DIR . 'includes/functions.php';
 require_once NNTM_CORE_DIR . 'includes/class-post-meta.php';
 require_once NNTM_CORE_DIR . 'includes/class-schema.php';
+require_once NNTM_CORE_DIR . 'includes/class-chuoi-tri.php';
 require_once NNTM_CORE_DIR . 'includes/class-activator.php';
 
 /**

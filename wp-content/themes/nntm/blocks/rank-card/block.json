@@ -1,0 +1,63 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "nntm/rank-card",
+	"title": "Thẻ Đại Sĩ / Kim Cương (Rank Card)",
+	"category": "nntm",
+	"icon": "id-alt",
+	"description": "Hero cho trang \"Nhập Pháp Giới\": ảnh nền tràn viền, tiêu đề giữa, hàng thẻ cấp bậc dẫn sang trang riêng theo quyền thành viên. Ánh xạ Figma component set \"CARD DAI SI/KIM CUONG\".",
+	"textdomain": "nntm",
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"customClassName": true
+	},
+	"attributes": {
+		"heading": {
+			"type": "string",
+			"default": "Nhập Pháp Giới"
+		},
+		"bgImageId": {
+			"type": "number",
+			"default": 0
+		},
+		"bgImageUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"bgImageAlt": {
+			"type": "string",
+			"default": ""
+		},
+		"minHeight": {
+			"type": "number",
+			"default": 690
+		},
+		"cards": {
+			"type": "array",
+			"default": [
+				{
+					"imageId": 0,
+					"imageUrl": "",
+					"imageAlt": "",
+					"title": "Đại Sĩ Hành Giả",
+					"ctaLabel": "Mời vào",
+					"targetUrl": "",
+					"requiredAccess": "login"
+				},
+				{
+					"imageId": 0,
+					"imageUrl": "",
+					"imageAlt": "",
+					"title": "Kim Cương Hành Giả",
+					"ctaLabel": "Mời vào",
+					"targetUrl": "",
+					"requiredAccess": "login"
+				}
+			]
+		}
+	},
+	"editorScript": "file:./editor.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

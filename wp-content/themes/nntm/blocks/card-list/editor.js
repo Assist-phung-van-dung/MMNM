@@ -30,6 +30,7 @@
 		{ label: __( 'Bài viết vừa (Small)', 'nntm' ), value: 'small' },
 		{ label: __( 'Bài viết nhỏ (XS)', 'nntm' ), value: 'xs' },
 		{ label: __( 'Thẻ Đại Sĩ (chủ đề)', 'nntm' ), value: 'dai-si' },
+		{ label: __( 'Thẻ Kim Cương (trắng, có đoạn trích)', 'nntm' ), value: 'kim-cuong' },
 		{ label: __( 'Bài viết lớn — khi rê chuột (Hover)', 'nntm' ), value: 'article-hover' },
 		{ label: __( 'Video', 'nntm' ), value: 'video' },
 		{ label: __( 'Khóa Tu', 'nntm' ), value: 'khoa-tu' },
@@ -63,9 +64,14 @@
 	// layout mặc định PHẢI là "grid" — khớp default trong block.json để mọi
 	// khối card-list đang có trên site (chưa từng lưu attribute này) giữ
 	// nguyên hình dạng lưới cũ.
+	// "marquee" thêm 14/08/2026: băng TỰ CHẠY liên tục, KHÔNG nút mũi tên,
+	// KHÔNG thanh cuộn — khác "carousel" (khung cuộn CÓ nút + thanh cuộn).
+	// Dự án trước đây CHƯA có lựa chọn này cho danh sách bài, chỉ có marquee
+	// riêng cho nguồn YouTube (xem videoSource ở panel "Lấy nội dung từ đâu").
 	var LAYOUT_OPTIONS = [
 		{ label: __( 'Lưới (Grid)', 'nntm' ), value: 'grid' },
 		{ label: __( 'Băng cuộn ngang (Carousel)', 'nntm' ), value: 'carousel' },
+		{ label: __( 'Băng tự chạy (không nút bấm)', 'nntm' ), value: 'marquee' },
 	];
 
 	// Màu nền khối. Danh sách đóng — khách chỉ chọn được màu thương hiệu,
@@ -77,6 +83,8 @@
 		{ label: __( 'Nền kem', 'nntm' ), value: 'kem' },
 		{ label: __( 'Nền cam', 'nntm' ), value: 'cam' },
 		{ label: __( 'Nền tối', 'nntm' ), value: 'toi' },
+		{ label: __( 'Nền navy (Đại Sĩ Hành Giả)', 'nntm' ), value: 'cham' },
+		{ label: __( 'Nền vàng nghệ (Kim Cương Hành Giả)', 'nntm' ), value: 'vang' },
 	];
 
 	// Nhãn tiếng Việt cho taxonomy — khớp với class-taxonomies.php.
@@ -285,7 +293,7 @@
 							? null
 							: el( SelectControl, {
 									label: __( 'Kiểu hiển thị', 'nntm' ),
-									help: __( 'Lưới: xếp nhiều hàng, có thể phân trang. Băng cuộn ngang: một hàng duy nhất, khách cuộn bằng nút lùi/tiến hoặc bàn phím — hợp với Ấn Phẩm.', 'nntm' ),
+									help: __( 'Lưới: xếp nhiều hàng, có thể phân trang. Băng cuộn ngang: một hàng duy nhất, khách cuộn bằng nút lùi/tiến hoặc bàn phím. Băng tự chạy: một hàng tự trôi liên tục, không có nút bấm và không có thanh cuộn nào — rê chuột hoặc bấm Tab vào thì băng dừng lại.', 'nntm' ),
 									value: attributes.layout || 'grid',
 									options: LAYOUT_OPTIONS,
 									onChange: function ( value ) {
@@ -322,6 +330,27 @@
 										setAttributes( { showCategory: value } );
 									},
 							  } ),
+						// Dong "Xem them" trong tung the — kieu the "Dai Si" (trang Dai Si
+						// Hanh Gia) tu ep hien dong nay du bat/tat o day (xem render-card.php).
+						'youtube' === attributes.videoSource
+							? null
+							: el( ToggleControl, {
+									label: __( 'Hiện nút "Xem thêm" trong từng thẻ', 'nntm' ),
+									help: __( 'Kiểu thẻ Đại Sĩ luôn hiện dòng này dù bật hay tắt ở đây.', 'nntm' ),
+									checked: !! attributes.showCardCta,
+									onChange: function ( value ) {
+										setAttributes( { showCardCta: value } );
+									},
+							  } ),
+						'youtube' === attributes.videoSource || ( ! attributes.showCardCta && 'dai-si' !== attributes.variant && 'kim-cuong' !== attributes.variant )
+							? null
+							: el( TextControl, {
+									label: __( 'Nhãn nút "Xem thêm"', 'nntm' ),
+									value: attributes.cardCtaLabel || '',
+									onChange: function ( value ) {
+										setAttributes( { cardCtaLabel: value } );
+									},
+							  } ),
 						// Tieu de so le va doan chu duoi dai — tu Figma SECTION 3
 						// (bang video "Got Son"). De trong thi khoi hien binh
 						// thuong nhu cu, khong doi gi.
@@ -333,6 +362,18 @@
 								setAttributes( { showViewAll: !! value, viewAllLabel: value } );
 							},
 						} ),
+						attributes.showViewAll
+							? el( TextControl, {
+									label: __( 'Đường dẫn "Xem tất cả" (ghi đè)', 'nntm' ),
+									help: __( 'Để trống thì tự lấy đường dẫn kho lưu trữ / chuyên mục đang lọc. Dùng khi muốn trỏ sang một Trang riêng, ví dụ /nghi-quy/.', 'nntm' ),
+									type: 'url',
+									placeholder: '/nghi-quy/',
+									value: attributes.viewAllUrl || '',
+									onChange: function ( value ) {
+										setAttributes( { viewAllUrl: value } );
+									},
+							  } )
+							: null,
 						el( TextControl, {
 							label: __( 'Dòng tiêu đề đặt PHÍA TRÊN dải nền', 'nntm' ),
 							help: __( 'Dùng cho kiểu tiêu đề so le: dòng này nằm ngoài dải nền (chữ đậm màu), dòng tiêu đề chính nằm trong dải và thụt vào phải. Để trống thì tiêu đề hiện bình thường.', 'nntm' ),
@@ -394,7 +435,9 @@
 									max: 20,
 							  } )
 							: null,
-						'carousel' !== attributes.layout
+						// So cot chi co y nghia o kieu Luoi — Carousel va Marquee
+						// deu la MOT hang duy nhat, khong chia cot.
+						'grid' === ( attributes.layout || 'grid' )
 							? el( SelectControl, {
 									label: __( 'Số cột mỗi hàng', 'nntm' ),
 									value: attributes.columns,
@@ -431,7 +474,18 @@
 									},
 							  } )
 							: null,
-						'carousel' !== attributes.layout
+						el( TextControl, {
+							type: 'number',
+							label: __( 'Loại trừ bài có ID', 'nntm' ),
+							help: __( 'Để 0 nếu không loại trừ bài nào. Dùng cho dải "Bài viết liên quan" ở trang chi tiết, tránh bài đang xem tự liệt kê chính nó.', 'nntm' ),
+							value: attributes.excludePostId || 0,
+							onChange: function ( value ) {
+								setAttributes( { excludePostId: parseInt( value, 10 ) || 0 } );
+							},
+						} ),
+						// Phan trang cung chi co y nghia o kieu Luoi — Carousel/Marquee
+						// khong phan trang (xem render.php: $is_carousel_like).
+						'grid' === ( attributes.layout || 'grid' )
 							? el( ToggleControl, {
 									label: __( 'Hiện nút chuyển trang (BACK / NEXT)', 'nntm' ),
 									checked: !! attributes.showPaging,

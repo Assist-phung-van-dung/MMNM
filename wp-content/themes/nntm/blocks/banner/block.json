@@ -23,7 +23,9 @@
 					"imageUrl": { "type": "string" },
 					"imageAlt": { "type": "string" },
 					"heading": { "type": "string" },
-					"text": { "type": "string" }
+					"text": { "type": "string" },
+					"showButton": { "type": "boolean", "default": false },
+					"buttonLabel": { "type": "string", "default": "Tham gia" }
 				}
 			}
 		},
@@ -31,7 +33,12 @@
 		"emblemUrl": { "type": "string", "default": "" },
 		"emblemAlt": { "type": "string", "default": "" },
 		"autoplay": { "type": "boolean", "default": true },
-		"interval": { "type": "number", "default": 6 }
+		"interval": { "type": "number", "default": 6 },
+		"tranVien": {
+			"type": "boolean",
+			"default": false,
+			"description": "Tran het chieu rong man hinh, goc vuong (khac banner trang chu co dem + bo goc theo Figma R4). Mac dinh false de khong doi banner trang chu."
+		}
 	},
 	"editorScript": "file:./editor.js",
 	"viewScript": "file:./view.js",

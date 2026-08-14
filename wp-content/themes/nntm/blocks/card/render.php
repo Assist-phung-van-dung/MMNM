@@ -22,5 +22,7 @@ $post_id       = isset( $attributes['postId'] ) ? absint( $attributes['postId'] 
 $show_date     = ! empty( $attributes['showDate'] );
 $show_excerpt  = ! empty( $attributes['showExcerpt'] );
 $show_category = ! empty( $attributes['showCategory'] );
+$show_cta      = ! empty( $attributes['showCta'] );
+$cta_label     = isset( $attributes['ctaLabel'] ) ? (string) $attributes['ctaLabel'] : __( 'Xem thêm', 'nntm' );
 
-echo nntm_render_card_markup( $post_id, $variant, $show_date, $show_excerpt, $show_category ); // phpcs:ignore WordPress.Security.EscapeOutput -- markup đã được escape từng phần bên trong nntm_render_card_markup().
+echo nntm_render_card_markup( $post_id, $variant, $show_date, $show_excerpt, $show_category, $show_cta, $cta_label ); // phpcs:ignore WordPress.Security.EscapeOutput -- markup đã được escape từng phần bên trong nntm_render_card_markup().

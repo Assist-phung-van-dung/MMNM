@@ -1,0 +1,163 @@
+/* =============================================================
+   NNTM — Trang chi tiết một ấn phẩm (nntm_publication)
+
+   NGUỒN SỐ ĐO: ảnh thiết kế anh Úy gửi (vd "Chiếc Hộp Ánh Trăng"), bóc
+   bằng mắt và quy về khung 1366 — ĐÂY LÀ ƯỚC LƯỢNG, KHÔNG PHẢI FIGMA
+   CHÍNH THỨC. Khi có Figma thật cho màn này, đọc lại và chỉnh cho khớp
+   (docs/04-kien-truc.md mục 0.1).
+
+   ⚠️ ĐÂY LÀ BỘ ÁO THỨ BA, khác cả navy (Đại Sĩ) lẫn vàng nghệ (Kim
+   Cương) của assets/css/pages/bai-hanh-gia.css: nền TRẮNG/rất nhạt,
+   tiêu đề màu RÊU (--nntm-reu), dải liên quan nền KEM. KHÔNG dùng
+   token --nntm-cham / --nntm-vang-nghe ở đây.
+
+   Nạp có điều kiện bởi inc/an-pham.php (nntm_an_pham_enqueue_assets),
+   chỉ trên single `nntm_publication`. Phụ thuộc nntm-tokens, nntm-base
+   — KHÔNG viết mã màu trực tiếp trong file này.
+   ============================================================= */
+
+/* ---------- Dải nền trắng/rất nhạt ---------- */
+
+.nntm-an-pham__than {
+	background: var(--nntm-trang);
+	padding: var(--nntm-sp-10) 0 var(--nntm-sp-9); /* 60px trên, SUY DOAN 50px dưới — ảnh gốc không ghi rõ đáy dải */
+}
+
+.nntm-an-pham__khung {
+	max-width: 1181px;
+	margin: 0 auto;
+	padding: 0 var(--nntm-sp-4); /* đệm dự phòng cho màn hẹp hơn 1366+92*2 */
+}
+
+/* ---------- Tiêu đề + dòng "Cập nhật ..." ---------- */
+
+.nntm-an-pham__tieu-de {
+	margin: 0 0 var(--nntm-sp-4) 0; /* ~16px cách dòng ngày */
+	font-family: var(--nntm-font-display);
+	font-size: 40px;
+	line-height: var(--nntm-lh-chat);
+	color: var(--nntm-reu);
+}
+
+.nntm-an-pham__ngay {
+	display: flex;
+	align-items: center;
+	gap: var(--nntm-sp-2);
+	margin: 0 0 var(--nntm-sp-4) 0; /* SUY DOAN: gap tới đoạn mô tả, không có số đo rõ trong ảnh gốc */
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm); /* 14px */
+	color: var(--nntm-chu-phu);
+}
+
+.nntm-an-pham__cham {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: currentColor;
+	flex: none;
+}
+
+/* ---------- Ảnh bìa lớn ---------- */
+
+.nntm-an-pham__anh-bia {
+	max-width: 1000px;
+	margin: var(--nntm-sp-7) auto; /* ~30px cách trên/dưới */
+	text-align: center;
+}
+
+.nntm-an-pham__anh-bia-img {
+	display: block;
+	width: 100%;
+	height: auto;
+	margin: 0 auto;
+	border-radius: var(--nntm-r-md);
+}
+
+/* ---------- Nội dung (mô tả + các đoạn văn tiếp theo) ---------- */
+
+.nntm-an-pham__noi-dung {
+	font-family: var(--nntm-font-serif);
+	font-size: var(--nntm-fs-base); /* 16px */
+	line-height: 1.75;
+	color: var(--nntm-chu);
+}
+
+.nntm-an-pham__noi-dung > p {
+	margin: 0 0 var(--nntm-sp-3) 0; /* 10px cách nhau giữa các đoạn văn — SUY DOAN, ảnh gốc không đo rõ */
+}
+
+.nntm-an-pham__noi-dung > p:last-child {
+	margin-bottom: 0;
+}
+
+/* ---------- Hàng nút cuối — CHỈ có "Yêu thích", không có "Đăng Ký Khoá Tu" ---------- */
+
+.nntm-an-pham__hang-nut {
+	display: flex;
+	align-items: center;
+	margin-top: var(--nntm-sp-8); /* 40px cách đoạn cuối, cùng số đo với bai-hanh-gia.css */
+}
+
+.nntm-an-pham__yeu-thich {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--nntm-sp-2); /* SUY DOAN: khoảng cách icon-nhãn không có số đo rõ trong ảnh gốc */
+	background: none;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-15);
+	color: var(--nntm-chu);
+}
+
+.nntm-an-pham__tim {
+	width: 24px;
+	height: 24px;
+	flex: none;
+}
+
+/* ---------- Dải "Cùng chuyên mục" nền kem ---------- */
+
+.nntm-an-pham__cung-chuyen-muc {
+	background: var(--nntm-kem);
+	padding-top: var(--nntm-sp-11); /* SUY DOAN 70px, cùng nhóm khoảng cách với dải lien-quan của bai-hanh-gia.css */
+}
+
+.nntm-an-pham__cung-chuyen-muc .nntm-card-list__heading {
+	font-family: var(--nntm-font-display);
+	font-size: 40px;
+	color: var(--nntm-reu);
+}
+
+/* =============================================================
+   Responsive — SUY DOAN: chua co Figma mobile.
+   Ước lượng thu gọn theo cùng tỷ lệ giữ khoảng trắng, chưa đối chiếu
+   với bất kỳ bản thiết kế mobile chính thức nào.
+   ============================================================= */
+@media (max-width: 900px) {
+	.nntm-an-pham__than {
+		padding: var(--nntm-sp-8) 0 var(--nntm-sp-7);
+	}
+
+	.nntm-an-pham__khung {
+		padding: 0 var(--nntm-sp-4);
+	}
+
+	.nntm-an-pham__tieu-de {
+		font-size: var(--nntm-fs-3xl);
+	}
+
+	.nntm-an-pham__anh-bia {
+		margin: var(--nntm-sp-5) auto;
+	}
+
+	.nntm-an-pham__cung-chuyen-muc {
+		padding-top: var(--nntm-sp-9);
+	}
+
+	.nntm-an-pham__cung-chuyen-muc .nntm-card-list__heading {
+		font-size: var(--nntm-fs-3xl);
+	}
+}

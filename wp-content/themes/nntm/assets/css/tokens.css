@@ -27,6 +27,19 @@
   --nntm-nau-dat:    #A47764;
   --nntm-dao:        #FEBE98;
   --nntm-cham:       #1F4E79;
+  /* Bổ sung cho the "dai-si" (trang Đại Sĩ Hành Giả) — anh Úy chốt
+     14/08/2026: nền ô thẻ phải NAVY ĐẬM HƠN nền dải (--nntm-cham). Không
+     có mã màu riêng trong ảnh thiết kế (chỉ ước lượng "đậm hơn"), nên
+     tính bằng color-mix() thay vì đoán một mã hex mới. */
+  --nntm-cham-dam:   color-mix(in srgb, var(--nntm-cham) 80%, black);
+
+  /* Bổ sung cho khu "Kim Cương Hành Giả" — anh Úy chốt 14/08/2026: dải nền
+     vàng nghệ (khác navy --nntm-cham của Đại Sĩ).
+     SỬA 14/08/2026 (đợt 2): đây KHÔNG CÒN là giá trị ước lượng — chủ dự án
+     đã CẤP MÃ MÀU THẬT #D4AF37 ngày 14/08/2026. Đừng tự chỉnh lại giá trị
+     này "cho giống ảnh" ở phiên sau; muốn đổi thì phải có yêu cầu mới bằng
+     văn bản từ chủ dự án. */
+  --nntm-vang-nghe:  #D4AF37;
 
   --nntm-vien:       #E0E0E0;
   --nntm-xam:        #C4C4C4;
@@ -59,6 +72,14 @@
      không dùng thay được. */
   --nntm-den:        #000000;
 
+  /* Bổ sung cho 3 màn Đăng nhập/Đăng ký/Quên mật khẩu (tự dựng theo 3 ảnh
+     thiết kế anh Úy gửi, chưa có Figma chính thức — xem inc/auth.php và
+     assets/css/pages/auth.css). --nntm-vien-kinh dùng chung với token đã
+     khai bên dưới cho block nntm/rank-card (cùng giá trị viền kính 0.35). */
+  --nntm-loi-nen:        #FBEAEA;  /* nền khối báo lỗi trên form */
+  --nntm-loi-chu:        #C0392B;  /* chữ khối báo lỗi trên form */
+  --nntm-the-kinh-dam:   rgba(255,255,255,0.28);  /* nền kính mờ thẻ form đăng nhập/đăng ký */
+
   /* Vai trò ngữ nghĩa — component dùng nhóm này, không dùng tên màu thô */
   --nntm-nen:            var(--nntm-kem);
   --nntm-nen-noi:        var(--nntm-trang);
@@ -67,6 +88,19 @@
   --nntm-chinh:          var(--nntm-reu);
   --nntm-chinh-hover:    var(--nntm-nau-dat);
   --nntm-duong-vien:     var(--nntm-vien);
+
+  /* Bổ sung cho block nntm/rank-card (trang "Nhập Pháp Giới") — Figma
+     component set "CARD DAI SI/KIM CUONG". Bóc từ ảnh chụp 2x quy về 1366
+     ngày 14/08/2026. Thẻ kính mờ (glassmorphism) trên ảnh nền hero. */
+  --nntm-the-kinh:  rgba(255,255,255,0.18);  /* nền kính mờ của thẻ cấp bậc */
+  --nntm-vien-kinh: rgba(255,255,255,0.35);  /* viền 1px của thẻ cấp bậc */
+
+  /* Bổ sung cho block nntm/cong-tu (khối Thống Kê + Bảng Xếp Hạng, trang
+     Kim Cương Hành Giả). SỬA 14/08/2026 (đợt 2): KHÔNG CÒN là giá trị ước
+     lượng — cùng đợt với --nntm-vang-nghe ở trên, chủ dự án đã CẤP MÃ MÀU
+     THẬT #8B1E2D ngày 14/08/2026 cho số thống kê lớn, tiêu đề "Bảng Xếp
+     Hạng Cá Nhân", nền hàng đầu bảng (chữ trắng) và thanh tiến trình. */
+  --nntm-do-tham:   #8B1E2D;
 
   /* ---------- Chữ ---------- */
   /* Battambang / Baskerville / Google Sans Flex / Century Gothic trong Figma

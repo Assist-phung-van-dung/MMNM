@@ -37,6 +37,7 @@ defined( 'ABSPATH' ) || exit;
 
 require_once get_template_directory() . '/blocks/card/inc/render-card.php';
 require_once __DIR__ . '/inc/render-card-list-youtube.php';
+require_once __DIR__ . '/inc/render-card-list-marquee.php';
 
 // ---------- Đọc & làm sạch thuộc tính ----------
 
@@ -60,7 +61,12 @@ if ( ! in_array( $columns, array( 2, 3, 4 ), true ) ) {
 $posts_per_page = isset( $attributes['postsPerPage'] ) ? absint( $attributes['postsPerPage'] ) : 6;
 $posts_per_page = max( 1, min( 24, $posts_per_page ) );
 
-$order_by_choice = isset( $attributes['orderBy'] ) ? sanitize_key( (string) $attributes['orderBy'] ) : 'newest';
+$order_by_choice  = isset( $attributes['orderBy'] ) ? sanitize_key( (string) $attributes['orderBy'] ) : 'newest';
+// Loai tru mot bai khoi danh sach — dung cho dai "Bai viet lien quan" o trang
+// bai chi tiet, tranh bai dang xem tu liet ke chinh no (xem xu ly ben duoi,
+// GAN VOI switch($order_by_choice) vi 'manual' dung post__in, khong dung
+// duoc post__not_in cung luc — hai tham so nay xung khac trong WP_Query).
+$exclude_post_id  = isset( $attributes['excludePostId'] ) ? absint( $attributes['excludePostId'] ) : 0;
 $show_paging      = ! empty( $attributes['showPaging'] );
 $heading          = isset( $attributes['heading'] ) ? (string) $attributes['heading'] : '';
 $subheading       = isset( $attributes['subheading'] ) ? (string) $attributes['subheading'] : '';
@@ -69,14 +75,18 @@ $show_view_all    = ! empty( $attributes['showViewAll'] );
 $view_all_label   = isset( $attributes['viewAllLabel'] ) ? (string) $attributes['viewAllLabel'] : __( 'Xem tất cả', 'nntm' );
 
 // layout: "grid" (mac dinh, hanh vi cu — moi khoi card-list dang co tren site
-// khong luu attribute nay nen luon nhan default "grid" va giu nguyen hinh dang cu)
-// hoac "carousel" (bang the cuon ngang, but lui/tien — xem blocks/term-list/style.css
-// cho ky thuat cuon dung chung).
+// khong luu attribute nay nen luon nhan default "grid" va giu nguyen hinh dang cu),
+// "carousel" (bang the cuon ngang, CO nut lui/tien + thanh cuon tay — xem
+// blocks/term-list/style.css cho ky thuat cuon dung chung, KHONG duoc doi hanh vi
+// nay vi noi khac dang dung), hoac "marquee" (bang TU CHAY lien tuc, KHONG nut
+// bam, KHONG thanh cuon — them 14/08/2026 cho dai "Nghi Quy" trang Kim Cuong
+// Hanh Gia, xem inc/render-card-list-marquee.php).
 $layout = isset( $attributes['layout'] ) ? sanitize_key( (string) $attributes['layout'] ) : 'grid';
-if ( ! in_array( $layout, array( 'grid', 'carousel' ), true ) ) {
+if ( ! in_array( $layout, array( 'grid', 'carousel', 'marquee' ), true ) ) {
 	$layout = 'grid';
 }
 $is_carousel = ( 'carousel' === $layout );
+$is_marquee  = ( 'marquee' === $layout );
 
 // Tu chay bang cuon — chi co tac dung khi $is_carousel. Gio giua moi lan
 // chuyen gioi han 2-20s (khop min/max o editor.js RangeControl va o
@@ -93,6 +103,13 @@ if ( $taxonomy && $term_id ) {
 	if ( ! is_wp_error( $term_link ) ) {
 		$view_all_url = $term_link;
 	}
+}
+
+// Ghi de bang tay: dung khi khong co kho luu tru/term nao khop (vd Nghi
+// Quy la mot Page ghep tu block, khong phai kho luu tru cua nntm_publication).
+$view_all_url_override = isset( $attributes['viewAllUrl'] ) ? esc_url_raw( (string) $attributes['viewAllUrl'] ) : '';
+if ( '' !== $view_all_url_override ) {
+	$view_all_url = $view_all_url_override;
 }
 
 /*
@@ -122,18 +139,20 @@ if ( ! $paged ) {
 $paged = max( 1, absint( $paged ) );
 
 /*
- * Chế độ carousel KHÔNG phân trang theo trang — nút lùi/tiến ở chế độ này là
- * để CUỘN băng thẻ (xử lý bằng CSS/JS phía dưới), không phải để đổi trang
- * WP_Query. Vì vậy ở carousel luôn lấy đúng $posts_per_page bài từ trang 1,
- * bỏ qua "paged" và "showPaging" — không tính tổng số trang vì không cần.
+ * Che do carousel VA marquee KHONG phan trang theo trang. O carousel, nut
+ * lui/tien la de CUON bang the (xu ly boi CSS/JS phia duoi), khong phai de
+ * doi trang WP_Query; o marquee khong co nut/thanh cuon nao ca — bang chi
+ * chay tu dong. Ca hai deu luon lay dung $posts_per_page bai tu trang 1, bo
+ * qua "paged" va "showPaging" — khong tinh tong so trang vi khong can.
  */
-$query_args = array(
+$is_carousel_like = ( $is_carousel || $is_marquee );
+$query_args       = array(
 	'post_type'              => $post_type,
 	'post_status'            => 'publish',
 	'posts_per_page'         => $posts_per_page,
-	'paged'                  => $is_carousel ? 1 : $paged,
+	'paged'                  => $is_carousel_like ? 1 : $paged,
 	'ignore_sticky_posts'    => true,
-	'no_found_rows'       => $is_carousel ? true : ! $show_paging, // chi tinh tong so trang khi thuc su can phan trang, do bot truy van.
+	'no_found_rows'       => $is_carousel_like ? true : ! $show_paging, // chi tinh tong so trang khi thuc su can phan trang, do bot truy van.
 	/*
 	 * KHÔNG tắt update_post_meta_cache / update_post_term_cache ở đây.
 	 * Thẻ đọc cả hai: ảnh đại diện lấy ID từ post meta `_thumbnail_id`,
@@ -157,6 +176,13 @@ switch ( $order_by_choice ) {
 		$manual_ids_raw = isset( $attributes['manualOrderIds'] ) ? (string) $attributes['manualOrderIds'] : '';
 		$manual_ids     = array_values( array_filter( array_map( 'absint', explode( ',', $manual_ids_raw ) ) ) );
 
+		// post__in VA post__not_in xung khac nhau trong WP_Query — 'manual' đã
+		// dùng post__in nên lọc bỏ $exclude_post_id NGAY TRONG mảng ID thay vì
+		// thêm post__not_in (xem khối xử lý chung bên dưới switch này).
+		if ( $exclude_post_id > 0 ) {
+			$manual_ids = array_values( array_diff( $manual_ids, array( $exclude_post_id ) ) );
+		}
+
 		if ( ! empty( $manual_ids ) ) {
 			// Giới hạn cùng mức postsPerPage để không truy vấn post__in không giới hạn.
 			$query_args['post__in'] = array_slice( $manual_ids, 0, $posts_per_page );
@@ -172,6 +198,14 @@ switch ( $order_by_choice ) {
 		$query_args['orderby'] = 'date';
 		$query_args['order']   = 'DESC';
 		break;
+}
+
+// Cac truong hop KHONG dung post__in (moi orderBy tru 'manual') — loai tru
+// bang post__not_in binh thuong. 'manual' da tu loai tru ngay trong mang
+// post__in o switch phia tren, KHONG duoc them post__not_in o day nua vi
+// hai tham so nay xung khac (WP_Query bo qua post__not_in khi co post__in).
+if ( $exclude_post_id > 0 && ! isset( $query_args['post__in'] ) ) {
+	$query_args['post__not_in'] = array( $exclude_post_id );
 }
 
 if ( '' !== $taxonomy && taxonomy_exists( $taxonomy ) && $term_id > 0 ) {
@@ -196,7 +230,7 @@ $query = $is_youtube_source ? null : new WP_Query( $query_args );
  * đó cần nền cam #FB5102 mà băng cuộn trước đây chưa có tuỳ chọn nào.
  */
 $background = isset( $attributes['background'] ) ? sanitize_key( (string) $attributes['background'] ) : 'none';
-if ( ! in_array( $background, array( 'none', 'kem', 'cam', 'toi' ), true ) ) {
+if ( ! in_array( $background, array( 'none', 'kem', 'cam', 'toi', 'cham', 'vang' ), true ) ) {
 	$background = 'none';
 }
 
@@ -228,6 +262,15 @@ $caption_below = isset( $attributes['captionBelow'] ) ? (string) $attributes['ca
  */
 $show_date     = ! isset( $attributes['showDate'] ) || ! empty( $attributes['showDate'] );
 $show_category = ! isset( $attributes['showCategory'] ) || ! empty( $attributes['showCategory'] );
+
+/*
+ * Nút "Xem thêm" trong từng thẻ. Mặc định TẮT (false) để không đổi hình
+ * dạng của các khối card-list đang dùng — biến thể "dai-si" (trang Đại Sĩ
+ * Hành Giả) tự ép hiện dòng này bên trong nntm_render_card_markup() bất kể
+ * giá trị của thuộc tính này (xem blocks/card/inc/render-card.php).
+ */
+$show_card_cta   = ! empty( $attributes['showCardCta'] );
+$card_cta_label  = isset( $attributes['cardCtaLabel'] ) ? (string) $attributes['cardCtaLabel'] : __( 'Xem thêm', 'nntm' );
 
 $wrapper_attributes = get_block_wrapper_attributes(
 	array(
@@ -285,7 +328,20 @@ $wrapper_attributes = get_block_wrapper_attributes(
 
 		<?php elseif ( $query->have_posts() ) : ?>
 
-			<?php if ( $is_carousel ) : ?>
+			<?php if ( $is_marquee ) : ?>
+
+				<?php
+				/*
+				 * Bang TU CHAY danh sach BAI — KHONG nut mui ten, KHONG thanh
+				 * cuon (khac han carousel ngay duoi day). Ky thuat dung lai
+				 * dung nntm_card_list_render_youtube_marquee() (marquee
+				 * YouTube o dai "Got Son"/"GITA"), chi khac don vi lap la BAI
+				 * VIET thay vi video — xem inc/render-card-list-marquee.php.
+				 */
+				echo nntm_card_list_render_posts_marquee( wp_list_pluck( $query->posts, 'ID' ), $variant, $show_date, $show_category, $show_card_cta, $card_cta_label ); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong.
+				?>
+
+			<?php elseif ( $is_carousel ) : ?>
 
 				<?php
 				// Bang the cuon ngang — tai su dung dung ky thuat cuon cua
@@ -303,7 +359,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 					<div class="nntm-card-list__track" tabindex="0" role="group" aria-label="<?php esc_attr_e( 'Danh sách cuộn ngang, dùng phím mũi tên trái/phải để cuộn', 'nntm' ); ?>">
 						<?php foreach ( $query->posts as $queried_post ) : ?>
 							<div class="nntm-card-list__track-item">
-								<?php echo nntm_render_card_markup( $queried_post->ID, $variant, $show_date, true, $show_category ); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong nntm_render_card_markup(). ?>
+								<?php echo nntm_render_card_markup( $queried_post->ID, $variant, $show_date, true, $show_category, $show_card_cta, $card_cta_label ); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong nntm_render_card_markup(). ?>
 							</div>
 						<?php endforeach; ?>
 					</div>
@@ -317,32 +373,83 @@ $wrapper_attributes = get_block_wrapper_attributes(
 
 				<div class="nntm-grid nntm-grid--<?php echo esc_attr( (string) $columns ); ?>">
 					<?php foreach ( $query->posts as $queried_post ) : ?>
-						<?php echo nntm_render_card_markup( $queried_post->ID, $variant, $show_date, true, $show_category ); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong nntm_render_card_markup(). ?>
+						<?php echo nntm_render_card_markup( $queried_post->ID, $variant, $show_date, true, $show_category, $show_card_cta, $card_cta_label ); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong nntm_render_card_markup(). ?>
 					<?php endforeach; ?>
 				</div>
 
 				<?php if ( $show_paging && $query->max_num_pages > 1 ) : ?>
 					<?php
-					$prev_url = null;
-					$next_url = null;
+					/*
+					 * Sinh liên kết bằng ĐƯỜNG DẪN ĐẸP (/page/N/) chứ không
+					 * phải ?paged=N. WordPress tự chuyển hướng chuẩn hoá
+					 * ?paged=N sang /page/N/, nên dùng ?paged= là mỗi lần
+					 * bấm trang lại tốn thêm một vòng 301 — đo thật ngày
+					 * 14/08/2026 trên trang Kim Cương Hành Giả.
+					 *
+					 * get_pagenum_link() lo hết việc ráp đường dẫn cho cả
+					 * trang tĩnh lẫn kho lưu trữ, và giữ nguyên các tham số
+					 * truy vấn khác đang có trên URL.
+					 */
+					$tong_trang = (int) $query->max_num_pages;
 
-					if ( $paged > 1 ) {
-						$prev_url = ( 1 === $paged - 1 ) ? remove_query_arg( 'paged' ) : add_query_arg( 'paged', $paged - 1 );
-					}
-
-					if ( $paged < $query->max_num_pages ) {
-						$next_url = add_query_arg( 'paged', $paged + 1 );
-					}
+					$lien_ket_trang = static function ( int $so ): string {
+						return get_pagenum_link( max( 1, $so ) );
+					};
 					?>
 					<nav class="nntm-card-list__paging" aria-label="<?php esc_attr_e( 'Phân trang danh sách', 'nntm' ); ?>">
-						<?php if ( $prev_url ) : ?>
-							<a class="nntm-card-list__paging-btn nntm-card-list__paging-btn--prev" href="<?php echo esc_url( $prev_url ); ?>">
-								<?php esc_html_e( 'BACK', 'nntm' ); ?>
+						<?php if ( $paged > 1 ) : ?>
+							<a class="nntm-card-list__paging-btn nntm-card-list__paging-btn--prev" href="<?php echo esc_url( $lien_ket_trang( $paged - 1 ) ); ?>" rel="prev">
+								<span class="nntm-sr-only"><?php esc_html_e( 'Trang trước', 'nntm' ); ?></span>
+								<span aria-hidden="true">&larr;</span>
 							</a>
 						<?php endif; ?>
-						<?php if ( $next_url ) : ?>
-							<a class="nntm-card-list__paging-btn nntm-card-list__paging-btn--next" href="<?php echo esc_url( $next_url ); ?>">
-								<?php esc_html_e( 'NEXT', 'nntm' ); ?>
+
+						<?php
+						/*
+						 * Dãy số trang — bản thiết kế chủ dự án gửi 14/08/2026
+						 * vẽ rõ "1 2 3 4 5" nằm giữa hai nút mũi tên. Nhiều
+						 * trang hơn thì rút gọn bằng dấu … để dải không tràn.
+						 */
+						$cua_so = 2; // số trang hiện hai bên trang đang xem
+						$da_in  = 0;
+
+						for ( $so = 1; $so <= $tong_trang; $so++ ) {
+							$trong_cua_so = ( 1 === $so )
+								|| ( $tong_trang === $so )
+								|| ( abs( $so - $paged ) <= $cua_so );
+
+							if ( ! $trong_cua_so ) {
+								// Chỉ in MỘT dấu … cho mỗi quãng bị bỏ.
+								if ( $da_in !== $so - 1 ) {
+									continue;
+								}
+								echo '<span class="nntm-card-list__paging-luoc" aria-hidden="true">&hellip;</span>';
+								continue;
+							}
+
+							$da_in = $so;
+
+							if ( $so === $paged ) {
+								printf(
+									'<span class="nntm-card-list__paging-so nntm-card-list__paging-so--dang-xem" aria-current="page">%d</span>',
+									(int) $so
+								);
+								continue;
+							}
+
+							printf(
+								'<a class="nntm-card-list__paging-so" href="%1$s"><span class="nntm-sr-only">%2$s </span>%3$d</a>',
+								esc_url( $lien_ket_trang( $so ) ),
+								esc_html__( 'Trang', 'nntm' ),
+								(int) $so
+							);
+						}
+						?>
+
+						<?php if ( $paged < $tong_trang ) : ?>
+							<a class="nntm-card-list__paging-btn nntm-card-list__paging-btn--next" href="<?php echo esc_url( $lien_ket_trang( $paged + 1 ) ); ?>" rel="next">
+								<span class="nntm-sr-only"><?php esc_html_e( 'Trang sau', 'nntm' ); ?></span>
+								<span aria-hidden="true">&rarr;</span>
 							</a>
 						<?php endif; ?>
 					</nav>

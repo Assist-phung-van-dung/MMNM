@@ -138,6 +138,24 @@
 							capNhatTam( chiSo, { text: gt } );
 						},
 					} ),
+					el( ToggleControl, {
+						label: __( 'Hiện nút hành động (vd: "Tham gia")', 'nntm' ),
+						help: __( 'Dùng cho dải "Lễ Đàn Khổng Tước" (Cộng Tu chuỗi trì). Đường dẫn nút lấy tự động từ phần Cộng Tu — chưa có phần đó thì nút vẫn hiện nhưng vô hiệu hoá.', 'nntm' ),
+						checked: !! tam.showButton,
+						onChange: function ( gt ) {
+							capNhatTam( chiSo, { showButton: gt } );
+						},
+					} ),
+					tam.showButton
+						? el( TextControl, {
+								label: __( 'Nhãn nút', 'nntm' ),
+								value: tam.buttonLabel || '',
+								placeholder: __( 'Tham gia', 'nntm' ),
+								onChange: function ( gt ) {
+									capNhatTam( chiSo, { buttonLabel: gt } );
+								},
+						  } )
+						: null,
 					el(
 						'div',
 						{ style: { display: 'flex', gap: '8px', flexWrap: 'wrap' } },
@@ -231,6 +249,18 @@
 				el(
 					InspectorControls,
 					{},
+					el(
+						PanelBody,
+						{ title: __( 'Bố cục', 'nntm' ), initialOpen: false },
+						el( ToggleControl, {
+							label: __( 'Tràn hết chiều rộng màn hình', 'nntm' ),
+							help: __( 'Bật cho các trang cần banner tràn sát mép, góc vuông (vd Kim Cương Hành Giả). Mặc định TẮT — trang chủ dùng khung có đệm + bo góc theo thiết kế, bật nhầm sẽ đổi hình dạng banner trang chủ.', 'nntm' ),
+							checked: !! attributes.tranVien,
+							onChange: function ( gt ) {
+								setAttributes( { tranVien: gt } );
+							},
+						} )
+					),
 					el(
 						PanelBody,
 						{ title: __( 'Các tấm băng chuyền', 'nntm' ), initialOpen: true },

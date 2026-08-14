@@ -15,7 +15,7 @@
 	"attributes": {
 		"variant": {
 			"type": "string",
-			"enum": [ "article", "small", "xs", "dai-si", "article-hover", "video", "khoa-tu", "books" ],
+			"enum": [ "article", "small", "xs", "dai-si", "kim-cuong", "article-hover", "video", "khoa-tu", "books" ],
 			"default": "article"
 		},
 		"postId": {
@@ -33,6 +33,15 @@
 		"showCategory": {
 			"type": "boolean",
 			"default": true
+		},
+		"showCta": {
+			"type": "boolean",
+			"default": false,
+			"description": "Ep hien dong \"Xem them\" cho cac variant khong tu co san (vd: video). Bien the dai-si luon hien du gia tri nay."
+		},
+		"ctaLabel": {
+			"type": "string",
+			"default": "Xem thêm"
 		}
 	},
 	"editorScript": "file:./editor.js",

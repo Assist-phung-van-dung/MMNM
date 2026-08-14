@@ -1,0 +1,318 @@
+/* =============================================================
+   nntm/cong-tu — Thống Kê Của Đạo Tràng + Bảng Xếp Hạng Cá Nhân.
+
+   KHÔNG có Figma/ảnh chính thức cho khối này (chủ dự án mô tả bằng lời +
+   một ảnh tham khảo không có trong kho design/) — bố cục và số đo dưới
+   đây là SUY DOAN hợp lý theo mô tả (thẻ trắng 3 ô, đầu bảng đỏ thẫm chữ
+   trắng, thanh tiến trình). Màu đỏ thẫm lấy từ token --nntm-do-tham
+   (assets/css/tokens.css) — CHƯA có mã màu chính thức, cần khách duyệt.
+
+   CẤM mã màu trực tiếp — mọi màu lấy từ assets/css/tokens.css. Block tự
+   tràn hết chiều rộng, không bọc .nntm-container (docs/04-kien-truc.md
+   mục 11).
+   ============================================================= */
+
+.nntm-cong-tu {
+	width: 100%;
+	padding-block: var(--nntm-sp-11);
+	padding-inline: var(--nntm-sp-8);
+	box-sizing: border-box;
+}
+
+.nntm-cong-tu--nen-vang {
+	background-color: var(--nntm-vang-nghe);
+}
+
+.nntm-cong-tu--nen-kem {
+	background-color: var(--nntm-kem);
+}
+
+.nntm-cong-tu--nen-none {
+	background-color: transparent;
+}
+
+.nntm-cong-tu__rong {
+	margin: 0;
+	text-align: center;
+	font-family: var(--nntm-font-sans);
+	color: var(--nntm-muc-nhat);
+}
+
+/*
+ * SUA 14/08/2026 (phan hoi chu du an "khac xa thiet ke — xem lai ky phan
+ * duoi"): do lai theo anh giao dien day du, quy ve khung desktop 1366 (he
+ * so ×2,32) — SO DO UOC LUONG tu anh, KHONG phai Figma xuat truc tiep.
+ *
+ * Tieu de "Thong Ke Cua Dao Trang" da CHUYEN RA NGOAI the trang (xem
+ * inc/render-cong-tu.php) — mac dinh giu mau do-tham (dung tren nen sang
+ * nhu kem), RIENG nen-vang ghi de sang trang+35px o khoi ".nen-vang" o
+ * duoi (chu trang tren nen kem se khong doc duoc).
+ */
+.nntm-cong-tu__thong-ke-heading {
+	margin: 0 0 var(--nntm-sp-7);
+	font-family: var(--nntm-font-display);
+	font-size: var(--nntm-fs-2xl);
+	color: var(--nntm-do-tham);
+	text-align: center;
+}
+
+/* ---------- Thẻ trắng: 3 ô Thống Kê ---------- */
+.nntm-cong-tu__thong-ke {
+	max-width: var(--nntm-w-noi-dung);
+	margin: 0 auto var(--nntm-sp-11);
+	background: var(--nntm-trang);
+	box-shadow: var(--nntm-sh-card);
+	padding: var(--nntm-sp-8);
+	box-sizing: border-box;
+}
+
+.nntm-cong-tu__thong-ke-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: var(--nntm-sp-8);
+}
+
+.nntm-cong-tu__o {
+	text-align: center;
+}
+
+.nntm-cong-tu__o-so {
+	margin: 0;
+	font-family: var(--nntm-font-display);
+	font-size: 32px; /* tu anh giao dien — truoc la fs-4xl (52), khong co token 32 */
+	font-weight: 600;
+	color: var(--nntm-do-tham);
+	line-height: var(--nntm-lh-chat);
+}
+
+.nntm-cong-tu__o-nhan {
+	margin: var(--nntm-sp-2) 0 0;
+	font-family: var(--nntm-font-sans);
+	font-size: 12px; /* tu anh giao dien — truoc la fs-xs (13), khong co token 12 */
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--nntm-muc-nhat);
+}
+
+/*
+ * Cot 3 (tien trinh chung): thanh nho nam BEN TRAI con so %, CUNG MOT
+ * HANG — tu anh giao dien, truoc day thanh nam duoi so tren dong rieng.
+ */
+.nntm-cong-tu__o-hang {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--nntm-sp-3); /* 10 */
+}
+
+.nntm-cong-tu__o--tien-trinh .nntm-cong-tu__o-so {
+	margin: 0;
+}
+
+/* ---------- Thanh tiến trình dùng chung (khối lớn + trong bảng) ---------- */
+.nntm-cong-tu__thanh {
+	margin-top: var(--nntm-sp-4);
+	height: 8px;
+	background: var(--nntm-xam-nhat);
+	overflow: hidden;
+}
+
+.nntm-cong-tu__thanh--nho {
+	display: inline-block;
+	width: 80px;
+	height: 6px;
+	margin-top: 0;
+	vertical-align: middle;
+}
+
+.nntm-cong-tu__thanh-fill {
+	height: 100%;
+	background: var(--nntm-do-tham);
+	transition: width var(--nntm-dur) var(--nntm-ease);
+}
+
+/* ---------- Bảng xếp hạng ---------- */
+.nntm-cong-tu__bxh {
+	max-width: var(--nntm-w-noi-dung);
+	margin: 0 auto;
+}
+
+.nntm-cong-tu__bxh-heading {
+	margin: 0 0 35px; /* tu anh giao dien — khong co token 35, gan nhat sp-7 (30)/sp-8 (40) */
+	font-family: var(--nntm-font-display);
+	font-size: 28px; /* tu anh giao dien — truoc la fs-2xl (30) */
+	color: var(--nntm-do-tham);
+	text-align: center;
+}
+
+.nntm-cong-tu__bxh-rong {
+	margin: 0;
+	text-align: center;
+	font-family: var(--nntm-font-sans);
+	color: var(--nntm-muc-nhat);
+}
+
+.nntm-cong-tu__bxh-cuon {
+	max-height: 560px;
+	overflow-y: auto;
+	background: var(--nntm-trang);
+	box-shadow: var(--nntm-sh-card);
+}
+
+.nntm-cong-tu__bxh-bang {
+	width: 100%;
+	border-collapse: collapse;
+	font-family: var(--nntm-font-sans);
+}
+
+.nntm-cong-tu__bxh-bang thead th {
+	position: sticky;
+	top: 0;
+	background: var(--nntm-do-tham);
+	color: var(--nntm-trang);
+	text-transform: uppercase;
+	font-size: var(--nntm-fs-xs);
+	letter-spacing: 0.04em;
+	text-align: left;
+	padding: var(--nntm-sp-4) var(--nntm-sp-5);
+	z-index: 1;
+}
+
+.nntm-cong-tu__bxh-bang tbody tr {
+	height: 56px; /* tu anh giao dien — moi dong cao ~56 */
+}
+
+.nntm-cong-tu__bxh-bang tbody td {
+	padding: var(--nntm-sp-3) var(--nntm-sp-5);
+	border-bottom: 1px solid var(--nntm-vien);
+	font-size: var(--nntm-fs-sm);
+	color: var(--nntm-muc);
+	vertical-align: middle;
+}
+
+.nntm-cong-tu__bxh-hang {
+	width: 0; /* an voi .nntm-sr-only o th, nhung van giu cot du lieu cho td */
+}
+
+.nntm-cong-tu__bxh-nguoi {
+	display: flex;
+	align-items: center;
+	gap: var(--nntm-sp-3);
+}
+
+.nntm-cong-tu__bxh-avatar {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	object-fit: cover;
+	flex: 0 0 auto;
+}
+
+.nntm-cong-tu__bxh-phap-danh {
+	font-weight: 700;
+}
+
+.nntm-cong-tu__bxh-phap-danh em {
+	font-style: normal;
+	font-weight: 400;
+	color: var(--nntm-do-tham);
+}
+
+.nntm-cong-tu__bxh-phan-tram {
+	display: inline-block;
+	margin-left: var(--nntm-sp-2);
+	font-size: var(--nntm-fs-xs);
+	color: var(--nntm-muc-nhat);
+}
+
+.nntm-cong-tu__bxh-row--minh {
+	background: color-mix(in srgb, var(--nntm-do-tham) 8%, var(--nntm-trang));
+}
+
+.nntm-cong-tu__bxh-ngan-cach td {
+	text-align: center;
+	color: var(--nntm-muc-nhat);
+	border-bottom: none;
+	padding: var(--nntm-sp-1) 0;
+}
+
+/* =============================================================
+   Biến thể nền VÀNG (background=vang) — trang "Kim Cương Hành Giả", dải 5
+   "Thống Kê Của Đạo Tràng". SỬA 14/08/2026 (phản hồi chủ dự án): SỐ ĐO
+   ƯỚC LƯỢNG từ ảnh giao diện đầy đủ, quy về khung desktop 1366, KHÔNG phải
+   Figma xuất trực tiếp. Chỉ áp cho ".nen-vang" — khối cong-tu dùng nền
+   kem/none ở nơi khác (nếu có) giữ nguyên như cũ.
+   ============================================================= */
+.nntm-cong-tu--nen-vang .nntm-cong-tu__thong-ke-heading {
+	color: var(--nntm-trang); /* chu TRANG tren nen vang, theo anh giao dien — quyet dinh cua chu du an, KHONG tu doi sang mau sam */
+	font-size: 35px; /* tu anh giao dien — khong co token 35 */
+}
+
+.nntm-cong-tu--nen-vang .nntm-cong-tu__thong-ke {
+	max-width: 1002px; /* tu anh giao dien — truoc la 1220 (bien w-noi-dung) */
+	min-height: 135px; /* tu anh giao dien — the cao ~135 */
+	display: flex;
+	align-items: center;
+}
+
+.nntm-cong-tu--nen-vang .nntm-cong-tu__thong-ke-grid {
+	width: 100%;
+}
+
+.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-heading {
+	color: var(--nntm-do-tham); /* du tuong phan tot tren nen vang, khong doi */
+}
+
+.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh {
+	max-width: 1002px; /* tu anh giao dien — truoc la 1220 */
+}
+
+/*
+ * Vung bang cuon duoc, cao toi da ~800 (truoc la 560), KHONG con nen
+ * trang boc ngoai — anh giao dien cho thay tung dong nhin XUYEN XUONG
+ * nen vang cua ca dai, chi co hang dau (thead) la nen do tham dac.
+ */
+.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-cuon {
+	max-height: 800px; /* tu anh giao dien — truoc la 560 */
+	background: transparent;
+	box-shadow: none;
+}
+
+.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-bang tbody td {
+	background: transparent; /* nhin xuyen xuong nen vang, tu anh giao dien */
+}
+
+.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-row--minh {
+	/* Van can phan biet duoc dong "cua ban" du nen trong suot — dung lop
+	   phu nhe mau do-tham thay vi tron mau voi nen trang nhu mac dinh. */
+	background: color-mix(in srgb, var(--nntm-do-tham) 12%, transparent);
+}
+
+/* ---------- Mobile ---------- */
+/* SUY DOAN: chưa có Figma mobile cho khối này. */
+@media (max-width: 700px) {
+	.nntm-cong-tu {
+		padding-inline: var(--nntm-sp-5);
+	}
+
+	.nntm-cong-tu__thong-ke {
+		padding: var(--nntm-sp-6);
+	}
+
+	.nntm-cong-tu__thong-ke-grid {
+		grid-template-columns: 1fr;
+		gap: var(--nntm-sp-6);
+	}
+
+	.nntm-cong-tu__bxh-bang thead th:nth-child(3),
+	.nntm-cong-tu__bxh-bang tbody td:nth-child(3) {
+		display: none; /* an cot "Vung mien" tren man hep, giu cot chinh */
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-cong-tu__thanh-fill {
+		transition: none;
+	}
+}

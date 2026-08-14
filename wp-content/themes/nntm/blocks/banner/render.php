@@ -76,9 +76,19 @@ $nntm_bn_emblem_id  = isset( $attributes['emblemId'] ) ? absint( $attributes['em
 $nntm_bn_emblem_url = isset( $attributes['emblemUrl'] ) ? esc_url_raw( (string) $attributes['emblemUrl'] ) : '';
 $nntm_bn_emblem_alt = isset( $attributes['emblemAlt'] ) ? sanitize_text_field( (string) $attributes['emblemAlt'] ) : '';
 
+/*
+ * Tràn hết chiều rộng màn hình, góc vuông — mặc định TẮT (false).
+ *
+ * Số đo mặc định (padding-inline 20px + bo góc 40px) bóc từ Figma TRANG
+ * CHỦ (khung 1326 nằm giữa 1366) — đúng cho trang chủ, SAI cho các trang
+ * cần banner tràn sát mép (vd Kim Cương Hành Giả). Mặc định phải là false
+ * để mọi banner đang dùng trên trang chủ giữ nguyên hình dạng cũ.
+ */
+$nntm_bn_tran_vien = ! empty( $attributes['tranVien'] );
+
 $nntm_bn_wrapper = get_block_wrapper_attributes(
 	array(
-		'class'              => 'nntm-banner',
+		'class'              => 'nntm-banner' . ( $nntm_bn_tran_vien ? ' nntm-banner--tran-vien' : '' ),
 		'data-nntm-autoplay' => $nntm_bn_autoplay ? '1' : '0',
 		'data-nntm-interval' => (string) $nntm_bn_chu_ky,
 	)
@@ -144,6 +154,34 @@ $nntm_bn_wrapper = get_block_wrapper_attributes(
 						<?php if ( '' !== trim( $nntm_bn_slide['text'] ) ) : ?>
 							<p class="nntm-banner__sub"><?php echo nl2br( esc_html( $nntm_bn_slide['text'] ) ); ?></p>
 						<?php endif; ?>
+
+						<?php
+						/*
+						 * Nút "Tham gia" — dải "Lễ Đàn Khổng Tước" (Cộng Tu "chuỗi trì").
+						 * href lấy động qua filter, KHÔNG lưu trong block: phần Cộng Tu
+						 * sẽ cắm vào filter này sau (docs/07-ban-giao.md). Filter trả
+						 * rỗng thì VẪN render nút nhưng vô hiệu hoá kèm title giải thích
+						 * — không được ẩn hẳn để admin biết nút đã cấu hình đúng.
+						 */
+						if ( ! empty( $nntm_bn_slide['showButton'] ) ) :
+							$nntm_bn_btn_url   = apply_filters( 'nntm_tham_gia_chuoi_tri_url', '' );
+							$nntm_bn_btn_label = '' !== trim( $nntm_bn_slide['buttonLabel'] ) ? $nntm_bn_slide['buttonLabel'] : __( 'Tham gia', 'nntm' );
+							if ( '' !== $nntm_bn_btn_url ) :
+								?>
+								<a class="nntm-banner__btn" href="<?php echo esc_url( $nntm_bn_btn_url ); ?>"><?php echo esc_html( $nntm_bn_btn_label ); ?></a>
+								<?php
+							else :
+								?>
+								<button
+									type="button"
+									class="nntm-banner__btn nntm-banner__btn--tat"
+									disabled
+									title="<?php esc_attr_e( 'Chức năng Cộng Tu (chuỗi trì) chưa mở — sẽ bật khi phần này hoàn tất.', 'nntm' ); ?>"
+								><?php echo esc_html( $nntm_bn_btn_label ); ?></button>
+								<?php
+							endif;
+						endif;
+						?>
 					</div>
 				</div>
 			</div>

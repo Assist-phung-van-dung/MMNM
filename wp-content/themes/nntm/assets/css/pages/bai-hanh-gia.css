@@ -1,0 +1,206 @@
+/* =============================================================
+   NNTM — Bài chi tiết khu Hành Giả (Đại Sĩ / Kim Cương)
+
+   NGUỒN SỐ ĐO: ảnh thiết kế anh Úy gửi, bóc bằng mắt và quy về khung
+   1366 — ĐÂY LÀ ƯỚC LƯỢNG, KHÔNG PHẢI FIGMA CHÍNH THỨC. Khi có Figma
+   thật cho màn này, đọc lại và chỉnh cho khớp (docs/04-kien-truc.md
+   mục 0.1). Vài khoảng cách không được ghi rõ trong ảnh gốc (ví dụ gap
+   giữa dòng ngày và đoạn văn đầu tiên, gap trong hàng nút giữa icon và
+   nhãn) đã chọn giá trị hợp lý dựa theo token --nntm-sp-* hiện có, đánh
+   dấu SUY DOAN ngay tại chỗ.
+
+   Nạp có điều kiện bởi inc/hanh-gia.php (nntm_hanh_gia_enqueue_assets),
+   chỉ trên bài `nntm_article` thuộc khu Hành Giả. Phụ thuộc nntm-tokens,
+   nntm-base — KHÔNG viết mã màu trực tiếp trong file này.
+   ============================================================= */
+
+/* ---------- Dải nền navy tràn viền ---------- */
+
+.nntm-bai-hanh-gia__than {
+	/*
+	 * Biến ngữ nghĩa riêng cho khu Hành Giả — đảo được theo cấp mà KHÔNG
+	 * nhân đôi template (docs/04-kien-truc.md mục 3). Đại Sĩ dùng đúng
+	 * token navy --nntm-cham đã có sẵn trong tokens.css.
+	 */
+	--nntm-bhg-nen: var(--nntm-cham);
+	/*
+	 * Biến chữ — tách riêng khỏi --nntm-trang cứng để đảo được theo cấp mà
+	 * KHÔNG nhân đôi template. Đại Sĩ (nền navy) chữ trắng đủ tương phản.
+	 */
+	--nntm-bhg-chu: var(--nntm-trang);
+
+	background: var(--nntm-bhg-nen);
+	padding: var(--nntm-sp-10) 0 var(--nntm-sp-12); /* 60px trên, 90px dưới đáy dải */
+}
+
+/*
+ * SUA 14/08/2026 — Kim Cương giờ có ảnh thiết kế riêng (anh Úy xác nhận):
+ * dải nền VÀNG NGHỆ (--nntm-vang-nghe, khác navy của Đại Sĩ), chữ phải đổi
+ * sang SẪM (--nntm-chu) để đủ tương phản trên nền vàng — trắng trên vàng
+ * không đọc được. Chỉ đảo hai biến ngữ nghĩa, không đụng HTML/PHP (đúng
+ * ràng buộc docs/04-kien-truc.md mục 3).
+ */
+.nntm-bai-hanh-gia__than.nntm-bai-hanh-gia--kim-cuong {
+	--nntm-bhg-nen: var(--nntm-vang-nghe);
+	--nntm-bhg-chu: var(--nntm-chu);
+}
+
+.nntm-bai-hanh-gia__khung {
+	max-width: 1181px;
+	margin: 0 auto;
+	padding: 0 var(--nntm-sp-4); /* đệm dự phòng cho màn hẹp hơn 1366+92*2 */
+}
+
+/* ---------- Tiêu đề + dòng ngày ---------- */
+
+.nntm-bai-hanh-gia__tieu-de {
+	margin: 0 0 var(--nntm-sp-4) 0; /* 18px cách dòng ngày */
+	font-family: var(--nntm-font-display);
+	font-size: 42px;
+	line-height: var(--nntm-lh-chat);
+	color: var(--nntm-bhg-chu); /* dao theo cap (Dai Si trang / Kim Cuong sam), xem --nntm-bhg-chu o .__than */
+}
+
+.nntm-bai-hanh-gia__ngay {
+	display: flex;
+	align-items: center;
+	gap: var(--nntm-sp-2);
+	margin: 0 0 var(--nntm-sp-3) 0; /* SUY DOAN: gap tới đoạn văn đầu tiên, không có số đo rõ trong ảnh gốc */
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-15);
+	color: var(--nntm-bhg-chu);
+}
+
+.nntm-bai-hanh-gia__cham {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: currentColor;
+	flex: none;
+}
+
+/* ---------- Nội dung bài (đoạn văn + ảnh trong bài) ---------- */
+
+.nntm-bai-hanh-gia__noi-dung {
+	font-family: var(--nntm-font-serif);
+	font-size: var(--nntm-fs-base);
+	line-height: 1.75;
+	color: var(--nntm-bhg-chu);
+}
+
+.nntm-bai-hanh-gia__noi-dung > p {
+	margin: 0 0 var(--nntm-sp-3) 0; /* 12px cách nhau giữa các đoạn văn */
+}
+
+.nntm-bai-hanh-gia__noi-dung > p:last-child {
+	margin-bottom: 0;
+}
+
+/*
+ * Ảnh chèn trong bài (do biên tập viên chèn trực tiếp trong nội dung,
+ * qua the_content()) — 550×684 dọc, canh trái, cách trên/dưới 28px.
+ * Không dùng float: các đoạn văn trước/sau xếp chồng đứng theo thiết
+ * kế, không chảy chữ quanh ảnh.
+ */
+.nntm-bai-hanh-gia__noi-dung img {
+	display: block;
+	width: 550px;
+	max-width: 100%;
+	height: 684px;
+	object-fit: cover;
+	margin: 28px 0; /* cách trên/dưới 28px theo thiết kế — không khớp token --nntm-sp-* nào sẵn có, ghi cứng theo đúng số đo */
+	border-radius: var(--nntm-r-md);
+}
+
+/* ---------- Hàng nút cuối bài ---------- */
+
+.nntm-bai-hanh-gia__hang-nut {
+	display: flex;
+	align-items: center;
+	gap: 62px;
+	margin-top: var(--nntm-sp-8); /* 40px cách đoạn cuối */
+}
+
+.nntm-bai-hanh-gia__yeu-thich {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--nntm-sp-2); /* SUY DOAN: khoảng cách icon-nhãn không có số đo rõ trong ảnh gốc */
+	background: none;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-15);
+	color: var(--nntm-bhg-chu);
+}
+
+.nntm-bai-hanh-gia__tim {
+	width: 24px;
+	height: 24px;
+	flex: none;
+}
+
+.nntm-bai-hanh-gia__dang-ky {
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-15);
+	font-weight: 700;
+	color: var(--nntm-bhg-chu);
+	text-decoration: none;
+}
+
+.nntm-bai-hanh-gia__dang-ky:hover,
+.nntm-bai-hanh-gia__dang-ky:focus-visible {
+	text-decoration: underline;
+}
+
+/* ---------- Dải trắng "Bài viết liên quan" ---------- */
+
+.nntm-bai-hanh-gia__lien-quan {
+	background: var(--nntm-trang);
+	padding-top: 75px;
+}
+
+.nntm-bai-hanh-gia__lien-quan .nntm-card-list__heading {
+	font-family: var(--nntm-font-display);
+	font-size: 40px;
+	color: var(--nntm-reu);
+}
+
+/* =============================================================
+   Responsive — SUY DOAN: chua co Figma mobile.
+   Ước lượng thu gọn theo cùng tỷ lệ giữ khoảng trắng, chưa đối chiếu
+   với bất kỳ bản thiết kế mobile chính thức nào.
+   ============================================================= */
+@media (max-width: 900px) {
+	.nntm-bai-hanh-gia__than {
+		padding: var(--nntm-sp-8) 0 var(--nntm-sp-9);
+	}
+
+	.nntm-bai-hanh-gia__khung {
+		padding: 0 var(--nntm-sp-4);
+	}
+
+	.nntm-bai-hanh-gia__tieu-de {
+		font-size: var(--nntm-fs-3xl);
+	}
+
+	.nntm-bai-hanh-gia__noi-dung img {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 550 / 684;
+	}
+
+	.nntm-bai-hanh-gia__hang-nut {
+		flex-wrap: wrap;
+		gap: var(--nntm-sp-5);
+	}
+
+	.nntm-bai-hanh-gia__lien-quan {
+		padding-top: var(--nntm-sp-9);
+	}
+
+	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__heading {
+		font-size: var(--nntm-fs-3xl);
+	}
+}

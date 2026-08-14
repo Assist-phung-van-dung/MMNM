@@ -1,0 +1,49 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "nntm/cong-tu",
+	"title": "Thống Kê + Bảng Xếp Hạng Cộng Tu",
+	"category": "nntm",
+	"icon": "chart-bar",
+	"description": "Khối Thống Kê Của Đạo Tràng (tổng cam kết/thực hiện/tiến trình) + Bảng Xếp Hạng Cá Nhân cho chương trình trì tụng \"chuỗi trì\" (Cộng Tu, Phase 2).",
+	"textdomain": "nntm",
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"customClassName": true
+	},
+	"attributes": {
+		"programId": {
+			"type": "number",
+			"default": 0
+		},
+		"heading": {
+			"type": "string",
+			"default": "Thống Kê Của Đạo Tràng"
+		},
+		"bxhHeading": {
+			"type": "string",
+			"default": "Bảng Xếp Hạng Cá Nhân"
+		},
+		"showThongKe": {
+			"type": "boolean",
+			"default": true
+		},
+		"showBxh": {
+			"type": "boolean",
+			"default": true
+		},
+		"bxhLimit": {
+			"type": "number",
+			"default": 50
+		},
+		"background": {
+			"type": "string",
+			"enum": [ "vang", "kem", "none" ],
+			"default": "kem"
+		}
+	},
+	"editorScript": "file:./editor.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

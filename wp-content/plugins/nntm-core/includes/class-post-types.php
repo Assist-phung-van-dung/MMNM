@@ -54,6 +54,7 @@ class Post_Types {
 		register_post_type( 'nntm_abode', $this->args_abode() );
 		register_post_type( 'nntm_video', $this->args_video() );
 		register_post_type( 'nntm_zen_track', $this->args_zen_track() );
+		register_post_type( 'nntm_program', $this->args_program() );
 	}
 
 	/**
@@ -267,6 +268,35 @@ class Post_Types {
 			'hierarchical'       => false,
 			'rewrite'            => array(
 				'slug'       => 'nhac-thien',
+				'with_front' => false,
+			),
+			'capability_type'    => 'post',
+			'map_meta_cap'       => true,
+		);
+	}
+
+	/**
+	 * nntm_program — Chương trình trì tụng (Cộng Tu).
+	 * Mỗi chương trình là một đợt cam kết/khai báo có tên riêng, ví dụ
+	 * "Lễ Đàn Khổng Tước — Trì tụng Tam Bộ Chú Ngôn". Sẽ có nhiều chương
+	 * trình theo thời gian nên không giới hạn has_archive công khai riêng —
+	 * giao diện Cộng Tu tự chọn chương trình đang mở để hiển thị.
+	 */
+	private function args_program(): array {
+		return array(
+			'labels'             => $this->labels( __( 'Chương trình trì tụng', 'nntm' ), __( 'Chương trình trì tụng', 'nntm' ) ),
+			'public'             => true,
+			'show_in_rest'       => true,
+			'menu_icon'          => 'dashicons-chart-line',
+			'menu_position'      => 37,
+			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'revisions' ),
+			'has_archive'        => false,
+			'show_in_menu'       => true,
+			'show_in_admin_bar'  => true,
+			'show_in_nav_menus'  => true,
+			'hierarchical'       => false,
+			'rewrite'            => array(
+				'slug'       => 'chuong-trinh',
 				'with_front' => false,
 			),
 			'capability_type'    => 'post',

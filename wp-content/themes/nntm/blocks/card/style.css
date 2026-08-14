@@ -189,8 +189,30 @@
 	aspect-ratio: 250 / 163; /* tu Figma: XS */
 }
 
+/*
+ * SUA 14/08/2026 — bien the "dai-si" DUNG LAI theo anh thiet ke moi cho
+ * trang "Dai Si Hanh Gia" (anh Uy gui, khong phai Figma component set CARD
+ * cu 6134:2530 nua): o nen navy DAM HON nen dai (--nntm-cham-dam), dem
+ * trong 21px, anh ti le 16:9 rong het o, tieu de trang dam 16px cach anh
+ * 16px, dong "Xem them" 13px trang nhat cach tieu de 12px, goc VUONG.
+ * Khong ngay/chuyen muc/trich doan (da xu ly o render-card.php).
+ * So do UOC LUONG tu anh, quy ve khung 1366 — khong phai Figma xuat.
+ */
+.nntm-card--dai-si {
+	padding: 21px;
+	gap: 16px;
+	background-color: var(--nntm-cham-dam);
+	border-radius: 0;
+}
+
 .nntm-card--dai-si .nntm-card__img {
-	aspect-ratio: 220 / 137; /* tu Figma: DAI SI CARD */
+	aspect-ratio: 16 / 9;
+	border-radius: 0;
+	width: 100%;
+}
+
+.nntm-card--dai-si .nntm-card__body {
+	gap: 12px;
 }
 
 .nntm-card--video .nntm-card__img,
@@ -242,6 +264,89 @@
 }
 
 .nntm-card--dai-si .nntm-card__title {
-	color: var(--nntm-chinh); /* Figma: "Chủ đề 1" mau #747766, trung "chinh" */
-	-webkit-line-clamp: 1;
+	color: var(--nntm-trang);
+	font-size: var(--nntm-fs-base); /* 16 */
+	font-weight: 700;
+	-webkit-line-clamp: 2;
+}
+
+.nntm-card--dai-si .nntm-card__cta {
+	font-size: var(--nntm-fs-xs); /* 13 */
+	font-weight: 400;
+	color: var(--nntm-trang-60); /* trang nhat */
+}
+
+.nntm-card--dai-si:hover .nntm-card__cta,
+.nntm-card--dai-si:focus-visible .nntm-card__cta {
+	color: var(--nntm-trang);
+}
+
+/*
+ * SUA 14/08/2026 (dot 1) — bien the "kim-cuong": the NEN TRANG, goc VUONG.
+ *
+ * SUA 14/08/2026 (dot 2, phan hoi chu du an "khac xa thiet ke — xem lai
+ * Nghi Quy va may phan duoi"): do lai theo anh giao dien day du chu du an
+ * gui, quy ve khung desktop 1366 (he so ×2,32):
+ *   the 380px rong (dat o luoi 3 cot trong card-list/style.css), cao ~418,
+ *   dem trong 23px (khong phai 16 nhu ban truoc). Anh 341×209 (ti le ~1,63
+ *   — GAN nhung KHONG DUNG 16:9=1,78 nhu ban truoc), rong het phan trong
+ *   the. Tieu de 16px dam (truoc la 15), doan trich 14px (truoc la 13, nay
+ *   dung dung token fs-sm), CTA giu 13px dam gach chan nhung day XUONG DAY
+ *   THE bang margin-top:auto vi the nay co CHIEU CAO CO DINH ~418 (truoc
+ *   day the co theo noi dung, khong co day co dinh).
+ *   SO DO UOC LUONG tu anh, quy ve khung 1366 — KHONG phai Figma xuat.
+ */
+.nntm-card--kim-cuong {
+	padding: 23px; /* tu anh giao dien 14/08 dot 2 — truoc la 16px */
+	gap: 14px;
+	min-height: 418px; /* tu anh giao dien — the cao co dinh, khong co theo noi dung */
+	box-sizing: border-box;
+	background-color: var(--nntm-nen-noi); /* trang */
+	border-radius: 0;
+}
+
+.nntm-card--kim-cuong .nntm-card__img {
+	aspect-ratio: 341 / 209; /* tu anh giao dien — truoc la 16/9 (1,78), do that ~1,63 */
+	border-radius: 0;
+	width: 100%;
+}
+
+.nntm-card--kim-cuong .nntm-card__body {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	gap: var(--nntm-sp-2); /* 8 */
+}
+
+.nntm-card--kim-cuong .nntm-card__title {
+	color: var(--nntm-chu); /* chu sam, du tuong phan tren nen trang */
+	font-size: var(--nntm-fs-base); /* 16 — tu anh giao dien, truoc la fs-15 (15) */
+	font-weight: 700;
+	line-height: var(--nntm-lh-khit);
+}
+
+.nntm-card--kim-cuong .nntm-card__excerpt {
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm); /* 14 — tu anh giao dien, truoc la fs-xs (13) */
+	font-weight: 400;
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-chu-phu); /* mau "chu phu" theo yeu cau */
+	display: -webkit-box;
+	-webkit-line-clamp: 3; /* dung 3 dong roi cat, theo yeu cau */
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.nntm-card--kim-cuong .nntm-card__cta {
+	margin-top: auto; /* day "Xem them" xuong day the co dinh 418 */
+	font-size: var(--nntm-fs-xs); /* 13 — khong co token 12px, dung gan nhat */
+	font-weight: 700;
+	text-decoration: underline;
+	text-underline-offset: 0.18em;
+	color: var(--nntm-chu);
+}
+
+.nntm-card--kim-cuong:hover .nntm-card__cta,
+.nntm-card--kim-cuong:focus-visible .nntm-card__cta {
+	color: var(--nntm-chinh);
 }

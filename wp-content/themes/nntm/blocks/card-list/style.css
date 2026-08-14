@@ -458,7 +458,9 @@
  */
 .nntm-card-list--nen-kem > .nntm-card-list__band,
 .nntm-card-list--nen-cam > .nntm-card-list__band,
-.nntm-card-list--nen-toi > .nntm-card-list__band {
+.nntm-card-list--nen-toi > .nntm-card-list__band,
+.nntm-card-list--nen-cham > .nntm-card-list__band,
+.nntm-card-list--nen-vang > .nntm-card-list__band {
 	/* tu Figma (node SECTION 5 `6376:6450`, doc 10/08/2026): padding 50,
 	   khong phai 60 nhu ban do bang anh truoc day. */
 	padding-block: var(--nntm-sp-9);
@@ -476,6 +478,180 @@
 .nntm-card-list--nen-toi > .nntm-card-list__band {
 	/* tu Figma: SECTION 3 fill #000000 */
 	background-color: var(--nntm-den);
+}
+
+/*
+ * Nen navy — trang "Dai Si Hanh Gia" (anh thiet ke anh Uy gui 14/08/2026):
+ * dai nen navy (--nntm-cham) chua luoi the navy DAM HON (--nntm-cham-dam,
+ * xem tokens.css). SO DO UOC LUONG tu anh, quy ve khung 1366, KHONG phai
+ * Figma xuat truc tiep.
+ */
+.nntm-card-list--nen-cham > .nntm-card-list__band {
+	background-color: var(--nntm-cham);
+}
+
+.nntm-card-list--nen-cham .nntm-card-list__heading,
+.nntm-card-list--nen-cham .nntm-card-list__subheading {
+	padding-inline: var(--nntm-sp-9);
+	text-align: center;
+	color: var(--nntm-trang);
+}
+
+.nntm-card-list--nen-cham .nntm-card-list__heading {
+	font-family: var(--nntm-font-display);
+	/* SUY DOAN: uoc luong tu anh la ~36px, khong co bien token khop tuyet
+	   doi — dung fs-3xl (38px) la gan nhat. */
+	font-size: var(--nntm-fs-3xl);
+	font-weight: 600;
+	margin-bottom: var(--nntm-sp-3);
+}
+
+.nntm-card-list--nen-cham .nntm-card-list__subheading {
+	font-family: var(--nntm-font-display);
+	/* SUY DOAN: uoc luong tu anh la ~32px, gan nhat voi fs-2xl (30px). */
+	font-size: var(--nntm-fs-2xl);
+	font-weight: 400;
+	color: var(--nntm-trang);
+	margin-bottom: var(--nntm-sp-8);
+}
+
+/*
+ * Luoi 3 cot cua trang "Dai Si Hanh Gia" — so do UOC LUONG tu anh thiet
+ * ke, quy ve khung 1366 (khong phai Figma xuat truc tiep):
+ *   khung luoi ~1156 can giua trong 1366; o the rong 372; khe ngang 20;
+ *   khe doc 26.
+ * Ghi de max-width mac dinh cua .nntm-container (1220) va gap mac dinh
+ * cua .nntm-grid--3 (50) CHI trong pham vi khoi nen-cham nay.
+ */
+@media (min-width: 1024px) {
+	.nntm-card-list--nen-cham > .nntm-card-list__band > .nntm-container {
+		max-width: 1156px;
+	}
+
+	.nntm-card-list--nen-cham .nntm-grid--3 {
+		grid-template-columns: repeat(3, 372px);
+		justify-content: center;
+		column-gap: var(--nntm-sp-5); /* 20 */
+		row-gap: var(--nntm-sp-6);    /* 25, gan nhat voi 26 — khong co bien 26px rieng */
+	}
+}
+
+/*
+ * Dai phan trang cua khoi nen-cham — SUY DOAN theo mo ta anh: nut mui ten
+ * VUONG nen den 59x59, chu trang. Markup hien co la <a> BACK/NEXT dang
+ * vien (khong co danh sach so trang rieng) — chi doi hinh dang nut cho
+ * dung mau sac/kich thuoc yeu cau, KHONG dung them danh sach so trang moi
+ * (ngoai pham vi cong viec duoc giao lan nay).
+ */
+.nntm-card-list--nen-cham .nntm-card-list__paging {
+	justify-content: center;
+}
+
+.nntm-card-list--nen-cham .nntm-card-list__paging-btn {
+	width: 59px;
+	height: 59px;
+	padding: 0;
+	border-radius: 0;
+	border: 0;
+	background-color: var(--nntm-den);
+	color: var(--nntm-trang);
+}
+
+.nntm-card-list--nen-cham .nntm-card-list__paging-btn:hover,
+.nntm-card-list--nen-cham .nntm-card-list__paging-btn:focus-visible {
+	background-color: var(--nntm-cham-dam);
+	border-color: transparent;
+	color: var(--nntm-trang);
+}
+
+/*
+ * Nen vang nghe — trang "Kim Cuong Hanh Gia".
+ *
+ * SUA 14/08/2026 (dot 1): dung lai luoi 3 cot 372px + khe 20x26 da chot cho
+ * Dai Si, chu tieu de SAM tren nen vang.
+ *
+ * SUA 14/08/2026 (dot 2, phan hoi chu du an "khac xa thiet ke"): do lai theo
+ * anh giao dien day du chu du an gui, quy ve khung desktop 1366 (he so
+ * ×2,32) — SO DO UOC LUONG tu anh, KHONG phai Figma xuat truc tiep:
+ *   - Tieu de: 38px (giu nguyen fs-3xl, dung roi), nhung mau la TRANG (chu
+ *     du an xac nhan ro trong anh — DAO NGUOC quyet dinh "chu sam" cu),
+ *     dem tren dai ~60px (truoc la 50, dung chung voi cac nen khac).
+ *   - Luoi 3 cot: the rong 380 (truoc 372), khe ngang 26 (truoc 20, gio
+ *     dung dung so do), khe doc 32 (truoc 25, khong co token 32 nen dung
+ *     px that).
+ *   - Nut phan trang mui ten: 56×56 NEN DEN THAT (--nntm-den), khac ban cu
+ *     dung mau "chu" (#3F3B3B) dung chung voi Dai Si.
+ *   - Day so phan trang: chu SANG (truoc la sam) — nam tren nen vang.
+ */
+.nntm-card-list--nen-vang > .nntm-card-list__band {
+	background-color: var(--nntm-vang-nghe);
+	padding-block-start: 60px; /* tu anh giao dien — rieng dai nay, khong doi cac nen khac */
+}
+
+.nntm-card-list--nen-vang .nntm-card-list__heading,
+.nntm-card-list--nen-vang .nntm-card-list__subheading {
+	padding-inline: var(--nntm-sp-9);
+	text-align: center;
+	color: var(--nntm-trang); /* SUA dot 2: chu TRANG tren nen vang, theo anh giao dien */
+}
+
+.nntm-card-list--nen-vang .nntm-card-list__heading {
+	font-family: var(--nntm-font-display);
+	font-size: var(--nntm-fs-3xl); /* 38 — khop dung so do anh */
+	font-weight: 600;
+	margin-bottom: var(--nntm-sp-3);
+}
+
+.nntm-card-list--nen-vang .nntm-card-list__subheading {
+	font-family: var(--nntm-font-display);
+	font-size: var(--nntm-fs-2xl);
+	font-weight: 400;
+	color: var(--nntm-trang);
+	margin-bottom: var(--nntm-sp-8);
+}
+
+@media (min-width: 1024px) {
+	.nntm-card-list--nen-vang > .nntm-card-list__band > .nntm-container {
+		max-width: 1192px; /* 380*3 + 26*2 — khop luoi the moi, gan dung khung noi dung 1181 do tu anh */
+	}
+
+	.nntm-card-list--nen-vang .nntm-grid--3 {
+		grid-template-columns: repeat(3, 380px); /* tu anh giao dien — truoc la 372px */
+		justify-content: center;
+		column-gap: 26px; /* tu anh giao dien — truoc la sp-5 (20), khong co token 26 */
+		row-gap: 32px;    /* tu anh giao dien — truoc la sp-6 (25), khong co token 32 */
+	}
+}
+
+.nntm-card-list--nen-vang .nntm-card-list__paging {
+	justify-content: center;
+}
+
+.nntm-card-list--nen-vang .nntm-card-list__paging-btn {
+	width: 56px;  /* tu anh giao dien — truoc la 59px */
+	height: 56px;
+	padding: 0;
+	border-radius: 0;
+	border: 0;
+	background-color: var(--nntm-den); /* SUA dot 2: nen DEN THAT, truoc dung var(--nntm-chu) */
+	color: var(--nntm-trang);
+}
+
+.nntm-card-list--nen-vang .nntm-card-list__paging-btn:hover,
+.nntm-card-list--nen-vang .nntm-card-list__paging-btn:focus-visible {
+	background-color: var(--nntm-trang);
+	border-color: var(--nntm-den);
+	color: var(--nntm-den);
+}
+
+.nntm-card-list--nen-vang .nntm-card-list__paging-so,
+.nntm-card-list--nen-vang .nntm-card-list__paging-luoc {
+	color: var(--nntm-trang); /* SUA dot 2: chu SANG tren nen vang, truoc la mau sam */
+}
+
+.nntm-card-list--nen-vang .nntm-card-list__paging-so--dang-xem {
+	color: var(--nntm-trang);
+	text-decoration-color: var(--nntm-trang);
 }
 
 /* =============================================================
@@ -903,6 +1079,57 @@
 	border-color: var(--nntm-chinh);
 	color: var(--nntm-trang);
 }
+
+/* ---------- Dãy số trang ----------
+   Ban thiet ke chu du an gui 14/08/2026 ve ro "1 2 3 4 5" nam giua hai
+   nut mui ten. SUY DOAN: chua co Figma cho dai phan trang nay, co chu va
+   khoang cach lay theo ty le do tu anh chup. */
+.nntm-card-list__paging-so {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 28px;
+	font-family: var(--nntm-font-serif);
+	font-size: var(--nntm-fs-base);
+	color: var(--nntm-chu-phu);
+	text-decoration: none;
+	transition: color var(--nntm-dur) var(--nntm-ease);
+}
+
+a.nntm-card-list__paging-so:hover,
+a.nntm-card-list__paging-so:focus-visible {
+	color: var(--nntm-chinh);
+	text-decoration: underline;
+}
+
+.nntm-card-list__paging-so--dang-xem {
+	color: var(--nntm-chu);
+	font-weight: 700;
+	text-decoration: underline;
+}
+
+.nntm-card-list__paging-luoc {
+	color: var(--nntm-chu-phu);
+	user-select: none;
+}
+
+/* Tren nen toi (Dai Si) va nen vang (Kim Cuong), chu so phai doi mau cho
+   du tuong phan — nen sam thi chu sang, nen vang thi chu sam. */
+.nntm-card-list--nen-cham .nntm-card-list__paging-so,
+.nntm-card-list--nen-cham .nntm-card-list__paging-luoc,
+.nntm-card-list--nen-toi .nntm-card-list__paging-so,
+.nntm-card-list--nen-toi .nntm-card-list__paging-luoc {
+	color: var(--nntm-xam-nhat);
+}
+
+.nntm-card-list--nen-cham .nntm-card-list__paging-so--dang-xem,
+.nntm-card-list--nen-toi .nntm-card-list__paging-so--dang-xem {
+	color: var(--nntm-trang);
+}
+
+/* SUA 14/08/2026 dot 2: quy tac mau chu so nen-vang CHUYEN len khoi
+   ".nen vang nghe" phia tren (chu SANG, khong con la muc-nhat/chu) — xoa
+   quy tac trung o day de tranh hai noi cung dinh nghia mot class. */
 
 /* SUY DOAN: chua co Figma mobile — thu gon khoang cach phan trang o man nho */
 @media (max-width: 480px) {
@@ -1351,5 +1578,316 @@
 
 	.nntm-card-list__yt-track {
 		gap: var(--nntm-sp-7); /* 30 — thu gon tu 60 tren desktop */
+	}
+}
+
+/* =============================================================
+   Băng TỰ CHẠY cho danh sách BÀI (layout=marquee) — thêm 14/08/2026.
+
+   Dự án trước đây CHƯA có băng tự chạy nào cho danh sách bài (chỉ có
+   marquee riêng cho nguồn YouTube ở khối ".yt-marquee" phía trên, và
+   "carousel" là khung cuộn tay CÓ nút mũi tên + thanh cuộn). Đây là khối
+   MỚI, dùng đúng kỹ thuật của ".nntm-card-list__yt-marquee" (lặp danh sách
+   hai lần trong render.php rồi dịch translateX(-50%) bằng @keyframes tuyến
+   tính vô hạn) nhưng đặt tên riêng — KHÔNG dùng chung class với YT để không
+   động chạm gì tới băng Gót Son/GITA đang chạy.
+
+   CỐ Ý:
+     - overflow: hidden (KHÔNG phải overflow-x: auto) — không có thanh cuộn
+       nào hiện ra, kể cả khi trình duyệt thường tự vẽ thanh cuộn cho nội
+       dung tràn.
+     - Không có <button> mũi tên nào trong markup (xem render.php + inc/
+       render-card-list-marquee.php) — không có gì để ẩn/hiện bằng CSS.
+     - KHÔNG scroll-snap — lặp lại đúng bài học cũ đã ghi ở khối carousel
+       phía trên (scroll-snap từng làm băng tự nhảy 110px lúc tải trang).
+     - Thẻ cuối CỐ Ý ló ra mép phải: track rộng hơn khung nhìn (nhiều thẻ
+       hơn mức vừa khít) và khung ngoài overflow:hidden — không có logic
+       "chừa lề"/"làm tròn số thẻ" nào ở đây, phần thừa tự nhiên bị cắt bởi
+       overflow:hidden, đúng dáng "băng chạy" chứ không phải "lưới vừa khít".
+   ============================================================= */
+.nntm-card-list__marquee {
+	overflow: hidden;
+}
+
+.nntm-card-list__marquee-track {
+	display: flex;
+	align-items: stretch;
+	width: max-content;
+	gap: var(--nntm-sp-5); /* 20 — mac dinh chung, cac dai rieng (vd .nntm-kc-nghi-quy) tu ghi de theo so do rieng */
+	animation: nntm-card-list-marquee linear infinite;
+	animation-duration: var(--nntm-marquee-duration, 30s);
+	will-change: transform;
+}
+
+/* Dừng hẳn khi rê chuột vào BẤT KỲ đâu trong băng, hoặc khi tiêu điểm bàn
+   phím đang ở trong băng (Tab tới một thẻ thật — bản trang trí đã tự
+   tabindex="-1" nên không nhận focus, xem inc/render-card-list-marquee.php). */
+.nntm-card-list__marquee:hover .nntm-card-list__marquee-track,
+.nntm-card-list__marquee:focus-within .nntm-card-list__marquee-track {
+	animation-play-state: paused;
+}
+
+@keyframes nntm-card-list-marquee {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		/* Danh sach da duoc NHAN DOI o render.php -> dich dung mot nua la
+		   het dung mot vong, noi tiep vao chinh no, khong khoang trong. */
+		transform: translateX(-50%);
+	}
+}
+
+.nntm-card-list__marquee-item {
+	flex: none; /* be rong that su do the .nntm-card ben trong / CSS scoped rieng quyet dinh */
+}
+
+.nntm-card-list__marquee-item .nntm-card {
+	height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-card-list__marquee-track {
+		animation: none;
+	}
+}
+
+/* =============================================================
+   Trang "Nghi Quỹ" (/nghi-quy/) — lưới 3×3 ấn phẩm, thẻ trắng, bìa dọc.
+
+   Class riêng do chính khối card-list lưu qua "Additional CSS class"
+   (customClassName), không phụ thuộc ID trang — cùng kỹ thuật đã dùng cho
+   .nntm-hk-publications / .nntm-lien-dan-khoa ở trên.
+
+   Ảnh thiết kế chủ dự án gửi: nền kem toàn dải, tiêu đề serif canh giữa
+   (h2 mặc định đã là serif 38px — dùng nguyên, không cần đổi cỡ chữ),
+   lưới 3 cột × 3 hàng, thẻ NỀN TRẮNG bọc bìa sách DỌC (~3:4) — khác hẳn
+   biến thể "books" mặc định (nền tối, ảnh vuông 1:1, dùng ở dải "Ấn Phẩm"
+   trang Hoa Khai) — tên sách đậm căn giữa dưới ảnh, "Xem thêm" nhỏ căn
+   giữa dưới cùng. Phân trang căn giữa: nút mũi tên vuông nền đen hai đầu
+   (dùng lại đúng kiểu 59×59 đã chốt cho nền navy/vàng nghệ ở trên), dãy
+   số ở giữa.
+
+   SỐ ĐO ƯỚC LƯỢNG từ ảnh thiết kế — chưa có Figma riêng cho trang này.
+   ============================================================= */
+.nntm-nghi-quy-grid .nntm-card-list__heading {
+	text-align: center;
+}
+
+.nntm-nghi-quy-grid .nntm-card--books {
+	background-color: var(--nntm-nen-noi); /* trang — khac nen toi mac dinh cua bien the books */
+	border-color: var(--nntm-duong-vien);
+	box-shadow: var(--nntm-sh-card);
+	backdrop-filter: none;
+	text-align: center;
+}
+
+.nntm-nghi-quy-grid .nntm-card--books .nntm-card__img {
+	aspect-ratio: 3 / 4; /* bia sach doc, khac ti le 1:1 mac dinh cua bien the books */
+	width: 100%;
+}
+
+.nntm-nghi-quy-grid .nntm-card--books .nntm-card__img-el {
+	object-fit: cover;
+}
+
+.nntm-nghi-quy-grid .nntm-card--books .nntm-card__date,
+.nntm-nghi-quy-grid .nntm-card--books .nntm-card__cat,
+.nntm-nghi-quy-grid .nntm-card--books .nntm-card__excerpt {
+	display: none;
+}
+
+.nntm-nghi-quy-grid .nntm-card--books .nntm-card__title {
+	color: var(--nntm-chu); /* sam, tren nen trang — khac chu trang mac dinh cua bien the books */
+	font-weight: 700;
+}
+
+.nntm-nghi-quy-grid .nntm-card--books .nntm-card__cta {
+	align-self: center;
+	color: var(--nntm-chu-phu);
+	font-size: var(--nntm-fs-xs);
+	font-weight: 400;
+}
+
+.nntm-nghi-quy-grid .nntm-card-list__paging {
+	justify-content: center;
+}
+
+.nntm-nghi-quy-grid .nntm-card-list__paging-btn {
+	width: 59px;
+	height: 59px;
+	padding: 0;
+	border-radius: 0;
+	border: 0;
+	background-color: var(--nntm-den);
+	color: var(--nntm-trang);
+}
+
+.nntm-nghi-quy-grid .nntm-card-list__paging-btn:hover,
+.nntm-nghi-quy-grid .nntm-card-list__paging-btn:focus-visible {
+	background-color: var(--nntm-chu);
+	color: var(--nntm-trang);
+}
+
+/* =============================================================
+   Dải "Nghi Quỹ" TRÊN TRANG KIM CƯƠNG HÀNH GIẢ (ID 243, dải thứ 3)
+
+   KHÁC với ".nntm-nghi-quy-grid" ở trên (đó là lưới tĩnh 3×3 của trang
+   /nghi-quy/ riêng) — đây là BĂNG TỰ CHẠY (layout=marquee, variant=books,
+   background=kem) trong Page 243, class riêng ".nntm-kc-nghi-quy" gán qua
+   "Additional CSS class" của chính khối, không phụ thuộc ID trang.
+
+   SỬA 14/08/2026: dải này TỪNG là layout=carousel (khung cuộn tay CÓ nút
+   mũi tên + thanh cuộn) — chủ dự án báo "Nghi Quỹ không còn tự chạy nữa, bỏ
+   icon và thanh cuộn đi". Nguyên nhân: carousel CHƯA BAO GIỜ là băng tự
+   chạy, chỉ là khung cuộn tay — đúng thứ bị yêu cầu bỏ. Đổi hẳn sang
+   layout=marquee (băng tự chạy thật, KHÔNG nút, KHÔNG thanh cuộn — xem
+   inc/render-card-list-marquee.php), nên các lớp CSS bên dưới đổi từ
+   ".nntm-card-list__carousel/__track/__track-item" (carousel) sang
+   ".nntm-card-list__marquee/__marquee-track/__marquee-item" (marquee).
+
+   Chủ dự án phản hồi 14/08/2026 "khác xa thiết kế — xem lại kỹ phần Nghi
+   Quỹ": đo lại theo ảnh giao diện đầy đủ, quy về khung desktop 1366 (hệ số
+   ×2,32). SỐ ĐO ƯỚC LƯỢNG từ ảnh, KHÔNG phải Figma xuất trực tiếp:
+     - Nền KEM (khác hẳn dải Kim Cương nền vàng ở trên) — dùng đúng thuộc
+       tính background=kem có sẵn, không cần class riêng cho màu.
+     - Tiêu đề serif 32px, màu chữ SẪM (khác dải trên — dải trên chữ
+       trắng), đệm trên dải ~60px.
+     - Thẻ băng: nền trắng, góc vuông, rộng 346, cao ~527, khe giữa hai
+       thẻ 14px. Bìa sách 299×376 (~4:5) căn giữa trong thẻ. Tên sách 16px
+       đậm căn giữa, cách bìa ~18px. "Xem thêm" 13px căn giữa, cách tên
+       sách ~18px.
+     - Nút "Xem Tất cả": vốn render.php đặt NGẰM CẠNH tiêu đề (header-row
+       flex ngang) — ảnh thiết kế lại đặt nút này CĂN GIỮA, NẰM DƯỚI băng
+       thẻ, cách băng ~35px. Không sửa render.php (ngoài phạm vi CSS được
+       giao) — dùng display:contents để "tháo" header-row ra khỏi luồng
+       flex-column của .nntm-container, cho tiêu đề và nút xếp lại đúng
+       thứ tự bằng "order" mà không đổi HTML.
+   ============================================================= */
+.nntm-kc-nghi-quy > .nntm-card-list__band {
+	padding-block-start: 60px; /* tu anh giao dien — rieng dai nay */
+}
+
+.nntm-kc-nghi-quy .nntm-card-list__heading {
+	text-align: center;
+	font-size: var(--nntm-fs-2xl); /* 30 — khong co token 32, gan nhat */
+	color: var(--nntm-chu); /* chu SAM, khac dai Kim Cuong (chu trang) o tren */
+}
+
+/* "Tháo" header-row khỏi luồng để tiêu đề và nút "Xem Tất cả" trở thành
+   flex-item TRỰC TIẾP của .nntm-container, sắp lại vị trí bằng order mà
+   không cần sửa HTML render.php. */
+.nntm-kc-nghi-quy > .nntm-card-list__band > .nntm-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.nntm-kc-nghi-quy .nntm-card-list__header-row {
+	display: contents;
+}
+
+.nntm-kc-nghi-quy .nntm-card-list__heading {
+	order: 1;
+}
+
+.nntm-kc-nghi-quy .nntm-card-list__marquee {
+	order: 2;
+	/* Bam sat khung noi dung (khong tran vien) — khac bang YouTube o tren
+	   (dai do tran vien toan man hinh). KHONG dat padding-inline-start o
+	   day: de the dau bam sat le trai .nntm-container, va the CUOI CO Y lo
+	   ra mep phai (yeu cau chu du an), khong can "chua le" hai ben. */
+}
+
+.nntm-kc-nghi-quy .nntm-card-list__marquee-track {
+	gap: 14px; /* khe giua hai the — tu anh giao dien, truoc la sp-5 (20) mac dinh cua khoi marquee chung */
+}
+
+.nntm-kc-nghi-quy .nntm-card-list__marquee-item {
+	flex: 0 0 346px; /* tu anh giao dien — the co dinh, dung dung so do da do (346x527) */
+}
+
+/* Nút "Xem Tất cả" — order 3 nghĩa là SAU băng thẻ (order 2), căn giữa,
+   cách băng ~35px. Kích thước + kiểu nút GIỐNG hệt nút "Xem Tất cả" mô tả
+   trong ảnh: 107×46, nền sáng, viền mảnh 1px, chữ sẫm 13px, góc vuông —
+   khác hẳn kiểu link gạch chân mặc định của ".nntm-card-list__view-all". */
+.nntm-kc-nghi-quy .nntm-card-list__view-all {
+	order: 3;
+	align-self: center;
+	margin-top: 35px; /* tu anh giao dien */
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 107px;
+	height: 46px;
+	box-sizing: border-box;
+	background-color: var(--nntm-nen-noi); /* nen sang (trang) */
+	border: 1px solid var(--nntm-duong-vien); /* vien manh 1px */
+	border-radius: 0; /* goc vuong */
+	color: var(--nntm-chu); /* chu sam */
+	font-size: var(--nntm-fs-xs); /* 13 */
+	font-weight: 400;
+	text-decoration: none;
+}
+
+.nntm-kc-nghi-quy .nntm-card-list__view-all:hover,
+.nntm-kc-nghi-quy .nntm-card-list__view-all:focus-visible {
+	background-color: var(--nntm-nen);
+	border-color: var(--nntm-chu);
+}
+
+/* ---------- Thẻ "books" trong băng Nghi Quỹ: bìa dọc, nền trắng ---------- */
+.nntm-kc-nghi-quy .nntm-card--books {
+	min-height: 527px; /* tu anh giao dien */
+	padding: 24px 0;    /* tu anh giao dien — chi dem tren/duoi, bia rong het chieu ngang can giua bang margin auto */
+	gap: 18px;          /* khoang cach bia -> ten sach, tu anh giao dien */
+	box-sizing: border-box;
+	background-color: var(--nntm-nen-noi); /* trang */
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+	backdrop-filter: none;
+	text-align: center;
+}
+
+.nntm-kc-nghi-quy .nntm-card--books .nntm-card__img {
+	width: 299px;
+	aspect-ratio: 299 / 376; /* tu anh giao dien — bia doc ~4:5 */
+	margin-inline: auto; /* can giua trong the */
+}
+
+.nntm-kc-nghi-quy .nntm-card--books .nntm-card__img-el {
+	object-fit: cover;
+}
+
+.nntm-kc-nghi-quy .nntm-card--books .nntm-card__body {
+	gap: 18px; /* khoang cach ten sach -> "Xem them", tu anh giao dien */
+	align-items: center;
+}
+
+.nntm-kc-nghi-quy .nntm-card--books .nntm-card__date,
+.nntm-kc-nghi-quy .nntm-card--books .nntm-card__cat,
+.nntm-kc-nghi-quy .nntm-card--books .nntm-card__excerpt {
+	display: none; /* anh giao dien khong co ba dong nay trong the Nghi Quy */
+}
+
+.nntm-kc-nghi-quy .nntm-card--books .nntm-card__title {
+	color: var(--nntm-chu); /* sam, tren nen trang */
+	font-size: var(--nntm-fs-base); /* 16 */
+	font-weight: 700;
+	text-align: center;
+	-webkit-line-clamp: 2;
+}
+
+.nntm-kc-nghi-quy .nntm-card--books .nntm-card__cta {
+	align-self: center;
+	color: var(--nntm-chu-phu);
+	font-size: var(--nntm-fs-xs); /* 13 */
+	font-weight: 400;
+	text-align: center;
+}
+
+@media (max-width: 900px) {
+	.nntm-kc-nghi-quy .nntm-card-list__marquee-item {
+		flex: 0 0 min(80vw, 300px);
 	}
 }

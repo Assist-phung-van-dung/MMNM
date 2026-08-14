@@ -32,7 +32,7 @@
 		},
 		"variant": {
 			"type": "string",
-			"enum": [ "article", "small", "xs", "dai-si", "article-hover", "video", "khoa-tu", "books" ],
+			"enum": [ "article", "small", "xs", "dai-si", "kim-cuong", "article-hover", "video", "khoa-tu", "books" ],
 			"default": "article"
 		},
 		"columns": {
@@ -53,6 +53,11 @@
 			"type": "string",
 			"default": ""
 		},
+		"excludePostId": {
+			"type": "number",
+			"default": 0,
+			"description": "Loai tru mot bai khoi danh sach (vd: bai dang xem o dai 'Bai viet lien quan', tranh no tu liet ke chinh no)."
+		},
 		"showPaging": {
 			"type": "boolean",
 			"default": false
@@ -69,10 +74,16 @@
 			"type": "string",
 			"default": "Xem tất cả"
 		},
+		"viewAllUrl": {
+			"type": "string",
+			"default": "",
+			"description": "Ghi de duong dan 'Xem tat ca'. De trong thi tu lay theo kho luu tru cua post type / term dang loc (hanh vi cu). Dung khi muon tro sang mot Page rieng (vd /nghi-quy/)."
+		},
 		"layout": {
 			"type": "string",
-			"enum": [ "grid", "carousel" ],
-			"default": "grid"
+			"enum": [ "grid", "carousel", "marquee" ],
+			"default": "grid",
+			"description": "grid = luoi (cu, mac dinh). carousel = bang the cuon co nut mui ten + thanh cuon (dung cho noi khac, KHONG duoc doi hanh vi). marquee = bang TU CHAY lien tuc, KHONG nut bam, KHONG thanh cuon (them 14/08/2026 cho dai Nghi Quy trang Kim Cuong Hanh Gia — xem inc/render-card-list-marquee.php)."
 		},
 		"autoplay": {
 			"type": "boolean",
@@ -86,7 +97,7 @@
 		},
 		"background": {
 			"type": "string",
-			"enum": [ "none", "kem", "cam", "toi" ],
+			"enum": [ "none", "kem", "cam", "toi", "cham", "vang" ],
 			"default": "none"
 		},
 		"showDate": {
@@ -96,6 +107,14 @@
 		"showCategory": {
 			"type": "boolean",
 			"default": true
+		},
+		"showCardCta": {
+			"type": "boolean",
+			"default": false
+		},
+		"cardCtaLabel": {
+			"type": "string",
+			"default": "Xem thêm"
 		},
 		"headingAbove": {
 			"type": "string",

@@ -1,0 +1,173 @@
+/* =============================================================
+   nntm/rank-card — CSS cho hero trang "Nhập Pháp Giới"
+   Nguồn số đo: bản thiết kế anh Úy gửi (ảnh chụp 2x, quy về khung
+   desktop 1366px), bóc ngày 14/08/2026. Ánh xạ Figma component set
+   "CARD DAI SI/KIM CUONG" (docs/04-kien-truc.md mục 2).
+
+   CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
+   assets/css/tokens.css. Nạp sau tokens.css/base.css qua block.json
+   "style" (front-end) hoặc add_editor_style() (trình soạn thảo).
+
+   Block tự tràn hết chiều rộng (align: wide/full), không bọc trong
+   .nntm-container (docs/04-kien-truc.md mục 11). Đầu trang (header) là
+   dải trắng riêng phía trên, KHÔNG đè lên hero này.
+   ============================================================= */
+
+.nntm-rank-card {
+	position: relative;
+	display: flex;
+	width: 100%;
+	/* min-height thật lấy từ attribute "minHeight" (inline style trong
+	   render.php) — 690px chỉ là giá trị dự phòng nếu vì lý do gì đó
+	   thuộc tính không tới được (ví dụ cache trang cũ). */
+	min-height: 690px;
+	background-color: var(--nntm-than); /* mau nen du phong khi chua chon anh */
+	background-size: cover;
+	background-position: center;
+	overflow: hidden;
+}
+
+/* Lớp phủ tối rất nhẹ để chữ trắng đọc được trên mọi ảnh nền, đồng thời
+   là khung căn giữa nội dung (tiêu đề + hàng thẻ). */
+.nntm-rank-card__overlay {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	background-color: var(--nntm-phu-den-30);
+	/* tu ban thiet ke: tieu de cach mep tren hero 139px */
+	padding-top: 139px;
+	padding-bottom: var(--nntm-sp-10);
+	padding-inline: var(--nntm-sp-8);
+}
+
+.nntm-rank-card__heading {
+	margin: 0;
+	font-family: var(--nntm-font-display);
+	font-size: 40px; /* tu ban thiet ke, khong co bien token co san khop 40px */
+	font-weight: 600;
+	line-height: var(--nntm-lh-chat);
+	color: var(--nntm-trang);
+	text-align: center;
+}
+
+/* ---------- Hàng thẻ cấp bậc ---------- */
+.nntm-rank-card__row {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: flex-start;
+	gap: 35px; /* tu ban thiet ke */
+	/* tu ban thiet ke: hang the cach tieu de 40px */
+	margin-top: var(--nntm-sp-8);
+	width: 100%;
+}
+
+.nntm-rank-card__empty-notice {
+	margin: 0;
+	font-family: var(--nntm-font-sans);
+	color: var(--nntm-trang);
+	text-align: center;
+}
+
+/* ---------- Một thẻ (kính mờ) ---------- */
+.nntm-rank-card__card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 360px;
+	height: 374px;
+	/* tu ban thiet ke: padding trong the la 16px — khong co token sp dung
+	   khop (sp-4=15, sp-5=20) nen giu nguyen so do that thay vi lam tron
+	   theo token gan nhat, tranh sai lech voi Figma. */
+	padding: 16px;
+	background-color: var(--nntm-the-kinh);
+	-webkit-backdrop-filter: blur(2px);
+	backdrop-filter: blur(2px);
+	border: 1px solid var(--nntm-vien-kinh);
+	border-radius: 0; /* thiet ke la goc vuong, khong bo goc */
+	box-sizing: border-box;
+}
+
+.nntm-rank-card__card-media {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+}
+
+.nntm-rank-card__card-img,
+.nntm-rank-card__card-img--placeholder {
+	display: block;
+	width: 304px;
+	height: 226px;
+	object-fit: cover;
+	background-color: var(--nntm-xam); /* mau nen placeholder khi chua co anh */
+}
+
+.nntm-rank-card__card-title {
+	margin: 0;
+	/* tu ban thiet ke: tieu de the cach anh 20px */
+	margin-top: var(--nntm-sp-5);
+	font-family: var(--nntm-font-display);
+	font-size: var(--nntm-fs-lg); /* 20px */
+	color: var(--nntm-trang);
+	text-align: center;
+}
+
+.nntm-rank-card__cta {
+	display: inline-block;
+	/* tu ban thiet ke: nut cach tieu de the 10px */
+	margin-top: var(--nntm-sp-3);
+	font-family: var(--nntm-font-serif);
+	font-style: italic;
+	font-size: var(--nntm-fs-xs); /* 13px */
+	color: var(--nntm-trang);
+	text-align: center;
+	text-decoration: none;
+	transition: opacity var(--nntm-dur) var(--nntm-ease);
+}
+
+a.nntm-rank-card__cta:hover,
+a.nntm-rank-card__cta:focus-visible {
+	text-decoration: underline;
+}
+
+.nntm-rank-card__cta--khoa {
+	color: var(--nntm-xam-nhat);
+	cursor: not-allowed;
+}
+
+/* ---------- Responsive ---------- */
+/* SUY DOAN: chua co Figma mobile. The xep doc, dan het chieu rong khung
+   hep, giu dung ty le anh/tieu de/nut de khong vo bo cuc. */
+@media (max-width: 900px) {
+	.nntm-rank-card__overlay {
+		padding-top: var(--nntm-sp-10);
+	}
+
+	.nntm-rank-card__row {
+		flex-direction: column;
+		align-items: center;
+		gap: var(--nntm-sp-6);
+	}
+
+	.nntm-rank-card__card {
+		width: 100%;
+		max-width: 360px;
+		height: auto;
+	}
+
+	.nntm-rank-card__card-img,
+	.nntm-rank-card__card-img--placeholder {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 304 / 226;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-rank-card__cta {
+		transition: none;
+	}
+}

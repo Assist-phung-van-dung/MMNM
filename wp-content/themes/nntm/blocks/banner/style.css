@@ -44,6 +44,40 @@
 	background-color: var(--nntm-reu);
 }
 
+/* =============================================================
+   Biến thể "tràn viền" (thuộc tính tranVien, mặc định FALSE)
+
+   Sinh ra 14/08/2026 cho trang Kim Cương Hành Giả: banner phải TRÀN HẾT
+   chiều rộng màn hình, góc VUÔNG — khác banner mặc định ở trên (đệm 20px
+   + bo góc 40px bóc từ Figma TRANG CHỦ, khung 1326 nằm giữa 1366).
+
+   Dùng selector kép ".nntm-banner.nntm-banner--tran-vien" (2 lớp) thay vì
+   chỉ ".nntm-banner--tran-vien" để độ đặc hiệu CSS luôn thắng các quy tắc
+   ".nntm-banner" / ".nntm-banner__stage" một lớp ở khối "Màn hình hẹp" bên
+   dưới, bất kể thứ tự khai báo trong file.
+
+   Mặc định false nên MỌI banner đang dùng (trang chủ) không đổi gì.
+   ============================================================= */
+.nntm-banner.nntm-banner--tran-vien {
+	padding-inline: 0;
+	padding-block: 0;
+}
+
+.nntm-banner.nntm-banner--tran-vien .nntm-banner__stage {
+	max-width: none;
+	border-radius: 0;
+	/*
+	 * Bỏ aspect-ratio 1326/700 (chỉ đúng cho khung có đệm của trang chủ).
+	 * SUY ĐOÁN: chưa có số đo Figma riêng cho biến thể tràn viền — ước
+	 * lượng chiều cao theo tỉ lệ gần bằng mặc định (700/1326 ≈ 0,528) quy
+	 * theo chiều rộng màn hình, giới hạn min/max để không quá thấp trên
+	 * màn hình hẹp hoặc quá cao trên màn hình rất rộng.
+	 */
+	aspect-ratio: auto;
+	height: clamp(420px, 45vw, 700px);
+	max-height: 88vh;
+}
+
 /* ---------- Từng tấm: chồng lên nhau, làm mờ chồng khi chuyển ---------- */
 
 .nntm-banner__slide {
@@ -138,6 +172,124 @@
 	font-size: clamp(var(--nntm-fs-sm), 1.32vw, var(--nntm-fs-md));
 	line-height: var(--nntm-lh-khit); /* Figma 18/24 = 1,33 */
 	color: var(--nntm-trang);
+}
+
+/*
+ * Nút hành động (vd: "Tham gia" — dải "Lễ Đàn Khổng Tước"). CHƯA có số đo
+ * Figma/ảnh riêng cho nút này (mục 5 việc cần làm) — dựng theo dáng nút
+ * chính đã dùng chung toàn site (pill, nền màu chủ đạo), ước lượng.
+ */
+.nntm-banner__btn {
+	margin-top: var(--nntm-sp-2);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--nntm-sp-3) var(--nntm-sp-8);
+	border: 0;
+	border-radius: var(--nntm-r-pill);
+	background-color: var(--nntm-chinh);
+	color: var(--nntm-trang);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-15);
+	font-weight: 700;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color var(--nntm-dur) var(--nntm-ease), opacity var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-banner__btn:hover,
+.nntm-banner__btn:focus-visible {
+	background-color: var(--nntm-chinh-hover);
+}
+
+/* Filter nntm_tham_gia_chuoi_tri_url chưa trả URL (Cộng Tu chưa xong) —
+   VẪN hiện nút nhưng vô hiệu hoá rõ ràng bằng mắt, không chỉ dựa vào
+   thuộc tính disabled của trình duyệt. */
+.nntm-banner__btn--tat {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+/* =============================================================
+   HAI BANNER TRÀN VIỀN CỦA TRANG "KIM CƯƠNG HÀNH GIẢ" (ID 243) — sửa
+   14/08/2026 sau phản hồi chủ dự án "khác xa thiết kế".
+
+   Cả hai đều dùng chung thuộc tính tranVien=true (đã có sẵn), nhưng KHÁC
+   NHAU về chiều cao và cách đặt chữ, nên cần hai class riêng gán qua
+   "Additional CSS class" của từng khối:
+     .nntm-banner--kc-dau   : dải 1 (đầu trang, ảnh vàng, KHÔNG có chữ)
+     .nntm-banner--kc-ledan : dải 4 ("Lễ Đàn Khổng Tước", CÓ chữ + nút)
+
+   SỐ ĐO ƯỚC LƯỢNG từ ảnh giao diện đầy đủ chủ dự án gửi, quy về khung
+   desktop 1366 (hệ số ×2,32) — KHÔNG phải Figma xuất trực tiếp.
+   ============================================================= */
+.nntm-banner.nntm-banner--kc-dau .nntm-banner__stage {
+	height: 533px; /* tu anh giao dien — thay the clamp() uoc luong chung cua tranVien */
+	max-height: none;
+}
+
+.nntm-banner.nntm-banner--kc-ledan .nntm-banner__stage {
+	height: 615px; /* tu anh giao dien */
+	max-height: none;
+}
+
+/*
+ * Nội dung dải "Lễ Đàn Khổng Tước" CĂN TRÁI, bắt đầu ở lề 92px, đặt ở
+ * khoảng GIỮA theo chiều dọc — khác hẳn kiểu canh giữa mặc định của
+ * ".nntm-banner__text" (dùng chung cho các banner khác, không đổi ở đây).
+ */
+.nntm-banner.nntm-banner--kc-ledan .nntm-banner__text {
+	align-items: flex-start;
+	justify-content: center; /* "khoang giua theo chieu doc" — SUY DOAN, anh khong ghi so do chinh xac */
+	text-align: left;
+	padding-inline-start: 92px; /* tu anh giao dien */
+	padding-bottom: 0;
+}
+
+.nntm-banner.nntm-banner--kc-ledan .nntm-banner__text-inner {
+	align-items: flex-start;
+	max-width: none;
+}
+
+.nntm-banner.nntm-banner--kc-ledan .nntm-banner__heading {
+	font-size: 37px; /* tu anh giao dien — khong co token 37, gan nhat fs-3xl (38) nhung anh do ro 37 */
+	text-align: left;
+	text-wrap: initial;
+}
+
+.nntm-banner.nntm-banner--kc-ledan .nntm-banner__sub {
+	margin-top: var(--nntm-sp-3); /* 10 — tu anh giao dien, cach tieu de */
+	font-size: var(--nntm-fs-sm); /* 14 */
+	text-align: left;
+}
+
+.nntm-banner.nntm-banner--kc-ledan .nntm-banner__btn {
+	margin-top: var(--nntm-sp-5); /* 20 — tu anh giao dien, cach phu de */
+	width: 118px;
+	height: 49px;
+	box-sizing: border-box;
+	padding: 0;
+	border-radius: 0; /* goc vuong — khac dang pill mac dinh */
+	background-color: var(--nntm-nen-noi); /* nen sang, khac mau chinh mac dinh */
+	color: var(--nntm-chu); /* chu sam */
+	font-size: var(--nntm-fs-xs); /* 13 */
+}
+
+.nntm-banner.nntm-banner--kc-ledan .nntm-banner__btn:hover,
+.nntm-banner.nntm-banner--kc-ledan .nntm-banner__btn:focus-visible {
+	background-color: var(--nntm-nen);
+}
+
+@media (max-width: 782px) {
+	.nntm-banner.nntm-banner--kc-dau .nntm-banner__stage,
+	.nntm-banner.nntm-banner--kc-ledan .nntm-banner__stage {
+		height: auto;
+		aspect-ratio: 3 / 4;
+	}
+
+	.nntm-banner.nntm-banner--kc-ledan .nntm-banner__text {
+		padding-inline-start: var(--nntm-sp-5);
+	}
 }
 
 /* ---------- Dãy chấm ---------- */

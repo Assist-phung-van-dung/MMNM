@@ -32,10 +32,15 @@ if ( ! function_exists( 'nntm_banner_clean_slide' ) ) {
 			// sanitize_textarea_field() giữ \n — tiêu đề trong Figma xuống 2 dòng.
 			'heading'  => isset( $slide['heading'] ) ? sanitize_textarea_field( (string) $slide['heading'] ) : '',
 			'text'     => isset( $slide['text'] ) ? sanitize_textarea_field( (string) $slide['text'] ) : '',
+			// Nút hành động tuỳ chọn — dùng cho dải "Lễ Đàn Khổng Tước" (Cộng
+			// Tu "chuỗi trì"). href KHÔNG lưu ở đây — lấy động qua filter
+			// nntm_tham_gia_chuoi_tri_url ngay lúc render (xem render.php).
+			'showButton'  => ! empty( $slide['showButton'] ),
+			'buttonLabel' => isset( $slide['buttonLabel'] ) ? sanitize_text_field( (string) $slide['buttonLabel'] ) : '',
 		);
 
 		$co_anh = ( $clean['imageId'] > 0 || '' !== $clean['imageUrl'] );
-		$co_chu = ( '' !== trim( $clean['heading'] ) || '' !== trim( $clean['text'] ) );
+		$co_chu = ( '' !== trim( $clean['heading'] ) || '' !== trim( $clean['text'] ) || $clean['showButton'] );
 
 		return ( $co_anh || $co_chu ) ? $clean : null;
 	}

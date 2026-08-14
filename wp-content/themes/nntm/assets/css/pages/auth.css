@@ -1,0 +1,341 @@
+/* =============================================================
+   NNTM — Đăng nhập / Đăng ký / Quên mật khẩu + modal đăng nhập
+
+   Tự dựng theo 3 ảnh thiết kế anh Úy gửi (chưa có Figma chính thức cho
+   3 màn này). Số đo bóc từ ảnh 2x, quy về khung desktop 1366px.
+
+   Ảnh nền phong cảnh núi: mặc định attachment ID 115 ("Núi lớp lớp trong
+   sương") — xem nntm_auth_background_url() trong inc/auth.php. Giá trị
+   dự phòng dưới đây (gradient xám-xanh) chỉ dùng khi option bị xoá hoặc
+   filter trả rỗng.
+
+   CẤM viết mã màu trực tiếp — mọi màu lấy từ assets/css/tokens.css.
+   ============================================================= */
+
+.nntm-auth-page {
+  --nntm-auth-bg: linear-gradient(160deg, #6b7a86 0%, #4a5560 60%, #333c44 100%);
+
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background-image: var(--nntm-auth-bg);
+  background-size: cover;
+  background-position: center;
+  padding: var(--nntm-sp-8) var(--nntm-sp-5);
+  box-sizing: border-box;
+}
+
+.nntm-auth-page__home {
+  position: fixed;
+  top: var(--nntm-sp-5);
+  left: var(--nntm-sp-5);
+  color: var(--nntm-trang);
+  font-family: var(--nntm-font-sans);
+  font-size: var(--nntm-fs-sm);
+  text-decoration: none;
+  z-index: 2;
+}
+
+.nntm-auth-page__home:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Thẻ kính mờ dùng chung cho đăng nhập / quên mật khẩu ---------- */
+
+.nntm-auth-card {
+  width: 360px;
+  max-width: 100%;
+  padding: 48px 44px;
+  background: var(--nntm-the-kinh-dam);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid var(--nntm-vien-kinh);
+  border-radius: 0; /* thiết kế góc vuông, không bo */
+  box-sizing: border-box;
+}
+
+/* Thẻ đăng ký rộng hơn, đệm khác, chừa lề trên/dưới để cuộn được. */
+.nntm-auth-card--rong {
+  width: 480px;
+  padding: 48px 50px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+/* Thẻ dùng trong modal — bớt đệm ngoài viewport, không cần margin trên/dưới. */
+.nntm-auth-card--compact {
+  margin: 0;
+}
+
+.nntm-auth-card__title {
+  font-family: var(--nntm-font-display);
+  font-size: 28px;
+  color: var(--nntm-trang);
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 1px;
+  line-height: 1.2;
+  margin: 0 0 40px;
+}
+
+.nntm-auth-card__title span {
+  display: block;
+}
+
+.nntm-auth-card__title--dang-ky {
+  font-size: 32px;
+  color: var(--nntm-reu);
+  letter-spacing: normal;
+}
+
+/* ---------- Form ---------- */
+
+.nntm-auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.nntm-auth-field {
+  margin-bottom: 18px;
+}
+
+.nntm-auth-field label {
+  display: block;
+  font-family: var(--nntm-font-sans);
+  font-size: var(--nntm-fs-xs);
+  font-weight: 700;
+  color: var(--nntm-muc);
+  margin-bottom: 8px;
+}
+
+/* Bên trong thẻ đăng nhập/quên mật khẩu, nhãn chữ trắng để đọc được trên nền tối. */
+.nntm-auth-card:not(.nntm-auth-card--rong) .nntm-auth-field label {
+  color: var(--nntm-trang);
+}
+
+.nntm-auth-field__control {
+  position: relative;
+}
+
+.nntm-auth-field__control input,
+.nntm-auth-field__control select {
+  width: 100%;
+  height: 44px;
+  background: var(--nntm-trang);
+  border: none;
+  border-radius: 0;
+  padding: 0 14px;
+  font-family: var(--nntm-font-sans);
+  font-size: var(--nntm-fs-15);
+  color: var(--nntm-muc);
+  box-sizing: border-box;
+}
+
+.nntm-auth-field__control--icon input {
+  padding-left: 40px;
+}
+
+.nntm-auth-hint {
+  margin: 6px 0 0;
+  font-family: var(--nntm-font-sans);
+  font-size: 12px;
+  color: var(--nntm-muc-nhat);
+}
+
+.nntm-auth-field__icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--nntm-muc-nhat);
+  pointer-events: none;
+}
+
+.nntm-auth-form__forgot {
+  text-align: center;
+  margin: 0 0 18px;
+}
+
+.nntm-auth-form__forgot a {
+  color: var(--nntm-trang);
+  font-size: var(--nntm-fs-sm);
+  text-decoration: underline;
+}
+
+.nntm-auth-card--rong .nntm-auth-form__forgot a {
+  color: var(--nntm-muc);
+}
+
+.nntm-auth-form__switch {
+  text-align: center;
+  font-family: var(--nntm-font-sans);
+  font-size: var(--nntm-fs-sm);
+  color: var(--nntm-trang);
+  margin: 18px 0 0;
+}
+
+.nntm-auth-form__switch a {
+  color: var(--nntm-trang);
+}
+
+.nntm-auth-form__switch a strong {
+  text-decoration: underline;
+}
+
+/* ---------- Nút ---------- */
+
+.nntm-auth-btn {
+  display: block;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  font-family: var(--nntm-font-sans);
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+
+.nntm-auth-btn--dac {
+  background: var(--nntm-muc);
+  color: var(--nntm-trang);
+  margin-top: 4px;
+}
+
+.nntm-auth-btn--dac:hover {
+  background: var(--nntm-than);
+}
+
+.nntm-auth-btn--full {
+  margin-top: 8px;
+}
+
+.nntm-auth-btn--phu {
+  background: transparent;
+  color: var(--nntm-trang);
+  border: 1px solid var(--nntm-trang);
+  margin-top: 12px;
+}
+
+.nntm-auth-btn--phu:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nntm-auth-btn--phu:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ---------- Checkbox (form đăng ký) ---------- */
+
+.nntm-auth-checkbox {
+  margin-bottom: 14px;
+  font-family: var(--nntm-font-sans);
+  font-size: var(--nntm-fs-sm);
+  color: var(--nntm-muc);
+}
+
+.nntm-auth-checkbox label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.nntm-auth-checkbox input[type="checkbox"] {
+  margin-top: 3px;
+}
+
+.nntm-auth-checkbox a {
+  color: var(--nntm-reu);
+}
+
+/* ---------- Khối thông báo ---------- */
+
+.nntm-auth-alert {
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  font-family: var(--nntm-font-sans);
+  font-size: var(--nntm-fs-sm);
+}
+
+.nntm-auth-alert p {
+  margin: 0;
+}
+
+.nntm-auth-alert p + p {
+  margin-top: 6px;
+}
+
+.nntm-auth-alert--loi {
+  background: var(--nntm-loi-nen);
+  color: var(--nntm-loi-chu);
+}
+
+.nntm-auth-alert--ok {
+  background: rgba(116, 119, 102, 0.15);
+  color: var(--nntm-reu);
+}
+
+/* ---------- Modal đăng nhập (chân trang, mọi trang cho khách chưa đăng nhập) ---------- */
+
+.nntm-auth-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: var(--nntm-sp-5);
+  box-sizing: border-box;
+}
+
+.nntm-auth-modal[hidden] {
+  display: none;
+}
+
+.nntm-auth-modal__overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--nntm-phu-den-50);
+}
+
+.nntm-auth-modal__panel {
+  position: relative;
+  z-index: 1;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Modal KHÔNG dùng ảnh nền phong cảnh núi — chỉ nổi trên lớp phủ tối,
+   nên thẻ kính mờ bên trong cần nền một chút đậm hơn để chữ trắng đọc được. */
+.nntm-auth-modal__panel .nntm-auth-card {
+  background: rgba(60, 60, 60, 0.55);
+}
+
+.nntm-auth-modal__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--nntm-trang);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* ---------- Mobile ---------- */
+/* SUY DOAN: chua co Figma mobile — thu nho the lai cho vua man hinh. */
+@media (max-width: 600px) {
+  .nntm-auth-card,
+  .nntm-auth-card--rong {
+    width: 100%;
+    padding: 36px 24px;
+  }
+}

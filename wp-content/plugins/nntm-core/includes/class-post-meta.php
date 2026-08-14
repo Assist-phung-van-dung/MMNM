@@ -127,5 +127,92 @@ class Post_Meta {
 				'description'       => __( 'Địa điểm hiển thị trên thẻ Trú Xứ, ví dụ "Việt Nam - Nha Trang".', 'nntm' ),
 			)
 		);
+
+		/*
+		 * Post meta của nntm_program (Cộng Tu "chuỗi trì") — xem
+		 * docs/07-ban-giao.md mục "Đang làm dở". Nghiệp vụ đọc các trường
+		 * này nằm ở includes/class-chuoi-tri.php, file này chỉ khai báo để
+		 * trình soạn thảo block và REST API đọc/ghi được.
+		 */
+
+		register_post_meta(
+			'nntm_program',
+			'_nntm_program_bat_dau',
+			array(
+				'type'              => 'string',
+				'single'            => true,
+				'default'           => '',
+				'show_in_rest'      => true,
+				'sanitize_callback' => 'sanitize_text_field',
+				'auth_callback'     => function () {
+					return current_user_can( 'edit_posts' );
+				},
+				'description'       => __( 'Ngày bắt đầu chương trình, định dạng Y-m-d.', 'nntm' ),
+			)
+		);
+
+		register_post_meta(
+			'nntm_program',
+			'_nntm_program_ket_thuc',
+			array(
+				'type'              => 'string',
+				'single'            => true,
+				'default'           => '',
+				'show_in_rest'      => true,
+				'sanitize_callback' => 'sanitize_text_field',
+				'auth_callback'     => function () {
+					return current_user_can( 'edit_posts' );
+				},
+				'description'       => __( 'Ngày kết thúc chương trình, định dạng Y-m-d. Để trống = không giới hạn.', 'nntm' ),
+			)
+		);
+
+		register_post_meta(
+			'nntm_program',
+			'_nntm_program_dang_mo',
+			array(
+				'type'              => 'boolean',
+				'single'            => true,
+				'default'           => false,
+				'show_in_rest'      => true,
+				'sanitize_callback' => 'rest_sanitize_boolean',
+				'auth_callback'     => function () {
+					return current_user_can( 'edit_posts' );
+				},
+				'description'       => __( 'Công tắc ban quản trị đóng/mở nhận cam kết cho chương trình.', 'nntm' ),
+			)
+		);
+
+		register_post_meta(
+			'nntm_program',
+			'_nntm_program_don_vi',
+			array(
+				'type'              => 'string',
+				'single'            => true,
+				'default'           => 'chuỗi',
+				'show_in_rest'      => true,
+				'sanitize_callback' => 'sanitize_text_field',
+				'auth_callback'     => function () {
+					return current_user_can( 'edit_posts' );
+				},
+				'description'       => __( 'Đơn vị đếm hiển thị, ví dụ "chuỗi".', 'nntm' ),
+			)
+		);
+
+		register_post_meta(
+			'nntm_program',
+			'_nntm_program_muc_tieu',
+			array(
+				'type'              => 'integer',
+				'single'            => true,
+				'default'           => 0,
+				'show_in_rest'      => true,
+				'sanitize_callback' => 'absint',
+				'auth_callback'     => function () {
+					return current_user_can( 'edit_posts' );
+				},
+				'description'       => __( 'Mục tiêu chung của đạo tràng cho chương trình, 0 = không đặt.', 'nntm' ),
+			)
+		);
 	}
 }

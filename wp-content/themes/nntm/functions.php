@@ -18,3 +18,7 @@ require NNTM_THEME_DIR . '/inc/blocks.php';
 require NNTM_THEME_DIR . '/inc/patterns.php';
 require NNTM_THEME_DIR . '/inc/cleanup.php';
 require NNTM_THEME_DIR . '/inc/language-switcher.php';
+require NNTM_THEME_DIR . '/inc/auth.php';
+require NNTM_THEME_DIR . '/inc/hanh-gia.php';
+require NNTM_THEME_DIR . '/inc/an-pham.php';
+require NNTM_THEME_DIR . '/inc/cong-tu.php';
