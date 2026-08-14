@@ -84,10 +84,9 @@ $show_excerpt  = ! isset( $attributes['showExcerpt'] ) || ! empty( $attributes['
 $show_date     = ! isset( $attributes['showDate'] ) || ! empty( $attributes['showDate'] );
 
 $heading = isset( $attributes['heading'] ) ? (string) $attributes['heading'] : '';
-
-// KHÔNG còn "ctaLabel" — sửa 12/08/2026: Figma không có chữ "Xem thêm"
-// dưới bất kỳ ô nào (xem chú thích ở __lead-cta cũ, đã xoá). Tiêu đề của
-// mỗi ô tự là liên kết.
+$card_cta_label = isset( $attributes['cardCtaLabel'] )
+	? sanitize_text_field( (string) $attributes['cardCtaLabel'] )
+	: __( 'Xem thêm', 'nntm' );
 
 $taxonomy = isset( $attributes['taxonomy'] ) ? sanitize_key( (string) $attributes['taxonomy'] ) : '';
 $term_id  = isset( $attributes['termId'] ) ? absint( $attributes['termId'] ) : 0;
@@ -295,15 +294,9 @@ $wrapper_attributes = get_block_wrapper_attributes(
 									</p>
 								<?php endif; ?>
 							</div>
-							<?php
-							/*
-							 * KHÔNG có liên kết "Xem thêm" riêng — sửa 12/08/2026 sau khi đối
-							 * chiếu ảnh Figma thật (fig-mosaic1.png): thiết kế không có chữ
-							 * "Xem thêm" dưới bất kỳ ô nào, kể cả ô nổi bật. Tiêu đề ở trên
-							 * (nntm-article-mosaic__lead-title) đã tự là liên kết, đủ để bấm
-							 * vào bài — không cần thêm nút/chữ nào khác.
-							 */
-							?>
+							<?php if ( '' !== $card_cta_label ) : ?>
+								<a class="nntm-article-mosaic__card-cta" href="<?php echo esc_url( $lead_permalink ); ?>"><?php echo esc_html( $card_cta_label ); ?></a>
+							<?php endif; ?>
 						</div>
 					</article>
 
@@ -312,7 +305,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 							<?php if ( ! empty( $grid_posts ) ) : ?>
 								<div class="nntm-article-mosaic__grid">
 									<?php foreach ( $grid_posts as $grid_post ) : ?>
-										<?php echo nntm_article_mosaic_render_secondary_card( $grid_post, 'small', $show_category, $show_date ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
+										<?php echo nntm_article_mosaic_render_secondary_card( $grid_post, 'small', $show_category, $show_date, $card_cta_label ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
 									<?php endforeach; ?>
 								</div>
 							<?php endif; ?>
@@ -320,7 +313,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 							<?php if ( ! empty( $medium_posts ) ) : ?>
 								<div class="nntm-article-mosaic__medium-row">
 									<?php foreach ( $medium_posts as $medium_post ) : ?>
-										<?php echo nntm_article_mosaic_render_secondary_card( $medium_post, 'medium', $show_category, $show_date ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
+										<?php echo nntm_article_mosaic_render_secondary_card( $medium_post, 'medium', $show_category, $show_date, $card_cta_label ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
 									<?php endforeach; ?>
 								</div>
 							<?php endif; ?>
@@ -328,7 +321,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 							<?php if ( ! empty( $small_posts ) ) : ?>
 								<div class="nntm-article-mosaic__small-row">
 									<?php foreach ( $small_posts as $small_post ) : ?>
-										<?php echo nntm_article_mosaic_render_secondary_card( $small_post, 'small', $show_category, $show_date ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
+										<?php echo nntm_article_mosaic_render_secondary_card( $small_post, 'small', $show_category, $show_date, $card_cta_label ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
 									<?php endforeach; ?>
 								</div>
 							<?php endif; ?>

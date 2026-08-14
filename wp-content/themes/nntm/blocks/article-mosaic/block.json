@@ -61,6 +61,10 @@
 			"type": "boolean",
 			"default": true
 		},
+		"cardCtaLabel": {
+			"type": "string",
+			"default": "Xem thêm"
+		},
 		"viewAllLabel": {
 			"type": "string",
 			"default": ""

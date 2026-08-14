@@ -17,7 +17,8 @@ if ( PHP_SAPI !== 'cli' ) {
 	exit( 'Chi chay tu dong lenh.' );
 }
 
-$_SERVER['HTTP_HOST'] = 'localhost:8080';
+$_SERVER['HTTP_HOST'] = 'nntm.com';
+$_SERVER['REQUEST_URI'] = '/';
 require_once __DIR__ . '/../wp-load.php';
 
 /* ---------- 1. Bốn truyền thống là term con của "Pháp Tòa" ---------- */
@@ -30,7 +31,7 @@ echo "Term cha: {$parent->name} (ID {$parent->term_id})\n";
 
 $traditions = array(
 	'nguyen-thuy' => array( 'Nguyên Thuỷ', 'Phật Giáo Nguyên Thủy - Nền Tảng Để Thành Tựu Phật Quả.' ),
-	'dai-thua'    => array( 'Đại Thừa', 'Con đường Bồ Tát hạnh, lấy độ sinh làm bản nguyện.' ),
+	'thien-tong'  => array( 'Thiền Tông', 'Con đường Bồ Tát hạnh, lấy độ sinh làm bản nguyện.' ),
 	'tinh-do'     => array( 'Tịnh Độ', 'Nương tựa bản nguyện, nhất tâm niệm Phật cầu sinh.' ),
 	'mat-tong'    => array( 'Mật Tông', 'Pháp môn phương tiện thiện xảo, thân khẩu ý hợp nhất.' ),
 );
@@ -130,7 +131,7 @@ function nntm_seed_page( string $slug, string $title, string $content ): void {
 nntm_seed_page(
 	'phap-toa',
 	'Pháp Toà',
-	'<!-- wp:nntm/term-list {"heading":"Pháp Toà","parentTermId":' . (int) $parent->term_id . ',"showDescription":true,"ctaLabel":"Xem thêm"} /-->'
+	'<!-- wp:nntm/term-list {"heading":"Pháp Toà","parentTermId":' . (int) $parent->term_id . ',"showDescription":true,"ctaLabel":"Xem thêm","maxItems":8,"layout":"phap-toa","autoplay":true,"interval":5} /-->'
 );
 
 // Trang chi tiết Nguyên Thuỷ — danh sách bài xếp so le.

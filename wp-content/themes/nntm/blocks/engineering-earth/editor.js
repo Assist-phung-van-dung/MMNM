@@ -11,6 +11,8 @@
 	'use strict';
 
 	var el = wp.element.createElement;
+	var useState = wp.element.useState;
+	var useEffect = wp.element.useEffect;
 	var __ = wp.i18n.__;
 	var registerBlockType = wp.blocks.registerBlockType;
 	var useBlockProps = wp.blockEditor.useBlockProps;
@@ -20,13 +22,46 @@
 	var PanelBody = wp.components.PanelBody;
 	var Button = wp.components.Button;
 	var TextControl = wp.components.TextControl;
+	var SelectControl = wp.components.SelectControl;
 	var ServerSideRender = wp.serverSideRender && wp.serverSideRender.default ? wp.serverSideRender.default : wp.serverSideRender;
+	var apiFetch = wp.apiFetch;
 
 	registerBlockType( 'nntm/engineering-earth', {
 		edit: function ( props ) {
 			var attributes = props.attributes;
 			var setAttributes = props.setAttributes;
 			var blockProps = useBlockProps();
+			var videoPostsState = useState( [] );
+			var videoPosts = videoPostsState[ 0 ];
+			var setVideoPosts = videoPostsState[ 1 ];
+
+			useEffect( function () {
+				var isCurrent = true;
+				apiFetch( { path: '/wp/v2/nntm_video?per_page=100&orderby=date&order=desc&_fields=id,title' } )
+					.then( function ( posts ) {
+						if ( ! isCurrent ) {
+							return;
+						}
+						setVideoPosts( posts || [] );
+					} )
+					.catch( function () {
+						if ( isCurrent ) {
+							setVideoPosts( [] );
+						}
+					} );
+
+				return function () {
+					isCurrent = false;
+				};
+			}, [] );
+
+			var videoPostOptions = [ { label: __( '— Không liên kết bài viết —', 'nntm' ), value: 0 } ].concat(
+				videoPosts.map( function ( post ) {
+					var box = document.createElement( 'textarea' );
+					box.innerHTML = ( post.title && post.title.rendered ) || '';
+					return { label: box.value || __( '(bài không có tiêu đề)', 'nntm' ), value: post.id };
+				} )
+			);
 
 			return el(
 				'div',
@@ -84,10 +119,19 @@
 						} ),
 						el( TextControl, {
 							label: __( 'Video nền (thẻ nhỏ tràn mép, nhấp để đổi làm video chính)', 'nntm' ),
-							help: __( 'Cùng định dạng như trên. Nhấp vào video nào trên trang thì video đó thành video chính.', 'nntm' ),
+							help: __( 'Cùng định dạng như trên. Video chỉ phát nền; nhấp vào thẻ sẽ mở bài viết video bên dưới.', 'nntm' ),
 							value: attributes.bgVideoUrl || '',
 							onChange: function ( value ) {
 								setAttributes( { bgVideoUrl: value } );
+							},
+						} ),
+						el( SelectControl, {
+							label: __( 'Bài viết mở khi nhấp', 'nntm' ),
+							help: __( 'Cả khung lớn lẫn thẻ nhỏ sẽ dẫn đến bài video này.', 'nntm' ),
+							value: attributes.videoId || 0,
+							options: videoPostOptions,
+							onChange: function ( value ) {
+								setAttributes( { videoId: parseInt( value, 10 ) || 0 } );
 							},
 						} )
 					),

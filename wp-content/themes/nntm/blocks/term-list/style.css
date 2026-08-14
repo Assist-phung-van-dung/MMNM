@@ -30,6 +30,8 @@
 	background: var(--nntm-nen);
 }
 
+.nntm-term-list__carousel { position: relative; }
+
 .nntm-term-list__heading {
 	margin: 0 0 var(--nntm-sp-7);              /* gap 30 giua tieu de va danh sach */
 	font-family: var(--nntm-font-display);
@@ -218,4 +220,117 @@
 	.nntm-term-card__img-el { transition: none; }
 	.nntm-term-card:hover { transform: none; }
 	.nntm-term-card:hover .nntm-term-card__img-el { transform: none; }
+}
+
+/* Pháp Tòa mới – chuẩn theo ảnh export 1366px. */
+.nntm-term-list--phap-toa {
+	height: 570px;
+	padding: 34px 0 46px;
+	background: var(--nntm-trang-lanh);
+}
+
+.nntm-term-list--phap-toa .nntm-container {
+	max-width: none;
+	padding-left: 124px;
+	padding-right: 0;
+}
+
+.nntm-term-list--phap-toa .nntm-term-list__heading {
+	margin-bottom: 30px;
+	font-size: var(--nntm-fs-4xl);
+	color: var(--nntm-reu);
+}
+
+.nntm-term-list--phap-toa .nntm-term-list__track {
+	gap: 20px;
+	padding-bottom: 0;
+	scrollbar-width: none;
+}
+
+.nntm-term-list--phap-toa .nntm-term-list__track::-webkit-scrollbar { display: none; }
+
+.nntm-term-list--phap-toa .nntm-term-card {
+	flex-basis: 350px;
+	height: 390px;
+	aspect-ratio: auto;
+	overflow: visible;
+	border-radius: 0;
+	box-shadow: none;
+	background: transparent;
+}
+
+.nntm-term-list--phap-toa .nntm-term-card:hover,
+.nntm-term-list--phap-toa .nntm-term-card:focus-visible {
+	transform: none;
+	box-shadow: none;
+}
+
+.nntm-term-list--phap-toa .nntm-term-card__img {
+	position: relative;
+	height: 245px;
+	background: color-mix(in srgb, var(--nntm-xam) 38%, var(--nntm-trang));
+	overflow: hidden;
+}
+
+.nntm-term-list--phap-toa .nntm-term-card__img-el,
+.nntm-term-list--phap-toa .nntm-term-card__img-placeholder { position: absolute; }
+
+.nntm-term-list--phap-toa .nntm-term-card__img-placeholder {
+	background: color-mix(in srgb, var(--nntm-xam) 28%, var(--nntm-trang-lanh));
+}
+
+.nntm-term-list--phap-toa .nntm-term-card__overlay {
+	position: static;
+	padding: 14px 0 0;
+	background: transparent;
+	color: var(--nntm-chu);
+}
+
+.nntm-term-list--phap-toa .nntm-term-card__content { gap: 7px; }
+.nntm-term-list--phap-toa .nntm-term-card__name { font-size: 20px; line-height: 1.25; }
+.nntm-term-list--phap-toa .nntm-term-card__meta { gap: 10px; }
+.nntm-term-list--phap-toa .nntm-term-card__desc {
+	min-height: 52px;
+	font-size: 17px;
+	line-height: 1.5;
+	color: var(--nntm-reu);
+	-webkit-line-clamp: 2;
+}
+
+.nntm-term-list--phap-toa .nntm-term-card__cta {
+	padding: 0;
+	border-radius: 0;
+	background: transparent;
+	color: var(--nntm-chu);
+	font-family: var(--nntm-font-serif);
+	font-size: var(--nntm-fs-sm);
+	text-decoration: underline;
+}
+
+.nntm-term-list--phap-toa .nntm-term-card:hover .nntm-term-card__cta { background: transparent; color: var(--nntm-chinh-hover); }
+
+.nntm-term-list--phap-toa .nntm-term-list__arrow {
+	position: absolute;
+	top: 176px;
+	z-index: 10;
+	width: 58px;
+	height: 58px;
+	padding: 0;
+	border: 0;
+	background: var(--nntm-trang);
+	color: var(--nntm-den);
+	font-size: var(--nntm-fs-xl);
+	cursor: pointer;
+	transition: color var(--nntm-dur) var(--nntm-ease), box-shadow var(--nntm-dur) var(--nntm-ease);
+}
+.nntm-term-list--phap-toa .nntm-term-list__arrow:hover { color: var(--nntm-chinh-hover); box-shadow: var(--nntm-sh-soft); }
+.nntm-term-list--phap-toa .nntm-term-list__arrow--prev { left: -70px; }
+.nntm-term-list--phap-toa .nntm-term-list__arrow--next { right: 22px; }
+
+@media (max-width: 767px) {
+	.nntm-term-list--phap-toa { height: auto; min-height: 490px; padding-block: var(--nntm-sp-8); }
+	.nntm-term-list--phap-toa .nntm-container { padding-left: var(--nntm-sp-5); }
+	.nntm-term-list--phap-toa .nntm-term-card { flex-basis: 280px; height: 340px; }
+	.nntm-term-list--phap-toa .nntm-term-card__img { height: 210px; }
+	.nntm-term-list--phap-toa .nntm-term-list__arrow { display: none; }
 }

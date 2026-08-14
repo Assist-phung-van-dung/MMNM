@@ -65,6 +65,8 @@ $show_paging      = ! empty( $attributes['showPaging'] );
 $heading          = isset( $attributes['heading'] ) ? (string) $attributes['heading'] : '';
 $subheading       = isset( $attributes['subheading'] ) ? (string) $attributes['subheading'] : '';
 $has_subheading   = '' !== trim( wp_strip_all_tags( $subheading ) );
+$show_view_all    = ! empty( $attributes['showViewAll'] );
+$view_all_label   = isset( $attributes['viewAllLabel'] ) ? (string) $attributes['viewAllLabel'] : __( 'Xem tất cả', 'nntm' );
 
 // layout: "grid" (mac dinh, hanh vi cu — moi khoi card-list dang co tren site
 // khong luu attribute nay nen luon nhan default "grid" va giu nguyen hinh dang cu)
@@ -85,6 +87,13 @@ $autoplay_interval = max( 2, min( 20, $autoplay_interval ? $autoplay_interval : 
 
 $taxonomy = isset( $attributes['taxonomy'] ) ? sanitize_key( (string) $attributes['taxonomy'] ) : '';
 $term_id  = isset( $attributes['termId'] ) ? absint( $attributes['termId'] ) : 0;
+$view_all_url = get_post_type_archive_link( $post_type );
+if ( $taxonomy && $term_id ) {
+	$term_link = get_term_link( $term_id, $taxonomy );
+	if ( ! is_wp_error( $term_link ) ) {
+		$view_all_url = $term_link;
+	}
+}
 
 /*
  * Nguồn video cho biến thể "băng Netflix" (G1 — dải "Gót Son"). Anh Úy
@@ -241,8 +250,15 @@ $wrapper_attributes = get_block_wrapper_attributes(
 	?>
 	<div class="nntm-card-list__band">
 	<div class="nntm-container">
-		<?php if ( '' !== $heading ) : ?>
-			<h2 class="nntm-card-list__heading<?php echo $has_subheading ? ' nntm-card-list__heading--with-sub' : ''; ?>"><?php echo wp_kses_post( $heading ); ?></h2>
+		<?php if ( '' !== $heading || ( $show_view_all && $view_all_url ) ) : ?>
+			<div class="nntm-card-list__header-row">
+				<?php if ( '' !== $heading ) : ?>
+					<h2 class="nntm-card-list__heading<?php echo $has_subheading ? ' nntm-card-list__heading--with-sub' : ''; ?>"><?php echo wp_kses_post( $heading ); ?></h2>
+				<?php endif; ?>
+				<?php if ( $show_view_all && $view_all_url ) : ?>
+					<a class="nntm-card-list__view-all" href="<?php echo esc_url( $view_all_url ); ?>"><?php echo esc_html( $view_all_label ); ?></a>
+				<?php endif; ?>
+			</div>
 		<?php endif; ?>
 
 		<?php if ( $has_subheading ) : ?>

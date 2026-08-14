@@ -119,7 +119,7 @@ $is_logged_in = (bool) apply_filters( 'nntm_thien_duong_can_access', is_user_log
 			<div class="nntm-thien-duong__player">
 				<?php
 				if ( ! $is_logged_in ) :
-					echo nntm_thien_duong_render_login_invite(); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong.
+					echo nntm_thien_duong_render_guest_preview( $tracks_per_page, $order_by_choice ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong va khong doc URL am thanh.
 				else :
 					$tracks = nntm_thien_duong_get_tracks( $tracks_per_page, $order_by_choice );
 

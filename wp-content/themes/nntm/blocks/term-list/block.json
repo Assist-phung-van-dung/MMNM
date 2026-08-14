@@ -32,9 +32,23 @@
 		"maxItems": {
 			"type": "number",
 			"default": 8
+		},
+		"layout": {
+			"type": "string",
+			"enum": [ "overlay", "phap-toa" ],
+			"default": "overlay"
+		},
+		"autoplay": {
+			"type": "boolean",
+			"default": true
+		},
+		"interval": {
+			"type": "number",
+			"default": 5
 		}
 	},
 	"editorScript": "file:./editor.js",
+	"viewScript": "file:./view.js",
 	"style": "file:./style.css",
 	"render": "file:./render.php"
 }

@@ -50,6 +50,9 @@
      01_HOMEPAGE 6376:6322. Đo bằng tools/png-do.mjs trên ảnh xuất
      (endpoint đọc node đang bị chặn tốc độ) ngày 10/08/2026. */
   --nntm-cam:        #FB5102;  /* nền khối GITA CENTER */
+  --nntm-xanh-nhac:  #1ED760;  /* nút phát của giao diện Thiền Đường */
+  --nntm-nhac-toi:   #121212;  /* nền trình phát Thiền Đường */
+  --nntm-nhac-mat:   #282828;  /* mặt nổi trình phát Thiền Đường */
   /* Nền dải phim "ENGINEERING EARTH" — Figma Frame 145 (node 6376:6412)
      khai fill #000000 đặc, và thẻ video trên đó là #000000 mờ 70%.
      Đây là màu đen DUY NHẤT của thiết kế; --nntm-than #333333 là màu chữ,

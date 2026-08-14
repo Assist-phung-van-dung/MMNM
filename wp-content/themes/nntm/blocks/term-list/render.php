@@ -42,8 +42,17 @@ if ( '' === trim( wp_strip_all_tags( $cta_label ) ) ) {
 
 $max_items = isset( $attributes['maxItems'] ) ? absint( $attributes['maxItems'] ) : 8;
 $max_items = max( 1, min( 20, $max_items ) ); // gioi han hop ly theo dac ta block, khong bao gio truy van khong gioi han.
+$layout = isset( $attributes['layout'] ) && 'phap-toa' === $attributes['layout'] ? 'phap-toa' : 'overlay';
+$autoplay = ! isset( $attributes['autoplay'] ) || ! empty( $attributes['autoplay'] );
+$interval = max( 2, min( 20, absint( $attributes['interval'] ?? 5 ) ) );
 
-$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'nntm-term-list' ) );
+$wrapper_attributes = get_block_wrapper_attributes(
+	array(
+		'class'         => 'nntm-term-list nntm-term-list--' . $layout,
+		'data-autoplay' => $autoplay ? '1' : '0',
+		'data-interval' => (string) $interval,
+	)
+);
 
 // ---------- Kiểm tra term cha ----------
 
@@ -112,7 +121,9 @@ if ( $parent_term ) {
 
 		<?php else : ?>
 
-			<div class="nntm-term-list__track">
+			<div class="nntm-term-list__carousel">
+				<?php if ( 'phap-toa' === $layout ) : ?><button type="button" class="nntm-term-list__arrow nntm-term-list__arrow--prev" data-term-prev aria-label="Phần mục trước">←</button><?php endif; ?>
+			<div class="nntm-term-list__track" data-term-track>
 				<?php
 				foreach ( $child_terms as $child_term ) :
 					$term_link = get_term_link( $child_term );
@@ -170,6 +181,8 @@ if ( $parent_term ) {
 					<?php
 				endforeach;
 				?>
+			</div>
+				<?php if ( 'phap-toa' === $layout ) : ?><button type="button" class="nntm-term-list__arrow nntm-term-list__arrow--next" data-term-next aria-label="Phần mục tiếp theo">→</button><?php endif; ?>
 			</div>
 
 		<?php endif; ?>

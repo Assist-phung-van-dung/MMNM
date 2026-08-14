@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "nntm/dieu-thuong",
+  "title": "Diệu Thượng – Tông Chỉ",
+  "category": "nntm",
+  "icon": "slides",
+  "description": "Toàn bộ nội dung trang Diệu Thượng theo thiết kế mới, có slider và thư viện ảnh chỉnh được.",
+  "textdomain": "nntm",
+  "supports": { "html": false, "align": ["full"], "customClassName": true },
+  "attributes": {
+    "heading": { "type": "string", "default": "Tông Chỉ" },
+    "introTitle": { "type": "string", "default": "Phát Bồ Đề Tâm" },
+    "introText": { "type": "string", "default": "Trên Sáu Xúc Xứ/ Ngũ Thủ Uẩn Tu Tứ Chánh Cần, Lấy Bát Chánh Đạo Làm Nền Tảng." },
+    "slides": { "type": "array", "default": [] },
+    "autoplay": { "type": "boolean", "default": true },
+    "interval": { "type": "number", "default": 6 },
+    "bannerImageId": { "type": "number", "default": 0 },
+    "bannerImageUrl": { "type": "string", "default": "" },
+    "portraitImageId": { "type": "number", "default": 0 },
+    "portraitImageUrl": { "type": "string", "default": "" },
+    "storyHeading": { "type": "string", "default": "Hành Trình Tỉnh Thức" },
+    "storyTextTop": { "type": "string", "default": "Giữa nhịp sống vô thường, mỗi phút giây quay về soi sáng chính mình là một bước trên con đường tỉnh thức." },
+    "gallery": { "type": "array", "default": [] },
+    "storyTextBottom": { "type": "string", "default": "Từ lòng từ bi và trí tuệ, con đường tu học được tiếp nối qua từng câu chuyện, từng cuộc gặp gỡ và từng việc làm chân thành." },
+    "ctaLabel": { "type": "string", "default": "Chuyện Về Thầy Tôi" },
+    "ctaUrl": { "type": "string", "default": "" }
+  },
+  "editorScript": "file:./editor.js",
+  "viewScript": "file:./view.js",
+  "style": "file:./style.css",
+  "render": "file:./render.php"
+}

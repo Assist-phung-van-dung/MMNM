@@ -25,6 +25,11 @@
 			"type": "string",
 			"enum": [ "newest", "oldest", "title" ],
 			"default": "newest"
+		},
+		"displayMode": {
+			"type": "string",
+			"enum": [ "cards", "list" ],
+			"default": "cards"
 		}
 	},
 	"editorScript": "file:./editor.js",

@@ -29,6 +29,9 @@ html {
 
 body {
 	margin: 0;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
 	background-color: var(--nntm-nen);
 	color: var(--nntm-chu);
 	font-family: var(--nntm-font-sans);
@@ -37,6 +40,9 @@ body {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
+
+/* Trang ngắn vẫn giữ chân trang ở đáy viewport. */
+.nntm-footer { margin-top: auto; }
 
 /* Reset khoảng cách mặc định để layout.css toàn quyền kiểm soát. */
 h1, h2, h3, h4, h5, h6,

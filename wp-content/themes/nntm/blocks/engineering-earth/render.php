@@ -57,6 +57,10 @@ $band_subtitle = isset( $attributes['bandSubtitle'] ) ? (string) $attributes['ba
 
 $main_video_url = isset( $attributes['mainVideoUrl'] ) ? (string) $attributes['mainVideoUrl'] : '';
 $bg_video_url   = isset( $attributes['bgVideoUrl'] ) ? (string) $attributes['bgVideoUrl'] : '';
+$video_post_id  = isset( $attributes['videoId'] ) ? absint( $attributes['videoId'] ) : 0;
+$video_post_url = ( $video_post_id > 0 && 'nntm_video' === get_post_type( $video_post_id ) )
+	? get_permalink( $video_post_id )
+	: '';
 
 // Ảnh tĩnh dự phòng cho khung media LỚN khi CHƯA dán mainVideoUrl — khôi
 // phục lại theo yêu cầu 13/08/2026 (trước đó đã gỡ, khiến khung lớn trống
@@ -94,7 +98,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'nntm-engi
 	<div class="nntm-engineering-earth__band">
 		<div class="nntm-engineering-earth__band-inner">
 
-			<?php echo nntm_engineering_earth_render_video_stage( $main_video_url, $bg_video_url, $main_image_id, $main_image_url, $main_image_alt ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
+			<?php echo nntm_engineering_earth_render_video_stage( $main_video_url, $bg_video_url, $main_image_id, $main_image_url, $main_image_alt, $video_post_url ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
 
 			<?php if ( '' !== trim( $band_title ) || '' !== trim( $band_subtitle ) ) : ?>
 				<div class="nntm-engineering-earth__band-text">

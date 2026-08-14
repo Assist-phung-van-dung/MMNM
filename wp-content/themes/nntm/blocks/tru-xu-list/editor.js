@@ -23,6 +23,10 @@
 		{ label: __( 'Cũ nhất trước', 'nntm' ), value: 'oldest' },
 		{ label: __( 'Theo tên (A-Z)', 'nntm' ), value: 'title' },
 	];
+	var DISPLAY_MODE_OPTIONS = [
+		{ label: __( 'Thẻ ảnh', 'nntm' ), value: 'cards' },
+		{ label: __( 'Danh sách chữ theo trang Diệu Thượng', 'nntm' ), value: 'list' },
+	];
 
 	registerBlockType( 'nntm/tru-xu-list', {
 		edit: function ( props ) {
@@ -49,6 +53,14 @@
 							},
 							min: 1,
 							max: 12,
+						} ),
+						el( SelectControl, {
+							label: __( 'Kiểu hiển thị', 'nntm' ),
+							value: attributes.displayMode || 'cards',
+							options: DISPLAY_MODE_OPTIONS,
+							onChange: function ( value ) {
+								setAttributes( { displayMode: value } );
+							},
 						} ),
 						el( SelectControl, {
 							label: __( 'Sắp xếp', 'nntm' ),

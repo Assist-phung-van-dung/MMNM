@@ -61,6 +61,14 @@
 			"type": "string",
 			"default": ""
 		},
+		"showViewAll": {
+			"type": "boolean",
+			"default": false
+		},
+		"viewAllLabel": {
+			"type": "string",
+			"default": "Xem tất cả"
+		},
 		"layout": {
 			"type": "string",
 			"enum": [ "grid", "carousel" ],

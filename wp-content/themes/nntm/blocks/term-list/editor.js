@@ -106,6 +106,15 @@
 					el(
 						PanelBody,
 						{ title: __( 'Hiển thị', 'nntm' ), initialOpen: true },
+						el( SelectControl, {
+							label: __( 'Kiểu bố cục', 'nntm' ),
+							value: attributes.layout || 'overlay',
+							options: [
+								{ label: __( 'Thẻ phủ chữ trên ảnh', 'nntm' ), value: 'overlay' },
+								{ label: __( 'Pháp Tòa – ảnh trên, chữ dưới', 'nntm' ), value: 'phap-toa' },
+							],
+							onChange: function ( value ) { setAttributes( { layout: value } ); },
+						} ),
 						el( ToggleControl, {
 							label: __( 'Hiện mô tả trên thẻ', 'nntm' ),
 							checked: !! attributes.showDescription,
@@ -129,7 +138,24 @@
 							min: 1,
 							max: 20,
 						} )
+					),
+					attributes.layout === 'phap-toa' ? el(
+						PanelBody,
+						{ title: __( 'Tự động chạy slider', 'nntm' ), initialOpen: true },
+						el( ToggleControl, {
+							label: __( 'Tự động chuyển từng thẻ', 'nntm' ),
+							checked: attributes.autoplay !== false,
+							onChange: function ( value ) { setAttributes( { autoplay: value } ); },
+						} ),
+						el( RangeControl, {
+							label: __( 'Thời gian mỗi thẻ (giây)', 'nntm' ),
+							value: attributes.interval || 5,
+							min: 2,
+							max: 20,
+							onChange: function ( value ) { setAttributes( { interval: value || 5 } ); },
+						} )
 					)
+					: null
 				),
 				el( RichText, {
 					tagName: 'h2',

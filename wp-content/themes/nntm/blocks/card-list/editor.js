@@ -326,6 +326,14 @@
 						// (bang video "Got Son"). De trong thi khoi hien binh
 						// thuong nhu cu, khong doi gi.
 						el( TextControl, {
+							label: __( 'Nhãn liên kết xem tất cả', 'nntm' ),
+							help: __( 'Để trống nếu không cần hiện liên kết.', 'nntm' ),
+							value: attributes.showViewAll ? ( attributes.viewAllLabel || 'Xem tất cả' ) : '',
+							onChange: function ( value ) {
+								setAttributes( { showViewAll: !! value, viewAllLabel: value } );
+							},
+						} ),
+						el( TextControl, {
 							label: __( 'Dòng tiêu đề đặt PHÍA TRÊN dải nền', 'nntm' ),
 							help: __( 'Dùng cho kiểu tiêu đề so le: dòng này nằm ngoài dải nền (chữ đậm màu), dòng tiêu đề chính nằm trong dải và thụt vào phải. Để trống thì tiêu đề hiện bình thường.', 'nntm' ),
 							value: attributes.headingAbove || '',

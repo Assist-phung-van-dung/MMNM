@@ -53,6 +53,8 @@
 	align-items: center;
 	gap: var(--nntm-sp-3); /* tu Figma: gap 10 */
 	text-align: center;
+	/* Tách thêm khỏi phần chú thích của dải video phía trên, theo góp ý homepage. */
+	transform: translateY(var(--nntm-sp-4));
 }
 
 .nntm-engineering-earth__heading {
@@ -148,16 +150,9 @@
 .nntm-engineering-earth__video-slot {
 	position: relative;
 	overflow: hidden;
-	cursor: pointer;
+	cursor: default;
 	background-color: var(--nntm-xam);
 	border-radius: var(--nntm-r-md);
-	/* transition opacity dung cho hieu ung "mo mo" khi doi vai tro, xem
-	   view.js — grid-column/position khong the animate truc tiep. */
-	transition: opacity var(--nntm-dur) var(--nntm-ease), box-shadow var(--nntm-dur) var(--nntm-ease);
-}
-
-.nntm-engineering-earth__video-slot.is-swapping {
-	opacity: 0;
 }
 
 /* Khung MEDIA LỚN = video/ảnh CHÍNH — nằm trong luồng grid, chiếm đúng
@@ -181,10 +176,9 @@
 	box-shadow: var(--nntm-sh-card);
 }
 
-.nntm-engineering-earth__video-slot:focus-visible {
+.nntm-engineering-earth__video-link:focus-visible {
 	outline: 2px solid var(--nntm-trang);
 	outline-offset: 2px;
-	z-index: 3;
 }
 
 .nntm-engineering-earth__video-poster,
@@ -216,6 +210,16 @@
 	border: 0;
 	transform: translate(-50%, -50%) scale(1.35);
 	transform-origin: center;
+	pointer-events: none;
+}
+
+.nntm-engineering-earth__video-link {
+	position: absolute;
+	inset: 0;
+	z-index: 3;
+	display: block;
+	color: inherit;
+	text-decoration: none;
 }
 
 /* Khi đã có iframe (đang phát), ẩn ảnh giữ chỗ để không đè lên video. */
@@ -238,7 +242,7 @@
 }
 
 .nntm-engineering-earth__video-slot--bg .nntm-engineering-earth__video-play {
-	display: flex;
+	display: none;
 }
 
 .nntm-engineering-earth__band-text {
@@ -278,10 +282,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.nntm-engineering-earth__video-slot {
-		transition: none;
-	}
-
 	.nntm-engineering-earth__video-poster {
 		transition: none;
 	}

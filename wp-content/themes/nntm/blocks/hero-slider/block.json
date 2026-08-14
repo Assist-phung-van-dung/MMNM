@@ -35,7 +35,7 @@
 		},
 		"arrowsEnabled": {
 			"type": "boolean",
-			"default": true
+			"default": false
 		},
 		"interval": {
 			"type": "number",

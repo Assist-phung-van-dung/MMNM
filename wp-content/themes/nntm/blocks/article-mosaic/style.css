@@ -246,6 +246,7 @@
 .nntm-article-mosaic__lead-title a:hover,
 .nntm-article-mosaic__lead-title a:focus-visible {
 	color: var(--nntm-chinh-hover);
+	text-decoration: underline;
 }
 
 .nntm-article-mosaic__lead-excerpt {
@@ -257,13 +258,22 @@
 	color: var(--nntm-chinh); /* tu Figma: #747766 */
 }
 
-/*
- * KHÔNG còn liên kết "Xem thêm" riêng (.lead-cta / .card-cta) — sửa
- * 12/08/2026 sau khi đối chiếu ảnh Figma thật (fig-mosaic1.png): thiết kế
- * không có chữ "Xem thêm" dưới bất kỳ ô nào. Tiêu đề mỗi ô (lead/medium/
- * small-title) tự là liên kết duy nhất — xem inc/render-article-mosaic.php
- * và render.php.
- */
+.nntm-article-mosaic__card-cta {
+	display: inline-flex;
+	align-self: flex-start;
+	font-family: var(--nntm-font-serif);
+	font-size: var(--nntm-fs-xs);
+	font-weight: 600;
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-chu);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.nntm-article-mosaic__card-cta:hover,
+.nntm-article-mosaic__card-cta:focus-visible {
+	color: var(--nntm-chinh-hover);
+}
 
 /* =============================================================
    CỘT PHẢI — Frame 139: hàng thẻ vừa (trên) + hàng thẻ nhỏ (dưới)
@@ -402,6 +412,7 @@
 .nntm-article-mosaic__medium-title a:hover,
 .nntm-article-mosaic__medium-title a:focus-visible {
 	color: var(--nntm-chinh-hover);
+	text-decoration: underline;
 }
 
 /* ---------- Hàng thẻ nhỏ (Frame 161, NGANG, "dàn đều hai bên") ---------- */
@@ -489,6 +500,24 @@
 .nntm-article-mosaic__small-title a:hover,
 .nntm-article-mosaic__small-title a:focus-visible {
 	color: var(--nntm-chinh-hover);
+	text-decoration: underline;
+}
+
+/* Ảnh và tiêu đề cùng dẫn vào bài viết. Ảnh chỉ chuyển động nhẹ khi chính
+   nó được rê/focus, không làm xáo trộn nhịp cố định của lưới Figma. */
+.nntm-article-mosaic__media-link {
+	display: block;
+	color: inherit;
+	text-decoration: none;
+}
+
+.nntm-article-mosaic__media-link .nntm-article-mosaic__img-el {
+	transition: transform var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-article-mosaic__media-link:hover .nntm-article-mosaic__img-el,
+.nntm-article-mosaic__media-link:focus-visible .nntm-article-mosaic__img-el {
+	transform: scale(1.04);
 }
 
 /* =============================================================
@@ -667,6 +696,88 @@
 	background-color: var(--nntm-chinh);
 	border-color: var(--nntm-chinh);
 	color: var(--nntm-trang);
+}
+
+/* =============================================================
+   Hoa Khai — khoanh theo class block để không ảnh hưởng homepage.
+   Ảnh thiết kế 1366: Tin tức nền trắng, Hoằng Pháp nền kem.
+   ============================================================= */
+.nntm-hk-news,
+.nntm-hk-news .nntm-article-mosaic__inner {
+	background-color: var(--nntm-trang);
+}
+
+.nntm-hk-news .nntm-article-mosaic__inner,
+.nntm-hk-dharma .nntm-article-mosaic__inner {
+	padding: var(--nntm-sp-8) var(--nntm-sp-12);
+	gap: var(--nntm-sp-5);
+}
+
+.nntm-hk-news .nntm-article-mosaic__heading,
+.nntm-hk-dharma .nntm-article-mosaic__heading {
+	font-size: var(--nntm-fs-4xl);
+	line-height: var(--nntm-lh-chat);
+	color: var(--nntm-chinh);
+}
+
+.nntm-hk-news .nntm-article-mosaic__content,
+.nntm-hk-dharma .nntm-article-mosaic__content {
+	padding: 0;
+}
+
+.nntm-hk-news .nntm-article-mosaic__lead-img--short,
+.nntm-hk-dharma .nntm-article-mosaic__lead-img--tall {
+	aspect-ratio: 349 / 234;
+}
+
+.nntm-hk-news .nntm-article-mosaic__list,
+.nntm-hk-dharma .nntm-article-mosaic__list {
+	align-items: start;
+}
+
+.nntm-hk-news .nntm-article-mosaic__secondary,
+.nntm-hk-dharma .nntm-article-mosaic__secondary {
+	gap: var(--nntm-sp-5);
+}
+
+.nntm-hk-news .nntm-article-mosaic__medium-title,
+.nntm-hk-news .nntm-article-mosaic__small-title,
+.nntm-hk-dharma .nntm-article-mosaic__medium-title,
+.nntm-hk-dharma .nntm-article-mosaic__small-title {
+	font-size: var(--nntm-fs-sm);
+	line-height: var(--nntm-lh-vua);
+	min-height: calc(2 * 1.45em);
+}
+
+.nntm-hk-news .nntm-article-mosaic__lead-title,
+.nntm-hk-dharma .nntm-article-mosaic__lead-title {
+	font-size: var(--nntm-fs-2xl);
+}
+
+.nntm-hk-news .nntm-article-mosaic__lead-excerpt {
+	font-size: var(--nntm-fs-sm);
+}
+
+.nntm-hk-news .nntm-article-mosaic__medium-img,
+.nntm-hk-dharma .nntm-article-mosaic__medium-img {
+	aspect-ratio: 370 / 210;
+}
+
+.nntm-hk-news .nntm-article-mosaic__small-img,
+.nntm-hk-dharma .nntm-article-mosaic__small-img {
+	aspect-ratio: 227 / 150;
+}
+
+.nntm-hk-news .nntm-article-mosaic__viewall-wrap,
+.nntm-hk-dharma .nntm-article-mosaic__viewall-wrap {
+	margin-top: var(--nntm-sp-5);
+}
+
+@media (max-width: 1024px) {
+	.nntm-hk-news .nntm-article-mosaic__inner,
+	.nntm-hk-dharma .nntm-article-mosaic__inner {
+		padding: var(--nntm-sp-8) var(--nntm-sp-5);
+	}
 }
 
 .nntm-article-mosaic__viewall:focus-visible {

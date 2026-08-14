@@ -49,6 +49,19 @@ class Post_Meta {
 	 */
 	public function hooks(): void {
 		add_action( 'init', array( $this, 'register_meta' ) );
+		add_action( 'wp_ajax_nntm_track_listen', array( $this, 'record_track_listen' ) );
+	}
+
+	/** Ghi nhận một lượt nghe từ thành viên đã đăng nhập. */
+	public function record_track_listen(): void {
+		check_ajax_referer( 'nntm_track_listen', 'nonce' );
+		$track_id = isset( $_POST['track_id'] ) ? absint( wp_unslash( $_POST['track_id'] ) ) : 0;
+		if ( ! is_user_logged_in() || 'nntm_zen_track' !== get_post_type( $track_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'Bản nhạc không hợp lệ.', 'nntm' ) ), 403 );
+		}
+		$count = absint( get_post_meta( $track_id, '_nntm_track_listen_count', true ) ) + 1;
+		update_post_meta( $track_id, '_nntm_track_listen_count', $count );
+		wp_send_json_success( array( 'count' => $count ) );
 	}
 
 	/**
@@ -76,6 +89,22 @@ class Post_Meta {
 					return current_user_can( 'edit_posts' );
 				},
 				'description'       => __( 'ID tệp âm thanh của bài nhạc thiền.', 'nntm' ),
+			)
+		);
+
+		register_post_meta(
+			'nntm_zen_track',
+			'_nntm_track_listen_count',
+			array(
+				'type'              => 'integer',
+				'single'            => true,
+				'default'           => 0,
+				'show_in_rest'      => true,
+				'sanitize_callback' => 'absint',
+				'auth_callback'     => function () {
+					return current_user_can( 'edit_posts' );
+				},
+				'description'       => __( 'Tổng lượt nghe của bản nhạc thiền.', 'nntm' ),
 			)
 		);
 

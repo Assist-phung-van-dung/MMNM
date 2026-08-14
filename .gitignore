@@ -12,7 +12,7 @@
 /wp-content/themes/*
 !/wp-content/themes/nntm/
 !/wp-content/plugins/
-/wp-content/plugins/*
+!/wp-content/plugins/*
 !/wp-content/plugins/nntm-*/
 
 # Du lieu chay
@@ -30,6 +30,7 @@ dist/
 
 # === Figma cache (keo ve tu API) ===
 /design/raw/
+/design/.chrome-audit/
 
 # === OS ===
 Thumbs.db

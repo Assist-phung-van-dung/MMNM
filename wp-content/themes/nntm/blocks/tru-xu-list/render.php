@@ -29,6 +29,10 @@ defined( 'ABSPATH' ) || exit;
 // ---------- Đọc & làm sạch thuộc tính ----------
 
 $heading = isset( $attributes['heading'] ) ? (string) $attributes['heading'] : '';
+$display_mode = isset( $attributes['displayMode'] ) ? sanitize_key( (string) $attributes['displayMode'] ) : 'cards';
+if ( ! in_array( $display_mode, array( 'cards', 'list' ), true ) ) {
+	$display_mode = 'cards';
+}
 
 $posts_per_page = isset( $attributes['postsPerPage'] ) ? absint( $attributes['postsPerPage'] ) : 4;
 $posts_per_page = max( 1, min( 12, $posts_per_page ) ); // gioi han hop ly, khong bao gio truy van khong gioi han.
@@ -67,7 +71,7 @@ switch ( $order_by_choice ) {
 
 $query = new WP_Query( $query_args );
 
-$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'nntm-tru-xu-list' ) );
+$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'nntm-tru-xu-list nntm-tru-xu-list--' . $display_mode ) );
 ?>
 <section <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput -- get_block_wrapper_attributes() da tu esc_attr() tung thuoc tinh. ?>>
 	<div class="nntm-container">
@@ -75,7 +79,18 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'nntm-tru-
 			<h2 class="nntm-tru-xu-list__heading"><?php echo wp_kses_post( $heading ); ?></h2>
 		<?php endif; ?>
 
-		<?php if ( $query->have_posts() ) : ?>
+		<?php if ( $query->have_posts() && 'list' === $display_mode ) : ?>
+			<ul class="nntm-tru-xu-list__plain-list">
+				<?php foreach ( $query->posts as $index => $abode ) : ?>
+					<?php $location = (string) get_post_meta( $abode->ID, '_nntm_abode_location', true ); ?>
+					<li style="--nntm-item-index: <?php echo esc_attr( (string) $index ); ?>">
+						<a href="<?php echo esc_url( get_permalink( $abode ) ); ?>">
+							<?php echo esc_html( get_the_title( $abode ) ); ?><?php echo '' !== trim( $location ) ? ' (' . esc_html( $location ) . ')' : ''; ?>
+						</a>
+					</li>
+				<?php endforeach; wp_reset_postdata(); ?>
+			</ul>
+		<?php elseif ( $query->have_posts() ) : ?>
 			<div class="nntm-tru-xu-list__grid">
 				<?php
 				foreach ( $query->posts as $abode ) :

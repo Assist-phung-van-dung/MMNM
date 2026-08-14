@@ -125,7 +125,7 @@ $nntm_nav_id = 'nntm-primary-menu';
 							$title = function_exists( 'mb_strtolower' )
 								? mb_strtolower( trim( $title ), 'UTF-8' )
 								: strtolower( trim( $title ) );
-							return 'tin tức' !== $title;
+							return ! in_array( $title, array( 'tin tức', 'news' ), true );
 						}
 					)
 				);
@@ -204,25 +204,10 @@ $nntm_nav_id = 'nntm-primary-menu';
 				</div>
 
 				<?php
-				/*
-				 * Nút chuyển ngôn ngữ — CHỈ HIỆN MỘT NÚT.
-				 *
-				 * Quyết định của anh Úy 10/08/2026, khớp với Figma R4 (bản
-				 * chưa đăng nhập chỉ có một nút EN): nút hiển thị là ngôn
-				 * ngữ SẼ CHUYỂN SANG, không phải ngôn ngữ đang xem. Mặc
-				 * định site chạy tiếng Việt nên nút hiện "EN".
-				 *
-				 * Suy từ locale thật thay vì viết cứng, để khi bật Polylang
-				 * và người đọc đang ở bản tiếng Anh thì nút tự đổi thành
-				 * "VI". Polylang sau này thay cả khối này bằng
-				 * pll_the_languages().
-				 */
-				$nntm_dang_tieng_viet = ( 0 === strpos( get_locale(), 'vi' ) );
+				/* Polylang: hiển thị đủ VN/EN và đánh dấu ngôn ngữ hiện tại. */
 				?>
 				<div class="nntm-header__lang" id="nntm-lang-switch">
-					<span class="nntm-lang-btn nntm-lang-btn--active">
-						<?php echo $nntm_dang_tieng_viet ? esc_html__( 'EN', 'nntm' ) : esc_html__( 'VI', 'nntm' ); ?>
-					</span>
+					<?php nntm_render_language_switcher(); ?>
 				</div>
 
 			<?php else : ?>
@@ -252,14 +237,7 @@ $nntm_nav_id = 'nntm-primary-menu';
 				</a>
 
 				<div class="nntm-header__lang" id="nntm-lang-switch">
-					<?php
-					// Chi hien MOT nut, la ngon ngu se chuyen sang — xem chu
-					// thich day du o khoi ngon ngu phia tren trong file nay.
-					$nntm_dang_tieng_viet = ( 0 === strpos( get_locale(), 'vi' ) );
-					?>
-					<span class="nntm-lang-btn nntm-lang-btn--active">
-						<?php echo $nntm_dang_tieng_viet ? esc_html__( 'EN', 'nntm' ) : esc_html__( 'VI', 'nntm' ); ?>
-					</span>
+					<?php nntm_render_language_switcher(); ?>
 				</div>
 
 			<?php endif; ?>

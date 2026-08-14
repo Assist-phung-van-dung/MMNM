@@ -1,35 +1,20 @@
 <?php
 /**
- * Seed trang Liên Đàn cho môi trường phát triển.
+ * Dữ liệu mẫu local cho trang Liên Đàn. Chạy lặp lại an toàn.
  *
- * Dựng theo Figma "04. LIEN DAN": SECTION 6 "Khoá Tu" (lưới thẻ 388×429),
- * SECTION 7 "Lịch Tu" (băng cuộn ngang), SECTION 5 "Thiền Đường".
- *
- * Khoá Tu và Lịch Tu tách nhau bằng chủ đề (taxonomy nntm_topic) để ban
- * quản trị tự đổi được, không cần lập trình viên.
- *
- *   "C:/xampp8_2/php/php.exe" tools/seed-lien-dan.php
- *
- * Chạy nhiều lần được, không tạo trùng. CHỈ dùng ở local.
+ * C:/xampp8_2/php/php.exe tools/seed-lien-dan.php
  *
  * @package NNTM
  */
 
 if ( PHP_SAPI !== 'cli' ) {
-	exit( 'Chi chay tu dong lenh.' );
+	exit( 'Chỉ chạy từ dòng lệnh.' );
 }
 
-$_SERVER['HTTP_HOST'] = 'localhost:8080';
+$_SERVER['HTTP_HOST']   = 'nntm.com';
+$_SERVER['REQUEST_URI'] = '/lien-dan/';
 require_once __DIR__ . '/../wp-load.php';
 
-/**
- * Tạo bài nếu chưa có, trả về ID.
- *
- * @param string $type    Loại nội dung.
- * @param string $title   Tiêu đề.
- * @param string $excerpt Mô tả ngắn.
- * @return int
- */
 function nntm_seed_ld_post( string $type, string $title, string $excerpt ): int {
 	$found = get_posts(
 		array(
@@ -41,7 +26,9 @@ function nntm_seed_ld_post( string $type, string $title, string $excerpt ): int 
 		)
 	);
 	if ( $found ) {
-		return (int) $found[0]->ID;
+		$id = (int) $found[0]->ID;
+		wp_update_post( array( 'ID' => $id, 'post_excerpt' => $excerpt ) );
+		return $id;
 	}
 
 	$id = wp_insert_post(
@@ -53,107 +40,96 @@ function nntm_seed_ld_post( string $type, string $title, string $excerpt ): int 
 			'post_content' => '<!-- wp:paragraph --><p>' . esc_html( $excerpt ) . '</p><!-- /wp:paragraph -->',
 		)
 	);
-
 	return is_wp_error( $id ) ? 0 : (int) $id;
 }
 
-/* ---------- 1. Chủ đề tách Khoá Tu / Lịch Tu ---------- */
-
-$topics  = array(
-	'khoa-tu' => 'Khoá Tu',
-	'lich-tu' => 'Lịch Tu',
-);
+$topics = array( 'khoa-tu' => 'Khoá Tu', 'lich-tu' => 'Lịch Tu' );
 $topic_ids = array();
-
 foreach ( $topics as $slug => $name ) {
 	$term = get_term_by( 'slug', $slug, 'nntm_topic' );
 	if ( ! $term ) {
-		$res = wp_insert_term( $name, 'nntm_topic', array( 'slug' => $slug ) );
-		if ( is_wp_error( $res ) ) {
-			echo "LOI chu de {$name}: " . $res->get_error_message() . "\n";
+		$result = wp_insert_term( $name, 'nntm_topic', array( 'slug' => $slug ) );
+		if ( is_wp_error( $result ) ) {
 			continue;
 		}
-		$topic_ids[ $slug ] = (int) $res['term_id'];
-		echo "Tao chu de: {$name}\n";
+		$topic_ids[ $slug ] = (int) $result['term_id'];
 	} else {
 		$topic_ids[ $slug ] = (int) $term->term_id;
-		echo "Da co chu de: {$name}\n";
 	}
 }
 
-/* ---------- 2. Khoá Tu (6 thẻ, lưới 3 cột 2 hàng như Figma) ---------- */
-
-$retreats = array(
+$groups = array(
 	'khoa-tu' => array(
-		array( 'Khoá tu Hè: Lễ Vu Lan 2026', 'Bảy ngày tu học tại Trú Xứ Nha Trang, dành cho mọi lứa tuổi.' ),
-		array( 'Khoá tu Mùa Xuân: An trú trong hiện tại', 'Năm ngày thực tập chánh niệm đầu năm mới.' ),
-		array( 'Khoá tu Thanh Thiếu Niên', 'Dành cho các bạn trẻ từ 15 đến 25 tuổi, học cách sống chậm lại.' ),
-		array( 'Khoá tu Bát Quan Trai', 'Một ngày một đêm giữ tám giới, tập buông bớt.' ),
-		array( 'Khoá tu Thiền Tứ Niệm Xứ', 'Mười ngày im lặng, quán sát thân thọ tâm pháp.' ),
-		array( 'Khoá tu Cuối Năm: Nhìn lại một năm', 'Ba ngày soi lại tâm mình trước thềm năm mới.' ),
+		array( 'Khoá tu Hè: Lễ Vu Lan 2026', 'Bảy ngày tu học, nuôi dưỡng lòng biết ơn và sự tỉnh thức.', 185 ),
+		array( 'Khoá tu Mùa Xuân: An trú hiện tại', 'Năm ngày thực tập chánh niệm đầu năm mới.', 193 ),
+		array( 'Khoá tu Thanh Thiếu Niên', 'Không gian học và thực tập dành cho người trẻ.', 192 ),
+		array( 'Khoá tu Bát Quan Trai', 'Một ngày một đêm giữ tám giới, tập buông bỏ.', 190 ),
+		array( 'Khoá tu Thiền Tứ Niệm Xứ', 'Bốn ngày im lặng, quan sát thân, thọ, tâm, pháp.', 189 ),
+		array( 'Khoá tu Cuối Năm: Nhìn lại một năm', 'Ba ngày soi lại tâm mình trước thềm năm mới.', 123 ),
 	),
 	'lich-tu' => array(
-		array( 'Ngày vía Đức Phật Thích Ca thành đạo', 'Mùng 8 tháng Chạp âm lịch — toạ thiền và tụng kinh suốt đêm.' ),
-		array( 'Đại lễ Phật Đản', 'Rằm tháng Tư âm lịch — lễ tắm Phật và đêm hoa đăng.' ),
-		array( 'Lễ Vu Lan báo hiếu', 'Rằm tháng Bảy âm lịch — cài hoa hồng và cúng dường trai tăng.' ),
-		array( 'Ngày vía Đức Quán Thế Âm', 'Ba dịp trong năm, tụng kinh Phổ Môn và phóng sanh.' ),
-		array( 'Ngày sám hối định kỳ', 'Mười bốn và ba mươi âm lịch hằng tháng.' ),
+		array( 'Lịch Tu Mùa Thu - Đợt 1', 'Thực tập bình an trong từng bước chân.', 193 ),
+		array( 'Lịch Tu Mùa Thu - Đợt 2', 'Cùng trở về chăm sóc thân tâm.', 190 ),
+		array( 'Lịch Tu Mùa Đông', 'Tĩnh lặng và sưởi ấm tình huynh đệ.', 192 ),
+		array( 'Ngày tu Chánh Niệm', 'Một ngày sống sâu sắc trong hiện tại.', 189 ),
+		array( 'Lịch Tu Đầu Xuân', 'Khởi đầu năm mới với tâm sáng trong.', 185 ),
 	),
 );
 
-foreach ( $retreats as $slug => $items ) {
-	if ( ! isset( $topic_ids[ $slug ] ) ) {
-		continue;
-	}
-	foreach ( $items as list( $title, $excerpt ) ) {
+foreach ( $groups as $slug => $items ) {
+	foreach ( $items as list( $title, $excerpt, $image_id ) ) {
 		$id = nntm_seed_ld_post( 'nntm_retreat', $title, $excerpt );
 		if ( $id ) {
 			wp_set_object_terms( $id, array( $topic_ids[ $slug ] ), 'nntm_topic' );
+			if ( get_post( $image_id ) ) {
+				set_post_thumbnail( $id, $image_id );
+			}
 		}
 	}
-	echo "{$topics[ $slug ]}: " . count( $items ) . " muc\n";
 }
-
-/* ---------- 3. Nhạc thiền cho Thiền Đường ---------- */
 
 $tracks = array(
-	array( 'Tiếng chuông sớm', 'Chuông ngân trong sương, mở đầu một ngày tĩnh lặng.' ),
-	array( 'Suối nguồn tĩnh lặng', 'Tiếng nước chảy đều, thích hợp cho toạ thiền dài.' ),
-	array( 'Hơi thở an nhiên', 'Nhịp chậm, dẫn dắt theo hơi thở vào ra.' ),
-	array( 'Rừng khuya', 'Âm thanh thiên nhiên về đêm, không lời.' ),
-	array( 'Trăng trên đỉnh núi', 'Sáo trúc và đàn tranh, giai điệu thưa thoáng.' ),
+	array( 'Tiếng chuông sớm', 'Mở đầu một ngày tĩnh lặng.', 68 ),
+	array( 'Suối nguồn tĩnh lặng', 'Âm thanh nhẹ cho thời thiền dài.', 69 ),
+	array( 'Hơi thở an nhiên', 'Nhịp chậm dẫn theo hơi thở.', 70 ),
+	array( 'Rừng khuya', 'Âm thanh thiên nhiên về đêm.', 68 ),
+	array( 'Trăng trên đỉnh núi', 'Giai điệu thưa thoáng và bình an.', 69 ),
 );
-
-foreach ( $tracks as list( $title, $excerpt ) ) {
-	nntm_seed_ld_post( 'nntm_zen_track', $title, $excerpt );
+foreach ( $tracks as list( $title, $excerpt, $audio_id ) ) {
+	$id = nntm_seed_ld_post( 'nntm_zen_track', $title, $excerpt );
+	if ( $id && get_post( $audio_id ) ) {
+		update_post_meta( $id, '_nntm_track_audio', $audio_id );
+		$track_images = array( 184, 193, 192, 190, 185 );
+		$image_id = $track_images[ array_search( $title, array_column( $tracks, 0 ), true ) % count( $track_images ) ];
+		if ( get_post( $image_id ) ) {
+			set_post_thumbnail( $id, $image_id );
+		}
+	}
 }
-echo 'Nhac thien: ' . count( $tracks ) . " bai\n";
 
-/* ---------- 4. Trang Liên Đàn ---------- */
-
+$khoa_term = $topic_ids['khoa-tu'];
+$lich_term = $topic_ids['lich-tu'];
 $content = <<<HTML
-<!-- wp:nntm/card-list {"heading":"Khoá Tu","postType":"nntm_retreat","taxonomy":"nntm_topic","termId":{$topic_ids['khoa-tu']},"variant":"khoa-tu","columns":3,"postsPerPage":6,"orderBy":"newest"} /-->
+<!-- wp:nntm/card-list {"heading":"Khoá Tu","postType":"nntm_retreat","taxonomy":"nntm_topic","termId":{$khoa_term},"variant":"khoa-tu","layout":"carousel","postsPerPage":6,"orderBy":"newest","showDate":false,"showCategory":false,"showViewAll":true,"viewAllLabel":"Xem tất cả","autoplay":true,"autoplayInterval":6,"className":"nntm-lien-dan-khoa"} /-->
 
-<!-- wp:nntm/card-list {"heading":"Lịch Tu","postType":"nntm_retreat","taxonomy":"nntm_topic","termId":{$topic_ids['lich-tu']},"variant":"khoa-tu","layout":"carousel","postsPerPage":5,"orderBy":"newest"} /-->
+<!-- wp:nntm/card-list {"heading":"Lịch Tu","postType":"nntm_retreat","taxonomy":"nntm_topic","termId":{$lich_term},"variant":"khoa-tu","layout":"carousel","postsPerPage":5,"orderBy":"newest","showDate":false,"showCategory":false,"autoplay":true,"autoplayInterval":6,"className":"nntm-lien-dan-lich"} /-->
 
-<!-- wp:nntm/thien-duong {"heading":"Thiền Đường","subheading":"Không gian nghe nhạc thiền dành cho thành viên, tự chọn bài, nghe lúc nào cũng được.","tracksPerPage":20,"orderBy":"newest"} /-->
+<!-- wp:nntm/thien-duong {"heading":"Thiền Đường","subheading":"","coverImageId":184,"tracksPerPage":20,"orderBy":"newest"} /-->
 HTML;
 
-$slug     = 'lien-dan';
-$existing = get_page_by_path( $slug );
-$args     = array(
+$page = get_page_by_path( 'lien-dan' );
+$args = array(
 	'post_type'    => 'page',
 	'post_status'  => 'publish',
 	'post_title'   => 'Liên Đàn',
-	'post_name'    => $slug,
+	'post_name'    => 'lien-dan',
 	'post_content' => $content,
 );
-
-if ( $existing ) {
-	$args['ID'] = $existing->ID;
-	wp_update_post( $args );
-	echo "\nCap nhat trang Lien Dan -> " . get_permalink( $existing->ID ) . "\n";
+if ( $page ) {
+	$args['ID'] = $page->ID;
+	$page_id = wp_update_post( $args );
 } else {
-	$id = wp_insert_post( $args );
-	echo "\nTao trang Lien Dan -> " . get_permalink( $id ) . "\n";
+	$page_id = wp_insert_post( $args );
 }
+
+echo 'Liên Đàn: ' . get_permalink( $page_id ) . PHP_EOL;

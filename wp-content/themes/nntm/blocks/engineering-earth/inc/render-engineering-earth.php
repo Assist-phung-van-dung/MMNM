@@ -87,18 +87,7 @@ function nntm_engineering_earth_render_slot_media( string $video_id, string $fal
 		</span>
 	<?php endif; ?>
 	<div class="nntm-engineering-earth__video-embed" aria-hidden="true"></div>
-	<?php if ( '' !== $video_id ) : ?>
-		<span class="nntm-engineering-earth__video-play" aria-hidden="true">
-			<svg viewBox="0 0 60 60" width="44" height="44" fill="none" focusable="false">
-				<circle cx="30" cy="30" r="28" stroke="currentColor" stroke-width="2" />
-				<path d="M24 19 L42 30 L24 41 Z" fill="currentColor" />
-			</svg>
-		</span>
-	<?php endif; ?>
 	<?php
-	// Icon nút play chỉ HIỆN với CSS scope theo class --bg (khe nhỏ, xem
-	// style.css .video-slot--bg .video-play) — khe main không hiện, dù HTML
-	// giống nhau; khi JS đổi vai trò (đổi class) thì icon tự bật/tắt theo.
 	return trim( (string) ob_get_clean() );
 }
 
@@ -119,7 +108,7 @@ function nntm_engineering_earth_render_slot_media( string $video_id, string $fal
  * @param string $fallback_image_html HTML <img> tĩnh dự phòng (chỉ dùng cho role=main), đã escape sẵn.
  * @return string HTML đã escape.
  */
-function nntm_engineering_earth_render_video_slot( string $video_id, string $role, string $label, string $fallback_image_html = '' ): string {
+function nntm_engineering_earth_render_video_slot( string $video_id, string $role, string $label, string $fallback_image_html = '', string $link_url = '' ): string {
 	$is_main    = ( 'main' === $role );
 	$role_class = $is_main ? 'nntm-engineering-earth__video-slot--main' : 'nntm-engineering-earth__video-slot--bg';
 
@@ -129,10 +118,14 @@ function nntm_engineering_earth_render_video_slot( string $video_id, string $rol
 		class="nntm-engineering-earth__video-slot <?php echo esc_attr( $role_class ); ?>"
 		data-role="<?php echo esc_attr( $role ); ?>"
 		data-video-id="<?php echo esc_attr( $video_id ); ?>"
-		<?php echo '' !== $video_id ? 'tabindex="0" role="button"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput -- gia tri co dinh, khong tu du lieu ngoai. ?>
 		aria-label="<?php echo esc_attr( $label ); ?>"
 	>
 		<?php echo nntm_engineering_earth_render_slot_media( $video_id, $is_main ? $fallback_image_html : '' ); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong. ?>
+		<?php if ( '' !== $link_url ) : ?>
+			<a class="nntm-engineering-earth__video-link" href="<?php echo esc_url( $link_url ); ?>">
+				<span class="nntm-sr-only"><?php esc_html_e( 'Xem bài viết video', 'nntm' ); ?></span>
+			</a>
+		<?php endif; ?>
 	</div>
 	<?php
 	return trim( (string) ob_get_clean() );
@@ -186,7 +179,7 @@ function nntm_engineering_earth_render_main_fallback_image( int $image_id, strin
  * @param string $main_image_alt Chữ thay ảnh dự phòng.
  * @return string HTML đã escape.
  */
-function nntm_engineering_earth_render_video_stage( string $main_video_url_or_id, string $bg_video_url_or_id, int $main_image_id, string $main_image_url, string $main_image_alt ): string {
+function nntm_engineering_earth_render_video_stage( string $main_video_url_or_id, string $bg_video_url_or_id, int $main_image_id, string $main_image_url, string $main_image_alt, string $video_link_url = '' ): string {
 	$main_id = nntm_engineering_earth_extract_youtube_id( $main_video_url_or_id );
 	$bg_id   = nntm_engineering_earth_extract_youtube_id( $bg_video_url_or_id );
 
@@ -197,8 +190,8 @@ function nntm_engineering_earth_render_video_stage( string $main_video_url_or_id
 	ob_start();
 	?>
 	<div class="nntm-engineering-earth__video-stage" data-nntm-ee-stage="1">
-		<?php echo nntm_engineering_earth_render_video_slot( $main_id, 'main', __( 'Video chính — nhấp thẻ nhỏ để đổi', 'nntm' ), $main_fallback_image ); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong. ?>
-		<?php echo nntm_engineering_earth_render_video_slot( $bg_id, 'bg', __( 'Video nền — nhấp để xem làm video chính', 'nntm' ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong. ?>
+		<?php echo nntm_engineering_earth_render_video_slot( $main_id, 'main', __( 'Video chính', 'nntm' ), $main_fallback_image, $video_link_url ); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong. ?>
+		<?php echo nntm_engineering_earth_render_video_slot( $bg_id, 'bg', __( 'Video nền', 'nntm' ), '', $video_link_url ); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong. ?>
 	</div>
 	<?php
 	return trim( (string) ob_get_clean() );

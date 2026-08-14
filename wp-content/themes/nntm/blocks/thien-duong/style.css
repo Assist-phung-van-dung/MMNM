@@ -14,6 +14,7 @@
 
 .nntm-thien-duong {
 	display: block;
+	background-color: var(--nntm-cam);
 }
 
 .nntm-thien-duong__inner {
@@ -34,6 +35,8 @@
 	flex-direction: column;
 	/* tu Figma: TIEU DE gap=10, khop dung sp-3 */
 	gap: var(--nntm-sp-3);
+	align-items: center;
+	text-align: center;
 }
 
 .nntm-thien-duong__heading {
@@ -42,7 +45,7 @@
 	font-family: var(--nntm-font-display);
 	font-size: var(--nntm-fs-4xl);
 	font-weight: 600;
-	color: var(--nntm-chu);
+	color: var(--nntm-trang);
 }
 
 .nntm-thien-duong__subheading {
@@ -52,7 +55,7 @@
 	font-size: var(--nntm-fs-md);
 	font-weight: 400;
 	line-height: var(--nntm-lh-vua);
-	color: var(--nntm-chu-phu);
+	color: var(--nntm-trang);
 }
 
 /* ---------- EMBED CONTENT: ảnh bìa + trình phát ---------- */
@@ -73,7 +76,7 @@
 	display: block;
 	position: relative;
 	overflow: hidden;
-	border-radius: var(--nntm-r-lg);
+	border-radius: 0;
 	background-color: var(--nntm-xam); /* nen placeholder khi chua chon anh bia */
 	/* tu Figma: IMG 453x416 */
 	aspect-ratio: 453 / 416;
@@ -90,6 +93,107 @@
 	object-fit: cover;
 }
 
+.nntm-thien-duong__spotify-preview {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: 0;
+	color: var(--nntm-trang);
+	background: linear-gradient(180deg, var(--nntm-xam) 0, var(--nntm-nhac-mat) 38%, var(--nntm-nhac-toi) 100%);
+}
+
+.nntm-thien-duong__spotify-hero {
+	display: flex;
+	align-items: flex-end;
+	gap: var(--nntm-sp-5);
+	padding: var(--nntm-sp-5);
+}
+
+.nntm-thien-duong__spotify-avatar {
+	display: grid;
+	place-items: center;
+	width: 92px;
+	height: 92px;
+	flex: none;
+	border-radius: 50%;
+	background-color: var(--nntm-nhac-toi);
+	font-family: var(--nntm-font-display);
+	font-size: var(--nntm-fs-4xl);
+}
+
+.nntm-thien-duong__spotify-avatar img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	border-radius: inherit;
+	object-fit: cover;
+}
+
+.nntm-thien-duong__spotify-hero div {
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-1);
+}
+
+.nntm-thien-duong__spotify-hero strong {
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-3xl);
+	line-height: 1;
+}
+
+.nntm-thien-duong__spotify-type,
+.nntm-thien-duong__spotify-hero small,
+.nntm-thien-duong__spotify-toolbar,
+.nntm-thien-duong__spotify-list {
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-xs);
+}
+
+.nntm-thien-duong__spotify-toolbar {
+	display: flex;
+	align-items: center;
+	gap: var(--nntm-sp-5);
+	padding: var(--nntm-sp-3) var(--nntm-sp-5);
+}
+
+.nntm-thien-duong__spotify-toolbar a {
+	display: grid;
+	place-items: center;
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	background-color: var(--nntm-xanh-nhac);
+	color: var(--nntm-den);
+	text-decoration: none;
+}
+
+.nntm-thien-duong__spotify-list {
+	list-style: none;
+	margin: 0;
+	padding: 0 var(--nntm-sp-5);
+	overflow: hidden;
+}
+
+.nntm-thien-duong__spotify-list li {
+	display: grid;
+	grid-template-columns: 24px 1fr auto;
+	align-items: center;
+	gap: var(--nntm-sp-3);
+	padding-block: var(--nntm-sp-2);
+}
+
+.nntm-thien-duong__spotify-list div {
+	display: flex;
+	flex-direction: column;
+}
+
+.nntm-thien-duong__spotify-login {
+	margin: auto var(--nntm-sp-5) var(--nntm-sp-4);
+	color: var(--nntm-trang);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-xs);
+}
+
 /*
  * TAM DUNG: Figma chi co anh chup man hinh dan vao ("Screenshot 2026-08-04
  * at 14.33.57"), chua co thiet ke that cho khu trinh phat 817x416. Khung
@@ -99,8 +203,8 @@
 .nntm-thien-duong__player {
 	display: flex;
 	flex-direction: column;
-	border-radius: var(--nntm-r-lg);
-	background-color: var(--nntm-nen-noi);
+	border-radius: 0;
+	background-color: var(--nntm-nhac-toi);
 	box-shadow: var(--nntm-sh-card);
 	overflow: hidden;
 	/* tu Figma: khu trinh phat 817x416 — chi la khung tham khao, xem chu thich tren */
@@ -167,16 +271,23 @@
 	flex-direction: column;
 	height: 100%;
 	min-height: 0; /* cho phep .nntm-thien-duong__tracklist ben trong cuon rieng thay vi day tran khung */
-	padding: var(--nntm-sp-5);
-	gap: var(--nntm-sp-4);
+	padding: 0;
+	gap: 0;
+	color: var(--nntm-trang);
+	background: linear-gradient(180deg, var(--nntm-xam) 0, var(--nntm-nhac-mat) 38%, var(--nntm-nhac-toi) 100%);
 }
 
 .nntm-thien-duong__now-title {
 	margin: 0;
+	flex: 1 1 180px;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 	font-family: var(--nntm-font-sans);
-	font-size: var(--nntm-fs-15);
+	font-size: var(--nntm-fs-xs);
 	font-weight: 700;
-	color: var(--nntm-chu);
+	color: var(--nntm-trang);
 }
 
 /* ---------- Cụm điều khiển ---------- */
@@ -185,6 +296,11 @@
 	align-items: center;
 	flex-wrap: wrap;
 	gap: var(--nntm-sp-4);
+}
+
+.nntm-thien-duong__spotify-controls {
+	padding: var(--nntm-sp-3) var(--nntm-sp-5);
+	gap: var(--nntm-sp-3);
 }
 
 .nntm-thien-duong__btn {
@@ -196,15 +312,15 @@
 	height: 40px;
 	border: none;
 	border-radius: 50%;
-	background-color: var(--nntm-chinh);
-	color: var(--nntm-kem);
+	background-color: transparent;
+	color: var(--nntm-trang);
 	cursor: pointer;
 	transition: background-color var(--nntm-dur) var(--nntm-ease), transform var(--nntm-dur) var(--nntm-ease);
 }
 
 .nntm-thien-duong__btn:hover,
 .nntm-thien-duong__btn:focus-visible {
-	background-color: var(--nntm-chinh-hover);
+	background-color: var(--nntm-nhac-mat);
 }
 
 .nntm-thien-duong__btn:focus-visible {
@@ -219,6 +335,14 @@
 .nntm-thien-duong__btn--play {
 	width: 48px;
 	height: 48px;
+	background-color: var(--nntm-xanh-nhac);
+	color: var(--nntm-den);
+}
+
+.nntm-thien-duong__btn--play:hover,
+.nntm-thien-duong__btn--play:focus-visible {
+	background-color: var(--nntm-xanh-nhac);
+	transform: scale(1.05);
 }
 
 .nntm-thien-duong__btn-icon {
@@ -239,7 +363,133 @@
 }
 
 .nntm-thien-duong__volume {
-	flex: 0 1 140px;
+	flex: 0 0 auto;
+	width: 126px;
+}
+
+.nntm-thien-duong__player-tools {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	flex: 0 0 auto;
+	gap: var(--nntm-sp-2);
+	margin-left: auto;
+}
+
+.nntm-thien-duong__tool-btn {
+	display: grid;
+	place-items: center;
+	width: 34px;
+	height: 34px;
+	padding: 6px;
+	border: 0;
+	border-radius: 50%;
+	background-color: transparent;
+	color: var(--nntm-trang);
+	cursor: pointer;
+}
+
+.nntm-thien-duong__tool-btn:hover,
+.nntm-thien-duong__tool-btn:focus-visible,
+.nntm-thien-duong__tool-btn[aria-expanded='true'] {
+	background-color: var(--nntm-nhac-mat);
+}
+
+.nntm-thien-duong__tool-btn svg {
+	width: 22px;
+	height: 22px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.8;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.nntm-thien-duong__mute .nntm-speaker-body {
+	fill: currentColor;
+	stroke: none;
+}
+
+.nntm-thien-duong__mute .nntm-speaker-mute-line,
+.nntm-thien-duong__mute.is-muted .nntm-speaker-wave {
+	display: none;
+}
+
+.nntm-thien-duong__mute.is-muted .nntm-speaker-mute-line {
+	display: block;
+}
+
+.nntm-thien-duong__volume {
+	display: flex;
+	align-items: center;
+	gap: var(--nntm-sp-1);
+}
+
+.nntm-thien-duong__volume .nntm-thien-duong__range {
+	width: 82px;
+	height: 4px;
+	appearance: none;
+	border-radius: var(--nntm-r-pill);
+	background: linear-gradient(to right, var(--nntm-trang) 0 var(--nntm-volume, 80%), var(--nntm-xam-chu) var(--nntm-volume, 80%) 100%);
+}
+
+.nntm-thien-duong__volume .nntm-thien-duong__range::-webkit-slider-thumb {
+	width: 12px;
+	height: 12px;
+	appearance: none;
+	border: 0;
+	border-radius: 50%;
+	background-color: var(--nntm-trang);
+}
+
+.nntm-thien-duong__settings {
+	position: relative;
+}
+
+.nntm-thien-duong__speed-menu {
+	position: absolute;
+	right: 0;
+	bottom: calc(100% + var(--nntm-sp-2));
+	z-index: 10;
+	width: 190px;
+	padding: var(--nntm-sp-2) 0;
+	border-radius: var(--nntm-r-md);
+	background-color: var(--nntm-nhac-mat);
+	box-shadow: var(--nntm-sh-card);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+	color: var(--nntm-trang);
+}
+
+.nntm-thien-duong__speed-menu[hidden] {
+	display: none;
+}
+
+.nntm-thien-duong__speed-menu > strong {
+	display: block;
+	padding: var(--nntm-sp-2) var(--nntm-sp-4);
+	font-size: var(--nntm-fs-xs);
+	color: var(--nntm-xam-nhat);
+}
+
+.nntm-thien-duong__speed-option {
+	display: grid;
+	grid-template-columns: 22px 1fr;
+	align-items: center;
+	width: 100%;
+	padding: var(--nntm-sp-2) var(--nntm-sp-4);
+	border: 0;
+	background-color: transparent;
+	color: var(--nntm-trang);
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+}
+
+.nntm-thien-duong__speed-option:hover,
+.nntm-thien-duong__speed-option:focus-visible,
+.nntm-thien-duong__speed-option.is-active {
+	background-color: var(--nntm-xam-chu);
 }
 
 .nntm-thien-duong__range-label {
@@ -257,7 +507,7 @@
 .nntm-thien-duong__range {
 	flex: 1 1 auto;
 	min-width: 0;
-	accent-color: var(--nntm-chinh);
+	accent-color: var(--nntm-xanh-nhac);
 	cursor: pointer;
 }
 
@@ -265,7 +515,7 @@
 	flex: none;
 	font-family: var(--nntm-font-sans);
 	font-size: var(--nntm-fs-xs);
-	color: var(--nntm-chu-phu);
+	color: var(--nntm-trang);
 	white-space: nowrap;
 }
 
@@ -274,19 +524,31 @@
 	margin: 0;
 	font-family: var(--nntm-font-sans);
 	font-size: var(--nntm-fs-xs);
-	color: var(--nntm-chu-phu);
+	color: var(--nntm-trang);
 	font-style: italic;
+}
+
+.nntm-thien-duong__playlist-title {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--nntm-sp-4);
+	padding: 0 var(--nntm-sp-5) var(--nntm-sp-2);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-xs);
 }
 
 /* ---------- Danh sách bài ---------- */
 .nntm-thien-duong__tracklist {
 	list-style: none;
 	margin: 0;
-	padding: 0;
+	padding: 0 var(--nntm-sp-5) var(--nntm-sp-4);
 	display: flex;
 	flex-direction: column;
 	gap: var(--nntm-sp-1);
-	overflow-y: auto; /* danh sach co the dai hon khung tham khao 817x416, cuon rieng ben trong */
+	overflow-y: auto;
+	scrollbar-width: thin;
+	scrollbar-color: var(--nntm-xam-chu) transparent;
 	min-height: 0;
 }
 
@@ -300,10 +562,10 @@
 	width: 100%;
 	gap: var(--nntm-sp-3);
 	border: none;
-	border-radius: var(--nntm-r-md);
+	border-radius: 0;
 	padding: var(--nntm-sp-2) var(--nntm-sp-3);
 	background-color: transparent;
-	color: var(--nntm-chu);
+	color: var(--nntm-trang);
 	font-family: var(--nntm-font-sans);
 	font-size: var(--nntm-fs-sm);
 	text-align: left;
@@ -312,7 +574,7 @@
 }
 
 .nntm-thien-duong__track:hover {
-	background-color: var(--nntm-nga);
+	background-color: var(--nntm-trang-60);
 }
 
 .nntm-thien-duong__track:focus-visible {
@@ -327,14 +589,14 @@
  * phát chính, không phải màu đơn thuần.
  */
 .nntm-thien-duong__track.is-playing {
-	background-color: var(--nntm-kem-dam);
+	background-color: var(--nntm-nhac-mat);
 	font-weight: 700;
 }
 
 .nntm-thien-duong__track-index {
 	flex: none;
 	width: 1.75em;
-	color: var(--nntm-chu-phu);
+	color: var(--nntm-trang);
 	font-variant-numeric: tabular-nums;
 }
 
@@ -346,11 +608,28 @@
 	white-space: nowrap;
 }
 
+.nntm-thien-duong__track-listens,
+.nntm-thien-duong__track-duration {
+	flex: none;
+	font-size: var(--nntm-fs-xs);
+	color: var(--nntm-xam-nhat);
+}
+
+.nntm-thien-duong__track-listens {
+	min-width: 92px;
+	text-align: right;
+}
+
+.nntm-thien-duong__track-duration {
+	width: 42px;
+	text-align: right;
+}
+
 .nntm-thien-duong__track-status {
 	flex: none;
 	font-size: var(--nntm-fs-xs);
 	font-weight: 700;
-	color: var(--nntm-chinh);
+	color: var(--nntm-xanh-nhac);
 	text-transform: uppercase;
 }
 

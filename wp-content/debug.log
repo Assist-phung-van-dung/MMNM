@@ -19,3 +19,19 @@ Stack trace:
 #11 C:\xampp8_2\htdocs\NNTM\index.php(17): require('C:\\xampp8_2\\htd...')
 #12 {main}
   thrown in C:\xampp8_2\htdocs\NNTM\wp-content\themes\nntm\blocks\article-mosaic\inc\render-article-mosaic.php on line 91
+[13-Aug-2026 07:40:02 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in C:\xampp8_2\htdocs\NNTM\wp-content\plugins\polylang\src\functions.php on line 81
+[13-Aug-2026 07:40:02 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in C:\xampp8_2\htdocs\NNTM\wp-content\plugins\polylang\src\functions.php on line 81
+[13-Aug-2026 07:40:02 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in C:\xampp8_2\htdocs\NNTM\wp-content\plugins\polylang\src\functions.php on line 81
+[13-Aug-2026 07:40:02 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in C:\xampp8_2\htdocs\NNTM\wp-content\plugins\polylang\src\functions.php on line 81
+[13-Aug-2026 07:51:16 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in C:\xampp8_2\htdocs\NNTM\wp-content\plugins\polylang\src\functions.php on line 81
+[13-Aug-2026 07:51:16 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in C:\xampp8_2\htdocs\NNTM\wp-content\plugins\polylang\src\functions.php on line 81
+[13-Aug-2026 07:51:16 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in C:\xampp8_2\htdocs\NNTM\wp-content\plugins\polylang\src\functions.php on line 81
+[13-Aug-2026 07:51:16 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in C:\xampp8_2\htdocs\NNTM\wp-content\plugins\polylang\src\functions.php on line 81
+[13-Aug-2026 08:02:58 UTC] Automatic updates starting...
+[13-Aug-2026 08:02:59 UTC] Automatic updates complete.
+[13-Aug-2026 08:57:04 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in C:\xampp8_2\htdocs\NNTM\wp-content\plugins\polylang\src\functions.php on line 81
+[13-Aug-2026 08:57:04 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in C:\xampp8_2\htdocs\NNTM\wp-content\plugins\polylang\src\functions.php on line 81
+[13-Aug-2026 08:57:04 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in C:\xampp8_2\htdocs\NNTM\wp-content\plugins\polylang\src\functions.php on line 81
+[13-Aug-2026 08:57:04 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in C:\xampp8_2\htdocs\NNTM\wp-content\plugins\polylang\src\functions.php on line 81
+[14-Aug-2026 01:45:36 UTC] Automatic updates starting...
+[14-Aug-2026 01:45:38 UTC] Automatic updates complete.

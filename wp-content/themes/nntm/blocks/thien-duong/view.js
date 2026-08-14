@@ -58,6 +58,11 @@
 		var timeCurrentEl = root.querySelector( '.nntm-thien-duong__time-current' );
 		var timeDurationEl = root.querySelector( '.nntm-thien-duong__time-duration' );
 		var nowTitleEl = root.querySelector( '.nntm-thien-duong__now-title' );
+		var avatarEl = root.querySelector( '.nntm-thien-duong__spotify-avatar' );
+		var muteBtn = root.querySelector( '.nntm-thien-duong__mute' );
+		var settingsToggle = root.querySelector( '.nntm-thien-duong__settings-toggle' );
+		var speedMenu = root.querySelector( '.nntm-thien-duong__speed-menu' );
+		var speedOptions = root.querySelectorAll( '.nntm-thien-duong__speed-option' );
 		var trackButtons = root.querySelectorAll( '.nntm-thien-duong__track' );
 
 		if ( ! audio || ! playBtn || 0 === trackButtons.length ) {
@@ -66,14 +71,64 @@
 
 		var currentIndex = -1; // chua chon bai nao.
 		var isScrubbing = false; // dang keo thanh tien do bang tay, tam ngung dong bo tu timeupdate.
+		var countedTrackId = 0;
 
 		// Am luong khoi tao theo gia tri co san cua thanh truot (mac dinh 80%).
+		var lastVolume = 0.8;
 		if ( volumeRange ) {
 			audio.volume = ( parseFloat( volumeRange.value ) || 80 ) / 100;
+			lastVolume = audio.volume;
 		}
+
+		function updateVolumeUI() {
+			var silent = audio.muted || audio.volume <= 0.001;
+			if ( muteBtn ) {
+				muteBtn.classList.toggle( 'is-muted', silent );
+				muteBtn.setAttribute( 'aria-pressed', silent ? 'true' : 'false' );
+				muteBtn.setAttribute( 'aria-label', silent ? 'Bật âm' : 'Tắt âm' );
+			}
+			if ( volumeRange ) {
+				volumeRange.style.setProperty( '--nntm-volume', String( silent ? 0 : audio.volume * 100 ) + '%' );
+			}
+		}
+		updateVolumeUI();
 
 		function trackLabel( button ) {
 			return button.getAttribute( 'data-nntm-track-title' ) || '';
+		}
+
+		function updateAvatar( button ) {
+			if ( ! avatarEl ) {
+				return;
+			}
+			var imageUrl = button.getAttribute( 'data-nntm-track-image' );
+			avatarEl.textContent = '';
+			if ( imageUrl ) {
+				var image = document.createElement( 'img' );
+				image.src = imageUrl;
+				image.alt = '';
+				avatarEl.appendChild( image );
+			} else {
+				avatarEl.textContent = 'N';
+			}
+		}
+
+		function recordListen( button ) {
+			var trackId = parseInt( button.getAttribute( 'data-nntm-track-id' ), 10 ) || 0;
+			var nonce = root.getAttribute( 'data-listen-nonce' ) || '';
+			if ( ! trackId || ! nonce || countedTrackId === trackId ) {
+				return;
+			}
+			countedTrackId = trackId;
+			var body = new URLSearchParams( { action: 'nntm_track_listen', nonce: nonce, track_id: String( trackId ) } );
+			window.fetch( window.location.origin + '/wp-admin/admin-ajax.php', {
+				method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }, body: body.toString(),
+			} ).then( function ( response ) { return response.json(); } ).then( function ( result ) {
+				if ( result && result.success && result.data ) {
+					var countEl = button.querySelector( '.nntm-thien-duong__track-listen-count' );
+					if ( countEl ) { countEl.textContent = String( result.data.count ); }
+				}
+			} ).catch( function () {} );
 		}
 
 		/**
@@ -135,6 +190,7 @@
 			if ( nowTitleEl ) {
 				nowTitleEl.textContent = trackLabel( button );
 			}
+			updateAvatar( button );
 
 			if ( timeCurrentEl ) {
 				timeCurrentEl.textContent = '0:00';
@@ -162,6 +218,9 @@
 			var playPromise = audio.play();
 			if ( playPromise && 'function' === typeof playPromise.catch ) {
 				playPromise.catch( function () {} );
+			}
+			if ( currentIndex >= 0 ) {
+				recordListen( trackButtons[ currentIndex ] );
 			}
 		}
 
@@ -236,6 +295,58 @@
 		if ( volumeRange ) {
 			volumeRange.addEventListener( 'input', function () {
 				audio.volume = parseFloat( volumeRange.value ) / 100;
+				audio.muted = false;
+				if ( audio.volume > 0 ) { lastVolume = audio.volume; }
+				updateVolumeUI();
+			} );
+		}
+
+		if ( muteBtn ) {
+			muteBtn.addEventListener( 'click', function () {
+				if ( audio.muted || audio.volume <= 0.001 ) {
+					audio.muted = false;
+					audio.volume = lastVolume || 0.8;
+					if ( volumeRange ) { volumeRange.value = String( Math.round( audio.volume * 100 ) ); }
+				} else {
+					lastVolume = audio.volume;
+					audio.muted = true;
+				}
+				updateVolumeUI();
+			} );
+		}
+
+		function closeSpeedMenu() {
+			if ( speedMenu && settingsToggle ) {
+				speedMenu.hidden = true;
+				settingsToggle.setAttribute( 'aria-expanded', 'false' );
+			}
+		}
+
+		if ( settingsToggle && speedMenu ) {
+			settingsToggle.addEventListener( 'click', function () {
+				var willOpen = speedMenu.hidden;
+				speedMenu.hidden = ! willOpen;
+				settingsToggle.setAttribute( 'aria-expanded', willOpen ? 'true' : 'false' );
+			} );
+			document.addEventListener( 'click', function ( event ) {
+				if ( ! root.contains( event.target ) || ( ! speedMenu.contains( event.target ) && ! settingsToggle.contains( event.target ) ) ) {
+					closeSpeedMenu();
+				}
+			} );
+		}
+
+		for ( var s = 0; s < speedOptions.length; s++ ) {
+			speedOptions[ s ].addEventListener( 'click', function () {
+				var rate = parseFloat( this.getAttribute( 'data-rate' ) );
+				audio.playbackRate = isFinite( rate ) ? Math.max( 0.5, Math.min( 2, rate ) ) : 1;
+				for ( var i = 0; i < speedOptions.length; i++ ) {
+					var active = speedOptions[ i ] === this;
+					speedOptions[ i ].classList.toggle( 'is-active', active );
+					speedOptions[ i ].setAttribute( 'aria-pressed', active ? 'true' : 'false' );
+					var check = speedOptions[ i ].querySelector( '.nntm-thien-duong__speed-check' );
+					if ( check ) { check.textContent = active ? '✓' : ''; }
+				}
+				closeSpeedMenu();
 			} );
 		}
 

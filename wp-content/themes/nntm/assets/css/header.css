@@ -566,13 +566,8 @@ body.nntm-dau-trang-de-len .nntm-header {
 
 /* ----- Khối ngôn ngữ VI/EN (cả hai trạng thái) ----- */
 .nntm-header__lang {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 2px; /* tu Figma: "gap 2" cua khoi LANG BUTTON, khong co token khop */
-	height: 46px; /* tu Figma */
-	padding: var(--nntm-sp-1); /* 5 — tu Figma */
-	border-radius: var(--nntm-r-sm); /* 5 */
+	position: relative;
+	height: 36px;
 }
 
 /*
@@ -583,56 +578,76 @@ body.nntm-dau-trang-de-len .nntm-header {
  * con ben trong ve dung 36×36, khong con phai chua cho hai nut.
  */
 .nntm-header--guest .nntm-header__lang {
-	width: 36px;
+	width: 54px;
+	min-width: 54px;
 	height: 36px;
 	padding: 0;
 }
 
-.nntm-header--guest .nntm-lang-btn {
-	width: 100%;
-	height: 100%;
-	min-width: 0;
-}
-
-/*
- * Trạng thái B: nền --nntm-chinh mờ 30% — dùng color-mix() thay vì viết
- * rgba(116,119,102,.3) cứng, đúng quy ước cấm mã màu trực tiếp. Container
- * rộng 83px khớp khá sát với 2 nút ~35px + gap 2 + đệm 5 mỗi bên (~82px)
- * nên áp luôn làm min-width tham khảo, không ép cứng để không cắt chữ.
- */
 .nntm-header--auth .nntm-header__lang {
-	min-width: 83px; /* tu Figma */
-	background-color: color-mix(in srgb, var(--nntm-chinh) 30%, transparent);
+	width: 54px;
+	min-width: 54px;
 }
 
-.nntm-lang-btn {
+.nntm-lang-select {
+	position: relative;
+	z-index: 12;
+}
+
+.nntm-lang-select__toggle {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 35px;  /* tu Figma: "moi nut ~35x35" */
-	height: 35px;      /* tu Figma */
+	gap: var(--nntm-sp-1);
+	width: 54px;
+	height: 36px;
+	padding: 0 var(--nntm-sp-2);
 	border-radius: var(--nntm-r-sm); /* 5 */
+	background-color: var(--nntm-chinh);
 	font-family: var(--nntm-font-sans);
 	font-size: var(--nntm-fs-sm);
 	font-weight: 500;
-}
-
-/*
- * Nút đang chọn: nền --nntm-chinh, chữ --nntm-kem. Nút không chọn: KHÔNG
- * nền, chữ --nntm-than. Figma (bản chưa đăng nhập) vẽ CẢ HAI nút đều tô
- * nền --nntm-chinh — đối chiếu component LANG BUTTON gốc thì đây là
- * designer vẽ sót, vì component có sẵn biến thể INACTIVE đúng như mô tả
- * ở trên. Làm theo component (chỉ nút đang chọn mới tô nền), không theo
- * ảnh chụp variant bị vẽ sai.
- */
-.nntm-lang-btn--active {
-	background-color: var(--nntm-chinh);
 	color: var(--nntm-kem);
+	cursor: pointer;
+	list-style: none;
 }
 
-.nntm-lang-btn--inactive {
-	background-color: transparent;
+.nntm-lang-select__toggle::-webkit-details-marker {
+	display: none;
+}
+
+.nntm-lang-select[open] .nntm-lang-select__toggle svg {
+	transform: rotate(180deg);
+}
+
+.nntm-lang-select__options {
+	position: absolute;
+	top: calc(100% + var(--nntm-sp-1));
+	right: 0;
+	display: flex;
+	flex-direction: column;
+	min-width: 70px;
+	padding: var(--nntm-sp-1);
+	border: 1px solid var(--nntm-vien);
+	border-radius: var(--nntm-r-sm);
+	background-color: var(--nntm-trang);
+	box-shadow: var(--nntm-sh-card);
+}
+
+.nntm-lang-select__option {
+	display: block;
+	padding: var(--nntm-sp-1) var(--nntm-sp-2);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
 	color: var(--nntm-than);
+	text-decoration: none;
+}
+
+.nntm-lang-select__option:hover,
+.nntm-lang-select__option:focus-visible,
+.nntm-lang-select__option.is-active {
+	background-color: var(--nntm-kem);
+	color: var(--nntm-chinh-hover);
 }
 
 /* ----- Icon tài khoản + menu thả xuống (chỉ trạng thái B) ----- */

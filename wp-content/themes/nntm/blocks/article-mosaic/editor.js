@@ -416,6 +416,14 @@
 								setAttributes( { showExcerpt: value } );
 							},
 						} ),
+						el( TextControl, {
+							label: __( 'Nhãn liên kết dưới mỗi bài', 'nntm' ),
+							help: __( 'Mặc định là “Xem thêm”. Để trống nếu không muốn hiện.', 'nntm' ),
+							value: attributes.cardCtaLabel || '',
+							onChange: function ( value ) {
+								setAttributes( { cardCtaLabel: value } );
+							},
+						} ),
 						// Nut "Xem Tat ca" o duoi cung khoi (Figma R4 SECTION 1).
 						// Chi hien tren trang khi nhap DU ca nhan va duong dan.
 						el( TextControl, {

@@ -39,6 +39,11 @@
 			"default": "https://www.youtube.com/watch?v=gJAbDSse5WM&list=RDgJAbDSse5WM&start_radio=1",
 			"description": "LINK TAM (mau) do anh Uy chot 13/08/2026 - se thay khi khach gui link that. Video nen mac dinh cho khoi engineering-earth moi chen vao."
 		},
+		"videoId": {
+			"type": "number",
+			"default": 0,
+			"description": "ID bài nntm_video được mở khi người đọc nhấp vào video lớn hoặc thẻ video nhỏ."
+		},
 		"mainImageId": {
 			"type": "number",
 			"default": 0,

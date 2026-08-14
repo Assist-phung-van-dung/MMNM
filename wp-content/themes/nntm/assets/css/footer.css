@@ -80,6 +80,61 @@
 	padding: 0;
 }
 
+/* Các trang trong: viền ngoài đen, không có đường kẻ ngang theo Figma. */
+.nntm-footer--inner {
+	background-color: var(--nntm-den);
+	padding: var(--nntm-sp-5);
+}
+
+.nntm-footer--inner .nntm-footer__bar {
+	min-height: 127px;
+	display: flex;
+	align-items: center;
+}
+
+.nntm-footer--inner .nntm-footer__inner { width: 100%; }
+
+/* Chỉ trang chủ có lời mời góp ý; các trang còn lại giữ chân trang gọn. */
+.nntm-footer__share {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--nntm-sp-3);
+	margin-bottom: var(--nntm-sp-8);
+	font-family: var(--nntm-font-display);
+	font-size: var(--nntm-fs-3xl);
+	font-weight: 600;
+	line-height: 44px;
+	color: var(--nntm-kem);
+}
+
+.nntm-footer__share-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: var(--nntm-sp-9);
+	padding: var(--nntm-sp-1) var(--nntm-sp-5);
+	border-radius: var(--nntm-r-sm);
+	background-color: var(--nntm-vien);
+	font-family: var(--nntm-font-serif);
+	font-size: var(--nntm-fs-md);
+	font-style: italic;
+	font-weight: 400;
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-muc-nhat);
+	text-decoration: none;
+}
+
+.nntm-footer__share-link:hover,
+.nntm-footer__share-link:focus-visible {
+	background-color: var(--nntm-trang);
+}
+
+.nntm-footer__share-link:focus-visible {
+	outline: 2px solid var(--nntm-kem);
+	outline-offset: var(--nntm-sp-1);
+}
+
 .nntm-footer__rule {
 	width: 100%;
 	margin: 0 0 var(--nntm-sp-4) 0; /* 15 — khoang cach tu duong ke xuong hang noi dung */
@@ -225,6 +280,11 @@
 }
 
 @media (max-width: 600px) {
+	.home .nntm-footer__share {
+		font-size: var(--nntm-fs-2xl);
+		line-height: var(--nntm-lh-chat);
+	}
+
 	.nntm-footer-nav {
 		flex-direction: column;
 		align-items: flex-start;

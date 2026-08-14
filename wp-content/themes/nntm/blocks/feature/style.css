@@ -14,6 +14,7 @@
 
 .nntm-feature {
 	display: block;
+	background-color: var(--nntm-trang-lanh);
 	/* tu Figma: SECTION 4 padding 60/80/60/80 — khop voi cap sp-10 (60) / sp-12 (80) */
 	padding-block: var(--nntm-sp-10);
 }
@@ -21,6 +22,7 @@
 .nntm-feature .nntm-container {
 	display: flex;
 	flex-direction: column;
+	max-width: 1324px;
 	gap: var(--nntm-sp-5); /* tu Figma: SECTION 4 gap=20 giua tieu de section (neu co) va CONTENT */
 }
 
@@ -30,7 +32,7 @@
 	/* tu Figma: MAIN ARTICLE 349 / IMG 811 — dung ty le (fr) thay vi px
 	   cung de co giãn theo container, van giu dung dang Figma. */
 	grid-template-columns: 349fr 811fr;
-	gap: var(--nntm-sp-5); /* tu Figma: LIST itemSpacing=20 */
+	gap: 0;
 	align-items: stretch;
 }
 
@@ -55,14 +57,16 @@
 .nntm-feature__text {
 	display: flex;
 	flex-direction: column;
-	padding-left: 30px; /* tu Figma: MAIN ARTICLE paddingLeft=30 */
+	justify-content: center;
+	padding: var(--nntm-sp-7);
+	background-color: var(--nntm-kem);
 }
 
 .nntm-feature__text-inner {
 	display: flex;
 	flex-direction: column;
-	gap: var(--nntm-sp-7); /* tu Figma: Frame 140 itemSpacing=30 */
-	padding-top: var(--nntm-sp-7); /* tu Figma: Frame 140 paddingTop=30 */
+	gap: var(--nntm-sp-5);
+	padding-top: 0;
 }
 
 .nntm-feature__eyebrow {
@@ -72,6 +76,10 @@
 	font-family: var(--nntm-font-sans); /* Battambang -> Be Vietnam Pro */
 	font-size: var(--nntm-fs-xs); /* tu Figma: 13px */
 	color: var(--nntm-chu-phu);
+}
+
+.nntm-feature__eyebrow:empty {
+	display: none;
 }
 
 .nntm-feature__heading {
@@ -91,6 +99,7 @@
 	font-size: var(--nntm-fs-md); /* tu Figma: khop voi co chu than bai cac khoi khac (18px) */
 	line-height: var(--nntm-lh-vua);
 	color: var(--nntm-chinh);
+	white-space: pre-line;
 }
 
 .nntm-feature__body p {
@@ -102,8 +111,16 @@
 	position: relative;
 	display: block;
 	overflow: hidden;
-	border-radius: var(--nntm-r-md);
+	border-radius: 0;
 	background-color: var(--nntm-xam); /* mau nen placeholder, dong bo voi nntm-card__img */
+}
+
+.nntm-feature__media::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(90deg, color-mix(in srgb, var(--nntm-kem) 22%, transparent), transparent 24%);
+	pointer-events: none;
 }
 
 .nntm-feature__media-img,
@@ -115,6 +132,27 @@
 	   bang aspect-ratio de anh khong bi meo khi co giãn responsive. */
 	aspect-ratio: 811 / 354;
 	object-fit: cover;
+}
+
+.nntm-feature__media-img {
+	transition: transform 900ms var(--nntm-ease), filter 900ms var(--nntm-ease);
+}
+
+.nntm-feature__content:hover .nntm-feature__media-img {
+	transform: scale(1.025);
+	filter: saturate(1.04) contrast(1.02);
+}
+
+.nntm-feature__text-inner,
+.nntm-feature__media {
+	animation: nntm-dieu-thuong-reveal 700ms var(--nntm-ease) both;
+}
+
+.nntm-feature__media { animation-delay: 100ms; }
+
+@keyframes nntm-dieu-thuong-reveal {
+	from { opacity: 0; transform: translateY(var(--nntm-sp-4)); }
+	to { opacity: 1; transform: translateY(0); }
 }
 
 /* ---------- Responsive ---------- */
@@ -151,4 +189,11 @@
 	.nntm-feature__heading {
 		font-size: var(--nntm-fs-3xl); /* thu nho tieu de o man hep, chua co so do Figma mobile */
 	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-feature__text-inner,
+	.nntm-feature__media { animation: none; }
+	.nntm-feature__media-img { transition: none; }
+	.nntm-feature__content:hover .nntm-feature__media-img { transform: none; filter: none; }
 }

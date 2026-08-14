@@ -151,9 +151,11 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => $wrapper_c
 		</div>
 
 		<?php if ( $thumbnail ) : ?>
-			<div class="nntm-article-feature__media">
-				<?php echo wp_kses_post( $thumbnail ); ?>
-			</div>
+			<a class="nntm-article-feature__media-link" href="<?php echo esc_url( $permalink ); ?>" aria-label="<?php echo esc_attr( $title ); ?>">
+				<div class="nntm-article-feature__media">
+					<?php echo wp_kses_post( $thumbnail ); ?>
+				</div>
+			</a>
 		<?php endif; ?>
 
 	</div>
