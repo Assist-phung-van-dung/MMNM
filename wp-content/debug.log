@@ -104,3 +104,6 @@ Stack trace:
 [14-Aug-2026 08:08:08 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in C:\xampp8_2\htdocs\NNTM\wp-content\plugins\polylang\src\functions.php on line 81
 [14-Aug-2026 08:08:08 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in C:\xampp8_2\htdocs\NNTM\wp-content\plugins\polylang\src\functions.php on line 81
 [14-Aug-2026 08:08:08 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in C:\xampp8_2\htdocs\NNTM\wp-content\plugins\polylang\src\functions.php on line 81
+[15-Aug-2026 04:05:24 UTC] PHP Warning:  mysqli_real_connect(): (HY000/2002): No connection could be made because the target machine actively refused it in C:\xampp8_2\htdocs\NNTM\wp-includes\class-wpdb.php on line 1988
+[15-Aug-2026 04:16:59 UTC] Automatic updates starting...
+[15-Aug-2026 04:17:01 UTC] Automatic updates complete.

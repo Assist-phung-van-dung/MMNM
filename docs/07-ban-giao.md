@@ -75,7 +75,6 @@ File chỉ còn **một page**: `6376:6205` = `DESKTOP - R5 (UPDATED 11 AUG)`.
 Các page R1 / R3 / R4 đã bị khách xoá, nhưng khách cập nhật **đè lên chính node của R4**
 nên **mọi node id cũ vẫn còn hiệu lực**.
 
-
 ⚠️ **Token này đang nằm trong file docs được Git theo dõi.** Trước khi repo đi ra khỏi máy
 local, phải thu hồi và cấp lại token, chuyển sang biến môi trường.
 
@@ -245,6 +244,10 @@ Ba filter để đổi mà không sửa code:
 `nntm_trang_can_dang_nhap` · `nntm_term_khu_han_che` · `nntm_duoc_xem_khu_han_che`
 
 ### Điều kiện nghiệm thu — chạy lại mỗi khi đụng vào phần này
+
+⚠️ **Phải đo bằng request HTTP thật (`curl`), KHÔNG đo bằng script CLI.** Bộ lọc tự bỏ qua
+khi `PHP_SAPI === 'cli'` (xem mục 9), nên chạy `php -r` sẽ luôn thấy đủ 51 bài và tưởng là
+cổng quyền hỏng. Đã đo nhầm đúng kiểu này ngày 14/08.
 
 | | Khách | Thành viên |
 |---|---|---|
