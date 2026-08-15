@@ -211,19 +211,24 @@
 }
 
 /* =============================================================
-   HAI BANNER TRÀN VIỀN CỦA TRANG "KIM CƯƠNG HÀNH GIẢ" (ID 243) — sửa
-   14/08/2026 sau phản hồi chủ dự án "khác xa thiết kế".
+   HAI BANNER TRÀN VIỀN, DÙNG CHUNG CHO CẢ HAI KHU "ĐẠI SĨ HÀNH GIẢ" (ID 242)
+   VÀ "KIM CƯƠNG HÀNH GIẢ" (ID 243) — sửa 14/08/2026 sau phản hồi chủ dự án
+   "khác xa thiết kế", mở rộng sang Đại Sĩ khi cả hai khu dùng chung một
+   kiểu banner đầu trang không chữ.
 
    Cả hai đều dùng chung thuộc tính tranVien=true (đã có sẵn), nhưng KHÁC
    NHAU về chiều cao và cách đặt chữ, nên cần hai class riêng gán qua
    "Additional CSS class" của từng khối:
-     .nntm-banner--kc-dau   : dải 1 (đầu trang, ảnh vàng, KHÔNG có chữ)
-     .nntm-banner--kc-ledan : dải 4 ("Lễ Đàn Khổng Tước", CÓ chữ + nút)
+     .nntm-banner--khu-dau  : dải đầu trang KHÔNG có chữ — DÙNG CHUNG cho cả
+                              Đại Sĩ (tools/seed-dai-si-hanh-gia.php) và Kim
+                              Cương (tools/seed-kim-cuong-hanh-gia.php).
+     .nntm-banner--kc-ledan : dải "Lễ Đàn Khổng Tước" (CÓ chữ + nút), CHỈ
+                              dùng ở Kim Cương — không đổi tên.
 
    SỐ ĐO ƯỚC LƯỢNG từ ảnh giao diện đầy đủ chủ dự án gửi, quy về khung
    desktop 1366 (hệ số ×2,32) — KHÔNG phải Figma xuất trực tiếp.
    ============================================================= */
-.nntm-banner.nntm-banner--kc-dau .nntm-banner__stage {
+.nntm-banner.nntm-banner--khu-dau .nntm-banner__stage {
 	height: 533px; /* tu anh giao dien — thay the clamp() uoc luong chung cua tranVien */
 	max-height: none;
 }
@@ -281,7 +286,7 @@
 }
 
 @media (max-width: 782px) {
-	.nntm-banner.nntm-banner--kc-dau .nntm-banner__stage,
+	.nntm-banner.nntm-banner--khu-dau .nntm-banner__stage,
 	.nntm-banner.nntm-banner--kc-ledan .nntm-banner__stage {
 		height: auto;
 		aspect-ratio: 3 / 4;

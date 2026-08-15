@@ -9,10 +9,24 @@
  * (docs/07-ban-giao.md) — JS thuần (assets/js/cong-tu.js), tắt JS vẫn gõ
  * tay được vào ô số bình thường.
  *
+ * Tham số nhận qua $args (giống khuôn template-parts/auth/form-dang-nhap.php):
+ *   tieu_de  (string) Ghi đè tiêu đề — dùng ở popup "Cập Nhật Chuỗi Trì"
+ *            (yêu cầu chủ dự án 14/08/2026, xem template-parts/cong-tu/modal-chuoi-tri.php).
+ *            Rỗng/không truyền thì giữ nguyên "Khai Báo Chuỗi Trì" như cũ.
+ *   them_lop (string) Thêm class vào thẻ ngoài cùng — dùng gắn số đo riêng
+ *            của popup (.nntm-auth-card--cap-nhat trong cong-tu.css).
+ *
  * @package NNTM
+ * @var array $args
  */
 
 defined( 'ABSPATH' ) || exit;
+
+$nntm_ct_args     = is_array( $args ?? null ) ? $args : array();
+$nntm_ct_tieu_de  = isset( $nntm_ct_args['tieu_de'] ) && '' !== trim( (string) $nntm_ct_args['tieu_de'] )
+	? (string) $nntm_ct_args['tieu_de']
+	: __( 'Khai Báo Chuỗi Trì', 'nntm' );
+$nntm_ct_them_lop = isset( $nntm_ct_args['them_lop'] ) ? sanitize_html_class( (string) $nntm_ct_args['them_lop'] ) : '';
 
 $nntm_ct_program = function_exists( 'nntm_program_hien_tai' ) ? nntm_program_hien_tai() : null;
 $nntm_ct_errors  = isset( $GLOBALS['nntm_congtu_errors'] ) && is_wp_error( $GLOBALS['nntm_congtu_errors'] ) ? $GLOBALS['nntm_congtu_errors'] : null;
@@ -20,9 +34,9 @@ $nntm_ct_ok      = isset( $_GET['nntm_congtu_ok'] ) && 'ghi-nhan' === $_GET['nnt
 
 $nntm_ct_user_id = get_current_user_id();
 ?>
-<div class="nntm-auth-card nntm-auth-card--cong-tu">
+<div class="nntm-auth-card nntm-auth-card--cong-tu<?php echo $nntm_ct_them_lop ? ' ' . esc_attr( $nntm_ct_them_lop ) : ''; ?>">
 
-	<h1 class="nntm-auth-card__title nntm-auth-card__title--cong-tu"><?php esc_html_e( 'Khai Báo Chuỗi Trì', 'nntm' ); ?></h1>
+	<h1 class="nntm-auth-card__title nntm-auth-card__title--cong-tu"><?php echo esc_html( $nntm_ct_tieu_de ); ?></h1>
 
 	<?php if ( ! $nntm_ct_program ) : ?>
 

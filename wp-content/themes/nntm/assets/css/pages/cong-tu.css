@@ -118,6 +118,62 @@
 	margin-top: var(--nntm-sp-2);
 }
 
+/* =============================================================
+   Popup "Cập Nhật Chuỗi Trì" — yêu cầu chủ dự án 14/08/2026:
+   "nhấn vào tham gia... hiện popup lên đó luôn. Và khi tham gia rồi thì nút
+   tham gia chuyển thành nút cập nhật chuỗi trì, cũng mở popup", kèm ẢNH
+   THIẾT KẾ popup gửi qua chat (không xuất được thành file Figma — theo
+   docs/07-ban-giao.md, thiết kế gửi bằng ảnh chat từ 14/08/2026 ĐÈ LÊN
+   Figma, số đo dưới đây là ƯỚC LƯỢNG từ ảnh, quy về khung 1366 (ảnh xuất
+   2x, hệ số ×0,683), KHÔNG phải số đo Figma xuất trực tiếp:
+     - Thẻ: 481×343 (KHÔNG ép cao 343 cố định — nội dung form-khai-bao.php
+       còn dòng "Hôm nay đã ghi", 3 nút nhanh 10/20/50, dòng tổng kết cuối
+       form nên cao hơn 343 trong thực tế; ép cứng sẽ cắt chữ. Giữ nguyên
+       SỐ ĐO RỘNG thật, không suy đoán thêm chiều cao).
+     - Tiêu đề "Cập Nhật Chuỗi Trì": serif 30px (--nntm-fs-2xl), màu
+       --nntm-reu, căn giữa (tái dùng .nntm-auth-card__title--cong-tu, chỉ
+       đổi cỡ chữ 32→30).
+     - Dòng chào: avatar tròn 36px (khác 40px mặc định của popup Tham Gia)
+       + "Xin chào" 13px (--nntm-fs-xs) trên, pháp danh 16px (--nntm-fs-base) dưới.
+     - Nhãn "Nhập số chuỗi trì đã hoàn thành": 13px đậm (--nntm-fs-xs, đã
+       sẵn font-weight:700 ở .nntm-auth-field label — không cần lặp lại).
+     - Ô nhập số: cao 44px, nền trắng, góc vuông, rộng hết thẻ — ĐÃ ĐÚNG
+       SẴN từ .nntm-auth-field__control input dùng chung, không cần ghi đè.
+     - Nút "Cập nhật" đặc: cao 46px (khác 50px mặc định của .nntm-auth-btn).
+     - KHÔNG có checkbox nào — form-khai-bao.php vốn không có checkbox nào,
+       đúng yêu cầu, không cần ẩn gì thêm.
+   ============================================================= */
+
+.nntm-auth-card--cap-nhat {
+	width: 481px;
+}
+
+.nntm-auth-card--cap-nhat .nntm-auth-card__title--cong-tu {
+	font-size: var(--nntm-fs-2xl); /* 30px */
+}
+
+.nntm-auth-card--cap-nhat .nntm-cong-tu__avatar {
+	width: 36px;
+	height: 36px;
+}
+
+.nntm-auth-card--cap-nhat .nntm-cong-tu__chao-text em {
+	font-size: var(--nntm-fs-xs); /* 13px */
+}
+
+.nntm-auth-card--cap-nhat .nntm-cong-tu__chao-text strong {
+	font-size: var(--nntm-fs-base); /* 16px */
+}
+
+.nntm-auth-card--cap-nhat .nntm-auth-field label {
+	font-size: var(--nntm-fs-xs); /* 13px, dam da co san (font-weight:700) */
+}
+
+.nntm-auth-card--cap-nhat .nntm-auth-btn--dac {
+	height: 46px;
+	line-height: 46px;
+}
+
 /* ---------- Mobile ---------- */
 /* SUY DOAN: chưa có Figma mobile cho cả hai màn. */
 @media (max-width: 600px) {

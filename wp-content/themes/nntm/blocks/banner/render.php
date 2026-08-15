@@ -166,9 +166,30 @@ $nntm_bn_wrapper = get_block_wrapper_attributes(
 						if ( ! empty( $nntm_bn_slide['showButton'] ) ) :
 							$nntm_bn_btn_url   = apply_filters( 'nntm_tham_gia_chuoi_tri_url', '' );
 							$nntm_bn_btn_label = '' !== trim( $nntm_bn_slide['buttonLabel'] ) ? $nntm_bn_slide['buttonLabel'] : __( 'Tham gia', 'nntm' );
+
+							/*
+							 * Hai diem cam cho phan Cong Tu (yeu cau chu du an 14/08/2026:
+							 * nut "Tham gia" phai mo POPUP, doi nhan/thuoc tinh theo trang
+							 * thai nguoi xem - xem inc/cong-tu.php). Khong ai cam filter
+							 * thi nhan/thuoc tinh giu nguyen nhu truoc, khong doi hanh vi
+							 * mac dinh.
+							 */
+							$nntm_bn_btn_label = apply_filters( 'nntm_banner_btn_label', $nntm_bn_btn_label, $nntm_bn_slide );
+							$nntm_bn_btn_attrs = (array) apply_filters( 'nntm_banner_btn_attrs', array(), $nntm_bn_slide );
+
+							// Chi nhan cap key hop le dang thuoc tinh HTML (vd data-nntm-...)
+							// va esc_attr() ca khoa lan gia tri - khong tin filter ben ngoai.
+							$nntm_bn_btn_attrs_html = '';
+							foreach ( $nntm_bn_btn_attrs as $nntm_bn_attr_key => $nntm_bn_attr_val ) {
+								if ( ! is_string( $nntm_bn_attr_key ) || ! preg_match( '/^[a-z][a-z0-9-]*$/', $nntm_bn_attr_key ) ) {
+									continue;
+								}
+								$nntm_bn_btn_attrs_html .= ' ' . esc_attr( $nntm_bn_attr_key ) . '="' . esc_attr( (string) $nntm_bn_attr_val ) . '"';
+							}
+
 							if ( '' !== $nntm_bn_btn_url ) :
 								?>
-								<a class="nntm-banner__btn" href="<?php echo esc_url( $nntm_bn_btn_url ); ?>"><?php echo esc_html( $nntm_bn_btn_label ); ?></a>
+								<a class="nntm-banner__btn" href="<?php echo esc_url( $nntm_bn_btn_url ); ?>"<?php echo $nntm_bn_btn_attrs_html; // phpcs:ignore WordPress.Security.EscapeOutput -- da esc_attr() tung cap key/value o tren. ?>><?php echo esc_html( $nntm_bn_btn_label ); ?></a>
 								<?php
 							else :
 								?>

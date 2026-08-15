@@ -200,8 +200,14 @@ if ( ! $page || 'page' !== $page->post_type ) {
 
 $banner_image_id = 239; // anh thien duoi trang, dung anh trong thiet ke.
 
+// Tran het chieu rong man hinh, className dung CHUNG voi banner dau trang
+// cua Kim Cuong (blocks/banner/style.css .nntm-banner--khu-dau) — sua
+// 14/08/2026 theo yeu cau chu du an "sao hinh khong full nua" (docs/07-ban-giao.md
+// muc 9, viec 3). SUA VAO DAY, KHONG sua bang script tam roi vut di.
 $banner_attrs = array(
-	'slides' => array(
+	'className' => 'nntm-banner--khu-dau',
+	'tranVien'  => true,
+	'slides'    => array(
 		array(
 			'imageId'  => $banner_image_id,
 			'imageUrl' => wp_get_attachment_url( $banner_image_id ) ?: '',
@@ -239,6 +245,6 @@ wp_update_post( array(
 ) );
 
 echo "\nDa ghi de trang 'Dai Si Hanh Gia' (ID {$page_id}):\n";
-echo "  1. nntm/banner — anh {$banner_image_id}.\n";
+echo "  1. nntm/banner — anh {$banner_image_id}, tranVien=true, className=nntm-banner--khu-dau.\n";
 echo "  2. nntm/card-list — variant dai-si, nen cham, termId={$dai_si_term_id}, 9 bai/trang, phan trang bat.\n";
 echo "\nXem trang: " . get_permalink( $page_id ) . "\n";
