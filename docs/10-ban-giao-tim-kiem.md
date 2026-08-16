@@ -241,20 +241,56 @@ nạp cả model chữ.
 
 ---
 
-## 9. Test
+## 9. Test, và dựng trên máy khác
 
 | File | Dùng khi nào |
 |---|---|
 | `08-test-case-tim-kiem.md` | 77 test case + ma trận truy vết yêu cầu → case |
 | `09-kich-ban-test-tay.md` | 10 kịch bản làm tay theo thứ tự, ~25 phút |
-| `tools/test-data-tim-kiem.php` | dựng dữ liệu test; thêm `xoa` để dọn sạch |
+| `tools/bootstrap-demo.php` | dựng toàn bộ dữ liệu demo; thêm `xoa` để dọn sạch |
 
-Script dựng 5 bài `[TEST]`, tài khoản `nntm_test` / `TestNntm!2026`, và 7 ảnh mẫu
-vào `Downloads/nntm-test-anh` kèm từ khoá **đã đo trước** — nên test tay biết
-được kết quả đúng phải là gì.
+### Máy khác kéo repo về thì làm gì
+
+Repo **không có dump CSDL** (`.gitignore` cố tình loại), nên máy mới sẽ trắng
+nội dung. Dữ liệu demo vì vậy được **sinh hoàn toàn từ repo**, không phụ thuộc
+máy nào:
+
+```
+tools/test-assets/anh/   5 ảnh JPG đã thu nhỏ (288 KB cả bộ), từ khoá đã đo sẵn
+tools/test-assets/pdf/   3 file PDF tiếng Việt có chữ thật, ~90 KB
+```
+
+Bốn bước trên máy mới:
+
+```bash
+mysql -u root -e "CREATE DATABASE nntm_dev DEFAULT CHARACTER SET utf8mb4;"
+```
+```bash
+php -r "require 'wp-load.php';"   # hoặc mở /wp-admin/install.php cài WordPress
+```
+```bash
+php tools/bootstrap-demo.php
+```
+```bash
+cd tools/embed-service && python -m uvicorn main:app --host 127.0.0.1 --port 8765
+```
+
+`bootstrap-demo.php` tự bật theme + hai plugin, tạo bảng, dựng **10 trang · 11
+bài viết · 3 ấn phẩm kèm PDF · 5 ảnh · 1 tài khoản thành viên**, lập chỉ mục
+PDF và ảnh, rồi chép ảnh mẫu vào `Downloads/nntm-test-anh` để kéo thả. Chạy lại
+nhiều lần được và **chỉ thêm** — máy nào đã có nội dung thật của khách thì nó chỉ
+bù phần còn thiếu.
+
+Dịch vụ Python chưa chạy thì script **vẫn chạy hết**, chỉ bỏ qua bước lập chỉ mục
+và nói rõ trong log. Bật dịch vụ rồi chạy lại là xong.
+
+Đừng quên phần cấu hình FULLTEXT ở mục 4 — không tự theo code.
+
+Từ khoá của từng ảnh mẫu đã **đo trước và ghi trong script**, nên người test biết
+được kết quả đúng phải là gì thay vì đoán.
 
 Phép thử đáng giá nhất: thả `02-tuong-phat.jpg` ở **hai cửa sổ** (ẩn danh và đã
-đăng nhập). Từ khoá phải **giống hệt nhau** (`tượng Phật 88%`), nhưng khách ra
+đăng nhập). Từ khoá phải **giống hệt nhau** (`tượng Phật 85%`), nhưng khách ra
 **1** kết quả còn thành viên ra **6**. Khách thấy bài có chữ *"dành cho thành
 viên"* là rò thật.
 

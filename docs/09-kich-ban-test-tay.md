@@ -36,10 +36,11 @@ Mở **http://127.0.0.1:8765/khoe** — phải thấy `{"ok":true,...}`.
 ### 0.3. Dựng dữ liệu test
 
 ```bash
-C:\xampp\php\php.exe tools/test-data-tim-kiem.php
+C:\xampp\php\php.exe tools/bootstrap-demo.php
 ```
 
-Script tạo 5 bài `[TEST]`, một tài khoản thành viên, và chép 7 ảnh mẫu vào
+Script bật theme + plugin, tạo bảng, dựng 10 trang · 11 bài viết · 3 ấn phẩm kèm
+file PDF · 5 ảnh trong Thư viện · một tài khoản thành viên, rồi chép 7 ảnh mẫu vào
 **`C:\Users\Admin\Downloads\nntm-test-anh`**. Chạy lại nhiều lần được.
 
 ### 0.4. Hai tài khoản, hai cửa sổ
@@ -58,11 +59,11 @@ Thư mục `C:\Users\Admin\Downloads\nntm-test-anh`:
 
 | File | Máy phải đọc ra | Dùng cho |
 |---|---|---|
-| `01-rung-thong.jpg` | rừng thông 40% · rừng 26% · sương mù 25% | kịch bản 6 |
-| `02-tuong-phat.jpg` | **tượng Phật 88%** | kịch bản 6, 7 |
-| `03-ngoi-chua.webp` | ngôi chùa 34% · chư tăng 18% | kịch bản 6 |
-| `04-kinh-sach.png` | sách 59% · kinh sách 33% | kịch bản 6 |
-| `05-nui.jpg` | núi 34% · ngoài trời 28% | dự phòng |
+| `01-rung-thong.jpg` | rừng 33% · sương mù 28% · rừng thông 26% | kịch bản 6 |
+| `02-tuong-phat.jpg` | **tượng Phật 85%** | kịch bản 6, 7 |
+| `03-ngoi-chua.jpg` | ngôi chùa 35% · chư tăng 18% | kịch bản 6 |
+| `04-kinh-sach.jpg` | sách 62% · kinh sách 22% | kịch bản 6 |
+| `05-nui.jpg` | núi 42% · sương mù 25% | dự phòng |
 | `06-anh-qua-lon.jpg` | *(5,3 MB — cố tình quá cỡ)* | kịch bản 9 |
 | `07-file-gia-mao.jpg` | *(file HTML đổi đuôi)* | kịch bản 9 |
 
@@ -182,7 +183,7 @@ Việt — chữ `đ` không tự bỏ dấu như các nguyên âm.
 ## Kịch bản 6 — Tìm bằng hình ảnh
 
 1. Mở File Explorer tới `C:\Users\Admin\Downloads\nntm-test-anh`.
-2. **Kéo** `03-ngoi-chua.webp` **thả vào ô tìm kiếm** trên header.
+2. **Kéo** `03-ngoi-chua.jpg` **thả vào ô tìm kiếm** trên header.
 
 **Đúng:**
 - Lúc kéo qua ô tìm, viền ô đổi thành **nét đứt**.
@@ -192,16 +193,16 @@ Việt — chữ `đ` không tự bỏ dấu như các nguyên âm.
 Ảnh này có:  [ ngôi chùa 34% ]  [ chư tăng 18% ]  [ sương mù 11% ]
 
 → Biểu Tượng và Hoa Văn Mật Tông
-→ [TEST] Ngôi chùa trên đỉnh núi        ← bài mẫu phải có mặt
+→ [DEMO] Ngôi chùa trên đỉnh núi        ← bài mẫu phải có mặt
 → Diệu Thượng
 ```
 
 3. Bấm vào chip **"ngôi chùa"**.
    **Đúng:** ô tìm tự điền "ngôi chùa" và chạy tìm bằng chữ như bình thường.
 
-4. Bấm **nút camera** cạnh kính lúp, chọn `04-kinh-sach.png`.
-   **Đúng:** từ khoá `sách 59% · kinh sách 33%`, trong kết quả có
-   **[TEST] Giữ gìn kinh sách**.
+4. Bấm **nút camera** cạnh kính lúp, chọn `04-kinh-sach.jpg`.
+   **Đúng:** từ khoá `sách 62% · kinh sách 22%`, trong kết quả có
+   **[DEMO] Giữ gìn kinh sách**.
 
 5. Chụp màn hình bất kỳ (`PrtSc`), click vào ô tìm, bấm `Ctrl` + `V`.
    **Đúng:** cũng chạy tìm bằng ảnh, không cần lưu file ra đĩa trước.
@@ -216,8 +217,8 @@ Việt — chữ `đ` không tự bỏ dấu như các nguyên âm.
 
 | Cửa sổ | Gõ `tuong phat` | Phải thấy |
 |---|---|---|
-| **Ẩn danh** | | **đúng 1 kết quả**: `[TEST] Tượng Phật trong chánh điện` |
-| **Đã đăng nhập** | | **6 kết quả**, trong đó có `[TEST] Tượng Phật — bài dành cho thành viên` và các bài `Kim Cương Hành Giả – Bài 1…4` |
+| **Ẩn danh** | | **đúng 1 kết quả**: `[DEMO] Tượng Phật trong chánh điện` |
+| **Đã đăng nhập** | | **6 kết quả**, trong đó có `[DEMO] Tượng Phật — bài dành cho thành viên` và các bài `Kim Cương Hành Giả – Bài 1…4` |
 
 > **Dấu hiệu rò:** cửa sổ ẩn danh nhìn thấy bài có chữ *"dành cho thành viên"*
 > hoặc bất kỳ bài `Kim Cương Hành Giả – Bài N` nào. Thấy là dừng lại và báo.
@@ -228,8 +229,8 @@ Thả `02-tuong-phat.jpg` vào ô tìm ở **cả hai cửa sổ**.
 
 | Cửa sổ | Từ khoá | Số kết quả |
 |---|---|---|
-| Ẩn danh | tượng Phật 88% | **1** |
-| Đã đăng nhập | tượng Phật 88% | **6** |
+| Ẩn danh | tượng Phật 85% | **1** |
+| Đã đăng nhập | tượng Phật 85% | **6** |
 
 Từ khoá đọc ra **giống hệt nhau** ở hai cửa sổ — máy nhìn ảnh thì ai cũng như
 ai. Chỉ **danh sách kết quả** mới khác. Nếu từ khoá cũng khác nhau thì có gì đó
@@ -252,7 +253,7 @@ sai ở tầng đọc ảnh.
 
 1. Cửa sổ **ẩn danh**, thả `01-rung-thong.jpg`.
 
-**Đúng:** từ khoá `rừng thông 40% · rừng 26% · sương mù 25%`, có kết quả.
+**Đúng:** từ khoá `rừng 33% · sương mù 28% · rừng thông 26%`, có kết quả.
 
 2. Tìm một ảnh trong máy bạn có nội dung **không liên quan gì** tới site (ảnh
    hoá đơn, ảnh chụp màn hình phần mềm…), thả vào.
@@ -310,10 +311,10 @@ Hai câu này phải khớp với thực tế.
 ## Dọn dẹp sau khi test xong
 
 ```bash
-C:\xampp\php\php.exe tools/test-data-tim-kiem.php xoa
+C:\xampp\php\php.exe tools/bootstrap-demo.php xoa
 ```
 
-Xoá 5 bài `[TEST]`, tài khoản `nntm_test` và thư mục ảnh mẫu trong Downloads.
+Xoá 11 bài + 3 ấn phẩm `[DEMO]`, tài khoản `nntm_test` và thư mục ảnh mẫu trong Downloads.
 Ba file PDF demo trong Thư viện thì **không** bị xoá — muốn bỏ thì xoá tay
 trong Media.
 
