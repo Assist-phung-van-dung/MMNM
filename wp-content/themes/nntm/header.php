@@ -212,8 +212,9 @@ $nntm_nav_id = 'nntm-primary-menu';
 
 			<?php else : ?>
 
+				<?php $nntm_search_id = wp_unique_id( 'nntm-header-search-' ); ?>
 				<form role="search" method="get" class="nntm-header__search-form" action="<?php echo esc_url( home_url( '/' ) ); ?>">
-					<label for="<?php echo esc_attr( wp_unique_id( 'nntm-header-search-' ) ); ?>" class="nntm-sr-only">
+					<label for="<?php echo esc_attr( $nntm_search_id ); ?>" class="nntm-sr-only">
 						<?php esc_html_e( 'Tìm kiếm', 'nntm' ); ?>
 					</label>
 					<button type="submit" class="nntm-header__search-submit">
@@ -225,11 +226,31 @@ $nntm_nav_id = 'nntm-primary-menu';
 					</button>
 					<input
 						type="search"
+						id="<?php echo esc_attr( $nntm_search_id ); ?>"
 						class="nntm-header__search-field"
 						name="s"
 						placeholder="<?php esc_attr_e( 'Nhập từ khoá', 'nntm' ); ?>"
 						value="<?php echo esc_attr( get_search_query() ); ?>"
 					/>
+
+					<?php
+					/*
+					 * Tìm bằng hình ảnh. Nút và ô chọn file để ẨN SẴN trong HTML
+					 * chứ không do JavaScript sinh ra, để không nhấp nháy lúc tải
+					 * trang. Plugin nntm-search bật thì gỡ thuộc tính hidden;
+					 * plugin tắt thì cả hai vô hình và form vẫn chạy như cũ —
+					 * theme không phụ thuộc plugin.
+					 */
+					?>
+					<button type="button" class="nntm-header__search-camera" hidden>
+						<span class="nntm-sr-only"><?php esc_html_e( 'Tìm bằng hình ảnh', 'nntm' ); ?></span>
+						<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false">
+							<rect x="1.5" y="5" width="17" height="12.5" rx="2.5" stroke="currentColor" stroke-width="1.6" />
+							<circle cx="10" cy="11.25" r="3.5" stroke="currentColor" stroke-width="1.6" />
+							<path d="M7 5l1.2-2h3.6L13 5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+						</svg>
+					</button>
+					<input type="file" class="nntm-header__search-file" accept="image/jpeg,image/png,image/webp,image/gif" hidden />
 				</form>
 
 				<a href="<?php echo esc_url( wp_login_url( get_permalink() ?: home_url( '/' ) ) ); ?>" class="nntm-header__login">
