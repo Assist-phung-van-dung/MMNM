@@ -76,6 +76,7 @@ $nntm_nav_id = 'nntm-primary-menu';
 
 <a class="nntm-sr-only" href="#nntm-noi-dung-chinh"><?php esc_html_e( 'Bỏ qua tới nội dung chính', 'nntm' ); ?></a>
 
+<div class="nntm-site-frame">
 <header id="masthead" class="<?php echo esc_attr( $nntm_header_class ); ?>">
 	<div class="nntm-header__bar">
 

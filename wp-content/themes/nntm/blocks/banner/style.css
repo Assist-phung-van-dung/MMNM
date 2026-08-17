@@ -74,7 +74,7 @@
 	 * màn hình hẹp hoặc quá cao trên màn hình rất rộng.
 	 */
 	aspect-ratio: auto;
-	height: clamp(420px, 45vw, 700px);
+	height: clamp(420px, 45vw, 615px);
 	max-height: 88vh;
 }
 
@@ -490,18 +490,4 @@
 	background-color: var(--nntm-nen);
 	font-family: var(--nntm-font-sans);
 	color: var(--nntm-chu-phu);
-}
-
-/* =============================================================
-   Kim Cuong Hanh Gia — Le Dan Khong Tuoc, so do chot 17/08/2026.
-   Desktop 1366: chieu cao stage = 615px.
-   Giu responsive mobile da co o tren bang cach chi khoa kich thuoc tu
-   tablet/desktop tro len.
-   ============================================================= */
-@media (min-width: 783px) {
-	.nntm-banner.nntm-banner--kc-ledan .nntm-banner__stage {
-		height: 615px;
-		min-height: 615px;
-		max-height: none;
-	}
 }

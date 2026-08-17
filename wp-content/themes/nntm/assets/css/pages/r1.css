@@ -17,6 +17,9 @@
    ============================================================= */
 
 body.nntm-r1 {
+	width: 100%;
+	max-width: var(--nntm-w-rong);
+	margin-inline: auto;
 	background-color: var(--nntm-trang);
 }
 

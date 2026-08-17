@@ -16,6 +16,7 @@
 }
 
 html {
+	background-color: var(--nntm-den);
 	-webkit-text-size-adjust: 100%;
 	text-size-adjust: 100%;
 	scroll-behavior: smooth;
@@ -32,13 +33,34 @@ body {
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
-	background-color: var(--nntm-nen);
+	background-color: var(--nntm-den);
 	color: var(--nntm-chu);
 	font-family: var(--nntm-font-sans);
 	font-size: var(--nntm-fs-base);
 	line-height: var(--nntm-lh-rong);
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+}
+
+/*
+ * Desktop design frame: 1366px. On wider monitors the complete site stays
+ * centered at the original design size instead of stretching with viewport.
+ * Intentional carousel overflow remains local to the component.
+ */
+.nntm-site-frame {
+	width: 100%;
+	max-width: var(--nntm-w-rong);
+	min-height: 100vh;
+	margin-inline: auto;
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	background-color: var(--nntm-nen);
+}
+
+.nntm-site-frame > main {
+	width: 100%;
+	max-width: 100%;
 }
 
 /* Trang ngắn vẫn giữ chân trang ở đáy viewport. */

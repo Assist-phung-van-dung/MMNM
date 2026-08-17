@@ -51,7 +51,7 @@
 .nntm-lien-dan-khoa .nntm-card-list__header-row {
 	position: absolute;
 	z-index: 2;
-	left: max(var(--nntm-sp-9), calc((100vw - var(--nntm-w-rong)) / 2 + var(--nntm-sp-9)));
+	left: var(--nntm-sp-9);
 	top: 170px; /* tu anh thiet ke: title can giua theo chieu cao cum card */
 	width: 240px;
 	align-items: flex-start;
@@ -525,11 +525,11 @@
  */
 @media (min-width: 1024px) {
 	.nntm-card-list--nen-cham > .nntm-card-list__band > .nntm-container {
-		max-width: 1156px;
+		max-width: 1204px;
 	}
 
 	.nntm-card-list--nen-cham .nntm-grid--3 {
-		grid-template-columns: repeat(3, 372px);
+		grid-template-columns: repeat(3, 388px);
 		justify-content: center;
 		column-gap: var(--nntm-sp-5); /* 20 */
 		row-gap: var(--nntm-sp-6);    /* 25, gan nhat voi 26 — khong co bien 26px rieng */
@@ -612,11 +612,11 @@
 
 @media (min-width: 1024px) {
 	.nntm-card-list--nen-vang > .nntm-card-list__band > .nntm-container {
-		max-width: 1192px; /* 380*3 + 26*2 — khop luoi the moi, gan dung khung noi dung 1181 do tu anh */
+		max-width: 1204px; /* 384*3 + 26*2 = 1204 — khung desktop da chot */
 	}
 
 	.nntm-card-list--nen-vang .nntm-grid--3 {
-		grid-template-columns: repeat(3, 380px); /* tu anh giao dien — truoc la 372px */
+		grid-template-columns: repeat(3, 384px); /* 384*3 + 26*2 = 1204 */
 		justify-content: center;
 		column-gap: 26px; /* tu anh giao dien — truoc la sp-5 (20), khong co token 26 */
 		row-gap: 32px;    /* tu anh giao dien — truoc la sp-6 (25), khong co token 32 */
@@ -1890,76 +1890,4 @@ a.nntm-card-list__paging-so:focus-visible {
 	.nntm-kc-nghi-quy .nntm-card-list__marquee-item {
 		flex: 0 0 min(80vw, 300px);
 	}
-}
-
-/* =============================================================
-   Hanh Gia — desktop fidelity pass 17/08/2026
-   Nguon: 08.DAI SI HANH GIA.png + 09. KIM CUONG HANH GIA.png (anh 2x)
-   va so do chu du an xac nhan tren khung thiet ke 1366px.
-
-   - Dai Si / Kim Cuong: khung noi dung Card List = 1204px.
-   - Heading/subheading can GIUA tren toan bo khung 1204, khong de
-     .header-row flex co theo do rong text lam lech tam.
-   - Dai Si: 388 * 3 + 20 * 2 = 1204.
-   - Kim Cuong: 384 * 3 + 26 * 2 = 1204.
-   - Nghi Quy tren trang Kim Cuong: gioi han diem bat dau theo le trai
-     khung 1204, nhung vung marquee mo den mep phai viewport; the cao 541px.
-   ============================================================= */
-
-.nntm-card-list--nen-cham .nntm-card-list__header-row,
-.nntm-card-list--nen-vang .nntm-card-list__header-row {
-	width: 100%;
-	justify-content: center;
-	align-items: center;
-}
-
-.nntm-card-list--nen-cham .nntm-card-list__heading,
-.nntm-card-list--nen-vang .nntm-card-list__heading,
-.nntm-card-list--nen-cham .nntm-card-list__subheading,
-.nntm-card-list--nen-vang .nntm-card-list__subheading {
-	width: 100%;
-	padding-inline: 0;
-	text-align: center;
-}
-
-@media (min-width: 1024px) {
-	.nntm-card-list--nen-cham > .nntm-card-list__band > .nntm-container,
-	.nntm-card-list--nen-vang > .nntm-card-list__band > .nntm-container {
-		width: 100%;
-		max-width: 1204px;
-		padding-inline: 0;
-	}
-
-	.nntm-card-list--nen-cham .nntm-grid--3 {
-		grid-template-columns: repeat(3, 388px);
-		justify-content: center;
-		column-gap: 20px;
-	}
-
-	.nntm-card-list--nen-vang .nntm-grid--3 {
-		grid-template-columns: repeat(3, 384px);
-		justify-content: center;
-		column-gap: 26px;
-	}
-
-	/* Nghi Quy: diem bat dau van theo le trai cua khung 1204, nhung ben
-	   phai KHONG bi cat tai mep container. Marquee duoc mo den dung mep
-	   viewport, nen the tiep theo co the lo ra tu nhien nhu thiet ke. */
-	.nntm-kc-nghi-quy > .nntm-card-list__band > .nntm-container {
-		width: 100%;
-		max-width: 1204px;
-		padding-inline: 0;
-		overflow: visible;
-	}
-
-	.nntm-kc-nghi-quy .nntm-card-list__marquee {
-		width: calc(100% + max(0px, (100vw - 1204px) / 2));
-		max-width: none;
-		overflow: hidden;
-	}
-}
-
-.nntm-kc-nghi-quy .nntm-card--books {
-	height: 541px;
-	min-height: 541px;
 }

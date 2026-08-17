@@ -97,6 +97,7 @@ if ( ! $nntm_is_home && $nntm_front_id && function_exists( 'pll_get_post_transla
 			</div>
 		</div>
 	</footer>
+</div><!-- /.nntm-site-frame -->
 
 <?php wp_footer(); ?>
 </body>

@@ -250,7 +250,7 @@
 }
 
 .nntm-cong-tu--nen-vang .nntm-cong-tu__thong-ke {
-	max-width: 1002px; /* tu anh giao dien — truoc la 1220 (bien w-noi-dung) */
+	max-width: 1000px; /* tu anh giao dien — truoc la 1220 (bien w-noi-dung) */
 	min-height: 135px; /* tu anh giao dien — the cao ~135 */
 	display: flex;
 	align-items: center;
@@ -265,7 +265,7 @@
 }
 
 .nntm-cong-tu--nen-vang .nntm-cong-tu__bxh {
-	max-width: 1002px; /* tu anh giao dien — truoc la 1220 */
+	max-width: 1000px; /* tu anh giao dien — truoc la 1220 */
 }
 
 /*
@@ -314,18 +314,5 @@
 @media (prefers-reduced-motion: reduce) {
 	.nntm-cong-tu__thanh-fill {
 		transition: none;
-	}
-}
-
-/* =============================================================
-   Kim Cuong Hanh Gia — so do chot 17/08/2026.
-   Ca the Thong Ke va Bảng Xep Hang dung khung CHINH XAC 1000px tren
-   desktop 1366; khong dung 1002px uoc luong cu.
-   ============================================================= */
-@media (min-width: 1024px) {
-	.nntm-cong-tu--nen-vang .nntm-cong-tu__thong-ke,
-	.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh {
-		width: 100%;
-		max-width: 1000px;
 	}
 }
