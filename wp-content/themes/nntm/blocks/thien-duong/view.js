@@ -212,22 +212,21 @@
 		}
 
 		/**
-		 * Cập nhật dấu hiệu "đang phát" trên danh sách bài — KHÔNG chỉ dùng
-		 * màu (yêu cầu bắt buộc): thêm class .is-playing cho CSS lẫn đổi hẳn
-		 * chữ trong .nntm-thien-duong__track-status để người mù màu / dùng
-		 * trình đọc màn hình vẫn nhận biết được.
+		 * Danh dau bai hien tai va bai dang phat. UI chi dung nen/vach highlight;
+		 * aria-current giu thong tin ngu nghia cho cong cu ho tro ma khong hien chu.
 		 */
 		function updateTrackListUI() {
 			for ( var i = 0; i < trackButtons.length; i++ ) {
 				var button = trackButtons[ i ];
-				var statusEl = button.querySelector( '.nntm-thien-duong__track-status' );
 				var isActive = i === currentIndex;
 
 				button.classList.toggle( 'is-playing', isActive && ! audio.paused );
 				button.classList.toggle( 'is-current', isActive );
 
-				if ( statusEl ) {
-					statusEl.textContent = isActive && ! audio.paused ? window.nntmThienDuongI18n.dangPhat : '';
+				if ( isActive ) {
+					button.setAttribute( 'aria-current', 'true' );
+				} else {
+					button.removeAttribute( 'aria-current' );
 				}
 			}
 		}
@@ -523,7 +522,6 @@
 	window.nntmThienDuongI18n = window.nntmThienDuongI18n || {
 		phat: 'Phát',
 		tamDung: 'Tạm dừng',
-		dangPhat: 'Đang phát',
 		khongThePhat: 'Không thể phát tệp âm thanh này. Hãy kiểm tra lại file trong Media Library.',
 	};
 

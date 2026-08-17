@@ -1,0 +1,54 @@
+/* Nút Yêu thích dùng chung. Icon tim luôn dùng màu đỏ thương hiệu. */
+.nntm-favorite-button {
+	appearance: none;
+	display: inline-flex;
+	align-items: center;
+	gap: var(--nntm-sp-2);
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: var(--nntm-chu);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-xs);
+	font-weight: 700;
+	line-height: var(--nntm-lh-vua);
+	cursor: pointer;
+	transition: color var(--nntm-dur) var(--nntm-ease), opacity var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-favorite-button__icon {
+	flex: 0 0 auto;
+	color: var(--nntm-do-tham);
+}
+
+.nntm-favorite-button__icon path {
+	fill: transparent;
+	stroke: currentColor;
+	stroke-width: 1.8;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	transition: fill var(--nntm-dur) var(--nntm-ease), opacity var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-favorite-button.is-active .nntm-favorite-button__icon path {
+	fill: currentColor;
+}
+
+.nntm-favorite-button:hover .nntm-favorite-button__icon,
+.nntm-favorite-button:focus-visible .nntm-favorite-button__icon {
+	opacity: 0.78;
+}
+
+.nntm-favorite-button:hover,
+.nntm-favorite-button:focus-visible {
+	color: var(--nntm-chinh-hover);
+}
+
+.nntm-favorite-button.is-loading {
+	opacity: 0.55;
+}
+
+.nntm-favorite-button:disabled {
+	cursor: wait;
+}

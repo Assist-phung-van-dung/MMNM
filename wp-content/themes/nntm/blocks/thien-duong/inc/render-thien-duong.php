@@ -216,7 +216,6 @@ if ( ! function_exists( 'nntm_thien_duong_render_track_item' ) ) {
 				<span class="nntm-thien-duong__track-title"><?php echo esc_html( $title ); ?></span>
 				<span class="nntm-thien-duong__track-listens"><span class="nntm-thien-duong__track-listen-count"><?php echo esc_html( number_format_i18n( $track['listen_count'] ) ); ?></span> <?php esc_html_e( 'lượt nghe', 'nntm' ); ?></span>
 				<span class="nntm-thien-duong__track-duration"><?php echo esc_html( $track['duration'] ); ?></span>
-				<span class="nntm-thien-duong__track-status"></span>
 			</button>
 		</li>
 		<?php

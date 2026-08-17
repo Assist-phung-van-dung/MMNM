@@ -5,7 +5,7 @@
 	"title": "Danh sách bài viết so le (Article Rows)",
 	"category": "nntm",
 	"icon": "align-pull-left",
-	"description": "Danh sách bài viết xếp thành hàng ngang, ảnh và chữ đảo bên luân phiên — dùng cho trang chi tiết truyền thống (Figma: 03. PHAP TOA - NGUYEN THUY). Khách tự chọn nguồn bài, số lượng, cách sắp xếp, không cần lập trình viên.",
+	"description": "Danh sách bài viết xếp so le trái–phải theo giao diện phân mục. Có Yêu thích và phân trang tùy chọn.",
 	"textdomain": "nntm",
 	"supports": {
 		"html": false,
@@ -32,7 +32,7 @@
 		},
 		"postsPerPage": {
 			"type": "number",
-			"default": 4
+			"default": 5
 		},
 		"orderBy": {
 			"type": "string",
@@ -46,15 +46,23 @@
 		},
 		"showCategory": {
 			"type": "boolean",
-			"default": true
+			"default": false
 		},
 		"showExcerpt": {
 			"type": "boolean",
 			"default": true
 		},
+		"showFavorite": {
+			"type": "boolean",
+			"default": true
+		},
+		"showPaging": {
+			"type": "boolean",
+			"default": false
+		},
 		"primaryCtaLabel": {
 			"type": "string",
-			"default": "Đọc bài"
+			"default": ""
 		},
 		"secondaryCtaLabel": {
 			"type": "string",

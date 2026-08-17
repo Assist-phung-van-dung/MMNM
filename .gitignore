@@ -24,7 +24,6 @@
 
 # === Build ===
 node_modules/
-vendor/
 dist/
 *.log
 

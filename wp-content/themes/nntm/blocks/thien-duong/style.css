@@ -206,7 +206,8 @@
 	border-radius: 0;
 	background-color: var(--nntm-nhac-toi);
 	box-shadow: var(--nntm-sh-card);
-	overflow: hidden;
+	/* Cho popup speed menu thoat khoi khung player, tranh bi cat mat cac muc dau. */
+	overflow: visible;
 	/* tu Figma: khu trinh phat 817x416 — chi la khung tham khao, xem chu thich tren */
 	aspect-ratio: 817 / 416;
 }
@@ -465,9 +466,13 @@
 .nntm-thien-duong__speed-menu {
 	position: absolute;
 	right: 0;
-	bottom: calc(100% + var(--nntm-sp-2));
-	z-index: 10;
+	/* Mo xuong va de len playlist thay vi mo len roi bi player cat mat 0.75x/1x. */
+	top: calc(100% + var(--nntm-sp-2));
+	bottom: auto;
+	z-index: 1000;
 	width: 190px;
+	max-height: min(320px, calc(100vh - 24px));
+	overflow-y: auto;
 	padding: var(--nntm-sp-2) 0;
 	border-radius: var(--nntm-r-md);
 	background-color: var(--nntm-nhac-mat);
@@ -598,15 +603,15 @@
 	outline-offset: 2px;
 }
 
-/*
- * Bài đang phát: KHÔNG chỉ báo hiệu bằng màu (yêu cầu bắt buộc) — nền đổi
- * màu CHỈ là gợi ý phụ, dấu hiệu chính là chữ "Đang phát" hiện ra trong
- * .nntm-thien-duong__track-status (đổi qua view.js) và ký hiệu ⏸/▶ trên nút
- * phát chính, không phải màu đơn thuần.
- */
+/* Bai dang phat: dung nen + vach nhan dien, khong hien chu "Dang phat". */
 .nntm-thien-duong__track.is-playing {
-	background-color: var(--nntm-nhac-mat);
+	background-color: var(--nntm-xam-chu);
+	box-shadow: inset 3px 0 0 var(--nntm-xanh-nhac);
 	font-weight: 700;
+}
+
+.nntm-thien-duong__track.is-playing:hover {
+	background-color: var(--nntm-xam-chu);
 }
 
 .nntm-thien-duong__track-index {
@@ -641,13 +646,6 @@
 	text-align: right;
 }
 
-.nntm-thien-duong__track-status {
-	flex: none;
-	font-size: var(--nntm-fs-xs);
-	font-weight: 700;
-	color: var(--nntm-xanh-nhac);
-	text-transform: uppercase;
-}
 
 /* =============================================================
    SUY DOAN: chua co Figma mobile — Figma chi co khung desktop 1366px.
