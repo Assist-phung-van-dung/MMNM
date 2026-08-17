@@ -386,6 +386,75 @@ function nntm_congtu_so_nguyen_duong( $raw ) {
 }
 
 /* =========================================================================
+ * 4b. Đồng bộ cache/tổng KPI sau khi ghi.
+ * ========================================================================= */
+
+/**
+ * Xóa mọi transient Bảng Xếp Hạng của một chương trình mà theme có thể biết.
+ *
+ * Plugin cũ chốt BXH 24h và không xóa cache khi ghi. Điều đó tạo ra lỗi rất
+ * khó hiểu: trang được mở khi chưa có dữ liệu -> cache mảng rỗng -> người dùng
+ * ghi chuỗi sau đó nhưng BXH vẫn rỗng tới 24h. Từ yêu cầu sửa 15/08/2026,
+ * cache BXH phải bị invalidated ngay sau một lần cam kết/ghi nhận thành công.
+ *
+ * delete_transient() được gọi thay vì DELETE option trực tiếp để tương thích
+ * cả site có persistent object cache. Ngoài hai limit thường dùng (50/200),
+ * ta quét các transient đang lưu trong wp_options để dọn các limit tùy chỉnh.
+ *
+ * @param int $program_id ID chương trình.
+ */
+function nntm_congtu_xoa_cache_bxh( int $program_id ): void {
+	if ( $program_id <= 0 ) {
+		return;
+	}
+
+	$limits = apply_filters( 'nntm_congtu_bxh_cache_limits', array( 50, 200 ), $program_id );
+	$limits = is_array( $limits ) ? $limits : array( 50, 200 );
+
+	foreach ( array_unique( array_map( 'absint', $limits ) ) as $limit ) {
+		if ( $limit > 0 ) {
+			delete_transient( 'nntm_kpi_bxh_' . $program_id . '_' . $limit );
+		}
+	}
+
+	global $wpdb;
+	$prefix = '_transient_nntm_kpi_bxh_' . $program_id . '_';
+	$like   = $wpdb->esc_like( $prefix ) . '%';
+	$names  = $wpdb->get_col(
+		$wpdb->prepare(
+			"SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s",
+			$like
+		)
+	);
+
+	foreach ( (array) $names as $option_name ) {
+		$transient_name = substr( (string) $option_name, strlen( '_transient_' ) );
+		if ( '' !== $transient_name ) {
+			delete_transient( $transient_name );
+		}
+	}
+}
+
+/**
+ * Sau khi plugin ghi log thành công, tính lại aggregate (nếu API có sẵn) rồi
+ * xóa cache BXH. wp_nntm_kpi_log vẫn là source of truth; option/transient chỉ
+ * là cache có thể tái tạo.
+ *
+ * @param int $program_id ID chương trình.
+ */
+function nntm_congtu_dong_bo_kpi_sau_ghi( int $program_id ): void {
+	if ( $program_id <= 0 ) {
+		return;
+	}
+
+	if ( function_exists( 'nntm_kpi_tinh_lai_tong' ) ) {
+		nntm_kpi_tinh_lai_tong( $program_id );
+	}
+
+	nntm_congtu_xoa_cache_bxh( $program_id );
+}
+
+/* =========================================================================
  * 5. Xử lý POST — điểm vào duy nhất ở template_redirect.
  * ========================================================================= */
 
@@ -521,6 +590,10 @@ function nntm_congtu_xu_ly_cam_ket(): void {
 		return;
 	}
 
+	// Ghi log đã thành công: aggregate/cache chỉ là dữ liệu dẫn xuất, phải
+	// đồng bộ ngay để trang Kim Cương không giữ BXH rỗng tới 24 giờ.
+	nntm_congtu_dong_bo_kpi_sau_ghi( $program->ID );
+
 	// "Nhận thông tin của trang" — không bắt buộc, chỉ lưu lại lựa chọn.
 	update_user_meta( $user_id, 'nntm_nhan_ban_tin', empty( $_POST['nntm_congtu_ban_tin'] ) ? '0' : '1' );
 
@@ -572,6 +645,9 @@ function nntm_congtu_xu_ly_ghi_nhan(): void {
 		nntm_congtu_dat_loi( 'cap-nhat', $ket_qua );
 		return;
 	}
+
+	// Ghi thực tế thành công phải làm BXH thấy dữ liệu ngay ở request kế tiếp.
+	nntm_congtu_dong_bo_kpi_sau_ghi( $program->ID );
 
 	$url = add_query_arg( 'nntm_congtu_ok', 'ghi-nhan', nntm_congtu_url_hien_tai() );
 	wp_safe_redirect( $url ? $url : home_url( '/' ) );

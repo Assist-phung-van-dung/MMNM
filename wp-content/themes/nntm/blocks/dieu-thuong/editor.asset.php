@@ -1,0 +1,13 @@
+<?php
+return array(
+	'dependencies' => array(
+		'wp-blocks',
+		'wp-element',
+		'wp-i18n',
+		'wp-block-editor',
+		'wp-components',
+		'wp-data',
+		'wp-server-side-render',
+	),
+	'version' => filemtime( __DIR__ . '/editor.js' ),
+);

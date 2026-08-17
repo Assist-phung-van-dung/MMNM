@@ -191,7 +191,7 @@ function nntm_engineering_earth_render_video_stage( string $main_video_url_or_id
 	?>
 	<div class="nntm-engineering-earth__video-stage" data-nntm-ee-stage="1">
 		<?php echo nntm_engineering_earth_render_video_slot( $main_id, 'main', __( 'Video chính', 'nntm' ), $main_fallback_image, $video_link_url ); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong. ?>
-		<?php echo nntm_engineering_earth_render_video_slot( $bg_id, 'bg', __( 'Video nền', 'nntm' ), '', $video_link_url ); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong. ?>
+		<!-- <?php echo nntm_engineering_earth_render_video_slot( $bg_id, 'bg', __( 'Video nền', 'nntm' ), '', $video_link_url ); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong. ?> -->
 	</div>
 	<?php
 	return trim( (string) ob_get_clean() );

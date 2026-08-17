@@ -290,6 +290,22 @@
 	color: var(--nntm-trang);
 }
 
+
+.nntm-thien-duong__playback-error {
+	flex: 1 1 100%;
+	width: 100%;
+	margin: 0;
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-xs);
+	font-weight: 600;
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-trang);
+}
+
+.nntm-thien-duong__playback-error[hidden] {
+	display: none !important;
+}
+
 /* ---------- Cụm điều khiển ---------- */
 .nntm-thien-duong__controls {
 	display: flex;
@@ -680,5 +696,73 @@
 
 	.nntm-thien-duong__btn:active {
 		transform: none;
+	}
+}
+
+/* ---------- Realtime Soketi: góc phải player ---------- */
+.nntm-thien-duong__player-inner {
+	position: relative;
+}
+
+.nntm-thien-duong__live-status {
+	position: absolute;
+	top: var(--nntm-sp-3);
+	right: var(--nntm-sp-4);
+	z-index: 5;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-xs);
+	font-variant-numeric: tabular-nums;
+}
+
+.nntm-thien-duong__live-status[hidden] {
+	display: none !important;
+}
+
+.nntm-thien-duong__live-item {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	min-height: 28px;
+	padding: 4px 9px;
+	border: 1px solid rgba(255,255,255,.16);
+	border-radius: var(--nntm-r-pill);
+	background: rgba(0,0,0,.38);
+	color: var(--nntm-trang);
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+}
+
+.nntm-thien-duong__live-item svg {
+	width: 15px;
+	height: 15px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.8;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.nntm-thien-duong__live-item strong {
+	min-width: 1ch;
+	font-weight: 700;
+}
+
+.nntm-thien-duong__player-inner[data-nntm-realtime-state='connecting'] .nntm-thien-duong__live-status,
+.nntm-thien-duong__player-inner[data-nntm-realtime-state='unavailable'] .nntm-thien-duong__live-status,
+.nntm-thien-duong__player-inner[data-nntm-realtime-state='failed'] .nntm-thien-duong__live-status,
+.nntm-thien-duong__player-inner[data-nntm-realtime-state='error'] .nntm-thien-duong__live-status {
+	opacity: .65;
+}
+
+@media (max-width: 600px) {
+	.nntm-thien-duong__live-status {
+		top: var(--nntm-sp-2);
+		right: var(--nntm-sp-2);
+	}
+	.nntm-thien-duong__live-item {
+		padding-inline: 7px;
 	}
 }

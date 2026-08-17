@@ -108,7 +108,7 @@
 						el(
 							'p',
 							{ className: 'components-base-control__help' },
-							__( 'Chỉ lấy bài Nhạc thiền (nntm_zen_track) đã gán tệp âm thanh. Bài chưa gán tệp tự động bị bỏ qua, không báo lỗi.', 'nntm' )
+							__( 'Nguồn cố định: Nhạc Thiền (nntm_zen_track). Mỗi post dùng Tiêu đề làm tên bài, Ảnh đại diện làm hình và _nntm_track_audio làm file nhạc. Bài chưa có audio sẽ không xuất hiện.', 'nntm' )
 						),
 						el( RangeControl, {
 							label: __( 'Số bài tối đa', 'nntm' ),

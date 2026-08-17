@@ -44,6 +44,9 @@ if ( ! in_array( $nntm_ctb_background, array( 'vang', 'kem', 'none' ), true ) ) 
 }
 
 $nntm_ctb_program = nntm_congtu_block_resolve_program( $nntm_ctb_program_id );
+$nntm_ctb_data    = $nntm_ctb_program
+	? nntm_congtu_block_lay_du_lieu_nhat_quan( $nntm_ctb_program, $nntm_ctb_bxh_limit )
+	: array( 'tong' => array(), 'bxh' => array(), 'api_ok' => false );
 
 $nntm_ctb_wrapper_attributes = get_block_wrapper_attributes(
 	array(
@@ -58,11 +61,11 @@ $nntm_ctb_wrapper_attributes = get_block_wrapper_attributes(
 		</p>
 	<?php else : ?>
 		<?php if ( $nntm_ctb_show_thongke ) : ?>
-			<?php echo nntm_congtu_block_render_thong_ke( $nntm_ctb_program, $nntm_ctb_heading ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- ham con da tu esc trong. ?>
+			<?php echo nntm_congtu_block_render_thong_ke( $nntm_ctb_program, $nntm_ctb_heading, $nntm_ctb_data['tong'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- ham con da tu esc trong. ?>
 		<?php endif; ?>
 
 		<?php if ( $nntm_ctb_show_bxh ) : ?>
-			<?php echo nntm_congtu_block_render_bxh( $nntm_ctb_program, $nntm_ctb_bxh_heading, $nntm_ctb_bxh_limit ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- ham con da tu esc trong. ?>
+			<?php echo nntm_congtu_block_render_bxh( $nntm_ctb_program, $nntm_ctb_bxh_heading, $nntm_ctb_bxh_limit, $nntm_ctb_data['bxh'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- ham con da tu esc trong. ?>
 		<?php endif; ?>
 	<?php endif; ?>
 </section>

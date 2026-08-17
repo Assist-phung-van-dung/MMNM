@@ -1,0 +1,24 @@
+.nntm-zen-audio-current,
+.nntm-zen-audio-editor-current {
+	display: grid;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+.nntm-zen-audio-current audio,
+.nntm-zen-audio-editor-current audio {
+	width: 100%;
+	max-width: 100%;
+}
+
+.nntm-zen-audio-field .button-link-delete {
+	margin-left: 10px;
+}
+
+.nntm-zen-track-audio-panel .components-button + .components-button {
+	margin-left: 8px;
+}
+
+.nntm-zen-audio-help {
+	margin-top: 12px;
+}

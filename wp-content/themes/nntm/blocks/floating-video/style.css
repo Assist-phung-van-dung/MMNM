@@ -1,0 +1,116 @@
+/* =============================================================
+   NNTM — Floating video
+   - Desktop size: exactly 388 x 243 px.
+   - Fixed at the bottom-right, inside the centered 1366px frame.
+   - Front-end shows media only: no block close button / chrome.
+   ============================================================= */
+
+.nntm-floating-video {
+	--nntm-floating-video-width: 388px;
+	--nntm-floating-video-gap: var(--nntm-sp-5, 20px);
+
+	position: fixed;
+	z-index: 90;
+	right: max(
+		var(--nntm-floating-video-gap),
+		calc((100vw - var(--nntm-w-rong, 1366px)) / 2 + var(--nntm-floating-video-gap))
+	);
+	bottom: var(--nntm-floating-video-gap);
+	width: min(var(--nntm-floating-video-width), calc(100vw - (var(--nntm-floating-video-gap) * 2)));
+	margin: 0;
+}
+
+.nntm-floating-video__media {
+	position: relative;
+	width: 100%;
+	aspect-ratio: 388 / 243;
+	overflow: hidden;
+	background: var(--nntm-den, #000000);
+}
+
+.nntm-floating-video__video,
+.nntm-floating-video__iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+	border: 0;
+	object-fit: cover;
+	pointer-events: none;
+}
+
+/*
+ * YouTube/Vimeo video content is normally 16:9. The requested box is
+ * 388:243, so make the iframe 16:9 at full box height and crop only the
+ * left/right edges. This avoids letterboxing and keeps the video full-bleed.
+ */
+.nntm-floating-video[data-media-type="youtube"] .nntm-floating-video__iframe,
+.nntm-floating-video[data-media-type="vimeo"] .nntm-floating-video__iframe {
+	left: 50%;
+	width: 111.34%;
+	max-width: none;
+	transform: translateX(-50%);
+}
+
+/*
+ * YouTube can briefly paint its own title/logo/player chrome while the
+ * iframe initializes. Keep a clean video thumbnail over it for the startup
+ * window, then reveal the already-playing iframe. Pointer events remain off.
+ */
+.nntm-floating-video__youtube-cover {
+	position: absolute;
+	z-index: 2;
+	inset: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	pointer-events: none;
+	transition: opacity 180ms ease, visibility 0s linear 180ms;
+}
+
+.nntm-floating-video.is-player-ready .nntm-floating-video__youtube-cover {
+	opacity: 0;
+	visibility: hidden;
+}
+
+/*
+ * Empty anchor covers the complete media area. The embedded player never
+ * consumes the click; a click always opens the selected related post.
+ */
+.nntm-floating-video__link {
+	position: absolute;
+	z-index: 3;
+	inset: 0;
+	display: block;
+	cursor: pointer;
+}
+
+.nntm-floating-video__link:focus-visible {
+	outline: 3px solid currentColor;
+	outline-offset: 3px;
+}
+
+/* Keep the requested ratio on small screens without causing overflow. */
+@media (max-width: 600px) {
+	.nntm-floating-video {
+		--nntm-floating-video-gap: 12px;
+	}
+}
+
+/* ---------- Gutenberg editor-only preview ---------- */
+.nntm-floating-video-editor__preview {
+	display: grid;
+	gap: 10px;
+	max-width: 520px;
+	padding: 24px;
+	border: 1px dashed currentColor;
+	border-radius: var(--nntm-r-md, 10px);
+	background: color-mix(in srgb, var(--nntm-den, #000000) 3%, transparent);
+}
+
+.nntm-floating-video-editor__preview > p {
+	margin: 0;
+}
