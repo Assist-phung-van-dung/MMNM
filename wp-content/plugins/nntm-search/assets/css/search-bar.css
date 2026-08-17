@@ -1,0 +1,249 @@
+/* =============================================================
+   Suggestion dropdown under the header search bar.
+
+   A plugin cannot assume which theme is active, so every custom
+   property has a fallback: var(--nntm-nen, #FDF8EC). With the nntm
+   theme the brand colours apply; with any other theme it still
+   renders, just plainer.
+   ============================================================= */
+
+.nntm-suggest {
+	position: absolute;
+	inset-block-start: calc(100% + 8px);
+	inset-inline-end: 0;
+	z-index: 60;
+	inline-size: min(440px, calc(100vw - 32px));
+	max-block-size: 70vh;
+	overflow-y: auto;
+	background: var(--nntm-nen, #fdf8ec);
+	border: 1px solid var(--nntm-duong-vien, #e0d8c4);
+	border-radius: var(--nntm-r-md, 8px);
+	box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+	text-align: start;
+}
+
+/* The search bar has to be the positioning context for the panel. Whatever the
+   theme sets is kept; this only fills in when it would be static. */
+.nntm-header__search-form {
+	position: relative;
+}
+
+/* ---------- Search by image ---------- */
+
+.nntm-header__search-camera {
+	display: grid;
+	place-items: center;
+	flex: 0 0 auto;
+	padding: 0 4px;
+	border: 0;
+	background: transparent;
+	color: var(--nntm-chu-phu, #747766);
+	cursor: pointer;
+	transition: color 0.2s ease;
+}
+
+.nntm-header__search-camera:hover,
+.nntm-header__search-camera:focus-visible {
+	color: var(--nntm-chinh, #747766);
+}
+
+/* Dragging an image over the bar. A dashed outline rather than the usual focus
+   ring, so "you can drop here" reads instantly as something different. */
+.nntm-header__search-form.is-dropping {
+	outline: 2px dashed var(--nntm-chinh, #747766);
+	outline-offset: 2px;
+}
+
+/* ---------- What the picture was read as ---------- */
+
+.nntm-suggest__keywords {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
+	padding: 12px;
+	background: var(--nntm-kem, #f5eeda);
+	border-block-end: 1px solid var(--nntm-duong-vien, #e0d8c4);
+}
+
+.nntm-suggest__keywords-label {
+	inline-size: 100%;
+	font-family: var(--nntm-font-sans, inherit);
+	font-size: var(--nntm-fs-xs, 12px);
+	color: var(--nntm-chu-phu, #747766);
+}
+
+.nntm-suggest__chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+/* Each keyword is a button, not a label: clicking it runs that word as an
+   ordinary search. Seeing WHY these results came back, and being able to act on
+   it, is most of the value of reading the picture out loud. */
+.nntm-suggest__chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 4px 10px;
+	border: 1px solid var(--nntm-duong-vien, #e0d8c4);
+	border-radius: 999px;
+	background: var(--nntm-nen, #fdf8ec);
+	color: var(--nntm-chu, #3f3b3b);
+	font-family: var(--nntm-font-ui, inherit);
+	font-size: var(--nntm-fs-xs, 12px);
+	cursor: pointer;
+	transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.nntm-suggest__chip:hover,
+.nntm-suggest__chip:focus-visible {
+	border-color: var(--nntm-chinh, #747766);
+	background: var(--nntm-kem-dam, #f0e7c9);
+}
+
+.nntm-suggest__chip-score {
+	color: var(--nntm-chu-phu, #747766);
+	font-variant-numeric: tabular-nums;
+}
+
+/* ---------- One result ---------- */
+
+.nntm-suggest__item {
+	display: grid;
+	grid-template-columns: 44px 1fr auto;
+	gap: 12px;
+	align-items: center;
+	padding: 12px;
+	color: inherit;
+	text-decoration: none;
+	border-block-end: 1px solid var(--nntm-duong-vien, #e0d8c4);
+}
+
+.nntm-suggest__item:hover,
+.nntm-suggest__item:focus-visible,
+.nntm-suggest__item.is-active {
+	background: var(--nntm-kem, #f5eeda);
+}
+
+.nntm-suggest__thumb {
+	inline-size: 44px;
+	block-size: 44px;
+	object-fit: cover;
+	border-radius: var(--nntm-r-sm, 4px);
+}
+
+.nntm-suggest__thumb--empty {
+	display: block;
+	background: var(--nntm-kem-dam, #f0e7c9);
+}
+
+.nntm-suggest__text {
+	min-inline-size: 0;
+}
+
+.nntm-suggest__title {
+	display: block;
+	font-family: var(--nntm-font-ui, inherit);
+	font-size: var(--nntm-fs-sm, 14px);
+	font-weight: 600;
+	line-height: 1.35;
+	color: var(--nntm-chu, #3f3b3b);
+}
+
+.nntm-suggest__excerpt {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	margin-block-start: 2px;
+	font-family: var(--nntm-font-sans, inherit);
+	font-size: var(--nntm-fs-xs, 12px);
+	line-height: 1.45;
+	color: var(--nntm-chu-phu, #747766);
+}
+
+/* Highlight: cream ground, ink text. NOT the brand gold — measured in
+   docs/07-ban-giao.md section 7, white on #D4AF37 is only 2.10:1, below even the
+   large-text threshold. This pair has plenty of contrast. */
+.nntm-suggest mark {
+	padding: 0 2px;
+	border-radius: 2px;
+	background: var(--nntm-kem-dam, #f0e7c9);
+	color: var(--nntm-chu, #3f3b3b);
+	font-weight: 600;
+}
+
+.nntm-suggest__badge {
+	padding: 2px 8px;
+	border-radius: var(--nntm-r-sm, 4px);
+	background: var(--nntm-kem-dam, #f0e7c9);
+	color: var(--nntm-muc, #3f3b3b);
+	font-size: var(--nntm-fs-xs, 12px);
+	white-space: nowrap;
+}
+
+/* ---------- See all ---------- */
+
+.nntm-suggest__all {
+	display: block;
+	padding: 12px;
+	text-align: center;
+	text-decoration: none;
+	font-family: var(--nntm-font-ui, inherit);
+	font-size: var(--nntm-fs-sm, 14px);
+	font-weight: 600;
+	color: var(--nntm-chinh, #747766);
+}
+
+.nntm-suggest__all:hover,
+.nntm-suggest__all:focus-visible,
+.nntm-suggest__all.is-active {
+	background: var(--nntm-kem, #f5eeda);
+}
+
+/* ---------- States ---------- */
+
+.nntm-suggest__status {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	margin: 0;
+	padding: 20px 12px;
+	font-family: var(--nntm-font-sans, inherit);
+	font-size: var(--nntm-fs-sm, 14px);
+	color: var(--nntm-chu-phu, #747766);
+}
+
+.nntm-suggest__spinner {
+	inline-size: 14px;
+	block-size: 14px;
+	border: 2px solid var(--nntm-duong-vien, #e0d8c4);
+	border-top-color: var(--nntm-chinh, #747766);
+	border-radius: 50%;
+	animation: nntm-suggest-spin 0.7s linear infinite;
+}
+
+@keyframes nntm-suggest-spin {
+	to { transform: rotate(360deg); }
+}
+
+/* Respect the visitor's reduced-motion setting. */
+@media (prefers-reduced-motion: reduce) {
+	.nntm-suggest__spinner {
+		animation: none;
+	}
+}
+
+/* ---------- Narrow screens ---------- */
+
+@media (max-width: 600px) {
+	.nntm-suggest {
+		position: fixed;
+		inset-block-start: var(--nntm-header-h, 72px);
+		inset-inline: 8px;
+		inline-size: auto;
+	}
+}

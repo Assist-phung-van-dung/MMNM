@@ -549,6 +549,16 @@ body.nntm-dau-trang-de-len .nntm-header {
 	outline: none;
 }
 
+/*
+ * Nut "x" xoa chu da go — do TRINH DUYET tu ve cho input[type=search] khi
+ * co chu, khong phai element do code tao nen khong co class rieng de bam
+ * vao. Chi Chrome/Edge/Safari (dong WebKit/Blink) ho tro pseudo-element
+ * nay; Firefox khong ve nut nay nen khong can rule tuong duong.
+ */
+.nntm-header__search-field::-webkit-search-cancel-button {
+	cursor: pointer;
+}
+
 /* ----- Liên kết "Đăng nhập" (chỉ trạng thái A) ----- */
 .nntm-header__login {
 	font-family: var(--nntm-font-sans);

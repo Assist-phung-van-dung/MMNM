@@ -9,8 +9,14 @@
  *   A — CHƯA ĐĂNG NHẬP  (.nntm-header--guest) : nền trắng, menu 6 mục,
  *       màu chữ --nntm-muc-nhat, khu phải có ô tìm kiếm + "Đăng nhập" + ngôn ngữ.
  *   B — ĐÃ ĐĂNG NHẬP    (.nntm-header--auth)  : nền trắng 60% + làm mờ nền,
- *       menu 7 mục (thêm "Tin Tức"), màu chữ --nntm-chinh, khu phải chỉ có
- *       icon tài khoản + ngôn ngữ.
+ *       menu 7 mục (thêm "Tin Tức"), màu chữ --nntm-chinh, khu phải có ô tìm
+ *       kiếm + icon tài khoản + ngôn ngữ.
+ *
+ *   SỬA 17/08/2026: trước đây ô tìm kiếm CHỈ nằm trong nhánh A (Figma có
+ *       component riêng cho trạng thái B không vẽ ô tìm kiếm) — chủ dự án
+ *       xác nhận đây là thiếu sót, không phải cố ý: thành viên đăng nhập là
+ *       người xem được nhiều nội dung nhất nên càng cần chỗ để tìm. Ô tìm
+ *       kiếm chuyển ra ngoài if/else, dùng chung cho cả hai trạng thái.
  *   C — DÍNH TRÊN CÙNG KHI CUỘN (.nntm-header--sticky, cộng .nntm-header--stuck
  *       do header.js gắn qua IntersectionObserver): giữ nguyên nền màu của
  *       trạng thái A/B (không có nền "trong suốt" nào cả), chỉ thêm bóng nhẹ.
@@ -153,6 +159,58 @@ $nntm_nav_id = 'nntm-primary-menu';
 
 		<div class="nntm-header__tools">
 
+			<?php
+			/*
+			 * SỬA 17/08/2026: ô tìm kiếm giờ hiện ở CẢ HAI trạng thái đăng
+			 * nhập/chưa đăng nhập — trước đây chỉ nằm trong nhánh "chưa đăng
+			 * nhập" nên thành viên đăng nhập vào thì KHÔNG có chỗ nào để tìm,
+			 * dù họ là người xem được nhiều nội dung nhất. Figma có component
+			 * riêng cho trạng thái đã đăng nhập không vẽ ô tìm kiếm (từng nghi
+			 * là cố ý, xem docs/10-ban-giao-tim-kiem.md mục 10.5) — chủ dự án
+			 * đã xác nhận đây là thiếu sót cần thêm, không phải thiết kế cố ý.
+			 */
+			$nntm_search_id = wp_unique_id( 'nntm-header-search-' );
+			?>
+			<form role="search" method="get" class="nntm-header__search-form" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+				<label for="<?php echo esc_attr( $nntm_search_id ); ?>" class="nntm-sr-only">
+					<?php esc_html_e( 'Tìm kiếm', 'nntm' ); ?>
+				</label>
+				<button type="submit" class="nntm-header__search-submit">
+					<span class="nntm-sr-only"><?php esc_html_e( 'Tìm kiếm', 'nntm' ); ?></span>
+					<svg width="25" height="25" viewBox="0 0 25 25" fill="none" aria-hidden="true" focusable="false">
+						<circle cx="10.5" cy="10.5" r="7" stroke="currentColor" stroke-width="2" />
+						<line x1="15.6" y1="15.6" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+					</svg>
+				</button>
+				<input
+					type="search"
+					id="<?php echo esc_attr( $nntm_search_id ); ?>"
+					class="nntm-header__search-field"
+					name="s"
+					placeholder="<?php esc_attr_e( 'Nhập từ khoá', 'nntm' ); ?>"
+					value="<?php echo esc_attr( get_search_query() ); ?>"
+				/>
+
+				<?php
+				/*
+				 * Tìm bằng hình ảnh. Nút và ô chọn file để ẨN SẴN trong HTML
+				 * chứ không do JavaScript sinh ra, để không nhấp nháy lúc tải
+				 * trang. Plugin nntm-search bật thì gỡ thuộc tính hidden;
+				 * plugin tắt thì cả hai vô hình và form vẫn chạy như cũ —
+				 * theme không phụ thuộc plugin.
+				 */
+				?>
+				<button type="button" class="nntm-header__search-camera" hidden>
+					<span class="nntm-sr-only"><?php esc_html_e( 'Tìm bằng hình ảnh', 'nntm' ); ?></span>
+					<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false">
+						<rect x="1.5" y="5" width="17" height="12.5" rx="2.5" stroke="currentColor" stroke-width="1.6" />
+						<circle cx="10" cy="11.25" r="3.5" stroke="currentColor" stroke-width="1.6" />
+						<path d="M7 5l1.2-2h3.6L13 5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+					</svg>
+				</button>
+				<input type="file" class="nntm-header__search-file" accept="image/jpeg,image/png,image/webp,image/gif" hidden />
+			</form>
+
 			<?php if ( $nntm_logged_in ) : ?>
 
 				<?php
@@ -203,44 +261,20 @@ $nntm_nav_id = 'nntm-primary-menu';
 					</div>
 				</div>
 
-				<?php
-				/* Polylang: hiển thị đủ VN/EN và đánh dấu ngôn ngữ hiện tại. */
-				?>
-				<div class="nntm-header__lang" id="nntm-lang-switch">
-					<?php nntm_render_language_switcher(); ?>
-				</div>
-
 			<?php else : ?>
-
-				<form role="search" method="get" class="nntm-header__search-form" action="<?php echo esc_url( home_url( '/' ) ); ?>">
-					<label for="<?php echo esc_attr( wp_unique_id( 'nntm-header-search-' ) ); ?>" class="nntm-sr-only">
-						<?php esc_html_e( 'Tìm kiếm', 'nntm' ); ?>
-					</label>
-					<button type="submit" class="nntm-header__search-submit">
-						<span class="nntm-sr-only"><?php esc_html_e( 'Tìm kiếm', 'nntm' ); ?></span>
-						<svg width="25" height="25" viewBox="0 0 25 25" fill="none" aria-hidden="true" focusable="false">
-							<circle cx="10.5" cy="10.5" r="7" stroke="currentColor" stroke-width="2" />
-							<line x1="15.6" y1="15.6" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-						</svg>
-					</button>
-					<input
-						type="search"
-						class="nntm-header__search-field"
-						name="s"
-						placeholder="<?php esc_attr_e( 'Nhập từ khoá', 'nntm' ); ?>"
-						value="<?php echo esc_attr( get_search_query() ); ?>"
-					/>
-				</form>
 
 				<a href="<?php echo esc_url( wp_login_url( get_permalink() ?: home_url( '/' ) ) ); ?>" class="nntm-header__login">
 					<?php esc_html_e( 'Đăng nhập', 'nntm' ); ?>
 				</a>
 
-				<div class="nntm-header__lang" id="nntm-lang-switch">
-					<?php nntm_render_language_switcher(); ?>
-				</div>
-
 			<?php endif; ?>
+
+			<?php
+			/* Polylang: hiển thị đủ VN/EN và đánh dấu ngôn ngữ hiện tại. */
+			?>
+			<div class="nntm-header__lang" id="nntm-lang-switch">
+				<?php nntm_render_language_switcher(); ?>
+			</div>
 
 		</div>
 

@@ -29,3 +29,4 @@ require NNTM_THEME_DIR . '/inc/section-article.php';
 require NNTM_THEME_DIR . '/inc/hanh-gia.php';
 require NNTM_THEME_DIR . '/inc/an-pham.php';
 require NNTM_THEME_DIR . '/inc/cong-tu.php';
+require NNTM_THEME_DIR . '/inc/search.php';
