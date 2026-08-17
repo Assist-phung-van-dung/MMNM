@@ -13,6 +13,7 @@ define( 'NNTM_THEME_DIR', get_template_directory() );
 define( 'NNTM_THEME_URI', get_template_directory_uri() );
 
 require NNTM_THEME_DIR . '/inc/setup.php';
+require NNTM_THEME_DIR . '/inc/page-settings.php';
 require NNTM_THEME_DIR . '/inc/enqueue.php';
 require NNTM_THEME_DIR . '/inc/blocks.php';
 require NNTM_THEME_DIR . '/inc/patterns.php';

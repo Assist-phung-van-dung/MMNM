@@ -64,19 +64,223 @@ if ( ! function_exists( 'nntm_congtu_block_phan_tram_hien_thi' ) ) {
 	}
 }
 
+if ( ! function_exists( 'nntm_congtu_block_du_lieu_tu_log' ) ) {
+	/**
+	 * Đọc dữ liệu KPI trực tiếp từ sổ wp_nntm_kpi_log làm phương án kiểm chứng
+	 * và fallback. Đây KHÔNG phải nguồn ghi mới; chỉ đọc để UI không bị mù khi
+	 * cache/plugin cũ trả mảng rỗng hoặc option aggregate bị stale.
+	 *
+	 * Người đã có CAM KẾT vẫn là người tham gia và phải xuất hiện trong BXH với
+	 * THỰC HIỆN = 0. Quy tắc nghiệp vụ là xếp theo thuc_hien giảm dần, không có
+	 * quy tắc loại bỏ người có 0 lần thực hiện.
+	 *
+	 * @param int $program_id ID chương trình.
+	 * @param int $limit      Số dòng tối đa.
+	 * @return array{tong:array,bxh:array}
+	 */
+	function nntm_congtu_block_du_lieu_tu_log( int $program_id, int $limit ): array {
+		$empty = array(
+			'tong' => array( 'cam_ket' => 0, 'thuc_hien' => 0, 'so_nguoi' => 0, 'tien_trinh' => 0.0 ),
+			'bxh'  => array(),
+		);
+
+		if ( $program_id <= 0 ) {
+			return $empty;
+		}
+
+		global $wpdb;
+		$table = $wpdb->prefix . 'nntm_kpi_log';
+		$exists = $wpdb->get_var(
+			$wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table ) )
+		);
+		if ( $table !== $exists ) {
+			return $empty;
+		}
+
+		$limit = max( 1, min( 500, $limit ) );
+
+		// Tổng theo NGƯỜI trước rồi mới cộng toàn chương trình để so_nguoi không
+		// bị nhân lên bởi việc một người ghi nhiều dòng trong ngày.
+		$totals = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT
+					COALESCE(SUM(x.cam_ket), 0) AS cam_ket,
+					COALESCE(SUM(x.thuc_hien), 0) AS thuc_hien,
+					COUNT(*) AS so_nguoi
+				FROM (
+					SELECT user_id,
+						SUM(CASE WHEN metric = 'cam_ket' THEN value ELSE 0 END) AS cam_ket,
+						SUM(CASE WHEN metric = 'thuc_hien' THEN value ELSE 0 END) AS thuc_hien
+					FROM {$table}
+					WHERE program_id = %d
+					GROUP BY user_id
+					HAVING cam_ket > 0 OR thuc_hien > 0
+				) x",
+				$program_id
+			),
+			ARRAY_A
+		);
+
+		$cam_ket   = isset( $totals['cam_ket'] ) ? (int) $totals['cam_ket'] : 0;
+		$thuc_hien = isset( $totals['thuc_hien'] ) ? (int) $totals['thuc_hien'] : 0;
+		$so_nguoi  = isset( $totals['so_nguoi'] ) ? (int) $totals['so_nguoi'] : 0;
+
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT user_id,
+					SUM(CASE WHEN metric = 'cam_ket' THEN value ELSE 0 END) AS cam_ket,
+					SUM(CASE WHEN metric = 'thuc_hien' THEN value ELSE 0 END) AS thuc_hien
+				FROM {$table}
+				WHERE program_id = %d
+				GROUP BY user_id
+				HAVING cam_ket > 0 OR thuc_hien > 0
+				ORDER BY thuc_hien DESC, cam_ket DESC, user_id ASC
+				LIMIT %d",
+				$program_id,
+				$limit
+			),
+			ARRAY_A
+		);
+
+		$user_ids = array_map( 'intval', wp_list_pluck( (array) $rows, 'user_id' ) );
+		$info = array();
+		if ( $user_ids && function_exists( 'nntm_kpi_phap_danh_va_vung_mien' ) ) {
+			$info = (array) nntm_kpi_phap_danh_va_vung_mien( $user_ids );
+		}
+
+		$vung_options = function_exists( 'nntm_vung_mien_options' ) ? nntm_vung_mien_options() : array();
+		$bxh = array();
+		$hang = 0;
+
+		foreach ( (array) $rows as $row ) {
+			++$hang;
+			$user_id    = (int) $row['user_id'];
+			$user        = get_userdata( $user_id );
+			$cam         = (int) $row['cam_ket'];
+			$thuc        = (int) $row['thuc_hien'];
+			$phap_danh   = trim( (string) ( $info[ $user_id ]['phap_danh'] ?? '' ) );
+			$vung_mien   = trim( (string) ( $info[ $user_id ]['vung_mien'] ?? '' ) );
+
+			if ( '' === $phap_danh ) {
+				$phap_danh = trim( (string) get_user_meta( $user_id, 'nntm_phap_danh', true ) );
+				if ( '' === $phap_danh && $user ) {
+					$phap_danh = (string) $user->display_name;
+				}
+			}
+
+			if ( '' === $vung_mien ) {
+				$vung_key  = (string) get_user_meta( $user_id, 'nntm_vung_mien', true );
+				$vung_mien = isset( $vung_options[ $vung_key ] ) ? (string) $vung_options[ $vung_key ] : $vung_key;
+			}
+
+			$bxh[] = array(
+				'hang'       => $hang,
+				'user_id'    => $user_id,
+				'phap_danh'  => $phap_danh,
+				'vung_mien'  => $vung_mien,
+				'avatar'     => get_avatar_url( $user_id ),
+				'thuc_hien'  => $thuc,
+				'cam_ket'    => $cam,
+				'tien_trinh' => $cam > 0 ? ( $thuc / $cam ) : 0.0,
+			);
+		}
+
+		return array(
+			'tong' => array(
+				'cam_ket'    => $cam_ket,
+				'thuc_hien'  => $thuc_hien,
+				'so_nguoi'   => $so_nguoi,
+				'tien_trinh' => $cam_ket > 0 ? ( $thuc_hien / $cam_ket ) : 0.0,
+			),
+			'bxh' => $bxh,
+		);
+	}
+}
+
+if ( ! function_exists( 'nntm_congtu_block_lay_du_lieu_nhat_quan' ) ) {
+	/**
+	 * Lấy thống kê + BXH nhất quán. Ưu tiên API plugin khi API khớp sổ log;
+	 * nếu cache cũ trả rỗng/sai tổng thì tự rebuild cache và cuối cùng dùng sổ
+	 * log thật làm fallback hiển thị.
+	 *
+	 * @param WP_Post $program Chương trình.
+	 * @param int     $limit   Số dòng BXH.
+	 * @return array{tong:array,bxh:array,api_ok:bool}
+	 */
+	function nntm_congtu_block_lay_du_lieu_nhat_quan( WP_Post $program, int $limit ): array {
+		$default_tong = array( 'cam_ket' => 0, 'thuc_hien' => 0, 'so_nguoi' => 0, 'tien_trinh' => 0.0 );
+		$api_tong = function_exists( 'nntm_kpi_tong_chuong_trinh' )
+			? (array) nntm_kpi_tong_chuong_trinh( $program->ID )
+			: $default_tong;
+		$api_bxh = function_exists( 'nntm_kpi_bang_xep_hang' )
+			? (array) nntm_kpi_bang_xep_hang( $program->ID, $limit )
+			: array();
+		$raw = nntm_congtu_block_du_lieu_tu_log( $program->ID, $limit );
+
+		$api_tong_norm = wp_parse_args( $api_tong, $default_tong );
+		$raw_tong      = $raw['tong'];
+		$lech_tong =
+			(int) $api_tong_norm['cam_ket'] !== (int) $raw_tong['cam_ket'] ||
+			(int) $api_tong_norm['thuc_hien'] !== (int) $raw_tong['thuc_hien'] ||
+			(int) $api_tong_norm['so_nguoi'] !== (int) $raw_tong['so_nguoi'];
+		$bxh_bi_stale = empty( $api_bxh ) && (int) $raw_tong['thuc_hien'] > 0;
+
+		if ( $lech_tong || $bxh_bi_stale ) {
+			// Nếu plugin có API recovery thì dùng đúng API của tầng nghiệp vụ.
+			if ( function_exists( 'nntm_kpi_tinh_lai_tong' ) ) {
+				nntm_kpi_tinh_lai_tong( $program->ID );
+			}
+
+			if ( function_exists( 'nntm_congtu_xoa_cache_bxh' ) ) {
+				nntm_congtu_xoa_cache_bxh( $program->ID );
+			} else {
+				delete_transient( 'nntm_kpi_bxh_' . $program->ID . '_' . $limit );
+			}
+
+			// Thử API lại sau repair. Nếu plugin cũ vẫn loại người thuc_hien=0,
+			// raw['bxh'] phía dưới sẽ là fallback đúng nghĩa người tham gia.
+			$api_tong = function_exists( 'nntm_kpi_tong_chuong_trinh' )
+				? (array) nntm_kpi_tong_chuong_trinh( $program->ID )
+				: $default_tong;
+			$api_bxh = function_exists( 'nntm_kpi_bang_xep_hang' )
+				? (array) nntm_kpi_bang_xep_hang( $program->ID, $limit )
+				: array();
+		}
+
+		$api_tong_norm = wp_parse_args( $api_tong, $default_tong );
+		$tong_final = (
+			(int) $api_tong_norm['cam_ket'] === (int) $raw_tong['cam_ket'] &&
+			(int) $api_tong_norm['thuc_hien'] === (int) $raw_tong['thuc_hien'] &&
+			(int) $api_tong_norm['so_nguoi'] === (int) $raw_tong['so_nguoi']
+		) ? $api_tong_norm : $raw_tong;
+
+		$raw_ids = array_map( 'intval', wp_list_pluck( (array) $raw['bxh'], 'user_id' ) );
+		$api_ids = array_map( 'intval', wp_list_pluck( (array) $api_bxh, 'user_id' ) );
+		$api_thieu_nguoi_tham_gia = ! empty( array_diff( $raw_ids, $api_ids ) );
+
+		return array(
+			'tong'   => $tong_final,
+			'bxh'    => ( empty( $api_bxh ) || $api_thieu_nguoi_tham_gia ) ? $raw['bxh'] : $api_bxh,
+			'api_ok' => function_exists( 'nntm_kpi_tong_chuong_trinh' ) && function_exists( 'nntm_kpi_bang_xep_hang' ),
+		);
+	}
+}
+
 if ( ! function_exists( 'nntm_congtu_block_render_thong_ke' ) ) {
 	/**
 	 * HTML khối "Thống Kê Của Đạo Tràng" — 3 ô: tổng cam kết, tổng thực hiện,
 	 * tiến trình chung. Số lớn serif đỏ thẫm (--nntm-do-tham), nhãn chữ hoa nhỏ.
 	 *
 	 * @param WP_Post $program Chương trình đang hiển thị.
-	 * @param string  $heading Tiêu đề khối.
+	 * @param string     $heading Tiêu đề khối.
+	 * @param array|null $tong    Dữ liệu tổng đã resolve; null thì tự lấy.
 	 * @return string HTML đã escape sẵn.
 	 */
-	function nntm_congtu_block_render_thong_ke( WP_Post $program, string $heading ): string {
-		$tong = function_exists( 'nntm_kpi_tong_chuong_trinh' )
-			? nntm_kpi_tong_chuong_trinh( $program->ID )
-			: array( 'cam_ket' => 0, 'thuc_hien' => 0, 'so_nguoi' => 0, 'tien_trinh' => 0.0 );
+	function nntm_congtu_block_render_thong_ke( WP_Post $program, string $heading, ?array $tong = null ): string {
+		if ( null === $tong ) {
+			$du_lieu = nntm_congtu_block_lay_du_lieu_nhat_quan( $program, 50 );
+			$tong    = $du_lieu['tong'];
+		}
 
 		$phan_tram = nntm_congtu_block_phan_tram_hien_thi( (float) $tong['tien_trinh'] );
 
@@ -175,11 +379,15 @@ if ( ! function_exists( 'nntm_congtu_block_render_bxh' ) ) {
 	 *
 	 * @param WP_Post $program Chương trình đang hiển thị.
 	 * @param string  $heading Tiêu đề khối.
-	 * @param int     $limit   Số dòng tối đa lấy từ nntm_kpi_bang_xep_hang().
+	 * @param int        $limit   Số dòng tối đa lấy từ nntm_kpi_bang_xep_hang().
+	 * @param array|null $bxh     Dữ liệu BXH đã resolve; null thì tự lấy.
 	 * @return string HTML đã escape sẵn.
 	 */
-	function nntm_congtu_block_render_bxh( WP_Post $program, string $heading, int $limit ): string {
-		$bxh = function_exists( 'nntm_kpi_bang_xep_hang' ) ? nntm_kpi_bang_xep_hang( $program->ID, $limit ) : array();
+	function nntm_congtu_block_render_bxh( WP_Post $program, string $heading, int $limit, ?array $bxh = null ): string {
+		if ( null === $bxh ) {
+			$du_lieu = nntm_congtu_block_lay_du_lieu_nhat_quan( $program, $limit );
+			$bxh     = $du_lieu['bxh'];
+		}
 
 		if ( empty( $bxh ) ) {
 			ob_start();
@@ -188,7 +396,7 @@ if ( ! function_exists( 'nntm_congtu_block_render_bxh' ) ) {
 				<?php if ( '' !== trim( wp_strip_all_tags( $heading ) ) ) : ?>
 					<h2 class="nntm-cong-tu__bxh-heading"><?php echo esc_html( $heading ); ?></h2>
 				<?php endif; ?>
-				<p class="nntm-cong-tu__bxh-rong"><?php esc_html_e( 'Chưa có ai tham gia chương trình này.', 'nntm' ); ?></p>
+				<p class="nntm-cong-tu__bxh-rong"><?php esc_html_e( 'Chưa có dữ liệu tham gia để xếp hạng.', 'nntm' ); ?></p>
 			</div>
 			<?php
 			return (string) ob_get_clean();

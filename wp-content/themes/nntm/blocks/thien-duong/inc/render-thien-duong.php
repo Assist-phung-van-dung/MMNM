@@ -84,6 +84,10 @@ if ( ! function_exists( 'nntm_thien_duong_get_tracks' ) ) {
 				continue;
 			}
 
+			if ( 'attachment' !== get_post_type( $audio_id ) || 0 !== strpos( (string) get_post_mime_type( $audio_id ), 'audio/' ) ) {
+				continue;
+			}
+
 			$audio_url = wp_get_attachment_url( $audio_id );
 			if ( ! $audio_url ) {
 				// Meta con ID cu nhung tep da bi xoa khoi Media Library — bo qua,
@@ -100,7 +104,9 @@ if ( ! function_exists( 'nntm_thien_duong_get_tracks' ) ) {
 				'audio_url' => $audio_url,
 				'image_url' => $image_url ? $image_url : '',
 				'duration'  => $duration,
-				'listen_count' => absint( get_post_meta( $track_post->ID, '_nntm_track_listen_count', true ) ),
+				'listen_count' => function_exists( 'nntm_zen_track_get_listen_count' )
+					? nntm_zen_track_get_listen_count( (int) $track_post->ID )
+					: absint( get_post_meta( $track_post->ID, '_nntm_track_listen_count', true ) ),
 			);
 		}
 
@@ -228,14 +234,31 @@ if ( ! function_exists( 'nntm_thien_duong_render_player' ) ) {
 	 * @return string HTML đã escape.
 	 */
 	function nntm_thien_duong_render_player( array $tracks ): string {
+		$realtime_ready = function_exists( 'nntm_zen_track_realtime_is_ready' ) && nntm_zen_track_realtime_is_ready();
+		if ( $realtime_ready && function_exists( 'nntm_zen_track_enqueue_realtime_assets' ) ) {
+			nntm_zen_track_enqueue_realtime_assets();
+		}
+
 		// wp_unique_id() để nhãn <label for="…"> không đụng ID nếu khối này
 		// (hiếm khi) xuất hiện nhiều lần trên cùng một trang.
 		$uid = wp_unique_id( 'nntm-thien-duong-' );
 
 		ob_start();
 		?>
-		<div class="nntm-thien-duong__player-inner" data-nntm-thien-duong="1" data-listen-nonce="<?php echo esc_attr( wp_create_nonce( 'nntm_track_listen' ) ); ?>">
+		<div class="nntm-thien-duong__player-inner" data-nntm-thien-duong="1" data-listen-nonce="<?php echo esc_attr( has_action( 'wp_ajax_nntm_track_listen' ) ? wp_create_nonce( 'nntm_track_listen' ) : '' ); ?>" data-ajax-url="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" data-current-track-id="">
 			<audio class="nntm-thien-duong__audio" preload="none"></audio>
+			<div class="nntm-thien-duong__live-status" aria-live="polite" <?php echo $realtime_ready ? '' : 'hidden'; ?>>
+				<span class="nntm-thien-duong__live-item nntm-thien-duong__live-item--track" title="<?php esc_attr_e( 'Người đang nghe bài hiện tại', 'nntm' ); ?>">
+					<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><path d="M4 14h3v6H5a1 1 0 0 1-1-1v-5zM20 14h-3v6h2a1 1 0 0 0 1-1v-5z"/></svg>
+					<strong data-nntm-track-presence-count>—</strong>
+					<span class="screen-reader-text"><?php esc_html_e( 'người đang nghe bài hiện tại', 'nntm' ); ?></span>
+				</span>
+				<span class="nntm-thien-duong__live-item nntm-thien-duong__live-item--page" title="<?php esc_attr_e( 'Người đang ở Thiền Đường', 'nntm' ); ?>">
+					<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 20v-1.5A3.5 3.5 0 0 0 12.5 15h-5A3.5 3.5 0 0 0 4 18.5V20"/><circle cx="10" cy="8" r="3"/><path d="M18 11a2.5 2.5 0 1 0-1.5-4.5M17 15h.5A3.5 3.5 0 0 1 21 18.5V20"/></svg>
+					<strong data-nntm-page-presence-count>—</strong>
+					<span class="screen-reader-text"><?php esc_html_e( 'người đang ở Thiền Đường', 'nntm' ); ?></span>
+				</span>
+			</div>
 			<div class="nntm-thien-duong__spotify-hero nntm-thien-duong__spotify-hero--member">
 				<span class="nntm-thien-duong__spotify-avatar" aria-hidden="true">
 					<?php if ( ! empty( $tracks[0]['image_url'] ) ) : ?><img src="<?php echo esc_url( $tracks[0]['image_url'] ); ?>" alt="" /><?php else : ?>N<?php endif; ?>
@@ -260,6 +283,7 @@ if ( ! function_exists( 'nntm_thien_duong_render_player' ) ) {
 					<span class="nntm-thien-duong__btn-icon" aria-hidden="true">&#9654;</span>
 				</button>
 				<p class="nntm-thien-duong__now-title" aria-live="polite"><?php esc_html_e( 'Chọn một bản thiền ca để bắt đầu', 'nntm' ); ?></p>
+				<p class="nntm-thien-duong__playback-error" hidden aria-live="assertive"></p>
 
 				<div class="nntm-thien-duong__progress">
 					<label class="nntm-thien-duong__range-label" for="<?php echo esc_attr( $uid ); ?>-progress">
@@ -311,20 +335,9 @@ if ( ! function_exists( 'nntm_thien_duong_render_player' ) ) {
 				</div>
 			</div>
 
-			<?php
-			/*
-			 * CHỖ CẮM SOKETI (docs/04-kien-truc.md mục 5) — phần kết nối kênh
-			 * presence "presence-thien-duong" và gọi API Soketi thuộc plugin
-			 * nntm-audio, làm ở giai đoạn sau (Soketi chưa dựng được ở local).
-			 * Đây chỉ là chỗ hiển thị: text mặc định lịch sự, cập nhật qua hàm
-			 * toàn cục window.nntmThienDuongSetPresence(soNguoi) khai trong
-			 * view.js — phần Soketi sau này chỉ cần gọi hàm đó, không phải sửa
-			 * lại block này.
-			 */
-			?>
+
 			<div class="nntm-thien-duong__playlist-title">
 				<strong><?php esc_html_e( 'Phổ biến', 'nntm' ); ?></strong>
-				<p class="nntm-thien-duong__presence" data-nntm-presence-channel="presence-thien-duong" aria-live="polite"><?php esc_html_e( 'Đang kết nối…', 'nntm' ); ?></p>
 			</div>
 
 			<ol class="nntm-thien-duong__tracklist">

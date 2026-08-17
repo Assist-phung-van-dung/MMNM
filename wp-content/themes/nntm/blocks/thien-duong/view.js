@@ -9,16 +9,9 @@
  * khởi tạo — chỉ phát khi người dùng tự bấm (chọn bài / nút phát), đúng
  * yêu cầu và đúng giới hạn autoplay của trình duyệt.
  *
- * CHỖ CẮM SOKETI (docs/04-kien-truc.md mục 5): phần kết nối kênh presence
- * "presence-thien-duong" thuộc plugin nntm-audio, làm ở giai đoạn sau vì
- * Soketi chưa dựng được ở máy local. File này chỉ expose một hàm toàn cục
- * để phần đó gọi vào — không cần sửa lại block khi ghép Soketi thật:
- *
- *     window.nntmThienDuongSetPresence( soNguoi )
- *
- * Gọi hàm này với một số nguyên >= 0 để cập nhật chữ "Đang có N người
- * cùng nghe" trên mọi khối Thiền Đường có trên trang. Gọi với giá trị
- * không hợp lệ (không phải số, âm) sẽ được hàm tự bỏ qua, không báo lỗi.
+ * Realtime Soketi được tách sang plugin NNTM Zen Track Manager. File này
+ * chỉ phát custom event khi đổi bài / play / pause để plugin presence bám
+ * đúng trạng thái audio mà không trộn transport WebSocket vào player.
  */
 ( function () {
 	'use strict';
@@ -58,6 +51,7 @@
 		var timeCurrentEl = root.querySelector( '.nntm-thien-duong__time-current' );
 		var timeDurationEl = root.querySelector( '.nntm-thien-duong__time-duration' );
 		var nowTitleEl = root.querySelector( '.nntm-thien-duong__now-title' );
+		var playbackErrorEl = root.querySelector( '.nntm-thien-duong__playback-error' );
 		var avatarEl = root.querySelector( '.nntm-thien-duong__spotify-avatar' );
 		var muteBtn = root.querySelector( '.nntm-thien-duong__mute' );
 		var settingsToggle = root.querySelector( '.nntm-thien-duong__settings-toggle' );
@@ -71,7 +65,12 @@
 
 		var currentIndex = -1; // chua chon bai nao.
 		var isScrubbing = false; // dang keo thanh tien do bang tay, tam ngung dong bo tu timeupdate.
-		var countedTrackId = 0;
+		var listenDelayMs = 5000;
+		var listenTimer = null;
+		var listenSessionToken = 0;
+		var listenSessionId = '';
+		var listenRecorded = false;
+		var listenRequestInFlight = false;
 
 		// Am luong khoi tao theo gia tri co san cua thanh truot (mac dinh 80%).
 		var lastVolume = 0.8;
@@ -93,6 +92,14 @@
 		}
 		updateVolumeUI();
 
+		function showPlaybackError( message ) {
+			if ( ! playbackErrorEl ) {
+				return;
+			}
+			playbackErrorEl.textContent = message || '';
+			playbackErrorEl.hidden = ! message;
+		}
+
 		function trackLabel( button ) {
 			return button.getAttribute( 'data-nntm-track-title' ) || '';
 		}
@@ -113,22 +120,95 @@
 			}
 		}
 
-		function recordListen( button ) {
+		function clearListenTimer() {
+			if ( listenTimer ) {
+				window.clearTimeout( listenTimer );
+				listenTimer = null;
+			}
+		}
+
+		function createListenSessionId() {
+			if ( window.crypto && 'function' === typeof window.crypto.randomUUID ) {
+				return window.crypto.randomUUID().replace( /-/g, '' );
+			}
+			return String( Date.now() ) + '_' + Math.random().toString( 36 ).slice( 2 ) + Math.random().toString( 36 ).slice( 2 );
+		}
+
+		function resetListenSession() {
+			clearListenTimer();
+			listenSessionToken++;
+			listenSessionId = createListenSessionId();
+			listenRecorded = false;
+			listenRequestInFlight = false;
+		}
+
+		function recordListen( button, token ) {
 			var trackId = parseInt( button.getAttribute( 'data-nntm-track-id' ), 10 ) || 0;
 			var nonce = root.getAttribute( 'data-listen-nonce' ) || '';
-			if ( ! trackId || ! nonce || countedTrackId === trackId ) {
+			var ajaxUrl = root.getAttribute( 'data-ajax-url' ) || '';
+			if ( token !== listenSessionToken || listenRecorded || listenRequestInFlight || ! trackId || ! nonce || ! ajaxUrl ) {
 				return;
 			}
-			countedTrackId = trackId;
-			var body = new URLSearchParams( { action: 'nntm_track_listen', nonce: nonce, track_id: String( trackId ) } );
-			window.fetch( window.location.origin + '/wp-admin/admin-ajax.php', {
-				method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }, body: body.toString(),
+
+			listenRequestInFlight = true;
+			var body = new URLSearchParams( { action: 'nntm_track_listen', nonce: nonce, track_id: String( trackId ), listen_session: listenSessionId } );
+			window.fetch( ajaxUrl, {
+				method: 'POST',
+				credentials: 'same-origin',
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+				body: body.toString(),
 			} ).then( function ( response ) { return response.json(); } ).then( function ( result ) {
+				if ( token !== listenSessionToken ) {
+					return;
+				}
 				if ( result && result.success && result.data ) {
+					listenRecorded = true;
 					var countEl = button.querySelector( '.nntm-thien-duong__track-listen-count' );
 					if ( countEl ) { countEl.textContent = String( result.data.count ); }
 				}
-			} ).catch( function () {} );
+			} ).catch( function () {
+				// Giữ listenRecorded=false để có thể thử lại nếu người dùng resume.
+			} ).then( function () {
+				if ( token === listenSessionToken ) {
+					listenRequestInFlight = false;
+				}
+			} );
+		}
+
+		function scheduleListenCount() {
+			if ( currentIndex < 0 || listenRecorded || listenRequestInFlight || audio.paused || audio.ended ) {
+				return;
+			}
+			clearListenTimer();
+			var token = listenSessionToken;
+			listenTimer = window.setTimeout( function () {
+				listenTimer = null;
+				if ( token !== listenSessionToken || audio.paused || audio.ended || currentIndex < 0 ) {
+					return;
+				}
+				recordListen( trackButtons[ currentIndex ], token );
+			}, listenDelayMs );
+		}
+
+		function currentTrackId() {
+			if ( currentIndex < 0 || ! trackButtons[ currentIndex ] ) {
+				return 0;
+			}
+			return parseInt( trackButtons[ currentIndex ].getAttribute( 'data-nntm-track-id' ), 10 ) || 0;
+		}
+
+		function dispatchTrackChange() {
+			var trackId = currentTrackId();
+			root.setAttribute( 'data-current-track-id', String( trackId || '' ) );
+			root.dispatchEvent( new CustomEvent( 'nntm:thien-duong-track-change', {
+				detail: { trackId: trackId, playing: ! audio.paused && ! audio.ended },
+			} ) );
+		}
+
+		function dispatchPlaybackState( playing, reason ) {
+			root.dispatchEvent( new CustomEvent( 'nntm:thien-duong-playback-state', {
+				detail: { trackId: currentTrackId(), playing: !! playing, reason: reason || '' },
+			} ) );
 		}
 
 		/**
@@ -184,8 +264,11 @@
 				return;
 			}
 
+			resetListenSession();
 			currentIndex = index;
+			showPlaybackError( '' );
 			audio.src = src;
+			audio.load();
 
 			if ( nowTitleEl ) {
 				nowTitleEl.textContent = trackLabel( button );
@@ -204,6 +287,7 @@
 
 			updateTrackListUI();
 			updatePlayButtonUI();
+			dispatchTrackChange();
 		}
 
 		function playCurrent() {
@@ -212,15 +296,14 @@
 				loadTrack( 0 );
 			}
 
-			// audio.play() tra ve Promise, co the bi trinh duyet tu choi trong
-			// vai truong hop hiem (vd tab bi thu nho) — bat loi de khong lam
-			// vo script, khong can bao nguoi dung vi day khong phai loi cua ho.
+			showPlaybackError( '' );
 			var playPromise = audio.play();
 			if ( playPromise && 'function' === typeof playPromise.catch ) {
-				playPromise.catch( function () {} );
-			}
-			if ( currentIndex >= 0 ) {
-				recordListen( trackButtons[ currentIndex ] );
+				playPromise.catch( function () {
+					showPlaybackError( window.nntmThienDuongI18n.khongThePhat );
+					updatePlayButtonUI();
+					updateTrackListUI();
+				} );
 			}
 		}
 
@@ -229,8 +312,12 @@
 				return;
 			}
 
-			var base = -1 === currentIndex ? 0 : currentIndex;
-			var nextIndex = ( base + offset + trackButtons.length ) % trackButtons.length;
+			var nextIndex;
+			if ( -1 === currentIndex ) {
+				nextIndex = offset < 0 ? trackButtons.length - 1 : 0;
+			} else {
+				nextIndex = ( currentIndex + offset + trackButtons.length ) % trackButtons.length;
+			}
 			var wasPlaying = ! audio.paused;
 
 			loadTrack( nextIndex );
@@ -352,19 +439,47 @@
 
 		// ---------- Đồng bộ trạng thái <audio> ngược lại giao diện ----------
 		audio.addEventListener( 'play', function () {
+			showPlaybackError( '' );
 			updatePlayButtonUI();
 			updateTrackListUI();
+		} );
+
+		// `playing` chỉ nổ khi media thực sự chạy (khác `play`, có thể còn buffering).
+		audio.addEventListener( 'playing', function () {
+			showPlaybackError( '' );
+			dispatchPlaybackState( true, 'playing' );
+			scheduleListenCount();
 		} );
 
 		audio.addEventListener( 'pause', function () {
+			clearListenTimer();
+			dispatchPlaybackState( false, 'pause' );
 			updatePlayButtonUI();
 			updateTrackListUI();
 		} );
 
+		audio.addEventListener( 'waiting', function () {
+			// Buffering không được tính vào 5 giây phát liên tục.
+			clearListenTimer();
+		} );
+
 		audio.addEventListener( 'loadedmetadata', function () {
+			showPlaybackError( '' );
 			if ( timeDurationEl ) {
 				timeDurationEl.textContent = formatTime( audio.duration );
 			}
+		} );
+
+		audio.addEventListener( 'canplay', function () {
+			showPlaybackError( '' );
+		} );
+
+		audio.addEventListener( 'error', function () {
+			clearListenTimer();
+			dispatchPlaybackState( false, 'error' );
+			showPlaybackError( window.nntmThienDuongI18n.khongThePhat );
+			updatePlayButtonUI();
+			updateTrackListUI();
 		} );
 
 		audio.addEventListener( 'timeupdate', function () {
@@ -379,10 +494,16 @@
 
 		// ---------- Hết bài tự chuyển bài kế tiếp ----------
 		audio.addEventListener( 'ended', function () {
-			goToOffset( 1 );
+			clearListenTimer();
+			dispatchPlaybackState( false, 'ended' );
+			var nextIndex = currentIndex < 0 ? 0 : ( currentIndex + 1 ) % trackButtons.length;
+			loadTrack( nextIndex );
 			playCurrent();
 		} );
 
+		// Nạp metadata bài đầu tiên để tiêu đề/thời lượng sẵn sàng, nhưng tuyệt
+		// đối không autoplay. Phát chỉ xảy ra sau click/tap của người dùng.
+		loadTrack( 0 );
 		updatePlayButtonUI();
 		updateTrackListUI();
 	}
@@ -395,26 +516,6 @@
 		}
 	}
 
-	/**
-	 * CHỖ CẮM SOKETI — chỗ duy nhất phần kết nối presence (plugin nntm-audio,
-	 * giai đoạn sau) cần gọi vào. Cập nhật mọi khối Thiền Đường trên trang
-	 * (thường chỉ có một, nhưng không giả định điều đó).
-	 *
-	 * @param {number} soNguoi Số người đang cùng nghe. Giá trị không hợp lệ bị bỏ qua im lặng.
-	 */
-	window.nntmThienDuongSetPresence = function ( soNguoi ) {
-		if ( 'number' !== typeof soNguoi || ! isFinite( soNguoi ) || soNguoi < 0 ) {
-			return;
-		}
-
-		var count = Math.floor( soNguoi );
-		var presenceNodes = document.querySelectorAll( '.nntm-thien-duong__presence' );
-
-		for ( var i = 0; i < presenceNodes.length; i++ ) {
-			presenceNodes[ i ].textContent = window.nntmThienDuongI18n.dangCoNguoiCungNghe.replace( '%d', String( count ) );
-		}
-	};
-
 	// Chuỗi tiếng Việt dùng lại nhiều nơi trong script — tránh lặp/lệch dấu,
 	// gói gọn ở một chỗ. KHÔNG dùng wp_localize_script vì view.js phải chạy
 	// được độc lập, không phụ thuộc bước enqueue nào khác ngoài khai báo
@@ -423,7 +524,7 @@
 		phat: 'Phát',
 		tamDung: 'Tạm dừng',
 		dangPhat: 'Đang phát',
-		dangCoNguoiCungNghe: 'Đang có %d người cùng nghe',
+		khongThePhat: 'Không thể phát tệp âm thanh này. Hãy kiểm tra lại file trong Media Library.',
 	};
 
 	if ( 'loading' === document.readyState ) {

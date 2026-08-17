@@ -1,0 +1,289 @@
+/*
+ * Feature Carousel — khung desktop chuẩn 1366.
+ * Geometry được quy đổi từ artwork Diệu Thượng: ảnh active 626x352,
+ * hai lớp ảnh cạnh được canh đồng tâm theo trục dọc; offset ngang theo artwork, mũi tên ở mép khung 1366.
+ */
+.nntm-feature-carousel {
+	--fc-active-width: 626px;
+	--fc-active-height: 352px;
+	--fc-inner-offset: 165px;
+	--fc-outer-offset: 309px;
+	--fc-inner-y: 42px;
+	--fc-outer-y: 71px;
+	--fc-stage-height: 438px;
+	width: 100%;
+	min-height: 738px;
+	padding: 36px 0 94px;
+	overflow: hidden;
+	color: var(--nntm-reu);
+}
+
+.nntm-feature-carousel--bg-cream { background: var(--nntm-kem); }
+.nntm-feature-carousel--bg-white { background: var(--nntm-trang); }
+
+.nntm-feature-carousel__header {
+	width: min(100% - 40px, 980px);
+	margin: 0 auto 34px;
+	text-align: center;
+}
+
+.nntm-feature-carousel__heading {
+	margin: 0 0 20px;
+	font-family: var(--nntm-font-display);
+	font-size: var(--nntm-fs-4xl);
+	font-weight: 600;
+	line-height: 1.08;
+	color: var(--nntm-reu);
+}
+
+.nntm-feature-carousel--heading-badge .nntm-feature-carousel__heading span {
+	display: inline-block;
+	padding: 10px 20px 12px;
+	background: var(--nntm-kem);
+}
+
+.nntm-feature-carousel__intro-title,
+.nntm-feature-carousel__intro-text {
+	font-family: var(--nntm-font-serif);
+	color: var(--nntm-reu);
+}
+
+.nntm-feature-carousel__intro-title {
+	font-size: var(--nntm-fs-lg);
+	line-height: 1.45;
+}
+
+.nntm-feature-carousel__intro-text {
+	margin-top: 4px;
+	font-size: var(--nntm-fs-base);
+	line-height: 1.55;
+}
+
+.nntm-feature-carousel--compact-header {
+	min-height: 680px;
+	padding-top: 58px;
+	padding-bottom: 72px;
+}
+
+.nntm-feature-carousel--compact-header .nntm-feature-carousel__header {
+	margin-bottom: 36px;
+}
+
+.nntm-feature-carousel__slider {
+	position: relative;
+	width: 100%;
+	max-width: var(--nntm-w-rong);
+	height: var(--fc-stage-height);
+	margin: 0 auto;
+}
+
+.nntm-feature-carousel__track {
+	position: relative;
+	height: 100%;
+	outline: 0;
+	touch-action: pan-y;
+}
+
+.nntm-feature-carousel__slide {
+	position: absolute;
+	left: 50%;
+	top: 0;
+	width: var(--fc-active-width);
+	opacity: 0;
+	pointer-events: none;
+	transform-origin: center top;
+	transform: translateX(-50%) scale(.58);
+	transition: top 720ms var(--nntm-ease), transform 720ms var(--nntm-ease), opacity 420ms var(--nntm-ease), filter 420ms var(--nntm-ease);
+	filter: saturate(.82) brightness(.94);
+	z-index: 1;
+}
+
+.nntm-feature-carousel__slide[data-position="-2"] {
+	opacity: 1;
+	top: var(--fc-outer-y);
+	transform: translateX(calc(-50% - var(--fc-outer-offset))) scale(.60);
+	z-index: 2;
+}
+
+.nntm-feature-carousel__slide[data-position="2"] {
+	opacity: 1;
+	top: var(--fc-outer-y);
+	transform: translateX(calc(-50% + var(--fc-outer-offset))) scale(.60);
+	z-index: 2;
+}
+
+.nntm-feature-carousel__slide[data-position="-1"] {
+	opacity: 1;
+	top: var(--fc-inner-y);
+	transform: translateX(calc(-50% - var(--fc-inner-offset))) scale(.76);
+	z-index: 3;
+}
+
+.nntm-feature-carousel__slide[data-position="1"] {
+	opacity: 1;
+	top: var(--fc-inner-y);
+	transform: translateX(calc(-50% + var(--fc-inner-offset))) scale(.76);
+	z-index: 3;
+}
+
+.nntm-feature-carousel__slide[data-position="0"] {
+	opacity: 1;
+	pointer-events: auto;
+	transform: translateX(-50%) scale(1);
+	filter: none;
+	z-index: 5;
+}
+
+.nntm-feature-carousel__media {
+	width: 100%;
+	height: var(--fc-active-height);
+	overflow: hidden;
+	background: var(--nntm-xam);
+}
+
+.nntm-feature-carousel__image {
+	width: 100%;
+	height: 100%;
+	max-width: none;
+	object-fit: cover;
+}
+
+.nntm-feature-carousel__copy {
+	display: none;
+	max-width: 760px;
+	margin: 0 auto;
+	padding-top: 20px;
+	text-align: center;
+	color: var(--nntm-chu);
+}
+
+.nntm-feature-carousel__slide[data-position="0"] .nntm-feature-carousel__copy {
+	display: block;
+	animation: nntm-feature-carousel-copy 420ms var(--nntm-ease) both;
+}
+
+.nntm-feature-carousel__copy h3 {
+	margin: 0;
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-md);
+	font-weight: 700;
+	line-height: 1.45;
+	color: var(--nntm-chu);
+}
+
+.nntm-feature-carousel__copy p {
+	margin: 14px 0 0;
+	font-family: var(--nntm-font-serif);
+	font-size: var(--nntm-fs-base);
+	line-height: 1.55;
+	color: var(--nntm-chu-phu);
+}
+
+.nntm-feature-carousel__copy a {
+	display: inline-block;
+	margin-top: 14px;
+	border-bottom: 1px solid currentColor;
+	font-size: var(--nntm-fs-sm);
+	line-height: 1.4;
+	color: var(--nntm-chu);
+	text-decoration: none;
+}
+
+.nntm-feature-carousel__arrow {
+	position: absolute;
+	top: 147px;
+	z-index: 10;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 58px;
+	height: 58px;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	font-size: 26px;
+	line-height: 1;
+	color: var(--nntm-den);
+	cursor: pointer;
+	transition: color var(--nntm-dur) var(--nntm-ease), background var(--nntm-dur) var(--nntm-ease), transform var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-feature-carousel--arrows-boxed .nntm-feature-carousel__arrow { background: var(--nntm-trang); }
+.nntm-feature-carousel--arrows-plain .nntm-feature-carousel__arrow { background: transparent; }
+.nntm-feature-carousel__arrow:hover { color: var(--nntm-chinh-hover); transform: translateY(-2px); }
+.nntm-feature-carousel__arrow--prev { left: 126px; }
+.nntm-feature-carousel__arrow--next { right: 126px; }
+
+@keyframes nntm-feature-carousel-copy {
+	from { opacity: 0; transform: translateY(8px); }
+	to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 1100px) {
+	.nntm-feature-carousel {
+		--fc-active-width: min(626px, 58vw);
+		--fc-active-height: min(352px, 32.62vw);
+		--fc-inner-offset: 12.1vw;
+		--fc-outer-offset: 22.6vw;
+		--fc-inner-y: min(42px, 3.91vw);
+		--fc-outer-y: min(71px, 6.52vw);
+		--fc-stage-height: 420px;
+		min-height: 700px;
+		padding-bottom: 72px;
+	}
+	.nntm-feature-carousel__arrow--prev { left: 28px; }
+	.nntm-feature-carousel__arrow--next { right: 28px; }
+	.nntm-feature-carousel__arrow { top: 135px; }
+}
+
+@media (max-width: 768px) {
+	.nntm-feature-carousel {
+		--fc-active-width: min(620px, 78vw);
+		--fc-active-height: 43.86vw;
+		--fc-inner-offset: 17vw;
+		--fc-outer-offset: 32vw;
+		--fc-inner-y: 5.26vw;
+		--fc-outer-y: 8.77vw;
+		--fc-stage-height: 440px;
+		min-height: 0;
+		padding: 46px 0 58px;
+	}
+	.nntm-feature-carousel__header { width: min(100% - 40px, 720px); margin-bottom: 28px; }
+	.nntm-feature-carousel__heading { margin-bottom: 14px; font-size: var(--nntm-fs-3xl); }
+	.nntm-feature-carousel__intro-title { font-size: var(--nntm-fs-md); }
+	.nntm-feature-carousel__intro-text { font-size: var(--nntm-fs-sm); }
+	.nntm-feature-carousel__slide[data-position="-2"],
+	.nntm-feature-carousel__slide[data-position="2"] { opacity: .55; }
+	.nntm-feature-carousel__arrow { top: 144px; width: 48px; height: 48px; font-size: 22px; }
+	.nntm-feature-carousel__arrow--prev { left: 16px; }
+	.nntm-feature-carousel__arrow--next { right: 16px; }
+	.nntm-feature-carousel__copy { padding-inline: 18px; }
+}
+
+@media (max-width: 520px) {
+	.nntm-feature-carousel {
+		--fc-active-width: 84vw;
+		--fc-active-height: 47.23vw;
+		--fc-inner-offset: 20vw;
+		--fc-outer-offset: 37vw;
+		--fc-inner-y: 5.67vw;
+		--fc-outer-y: 9.45vw;
+		--fc-stage-height: 360px;
+		padding-top: 38px;
+		padding-bottom: 42px;
+	}
+	.nntm-feature-carousel--compact-header { padding-top: 42px; }
+	.nntm-feature-carousel__heading { font-size: var(--nntm-fs-2xl); }
+	.nntm-feature-carousel--heading-badge .nntm-feature-carousel__heading span { padding: 8px 14px 10px; }
+	.nntm-feature-carousel__arrow { top: 103px; width: 42px; height: 42px; }
+	.nntm-feature-carousel__arrow--prev { left: 8px; }
+	.nntm-feature-carousel__arrow--next { right: 8px; }
+	.nntm-feature-carousel__copy { padding-top: 16px; }
+	.nntm-feature-carousel__copy h3 { font-size: var(--nntm-fs-base); }
+	.nntm-feature-carousel__copy p { margin-top: 8px; font-size: var(--nntm-fs-sm); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-feature-carousel__slide { transition: none; }
+	.nntm-feature-carousel__slide[data-position="0"] .nntm-feature-carousel__copy { animation: none; }
+}

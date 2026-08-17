@@ -1,0 +1,46 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "nntm/feature-carousel",
+  "title": "Feature Carousel",
+  "category": "nntm",
+  "icon": "slides",
+  "description": "Carousel ảnh nổi bật tái sử dụng: ảnh giữa lớn, hai lớp ảnh hai bên, tiêu đề/CTA theo từng slide, tự chạy và có biến thể nền/tiêu đề/mũi tên.",
+  "textdomain": "nntm",
+  "supports": {
+    "html": false,
+    "align": ["full"],
+    "customClassName": true
+  },
+  "attributes": {
+    "heading": { "type": "string", "default": "Tông Chỉ" },
+    "headingStyle": { "type": "string", "enum": ["plain", "badge"], "default": "plain" },
+    "introTitle": { "type": "string", "default": "Phát Bồ Đề Tâm" },
+    "introText": { "type": "string", "default": "Trên Sáu Xúc Xứ/ Ngũ Thủ Uẩn Tu Tứ Chánh Cần, Lấy Bát Chánh Đạo Làm Nền Tảng." },
+    "slides": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "properties": {
+          "imageId": { "type": "number" },
+          "imageUrl": { "type": "string" },
+          "imageAlt": { "type": "string" },
+          "heading": { "type": "string" },
+          "text": { "type": "string" },
+          "ctaLabel": { "type": "string" },
+          "ctaUrl": { "type": "string" }
+        }
+      }
+    },
+    "autoplay": { "type": "boolean", "default": true },
+    "interval": { "type": "number", "default": 6 },
+    "showArrows": { "type": "boolean", "default": true },
+    "backgroundStyle": { "type": "string", "enum": ["cream", "white"], "default": "cream" },
+    "arrowStyle": { "type": "string", "enum": ["boxed", "plain"], "default": "boxed" }
+  },
+  "editorScript": "file:./editor.js",
+  "viewScript": "file:./view.js",
+  "style": "file:./style.css",
+  "render": "file:./render.php"
+}

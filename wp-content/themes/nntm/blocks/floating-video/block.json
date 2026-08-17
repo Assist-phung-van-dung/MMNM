@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "nntm/floating-video",
+  "title": "Video nổi góc phải",
+  "category": "nntm",
+  "icon": "video-alt3",
+  "description": "Video tự phát nổi góc phải dưới, kích thước desktop 388x243px trong khung 1366px. Chọn video từ Media hoặc dán URL; click video để mở bài viết liên quan.",
+  "textdomain": "nntm",
+  "supports": {
+    "html": false,
+    "align": false,
+    "customClassName": true,
+    "multiple": false
+  },
+  "attributes": {
+    "sourceType": {
+      "type": "string",
+      "enum": [
+        "library",
+        "url"
+      ],
+      "default": "library"
+    },
+    "videoId": {
+      "type": "number",
+      "default": 0
+    },
+    "videoUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "linkedPostType": {
+      "type": "string",
+      "enum": [
+        "post",
+        "nntm_article",
+        "nntm_publication",
+        "nntm_talk",
+        "nntm_retreat",
+        "nntm_abode",
+        "nntm_video",
+        "nntm_zen_track"
+      ],
+      "default": "nntm_article"
+    },
+    "linkedPostId": {
+      "type": "number",
+      "default": 0
+    },
+    "showClose": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "editorScript": "file:./editor.js",
+  "viewScript": "file:./view.js",
+  "style": "file:./style.css",
+  "render": "file:./render.php"
+}

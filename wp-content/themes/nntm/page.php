@@ -26,7 +26,7 @@ $nntm_main_class = nntm_page_uses_section_blocks( get_queried_object() )
 		the_post();
 		?>
 		<article id="post-<?php the_ID(); ?>" <?php post_class( 'nntm-page' ); ?>>
-			<?php if ( ! is_front_page() && ! nntm_page_has_own_heading( get_post() ) ) : ?>
+			<?php if ( ! is_front_page() && ! nntm_should_hide_page_title( get_post() ) ) : ?>
 				<h1 class="nntm-page__title"><?php the_title(); ?></h1>
 			<?php endif; ?>
 
