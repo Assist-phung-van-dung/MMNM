@@ -79,6 +79,127 @@ function nntm_search_split_terms( string $query ): array {
 }
 
 /**
+ * Liệu gấp bỏ dấu có THỰC SỰ đổi từ này không — tức nó có dấu tiếng Việt,
+ * chứ không phải đã ở dạng chữ thường/không dấu sẵn rồi.
+ *
+ * Dùng để quyết định: người dùng gõ CÓ dấu là tín hiệu họ muốn đúng từ đó,
+ * không phải bất cứ từ nào gấp trùng (xem nntm_search_text_matches_terms()).
+ * Gõ KHÔNG dấu thì giữ nguyên kiểu tìm không phân biệt dấu như đã cam kết.
+ *
+ * @param string $term Một từ trong câu tìm.
+ * @return bool
+ */
+function nntm_search_term_has_diacritics( string $term ): bool {
+	return mb_strtolower( $term, 'UTF-8' ) !== nntm_search_fold( $term );
+}
+
+/**
+ * Lọc lại một đoạn chữ có thực sự chứa các từ CÓ DẤU người dùng đã gõ không.
+ *
+ * BUG có thật (báo 17/08/2026): tìm "rừng" ra cả "rụng", "rùng" — vì hai chỗ
+ * đều gấp bỏ dấu trước khi so khớp: (1) FULLTEXT trên cột `folded` của trang
+ * PDF (xem includes/pdf.php), (2) chính collation `utf8mb4_unicode_ci` của
+ * CSDL coi ký tự có dấu ngang bằng ký tự gốc khi so `LIKE` — nên `WP_Query`
+ * mặc định của WordPress (tìm bài viết thường) CŨNG bị, không cần dòng code
+ * gấp dấu nào cả. Xác nhận bằng thực nghiệm: bài "...hoàn thành trùng tu..."
+ * không hề có chữ "rừng" ở bất cứ đâu, vẫn bị `WP_Query` khớp.
+ *
+ * Không sửa được tầng collation (ảnh hưởng toàn site, rủi ro cao) nên chặn ở
+ * đây: sau khi có danh sách ứng viên (từ FULLTEXT hoặc từ WP_Query), lọc lại
+ * bằng chuỗi CÒN DẤU trên nội dung thật. Từ nào người dùng gõ không dấu thì bỏ
+ * qua bước lọc này cho đúng từ đó — giữ nguyên khả năng "tìm không dấu vẫn ra".
+ *
+ * @param string   $haystack Nội dung thật (còn dấu) để so khớp.
+ * @param string[] $terms    Các từ trong câu tìm, còn dấu.
+ * @return bool
+ */
+function nntm_search_text_matches_terms( string $haystack, array $terms ): bool {
+	$haystack = mb_strtolower( $haystack, 'UTF-8' );
+
+	foreach ( $terms as $term ) {
+		if ( ! nntm_search_term_has_diacritics( $term ) ) {
+			continue; // Không dấu — không thu hẹp, giữ nguyên hành vi tìm không dấu.
+		}
+
+		if ( false === mb_strpos( $haystack, mb_strtolower( $term, 'UTF-8' ), 0, 'UTF-8' ) ) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+/**
+ * "Một đoạn dài" — đủ dài để coi là một CỤM/CÂU chứ không phải vài từ khoá
+ * rời rạc. Ngưỡng quyết định hành vi tìm: câu ngắn thì vẫn tìm kiểu "có đủ
+ * các từ, bất kể vị trí" như trước; câu dài thì đòi chặt hơn — xem
+ * nntm_search_content_matches_query().
+ *
+ * @param string[] $terms Các từ đã tách từ câu tìm.
+ * @return bool
+ */
+function nntm_search_is_long_query( array $terms ): bool {
+	return count( $terms ) > 3;
+}
+
+/**
+ * Liệu CẢ CỤM câu tìm (không phải từng từ rời rạc) có xuất hiện liền mạch
+ * trong nội dung không — so sau khi gấp bỏ dấu và gộp khoảng trắng thừa, để
+ * chấp nhận xuống dòng/khoảng trắng do PDF tách trang hoặc HTML xuống dòng.
+ *
+ * @param string $haystack Nội dung thật.
+ * @param string $query    Câu tìm gốc.
+ * @return bool
+ */
+function nntm_search_folded_phrase_present( string $haystack, string $query ): bool {
+	$needle = nntm_search_fold( trim( (string) preg_replace( '/\s+/u', ' ', $query ) ) );
+
+	if ( '' === $needle ) {
+		return true;
+	}
+
+	$haystack_folded = nntm_search_fold( trim( (string) preg_replace( '/\s+/u', ' ', $haystack ) ) );
+
+	return false !== mb_strpos( $haystack_folded, $needle, 0, 'UTF-8' );
+}
+
+/**
+ * Bộ lọc kết quả DÙNG CHUNG cho cả PDF (includes/pdf.php) và bài viết
+ * thường (includes/engine.php) — một nơi, không hai bản dễ lệch.
+ *
+ * BUG có thật 17/08/2026 (thứ hai trong ngày, về câu tìm dài): gõ một câu
+ * dài, hệ thống chỉ đòi "có đủ TỪNG TỪ ở đâu đó trong bài" (xem phần
+ * required/optional trong nntm_search_pdf_pages(), và AND-theo-từ mặc định
+ * của WP_Query) — nên bài hoặc trang PDF chỉ TÌNH CỜ chứa rải rác các từ
+ * riêng lẻ, chẳng liên quan gì tới ý người tìm, vẫn lọt vào kết quả.
+ *
+ * Câu tìm dài (>3 từ) coi là một CỤM/CÂU: đòi hỏi cụm đó xuất hiện LIỀN
+ * MẠCH (sau khi gấp dấu) trong nội dung — không chấp nhận khớp kiểu rải
+ * rác từng từ nữa. Câu tìm ngắn (≤3 từ, tìm từ khoá thông thường) giữ
+ * nguyên hành vi cũ, không thu hẹp gì.
+ *
+ * Kết hợp CẢ HAI bộ lọc: dấu (nntm_search_text_matches_terms(), sửa cùng
+ * ngày cho bug "rừng" ra "rụng") và cụm liền mạch — một cái không thay cho
+ * cái kia.
+ *
+ * @param string   $content Nội dung thật để so khớp.
+ * @param string   $query   Câu tìm gốc.
+ * @param string[] $terms   Các từ đã tách từ câu tìm.
+ * @return bool
+ */
+function nntm_search_content_matches_query( string $content, string $query, array $terms ): bool {
+	if ( ! nntm_search_text_matches_terms( $content, $terms ) ) {
+		return false;
+	}
+
+	if ( nntm_search_is_long_query( $terms ) && ! nntm_search_folded_phrase_present( $content, $query ) ) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
  * Wrap `<mark>` around query matches inside a plain-text passage.
  *
  * Takes plain text and returns HTML in which every character has been through

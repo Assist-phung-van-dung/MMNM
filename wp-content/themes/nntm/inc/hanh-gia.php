@@ -26,7 +26,7 @@ defined( 'ABSPATH' ) || exit;
  * phần việc khác tạo, có thể tạo sau hoặc đổi ID.
  *
  * @param WP_Post|null $post Bài viết cần kiểm tra, mặc định bài hiện tại.
- * @return string|null 'dai_si' | 'kim_cuong' | null (không thuộc khu này).
+ * @return string|null 'dai_si' | 'kim_cuong' | 'chung' | null (không thuộc khu này).
  */
 function nntm_bai_thuoc_hanh_gia( ?WP_Post $post = null ): ?string {
 	$post = get_post( $post );
@@ -54,6 +54,18 @@ function nntm_bai_thuoc_hanh_gia( ?WP_Post $post = null ): ?string {
 		array(
 			'dai-si-hanh-gia'    => 'dai_si',
 			'kim-cuong-hanh-gia' => 'kim_cuong',
+			/*
+			 * SỬA 17/08/2026: bài gắn THẲNG vào term cha "Nhập Pháp Giới"
+			 * (không qua 2 term con) từng bị coi là KHÔNG thuộc khu Hành Giả
+			 * — hàm trả null nên nntm_hanh_gia_chan_quyen() bỏ qua, khách
+			 * chưa đăng nhập đọc thẳng được bằng URL. ĐO THẬT: bài #7 "Bài
+			 * thử số 4" gắn thẳng vào nhap-phap-gioi. 'chung' = thuộc khu
+			 * hạn chế nhưng không riêng cấp nào — khớp với
+			 * nntm_term_khu_han_che() (đã thêm nhap-phap-gioi ở đó) và với
+			 * nntm_duoc_xem_khu_han_che() (hiện chỉ đòi đăng nhập, chưa phân
+			 * biệt cấp — xem chú thích hàm đó).
+			 */
+			'nhap-phap-gioi'     => 'chung',
 		)
 	);
 
@@ -85,7 +97,13 @@ function nntm_hanh_gia_body_class( array $classes ): array {
 	}
 
 	$classes[] = 'is-bai-hanh-gia';
-	$classes[] = ( 'kim_cuong' === $cap ) ? 'is-bai-kim-cuong' : 'is-bai-dai-si';
+
+	// 'chung' (nhap-phap-gioi, không riêng cấp nào) không nên đội lốt is-bai-dai-si.
+	if ( 'kim_cuong' === $cap ) {
+		$classes[] = 'is-bai-kim-cuong';
+	} elseif ( 'dai_si' === $cap ) {
+		$classes[] = 'is-bai-dai-si';
+	}
 
 	return $classes;
 }
@@ -162,6 +180,17 @@ function nntm_trang_can_dang_nhap(): array {
 	);
 }
 
+/*
+ * SỬA 17/08/2026 — lỗ rò thứ ba cùng loại (sau vụ 10 bài Đại Sĩ 14/08 và vụ
+ * Page dai-si/kim-cuong 15/08, xem docs/10-ban-giao-tim-kiem.md mục 3):
+ *
+ * Danh sách dưới chỉ có hai term CON (dai-si-hanh-gia, kim-cuong-hanh-gia).
+ * Nhưng bài viết gắn THẲNG vào term CHA "Nhập Pháp Giới" (slug
+ * nhap-phap-gioi) — get_the_terms() trả đúng term đã gắn, không tự suy ra
+ * term cha của nó — nên không khớp danh sách và bị coi là public. ĐO THẬT:
+ * bài #7 "Bài thử số 4" gắn thẳng vào nhap-phap-gioi, đang public.
+ */
+
 /**
  * Slug các term `nntm_section` bị hạn chế (nội dung chỉ cho thành viên).
  *
@@ -173,7 +202,9 @@ function nntm_trang_can_dang_nhap(): array {
 function nntm_term_khu_han_che(): array {
 	return (array) apply_filters(
 		'nntm_term_khu_han_che',
-		array( 'dai-si-hanh-gia', 'kim-cuong-hanh-gia' )
+		// 'nhap-phap-gioi': term CHA — bài gắn thẳng vào đây (không qua 2 term
+		// con) từng lọt qua, xem ghi chú SỬA 17/08/2026 ở nntm_trang_can_dang_nhap().
+		array( 'nhap-phap-gioi', 'dai-si-hanh-gia', 'kim-cuong-hanh-gia' )
 	);
 }
 

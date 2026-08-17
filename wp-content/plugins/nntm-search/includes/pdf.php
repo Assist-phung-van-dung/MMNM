@@ -258,6 +258,8 @@ function nntm_search_pdf_pages_like( string $query, array $terms, int $limit ): 
 	);
 	// phpcs:enable
 
+	$hits = nntm_search_pdf_filter_results( $hits, $query, $terms );
+
 	return nntm_search_pdf_rows_from( $hits, $query );
 }
 
@@ -387,7 +389,35 @@ function nntm_search_pdf_pages( string $query, int $limit = 3 ): array {
 	);
 	// phpcs:enable
 
+	$hits = nntm_search_pdf_filter_results( $hits, $query, $terms );
+
 	return nntm_search_pdf_rows_from( $hits, $query );
+}
+
+/**
+ * Loại các trang chỉ khớp NHỜ gấp bỏ dấu hoặc nhờ rải rác từng từ, chứ nội
+ * dung thật không chứa đúng chữ/cụm người dùng đã gõ.
+ *
+ * Gộp hai bộ lọc — xem nntm_search_content_matches_query() (includes/text.php):
+ *   1. BUG 17/08/2026 (câu ngắn): tìm "rừng" ra cả trang chứa "rụng"/"rùng",
+ *      vì FULLTEXT chạy trên cột `folded` — cả ba từ đều gấp về "rung".
+ *   2. BUG 17/08/2026 (câu dài): tìm một câu dài, hệ thống chỉ đòi "có đủ
+ *      từng từ ở đâu đó" (xem required/optional trong nntm_search_pdf_pages())
+ *      — trang chỉ tình cờ chứa rải rác các từ riêng lẻ, không liên quan gì
+ *      tới câu tìm, vẫn lọt vào.
+ *
+ * @param object[] $hits  Dòng lấy từ CSDL, có cột `content`.
+ * @param string   $query Câu tìm gốc.
+ * @param string[] $terms Các từ trong câu tìm, còn dấu.
+ * @return object[]
+ */
+function nntm_search_pdf_filter_results( array $hits, string $query, array $terms ): array {
+	return array_values(
+		array_filter(
+			$hits,
+			static fn( $hit ): bool => nntm_search_content_matches_query( (string) $hit->content, $query, $terms )
+		)
+	);
 }
 
 /**

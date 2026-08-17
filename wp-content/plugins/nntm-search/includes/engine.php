@@ -28,9 +28,17 @@ function nntm_search_groups(): array {
 	return (array) apply_filters(
 		'nntm_search_groups',
 		array(
+			/*
+			 * SỬA 17/08/2026: BỎ 'page' khỏi phạm vi tìm — chủ dự án chốt lại
+			 * "tìm thường chỉ ra bài viết hoặc PDF", ngược với yêu cầu trước đó
+			 * ở docs/10-ban-giao-tim-kiem.md mục 3 ("Đề bài yêu cầu tìm cả
+			 * trang"). Cổng quyền cho Page (nntm_trang_can_dang_nhap() trong
+			 * includes/acl.php) VẪN giữ nguyên — không xoá phòng khi Page quay
+			 * lại phạm vi tìm qua filter, không phải sửa lại từ đầu.
+			 */
 			'all'     => array(
 				'label'     => __( 'Tất cả', 'nntm' ),
-				'post_type' => array( 'nntm_article', 'nntm_publication', 'nntm_video', 'nntm_talk', 'nntm_retreat', 'post', 'page' ),
+				'post_type' => array( 'nntm_article', 'nntm_publication', 'nntm_video', 'nntm_talk', 'nntm_retreat', 'post' ),
 			),
 			'article' => array(
 				'label'     => __( 'Bài viết', 'nntm' ),
@@ -111,6 +119,16 @@ function nntm_search_query( string $query, string $group = 'all', int $page = 1,
 		)
 	);
 
+	/*
+	 * ⚠️ CHƯA CHUẨN khi câu tìm có dấu hoặc là câu dài: $wp_query->found_posts
+	 * đếm ở SQL, TRƯỚC bộ lọc nntm_search_content_matches_query() ở vòng lặp
+	 * bên dưới — nên số này (và $results['counts'] phía trên) có thể CAO HƠN
+	 * số dòng thực sự hiện ra. Đúng cho $pdf_total (đã lọc trước khi đếm ở
+	 * nntm_search_pdf_hits()). Sửa cho $wp_query cần đếm SAU khi lọc — chưa
+	 * làm vì phải tải nội dung của mọi ứng viên trong MỌI tab (không chỉ 1
+	 * dòng như hiện tại), tốn thêm truy vấn. Ghi rõ để không ai tưởng đã sửa
+	 * triệt để.
+	 */
 	$results['total'] = (int) $wp_query->found_posts + $pdf_total;
 
 	// PDF page hits lead: knowing the exact page is more useful than a title match.
@@ -118,9 +136,30 @@ function nntm_search_query( string $query, string $group = 'all', int $page = 1,
 		$results['rows'][] = $hit;
 	}
 
+	$terms = nntm_search_split_terms( $query );
+
 	foreach ( $wp_query->posts as $post ) {
 		// Second pass — see includes/acl.php.
 		if ( ! nntm_search_can_view( $post->ID ) ) {
+			continue;
+		}
+
+		/*
+		 * Hai bug có thật 17/08/2026, cùng lọc bằng nntm_search_content_matches_query()
+		 * (includes/text.php) — chi tiết đầy đủ ở đó, gồm cả bản dùng cho PDF
+		 * (nntm_search_pdf_filter_results() trong includes/pdf.php):
+		 *
+		 *   1. Câu ngắn: tìm "rừng" ra cả bài không hề có chữ "rừng" (ví dụ bài
+		 *      chỉ có "trùng tu"). Nguyên nhân KHÔNG nằm ở code — collation
+		 *      `utf8mb4_unicode_ci` của CSDL tự coi ký tự có dấu ngang bằng ký
+		 *      tự gốc khi WP_Query so `LIKE`.
+		 *   2. Câu dài: WP_Query mặc định AND-theo-từ, không đòi các từ phải
+		 *      đứng gần nhau — bài chỉ tình cờ rải rác đủ từng từ, không liên
+		 *      quan gì tới câu tìm, vẫn khớp.
+		 */
+		$haystack = $post->post_title . ' ' . $post->post_excerpt . ' ' . $post->post_content;
+
+		if ( ! nntm_search_content_matches_query( $haystack, $query, $terms ) ) {
 			continue;
 		}
 

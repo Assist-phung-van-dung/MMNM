@@ -160,7 +160,15 @@ get_header();
 							<li><?php esc_html_e( 'Kiểm tra lại chính tả.', 'nntm' ); ?></li>
 						</ul>
 
-						<?php get_search_form(); ?>
+						<?php
+						/*
+						 * SỬA 17/08/2026: bỏ get_search_form() ở đây theo yêu cầu — nó
+						 * là form MẶC ĐỊNH của WordPress, không theo giao diện site
+						 * (nút viền xanh mặc định trình duyệt) và trùng lặp với ô tìm
+						 * kiếm đã có sẵn ở header (luôn hiện, kể cả khi đã đăng nhập —
+						 * xem header.php). Không cần form thứ hai ở đây.
+						 */
+						?>
 					<?php endif; ?>
 				</div>
 
