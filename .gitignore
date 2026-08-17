@@ -2,9 +2,16 @@
 .env
 .env.*
 !.env.example
+wp-config.php
 
 # === Loi WordPress: khong commit, cai lai bang ban tai ve ===
-
+/wp-admin/
+/wp-includes/
+/index.php
+/wp-*.php
+/xmlrpc.php
+/license.txt
+/readme.html
 
 # === wp-content: chi commit code CUA MINH ===
 /wp-content/*
@@ -12,8 +19,13 @@
 /wp-content/themes/*
 !/wp-content/themes/nntm/
 !/wp-content/plugins/
-!/wp-content/plugins/*
+/wp-content/plugins/*
 !/wp-content/plugins/nntm-*/
+
+# deployment/soketi/docker-compose.yml (ban that, co APP_KEY/APP_SECRET
+# that cua Soketi) bi loai; docker-compose.example.yml (ban mau
+# CHANGE_ME_*) van len git de tham khao. Cung nguyen tac voi .env/.env.example.
+deployment/soketi/docker-compose.yml
 
 # Du lieu chay
 /wp-content/uploads/
