@@ -17,6 +17,22 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * Whether search-inside-PDF is switched on for this environment.
+ *
+ * Covers both directions: skip indexing new uploads through the Python
+ * service, and drop PDF page hits from search results — so turning this off
+ * removes the feature outright instead of leaving a half-populated index that
+ * search silently keeps returning.
+ *
+ *   define( 'NNTM_SEARCH_PDF_ENABLED', false );
+ *
+ * @return bool
+ */
+function nntm_search_pdf_enabled(): bool {
+	return ! defined( 'NNTM_SEARCH_PDF_ENABLED' ) || (bool) NNTM_SEARCH_PDF_ENABLED;
+}
+
+/**
  * Extract every page of a PDF attachment and store it.
  *
  * @param int $attachment_id Attachment ID.
@@ -275,6 +291,10 @@ function nntm_search_pdf_pages_like( string $query, array $terms, int $limit ): 
  * @return array[] Rows shaped like nntm_search_build_row().
  */
 function nntm_search_pdf_hits( string $query ): array {
+	if ( ! nntm_search_pdf_enabled() ) {
+		return array();
+	}
+
 	static $cache = array();
 
 	$key = md5( $query . '|' . implode( ',', nntm_search_viewer_acl() ) );
@@ -479,11 +499,23 @@ function nntm_search_pdf_rows_from( array $hits, string $query ): array {
  * @param int $attachment_id New attachment ID.
  */
 function nntm_search_on_add_pdf( int $attachment_id ): void {
-	if ( 'application/pdf' !== get_post_mime_type( $attachment_id ) ) {
+	if ( ! nntm_search_pdf_enabled() || 'application/pdf' !== get_post_mime_type( $attachment_id ) ) {
 		return;
 	}
 
-	nntm_search_index_pdf( $attachment_id );
+	$result = nntm_search_index_pdf( $attachment_id );
+
+	if ( is_wp_error( $result ) ) {
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- no raw file data, only ids and an error code.
+		error_log(
+			sprintf(
+				'[nntm-search] index pdf failed: attachment_id=%d code=%s message=%s',
+				$attachment_id,
+				$result->get_error_code(),
+				$result->get_error_message()
+			)
+		);
+	}
 }
 add_action( 'add_attachment', 'nntm_search_on_add_pdf' );
 

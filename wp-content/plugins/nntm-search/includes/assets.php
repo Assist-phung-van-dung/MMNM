@@ -36,9 +36,10 @@ function nntm_search_enqueue_assets(): void {
 		'nntm-search-bar',
 		'nntmSearch',
 		array(
-			'root'  => esc_url_raw( rest_url( NNTM_SEARCH_NS . '/' ) ),
-			'nonce' => wp_create_nonce( 'wp_rest' ),
-			'i18n'  => array(
+			'root'         => esc_url_raw( rest_url( NNTM_SEARCH_NS . '/' ) ),
+			'nonce'        => wp_create_nonce( 'wp_rest' ),
+			'imageEnabled' => nntm_search_image_enabled(),
+			'i18n'         => array(
 				'searching'    => __( 'Đang tìm…', 'nntm' ),
 				'readingImage' => __( 'Đang xem ảnh…', 'nntm' ),
 				'noResults'    => __( 'Không tìm thấy nội dung nào.', 'nntm' ),

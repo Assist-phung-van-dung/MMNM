@@ -38,16 +38,28 @@ function nntm_search_post_acl( WP_Post $post ): string {
 	// Articles inside the Hành Giả section are members-only. The slug list comes
 	// from the theme rather than being hardcoded: the theme can change it through
 	// the `nntm_term_khu_han_che` filter, and if the index disagrees, it leaks.
-	if ( 'nntm_article' === $post->post_type && function_exists( 'nntm_term_khu_han_che' ) ) {
-		$restricted = nntm_term_khu_han_che();
-		$terms      = get_the_terms( $post, 'nntm_section' );
+	if ( 'nntm_article' === $post->post_type ) {
+		if ( function_exists( 'nntm_term_khu_han_che' ) ) {
+			$restricted = nntm_term_khu_han_che();
+			$terms      = get_the_terms( $post, 'nntm_section' );
 
-		if ( is_array( $terms ) ) {
-			foreach ( $terms as $term ) {
-				if ( $term instanceof WP_Term && in_array( $term->slug, $restricted, true ) ) {
-					$level = 'member';
-					break;
+			if ( is_array( $terms ) ) {
+				foreach ( $terms as $term ) {
+					if ( $term instanceof WP_Term && in_array( $term->slug, $restricted, true ) ) {
+						$level = 'member';
+						break;
+					}
 				}
+			}
+		} else {
+			$level = 'member';
+
+			static $da_canh_bao = false;
+
+			if ( ! $da_canh_bao ) {
+				$da_canh_bao = true;
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- one-time warning, no post/user data.
+				error_log( '[nntm-search] nntm_term_khu_han_che() khong ton tai — moi nntm_article dang duoc lap chi muc la member, kiem tra theme dang kich hoat.' );
 			}
 		}
 	}

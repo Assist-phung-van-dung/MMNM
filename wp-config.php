@@ -49,6 +49,54 @@ define( 'WPLANG', 'vi' );
 /* Tat trinh sua file trong admin: khach khong duoc sua code tu giao dien. */
 define( 'DISALLOW_FILE_EDIT', true );
 
+/*
+ * Doc file .env cung thu muc de lay hai co bat/tat search ben duoi. Du an
+ * khong co composer/vendor nen tu doc KEY=VALUE, khong keo thu vien ngoai.
+ * KHONG dung .env cho DB/khoa — nhung gia tri do van khai thang trong file
+ * nay o tren, .env chi phuc vu hai co nay.
+ */
+foreach ( ( is_readable( __DIR__ . '/.env' ) ? file( __DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES ) : array() ) as $nntm_env_line ) {
+	$nntm_env_line = trim( $nntm_env_line );
+
+	if ( '' === $nntm_env_line || '#' === $nntm_env_line[0] || false === strpos( $nntm_env_line, '=' ) ) {
+		continue;
+	}
+
+	list( $nntm_env_key, $nntm_env_value ) = explode( '=', $nntm_env_line, 2 );
+	$nntm_env_key                          = trim( $nntm_env_key );
+
+	// Khong ghi de neu bien da co san tu moi truong that (vd dat qua shell).
+	if ( '' !== $nntm_env_key && false === getenv( $nntm_env_key ) ) {
+		putenv( $nntm_env_key . '=' . trim( $nntm_env_value ) );
+	}
+}
+unset( $nntm_env_line, $nntm_env_key, $nntm_env_value );
+
+/**
+ * Doc mot co true/false tu bien moi truong (.env), mac dinh BAT neu khong
+ * khai hoac gia tri khong hop le — giu nguyen hanh vi truoc khi co file nay.
+ *
+ * @param string $name Ten bien.
+ * @return bool
+ */
+function nntm_env_bool( string $name ): bool {
+	$value = getenv( $name );
+
+	if ( false === $value || '' === trim( $value ) ) {
+		return true;
+	}
+
+	return ! in_array( strtolower( trim( $value ) ), array( 'false', '0', 'off', 'no' ), true );
+}
+
+/*
+ * Bat/tat tim bang anh va tim trong PDF rieng tung cai — chinh tay trong
+ * .env cung thu muc (NNTM_SEARCH_IMAGE_ENABLED=false / NNTM_SEARCH_PDF_ENABLED=false),
+ * khong sua o day. Khong khai trong .env thi mac dinh BAT.
+ */
+define( 'NNTM_SEARCH_IMAGE_ENABLED', nntm_env_bool( 'NNTM_SEARCH_IMAGE_ENABLED' ) );
+define( 'NNTM_SEARCH_PDF_ENABLED', nntm_env_bool( 'NNTM_SEARCH_PDF_ENABLED' ) );
+
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', __DIR__ . '/' );
 }

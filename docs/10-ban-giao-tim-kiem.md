@@ -64,6 +64,37 @@ thuần, không trắng trang.
 | `nntm_search_model` | đổi model đọc ảnh |
 | `nntm_an_pham_can_access` | cổng quyền ấn phẩm (của theme, dùng lại) |
 
+### Bật/tắt qua .env
+
+Không có công tắc chung. Tìm bằng ảnh và tìm trong PDF tắt/bật **riêng từng
+cái**, chỉnh tay trong **đúng một file**: `nntm-toan-bo-site/.env` — **không
+sửa trong `wp-config.php` hay `wp-config.docker.php`**, hai file đó chỉ đọc
+lại giá trị, không tự có công tắc nào:
+
+```
+NNTM_SEARCH_IMAGE_ENABLED=false   # tắt tìm bằng ảnh
+NNTM_SEARCH_PDF_ENABLED=false     # tắt tìm trong PDF
+```
+
+Không khai dòng nào thì mặc định **bật cả hai**. File này dùng chung cho cả
+hai cách chạy — sửa một chỗ, có hiệu lực ở cả hai, **ngay lần tải trang kế
+tiếp, không cần restart hay `docker compose up -d`**:
+
+| Chạy bằng | `.env` tới bằng cách nào |
+|---|---|
+| Không Docker (`localhost:8080`) | `wp-config.php` đọc thẳng file cùng thư mục |
+| Docker (`localhost:8082`) | File được bind-mount vào container tại `/var/www/html/.env` (`docker-compose.yml` mục `volumes`), `wp-config.docker.php` đọc y hệt cách trên — cùng một file trên Windows, không phải bản sao |
+
+Tắt một cái thì: route REST tương ứng không đăng ký nữa (ảnh), lập chỉ mục lúc
+tải file lên bị bỏ qua, kết quả tìm không còn dòng nào của loại đó, và ở phía
+ảnh nút camera trên thanh tìm kiếm cũng biến mất luôn thay vì để một nút bấm
+vào chỉ ra lỗi. Khác với việc `tools/embed-service` không chạy (mục 7) — đó là
+tắt ngoài ý muốn, âm thầm và trả lỗi 503; đây là tắt **có chủ đích**, sạch sẽ.
+
+Cơ chế: cả `wp-config.php` và `wp-config.docker.php` có cùng một đoạn code tự
+đọc `.env` (dự án không có composer/vendor nên tự viết, không kéo thư viện
+ngoài) rồi `putenv()` từng dòng, sau đó `getenv()` để quyết định bật/tắt.
+
 ---
 
 ## 3. Quyền — chỗ dễ vỡ nhất
