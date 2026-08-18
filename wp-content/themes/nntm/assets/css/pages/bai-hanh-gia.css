@@ -288,3 +288,65 @@
 		font-size: var(--nntm-fs-3xl);
 	}
 }
+
+/* =============================================================
+   Related Hành Giả — đồng bộ icon điều hướng với ảnh thiết kế.
+   Nút 58x58 nền trắng; trên dải trắng chỉ còn thấy mũi tên có thân.
+   Scope riêng để không đổi icon các Card List khác trong site.
+   ============================================================= */
+@media (min-width: 1024px) {
+	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__nav {
+		border-radius: 0;
+		background: var(--nntm-trang);
+		color: var(--nntm-den);
+	}
+
+	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__nav:hover:not(:disabled),
+	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__nav:focus-visible:not(:disabled) {
+		background: var(--nntm-trang);
+		border-color: transparent;
+		color: var(--nntm-den);
+	}
+
+	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__nav-icon {
+		position: relative;
+		display: block;
+		width: 25px;
+		height: 12px;
+		margin: 0;
+		border: 0;
+		transform: none;
+	}
+
+	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__nav-icon::before {
+		content: '';
+		position: absolute;
+		left: 2px;
+		right: 2px;
+		top: 50%;
+		height: 1.5px;
+		background: currentColor;
+		transform: translateY(-50%);
+	}
+
+	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__nav-icon::after {
+		content: '';
+		position: absolute;
+		top: 50%;
+		width: 8px;
+		height: 8px;
+		border: 0;
+		border-top: 1.5px solid currentColor;
+		border-right: 1.5px solid currentColor;
+	}
+
+	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__nav--prev .nntm-card-list__nav-icon::after {
+		left: 2px;
+		transform: translateY(-50%) rotate(-135deg);
+	}
+
+	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__nav--next .nntm-card-list__nav-icon::after {
+		right: 2px;
+		transform: translateY(-50%) rotate(45deg);
+	}
+}

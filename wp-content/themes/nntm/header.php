@@ -264,7 +264,18 @@ $nntm_nav_id = 'nntm-primary-menu';
 
 			<?php else : ?>
 
-				<a href="<?php echo esc_url( wp_login_url( get_permalink() ?: home_url( '/' ) ) ); ?>" class="nntm-header__login">
+				<?php
+				$nntm_login_redirect = is_singular() ? get_permalink() : home_url( '/' );
+				$nntm_header_login_url = function_exists( 'nntm_login_url' )
+					? nntm_login_url( $nntm_login_redirect ?: home_url( '/' ) )
+					: wp_login_url( $nntm_login_redirect ?: home_url( '/' ) );
+				?>
+				<a
+					href="<?php echo esc_url( $nntm_header_login_url ); ?>"
+					class="nntm-header__login"
+					data-nntm-auth-modal="dang-nhap"
+					data-nntm-auth-redirect="<?php echo esc_url( $nntm_login_redirect ?: home_url( '/' ) ); ?>"
+				>
 					<?php esc_html_e( 'Đăng nhập', 'nntm' ); ?>
 				</a>
 

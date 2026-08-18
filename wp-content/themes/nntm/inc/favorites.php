@@ -43,7 +43,7 @@ function nntm_section_favorites_table_exists(): bool {
  * @return string[]
  */
 function nntm_section_favorite_post_types(): array {
-	$types = array( 'nntm_article', 'nntm_publication', 'nntm_talk', 'nntm_video', 'post' );
+	$types = array( 'nntm_article', 'nntm_publication', 'nntm_talk', 'nntm_retreat', 'nntm_video', 'post' );
 	return array_values( array_filter( array_map( 'sanitize_key', (array) apply_filters( 'nntm_section_favorite_post_types', $types ) ) ) );
 }
 
@@ -197,7 +197,7 @@ function nntm_section_is_favorites_request(): bool {
  * Trang hiện tại có thể chứa nút favorite của layout phân mục không.
  */
 function nntm_section_should_enqueue_favorite_assets(): bool {
-	if ( is_tax( 'nntm_section' ) || is_singular( 'nntm_article' ) || nntm_section_is_favorites_request() ) {
+	if ( is_category() || is_tax( 'nntm_section' ) || is_tax( 'nntm_topic', array( 'khoa-tu', 'lich-tu' ) ) || is_singular( array( 'post', 'nntm_article', 'nntm_publication', 'nntm_retreat' ) ) || nntm_section_is_favorites_request() ) {
 		return true;
 	}
 

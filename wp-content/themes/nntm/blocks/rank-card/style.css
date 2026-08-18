@@ -120,7 +120,7 @@
 	/* tu ban thiet ke: nut cach tieu de the 10px */
 	margin-top: var(--nntm-sp-3);
 	font-family: var(--nntm-font-serif);
-	font-style: italic;
+	font-style: normal;
 	font-size: var(--nntm-fs-xs); /* 13px */
 	color: var(--nntm-trang);
 	text-align: center;

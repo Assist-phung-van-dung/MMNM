@@ -1,0 +1,103 @@
+/* =============================================================
+   Nhập Pháp Giới — layout page-specific.
+
+   SỬA 18/08/2026:
+   - Không ép riêng trang này vào frame 1366px nữa. Hero/card-list đi theo
+     chính layout responsive/full-width chung của theme, giống các page khác.
+   - Riêng cụm Gót Son / Xuyên Vạn Kiếp: heading-above và caption-below của
+     card-list global đang absolute để phục vụ bố cục Homepage cũ. Trên trang
+     Nhập Pháp Giới cần chúng nằm trong flow thật:
+       Hero -> Gót Son (trắng) -> Xuyên Vạn Kiếp (đen)
+            -> caption (trắng) -> GITA (cam).
+     Vì vậy override CHỈ ở stylesheet được enqueue cho page này.
+   ============================================================= */
+
+/* Hero đã có title riêng bên trong block rank-card. Không render thêm H1
+   của Page nếu admin quên bật ẩn tiêu đề. */
+.nntm-page__title {
+	display: none;
+}
+
+/* Không khóa width/max-width của page, hero hay hai card-list. Các block
+   trở về hành vi responsive/full-width gốc giống toàn site. */
+.nntm-main--full,
+.nntm-page,
+.nntm-page__content,
+.nntm-rank-card,
+.nntm-card-list:has(> .nntm-card-list__heading-above),
+.nntm-card-list--nen-cam {
+	width: 100%;
+	max-width: none;
+	margin-inline: 0;
+}
+
+.nntm-page__content > .wp-block-nntm-rank-card,
+.nntm-page__content > .wp-block-nntm-card-list {
+	margin-block: 0;
+}
+
+/* -----------------------------------------------------------------
+   Gót Son / Xuyên Vạn Kiếp
+   Global card-list dùng absolute cho heading/caption. Ở page này đưa hai
+   phần đó về normal flow để không đè vào hero hoặc GITA.
+   ----------------------------------------------------------------- */
+.nntm-card-list:has(> .nntm-card-list__heading-above),
+.nntm-card-list:has(> .nntm-card-list__caption-below) {
+	position: relative;
+	z-index: auto;
+	background-color: var(--nntm-trang);
+}
+
+.nntm-card-list__heading-above {
+	position: static;
+	inset: auto;
+	width: 100%;
+	max-width: none;
+	margin: 0;
+	padding: clamp(18px, 2.2vw, 30px) clamp(20px, 6.8vw, 93px) clamp(12px, 1.5vw, 20px);
+	background-color: var(--nntm-trang);
+	box-sizing: border-box;
+}
+
+/* Giữ style tiêu đề trong dải nhưng lề ngang co giãn theo viewport thay vì
+   bị neo tuyệt đối vào khung 1366. */
+.nntm-card-list:has(> .nntm-card-list__heading-above) .nntm-card-list__heading {
+	padding-left: clamp(28px, 14.6vw, 200px);
+}
+
+/* Quote là một dải trắng THẬT trong flow. Section cha đã mang nền trắng,
+   nên hai bên caption không còn lộ nền đen. Width chữ tối đa 1082 như thiết
+   kế, nhưng co lại tự nhiên ở màn hẹp. */
+.nntm-card-list__caption-below {
+	position: static;
+	inset: auto;
+	width: min(1082px, calc(100% - 40px));
+	max-width: 1082px;
+	margin: 0 auto;
+	padding: clamp(18px, 2vw, 28px) 0 clamp(20px, 2.4vw, 34px);
+	background-color: transparent;
+	box-sizing: border-box;
+	font-family: var(--nntm-font-serif);
+	font-size: clamp(13px, 1.32vw, var(--nntm-fs-md));
+	font-style: italic;
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-chu);
+	text-align: center;
+}
+
+/* Khi màn nhỏ, bỏ các offset desktop của dải Gót Son; block global đã có
+   responsive riêng, đây chỉ bảo đảm override page-specific không giữ lại
+   khoảng thụt lớn. */
+@media (max-width: 1024px) {
+	.nntm-card-list__heading-above {
+		padding-inline: var(--nntm-sp-5);
+	}
+
+	.nntm-card-list:has(> .nntm-card-list__heading-above) .nntm-card-list__heading {
+		padding-left: var(--nntm-sp-5);
+	}
+
+	.nntm-card-list__caption-below {
+		width: calc(100% - 40px);
+	}
+}

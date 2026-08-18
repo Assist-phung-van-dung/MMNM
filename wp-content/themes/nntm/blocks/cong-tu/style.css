@@ -289,6 +289,85 @@
 	background: color-mix(in srgb, var(--nntm-do-tham) 12%, transparent);
 }
 
+/* Kim Cương — tinh chỉnh BXH theo ảnh thiết kế: nền vàng xuyên suốt,
+ * thân bảng serif, không có đường kẻ ngang và scrollbar mảnh màu đen. */
+.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-cuon {
+	background-color: var(--nntm-vang-nghe);
+	scrollbar-width: thin;
+	scrollbar-color: var(--nntm-den) transparent;
+}
+
+.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-cuon::-webkit-scrollbar {
+	width: 4px;
+}
+
+.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-cuon::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-cuon::-webkit-scrollbar-thumb {
+	background: var(--nntm-den);
+	border-radius: 0;
+}
+
+.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-bang {
+	table-layout: fixed;
+	font-family: var(--nntm-font-serif);
+	color: var(--nntm-den);
+}
+
+.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-bang thead th {
+	background-color: var(--nntm-do-tham);
+	font-family: var(--nntm-font-sans);
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1.25;
+	letter-spacing: 0.02em;
+	padding: 10px 12px;
+}
+
+.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-bang tbody tr {
+	height: 52px;
+}
+
+.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-bang tbody td {
+	padding: 9px 12px;
+	border-bottom: 0;
+	background-color: var(--nntm-vang-nghe);
+	font-family: var(--nntm-font-serif);
+	font-size: 14px;
+	line-height: 1.35;
+	color: var(--nntm-den);
+}
+
+.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-phap-danh {
+	font-weight: 700;
+}
+
+.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-vung-mien {
+	font-size: 13px;
+	color: var(--nntm-muc-nhat);
+}
+
+.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-so {
+	font-weight: 600;
+}
+
+.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-tien-trinh {
+	white-space: nowrap;
+}
+
+.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-phan-tram {
+	font-family: var(--nntm-font-serif);
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--nntm-den);
+}
+
+.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-row--minh td {
+	background: color-mix(in srgb, var(--nntm-do-tham) 10%, var(--nntm-vang-nghe));
+}
+
 /* ---------- Mobile ---------- */
 /* SUY DOAN: chưa có Figma mobile cho khối này. */
 @media (max-width: 700px) {

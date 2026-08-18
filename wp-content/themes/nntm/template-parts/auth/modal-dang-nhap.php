@@ -12,8 +12,13 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+
+$nntm_modal_has_login_error = ! empty( $GLOBALS['nntm_auth_errors'] )
+	&& is_wp_error( $GLOBALS['nntm_auth_errors'] )
+	&& ! empty( $_POST['nntm_auth_action'] ) // phpcs:ignore WordPress.Security.NonceVerification.Missing -- chỉ dùng để quyết định trạng thái hiển thị; nonce đã kiểm trong inc/auth.php.
+	&& 'dang-nhap' === sanitize_key( wp_unslash( $_POST['nntm_auth_action'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 ?>
-<div class="nntm-auth-modal" id="nntm-auth-modal" hidden>
+<div class="nntm-auth-modal" id="nntm-auth-modal"<?php echo $nntm_modal_has_login_error ? '' : ' hidden'; // phpcs:ignore WordPress.Security.EscapeOutput -- chuỗi cố định. ?>>
 	<div class="nntm-auth-modal__overlay" data-nntm-auth-modal-overlay></div>
 
 	<div class="nntm-auth-modal__panel" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'Đăng nhập', 'nntm' ); ?>">

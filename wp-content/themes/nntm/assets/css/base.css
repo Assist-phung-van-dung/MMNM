@@ -16,7 +16,7 @@
 }
 
 html {
-	background-color: var(--nntm-den);
+	background-color: var(--nntm-kem-dam);
 	-webkit-text-size-adjust: 100%;
 	text-size-adjust: 100%;
 	scroll-behavior: smooth;
@@ -33,7 +33,7 @@ body {
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
-	background-color: var(--nntm-den);
+	background-color: var(--nntm-kem-dam);
 	color: var(--nntm-chu);
 	font-family: var(--nntm-font-sans);
 	font-size: var(--nntm-fs-base);
@@ -56,6 +56,10 @@ body {
 	flex-direction: column;
 	position: relative;
 	background-color: var(--nntm-nen);
+	/* Hard desktop boundary: accidental full-width/negative offsets cannot
+	 * paint into the outer monitor gutters. Component carousels still manage
+	 * their own horizontal overflow inside this 1366px frame. */
+	overflow-x: clip;
 }
 
 .nntm-site-frame > main {

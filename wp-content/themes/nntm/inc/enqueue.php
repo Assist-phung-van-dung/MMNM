@@ -177,3 +177,26 @@ add_action( 'after_setup_theme', 'nntm_editor_assets' );
 function nntm_asset_version( string $absolute_path ) {
 	return file_exists( $absolute_path ) ? filemtime( $absolute_path ) : false;
 }
+
+/**
+ * CSS riêng cho chi tiết nntm_article thường.
+ * Đại Sĩ / Kim Cương vẫn dùng bai-hanh-gia.css; Nghi Quỹ là CPT khác.
+ */
+function nntm_enqueue_regular_article_detail_assets(): void {
+	if ( ! is_singular( 'nntm_article' ) ) {
+		return;
+	}
+
+	if ( function_exists( 'nntm_bai_thuoc_hanh_gia' ) && null !== nntm_bai_thuoc_hanh_gia( get_queried_object() ) ) {
+		return;
+	}
+
+	$css_path = NNTM_THEME_DIR . '/assets/css/pages/article-detail.css';
+	wp_enqueue_style(
+		'nntm-article-detail',
+		NNTM_THEME_URI . '/assets/css/pages/article-detail.css',
+		array( 'nntm-tokens', 'nntm-base', 'nntm-layout' ),
+		nntm_asset_version( $css_path )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'nntm_enqueue_regular_article_detail_assets', 35 );
