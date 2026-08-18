@@ -199,7 +199,7 @@
 							label: __( 'Hiển thị bao nhiêu bài (mỗi bài 1 hàng)', 'nntm' ),
 							value: attributes.postsPerPage,
 							onChange: function ( value ) {
-								setAttributes( { postsPerPage: value || 4 } );
+								setAttributes( { postsPerPage: value || 5 } );
 							},
 							min: 1,
 							max: 12,
@@ -222,28 +222,29 @@
 							},
 						} ),
 						el( ToggleControl, {
-							label: __( 'Hiện nhãn chuyên mục', 'nntm' ),
-							checked: !! attributes.showCategory,
-							onChange: function ( value ) {
-								setAttributes( { showCategory: value } );
-							},
-						} ),
-						el( ToggleControl, {
 							label: __( 'Hiện đoạn mô tả ngắn', 'nntm' ),
 							checked: !! attributes.showExcerpt,
 							onChange: function ( value ) {
 								setAttributes( { showExcerpt: value } );
 							},
 						} ),
-						el( TextControl, {
-							label: __( 'Nhãn nút chính', 'nntm' ),
-							value: attributes.primaryCtaLabel,
+						el( ToggleControl, {
+							label: __( 'Hiện nút Yêu thích', 'nntm' ),
+							checked: !! attributes.showFavorite,
 							onChange: function ( value ) {
-								setAttributes( { primaryCtaLabel: value } );
+								setAttributes( { showFavorite: value } );
+							},
+						} ),
+						el( ToggleControl, {
+							label: __( 'Hiện phân trang', 'nntm' ),
+							help: __( 'Dùng khi block là danh sách chính của một trang. Nếu trang có nhiều block phân trang thì chúng dùng chung ?paged=.', 'nntm' ),
+							checked: !! attributes.showPaging,
+							onChange: function ( value ) {
+								setAttributes( { showPaging: value } );
 							},
 						} ),
 						el( TextControl, {
-							label: __( 'Nhãn nút phụ', 'nntm' ),
+							label: __( 'Nhãn liên kết xem bài', 'nntm' ),
 							value: attributes.secondaryCtaLabel,
 							onChange: function ( value ) {
 								setAttributes( { secondaryCtaLabel: value } );

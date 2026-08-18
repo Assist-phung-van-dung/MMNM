@@ -51,7 +51,7 @@
 .nntm-lien-dan-khoa .nntm-card-list__header-row {
 	position: absolute;
 	z-index: 2;
-	left: max(var(--nntm-sp-9), calc((100vw - var(--nntm-w-rong)) / 2 + var(--nntm-sp-9)));
+	left: var(--nntm-sp-9);
 	top: 170px; /* tu anh thiet ke: title can giua theo chieu cao cum card */
 	width: 240px;
 	align-items: flex-start;
@@ -525,11 +525,11 @@
  */
 @media (min-width: 1024px) {
 	.nntm-card-list--nen-cham > .nntm-card-list__band > .nntm-container {
-		max-width: 1156px;
+		max-width: 1204px;
 	}
 
 	.nntm-card-list--nen-cham .nntm-grid--3 {
-		grid-template-columns: repeat(3, 372px);
+		grid-template-columns: repeat(3, 388px);
 		justify-content: center;
 		column-gap: var(--nntm-sp-5); /* 20 */
 		row-gap: var(--nntm-sp-6);    /* 25, gan nhat voi 26 — khong co bien 26px rieng */
@@ -612,11 +612,11 @@
 
 @media (min-width: 1024px) {
 	.nntm-card-list--nen-vang > .nntm-card-list__band > .nntm-container {
-		max-width: 1192px; /* 380*3 + 26*2 — khop luoi the moi, gan dung khung noi dung 1181 do tu anh */
+		max-width: 1204px; /* 384*3 + 26*2 = 1204 — khung desktop da chot */
 	}
 
 	.nntm-card-list--nen-vang .nntm-grid--3 {
-		grid-template-columns: repeat(3, 380px); /* tu anh giao dien — truoc la 372px */
+		grid-template-columns: repeat(3, 384px); /* 384*3 + 26*2 = 1204 */
 		justify-content: center;
 		column-gap: 26px; /* tu anh giao dien — truoc la sp-5 (20), khong co token 26 */
 		row-gap: 32px;    /* tu anh giao dien — truoc la sp-6 (25), khong co token 32 */

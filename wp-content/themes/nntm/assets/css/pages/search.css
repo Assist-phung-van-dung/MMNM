@@ -1,0 +1,164 @@
+/* =============================================================
+   Trang kết quả tìm kiếm.
+
+   Bố cục hàng so le KHÔNG khai lại ở đây — trang này nạp thẳng
+   blocks/article-rows/style.css (xem inc/tim-kiem.php) và chỉ bổ
+   sung những phần riêng của màn tìm kiếm: đầu trang, tab lọc,
+   tô sáng từ khoá, trạng thái rỗng.
+
+   CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
+   assets/css/tokens.css.
+   ============================================================= */
+
+/* ---------- Đầu trang ---------- */
+
+.nntm-search__head {
+	margin-bottom: var(--nntm-sp-6);
+}
+
+.nntm-search__title {
+	margin-bottom: var(--nntm-sp-2);
+}
+
+/* Từ khoá tách khỏi tiêu đề bằng màu và kiểu chữ, không bằng dấu ngoặc —
+   đọc nhanh hơn và không vỡ khi từ khoá có sẵn dấu nháy. */
+.nntm-search__term {
+	color: var(--nntm-chinh);
+	font-style: italic;
+}
+
+.nntm-search__summary {
+	margin: 0;
+	color: var(--nntm-chu-phu);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+}
+
+/* ---------- Tab lọc ---------- */
+
+.nntm-search__tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--nntm-sp-2);
+	margin-bottom: var(--nntm-sp-7);
+	border-bottom: 1px solid var(--nntm-duong-vien);
+}
+
+.nntm-search__tab {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--nntm-sp-2);
+	padding: var(--nntm-sp-3) var(--nntm-sp-4);
+	color: var(--nntm-chu-phu);
+	font-family: var(--nntm-font-ui);
+	font-size: var(--nntm-fs-sm);
+	text-decoration: none;
+	/* Gạch chân trạng thái nằm đè lên đường viền của thanh tab, nên bù 1px
+	   xuống để hai đường không chồng thành 2px. */
+	border-bottom: 2px solid transparent;
+	margin-bottom: -1px;
+	transition: color var(--nntm-dur) var(--nntm-ease),
+	            border-color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-search__tab:hover,
+.nntm-search__tab:focus-visible {
+	color: var(--nntm-chu);
+}
+
+.nntm-search__tab.is-active {
+	color: var(--nntm-chinh);
+	border-bottom-color: var(--nntm-chinh);
+	font-weight: 600;
+}
+
+.nntm-search__count {
+	min-inline-size: 1.75em;
+	padding: 0 var(--nntm-sp-2);
+	border-radius: var(--nntm-r-md);
+	background: var(--nntm-kem);
+	color: var(--nntm-muc);
+	font-size: var(--nntm-fs-xs);
+	line-height: 1.8;
+	text-align: center;
+}
+
+.nntm-search__tab.is-active .nntm-search__count {
+	background: var(--nntm-chinh);
+	color: var(--nntm-nen);
+}
+
+/* ---------- Tô sáng từ khoá ----------
+   <mark> do nntm_to_sang() chèn, đã lọc qua wp_kses danh sách trắng.
+   Không dùng nền vàng mặc định của trình duyệt: tương phản chữ trắng /
+   nền vàng của bộ nhận diện chỉ đạt 2,10:1 (07-ban-giao.md mục 7), nên
+   tô bằng nền kem + chữ mực đậm cho chắc chắn đọc được. */
+
+.nntm-search mark {
+	padding: 0 2px;
+	border-radius: 2px;
+	background: var(--nntm-kem-dam);
+	color: var(--nntm-chu);
+	font-weight: 600;
+}
+
+/* Đoạn trích dài hơn ở trang tìm kiếm so với trang phân mục: người tìm
+   cần đọc đủ ngữ cảnh quanh từ khoá mới biết bài này có đúng ý không. */
+.nntm-search .nntm-article-rows__excerpt {
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+/* ---------- Phân trang ---------- */
+
+.nntm-search__page-of {
+	align-self: center;
+	margin-inline: var(--nntm-sp-4);
+	color: var(--nntm-chu-phu);
+	font-family: var(--nntm-font-ui);
+	font-size: var(--nntm-fs-sm);
+}
+
+/* ---------- Không có kết quả ---------- */
+
+.nntm-search__empty {
+	padding-block: var(--nntm-sp-8);
+	max-inline-size: 60ch;
+}
+
+.nntm-search__hints {
+	margin: var(--nntm-sp-4) 0 var(--nntm-sp-6);
+	padding-inline-start: var(--nntm-sp-5);
+	color: var(--nntm-chu-phu);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+	line-height: var(--nntm-lh-rong);
+}
+
+/* ---------- Màn hẹp ----------
+   Dưới 900px hàng so le xếp dọc; lúc đó việc đảo bên không còn ý nghĩa
+   nên bỏ luôn, tránh cảnh ảnh nhảy xuống dưới chữ ở hàng chẵn. */
+
+@media (max-width: 900px) {
+	.nntm-search .nntm-article-rows__row,
+	.nntm-search .nntm-article-rows__row--reversed {
+		grid-template-columns: 1fr;
+	}
+
+	.nntm-search .nntm-article-rows__row--reversed .nntm-article-rows__img,
+	.nntm-search .nntm-article-rows__row--reversed .nntm-article-rows__text {
+		order: initial;
+	}
+
+	.nntm-search__tabs {
+		overflow-x: auto;
+		flex-wrap: nowrap;
+		scrollbar-width: none;
+	}
+
+	.nntm-search__tabs::-webkit-scrollbar {
+		display: none;
+	}
+}

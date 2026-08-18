@@ -74,7 +74,7 @@
 	 * màn hình hẹp hoặc quá cao trên màn hình rất rộng.
 	 */
 	aspect-ratio: auto;
-	height: clamp(420px, 45vw, 700px);
+	height: clamp(420px, 45vw, 615px);
 	max-height: 88vh;
 }
 

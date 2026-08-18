@@ -250,7 +250,7 @@
 }
 
 .nntm-cong-tu--nen-vang .nntm-cong-tu__thong-ke {
-	max-width: 1002px; /* tu anh giao dien — truoc la 1220 (bien w-noi-dung) */
+	max-width: 1000px; /* tu anh giao dien — truoc la 1220 (bien w-noi-dung) */
 	min-height: 135px; /* tu anh giao dien — the cao ~135 */
 	display: flex;
 	align-items: center;
@@ -265,7 +265,7 @@
 }
 
 .nntm-cong-tu--nen-vang .nntm-cong-tu__bxh {
-	max-width: 1002px; /* tu anh giao dien — truoc la 1220 */
+	max-width: 1000px; /* tu anh giao dien — truoc la 1220 */
 }
 
 /*

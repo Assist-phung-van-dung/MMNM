@@ -28,7 +28,7 @@ wp-config.php
 deployment/soketi/docker-compose.yml
 
 # Du lieu chay
-/wp-content/uploads/
+!/wp-content/uploads/
 /wp-content/cache/
 /wp-content/upgrade*/
 /wp-content/languages/
@@ -36,7 +36,7 @@ deployment/soketi/docker-compose.yml
 
 # === Build ===
 node_modules/
-vendor/
+!vendor/
 dist/
 *.log
 
@@ -52,3 +52,10 @@ Desktop.ini
 # File rac ten "nul" o goc thu muc — ten thiet bi danh rieng cua Windows,
 # lam gay "git add -A" (mmap failed) neu vo tinh dinh vao.
 /nul
+
+# Python bytecode cua tools/embed-service
+__pycache__/
+*.pyc
+
+# PDF demo sinh boi tools/tao-pdf-demo.py
+/tools/pdf-demo/

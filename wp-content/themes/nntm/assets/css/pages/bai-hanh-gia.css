@@ -34,21 +34,19 @@
 }
 
 /*
- * SUA 14/08/2026 — Kim Cương giờ có ảnh thiết kế riêng (anh Úy xác nhận):
- * dải nền VÀNG NGHỆ (--nntm-vang-nghe, khác navy của Đại Sĩ), chữ phải đổi
- * sang SẪM (--nntm-chu) để đủ tương phản trên nền vàng — trắng trên vàng
- * không đọc được. Chỉ đảo hai biến ngữ nghĩa, không đụng HTML/PHP (đúng
- * ràng buộc docs/04-kien-truc.md mục 3).
+ * Kim Cương dùng nền vàng nghệ nhưng thiết kế chi tiết vẫn dùng chữ TRẮNG
+ * (ảnh BAI CHI TIET KIM CUONG). Chỉ đảo nền; màu chữ giữ trắng giống Đại Sĩ.
  */
 .nntm-bai-hanh-gia__than.nntm-bai-hanh-gia--kim-cuong {
 	--nntm-bhg-nen: var(--nntm-vang-nghe);
-	--nntm-bhg-chu: var(--nntm-chu);
+	--nntm-bhg-chu: var(--nntm-trang);
 }
 
 .nntm-bai-hanh-gia__khung {
-	max-width: 1181px;
-	margin: 0 auto;
-	padding: 0 var(--nntm-sp-4); /* đệm dự phòng cho màn hẹp hơn 1366+92*2 */
+	width: min(1184px, calc(100% - 40px));
+	max-width: 1184px;
+	margin-inline: auto;
+	padding: 0;
 }
 
 /* ---------- Tiêu đề + dòng ngày ---------- */
@@ -56,9 +54,9 @@
 .nntm-bai-hanh-gia__tieu-de {
 	margin: 0 0 var(--nntm-sp-4) 0; /* 18px cách dòng ngày */
 	font-family: var(--nntm-font-display);
-	font-size: 42px;
+	font-size: var(--nntm-fs-4xl);
 	line-height: var(--nntm-lh-chat);
-	color: var(--nntm-bhg-chu); /* dao theo cap (Dai Si trang / Kim Cuong sam), xem --nntm-bhg-chu o .__than */
+	color: var(--nntm-bhg-chu); /* chữ trắng trên cả nền Đại Sĩ và Kim Cương theo thiết kế */
 }
 
 .nntm-bai-hanh-gia__ngay {
@@ -89,6 +87,16 @@
 	color: var(--nntm-bhg-chu);
 }
 
+/* base.css đặt màu trực tiếp lên p/h*, nên phải ghi đè trên chính phần tử. */
+.nntm-bai-hanh-gia__noi-dung :where(p, li, blockquote, figcaption, h2, h3, h4, h5, h6) {
+	color: var(--nntm-bhg-chu);
+}
+
+.nntm-bai-hanh-gia__noi-dung a {
+	color: var(--nntm-bhg-chu);
+	text-decoration-color: currentColor;
+}
+
 .nntm-bai-hanh-gia__noi-dung > p {
 	margin: 0 0 var(--nntm-sp-3) 0; /* 12px cách nhau giữa các đoạn văn */
 }
@@ -110,7 +118,30 @@
 	height: 684px;
 	object-fit: cover;
 	margin: 28px 0; /* cách trên/dưới 28px theo thiết kế — không khớp token --nntm-sp-* nào sẵn có, ghi cứng theo đúng số đo */
-	border-radius: var(--nntm-r-md);
+	border-radius: 0;
+}
+
+/* Kim Cương: ảnh chính mặc định nằm giữa khung như bản thiết kế. */
+.nntm-bai-hanh-gia--kim-cuong :where(.nntm-bai-hanh-gia__noi-dung img) {
+	margin-inline: auto;
+}
+
+/* Tôn trọng lựa chọn căn ảnh của biên tập viên trong Gutenberg. */
+.nntm-bai-hanh-gia__noi-dung .aligncenter,
+.nntm-bai-hanh-gia__noi-dung figure.aligncenter img {
+	margin-inline: auto;
+}
+
+.nntm-bai-hanh-gia__noi-dung .alignright,
+.nntm-bai-hanh-gia__noi-dung figure.alignright img {
+	margin-inline-start: auto;
+	margin-inline-end: 0;
+}
+
+.nntm-bai-hanh-gia__noi-dung .alignleft,
+.nntm-bai-hanh-gia__noi-dung figure.alignleft img {
+	margin-inline-start: 0;
+	margin-inline-end: auto;
 }
 
 /* ---------- Hàng nút cuối bài ---------- */
@@ -158,13 +189,66 @@
 
 .nntm-bai-hanh-gia__lien-quan {
 	background: var(--nntm-trang);
-	padding-top: 75px;
+	padding: 75px 0 90px;
+	overflow: hidden;
+}
+
+.nntm-bai-hanh-gia__lien-quan .nntm-card-list__band > .nntm-container {
+	width: min(1184px, calc(100% - 40px));
+	max-width: 1184px;
+	padding-inline: 0;
 }
 
 .nntm-bai-hanh-gia__lien-quan .nntm-card-list__heading {
+	margin-bottom: var(--nntm-sp-8);
 	font-family: var(--nntm-font-display);
-	font-size: 40px;
+	font-size: var(--nntm-fs-4xl);
 	color: var(--nntm-reu);
+}
+
+/*
+ * Carousel liên quan theo đúng khung 1184: card ARTICLE rộng 348px, gap 20;
+ * 3 card đầy đủ + một phần card thứ 4. Hai nút nằm ngoài khung nội dung
+ * nhưng vẫn ở trong frame 1366 (91px lề mỗi bên).
+ */
+@media (min-width: 1024px) {
+	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__carousel {
+		position: relative;
+		display: block;
+	}
+
+	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__track {
+		gap: var(--nntm-sp-5);
+		scrollbar-width: none;
+	}
+
+	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__track::-webkit-scrollbar {
+		display: none;
+	}
+
+	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__track-item {
+		flex: 0 0 348px;
+	}
+
+	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__track-item:first-child,
+	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__track-item:last-child {
+		margin-inline: 0;
+	}
+
+	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__nav {
+		position: absolute;
+		top: 116px;
+		z-index: 3;
+		width: 58px;
+		height: 58px;
+		border: 0;
+		background: transparent;
+		box-shadow: none;
+		transform: translateY(-50%);
+	}
+
+	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__nav--prev { left: -75px; }
+	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__nav--next { right: -75px; }
 }
 
 /* =============================================================

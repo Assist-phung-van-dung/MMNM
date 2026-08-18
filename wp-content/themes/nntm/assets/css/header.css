@@ -138,8 +138,12 @@
    ============================================================= */
 body.nntm-dau-trang-de-len .nntm-header {
 	position: fixed;
-	inset-inline: 0;
 	top: 0;
+	left: 50%;
+	right: auto;
+	width: min(100%, var(--nntm-w-rong));
+	max-width: var(--nntm-w-rong);
+	transform: translateX(-50%);
 }
 
 /*
@@ -193,25 +197,12 @@ body.nntm-dau-trang-de-len .nntm-header {
 	display: flex;
 	align-items: center;
 	/*
-	 * Man hinh RONG HON khung thiet ke 1366.
-	 *
-	 * Figma chi ve khung 1366 va thanh header tran het be rong khung do.
-	 * Truoc day chan tran dung 1366 roi canh giua, nen tren man 1920 noi
-	 * dung co cum vao giua va thua hai dai trang moi ben ~280px — nhin
-	 * khong giong thiet ke.
-	 *
-	 * Cho thanh gian toi 1920 roi dung lai (rong hon nua thi menu va khu
-	 * phai cach nhau qua xa, doc met). Dem ngang gian theo be rong cua so,
-	 * giu dung ty le 20/1366 = 1.46%, chan trong khoang 20-28px.
-	 *
-	 * CO Y khong dung cach doi font-size goc de phong ca ban thiet ke:
-	 * da thu ngay 10/08/2026 va lam vo bo cuc, vi cac token --nntm-sp-*
-	 * va --nntm-r-* la px cung nen khong gian theo. Xem ghi chu trong
-	 * tokens.css.
+	 * Desktop design frame is 1366px. Keep the header inside that frame on
+	 * wider monitors instead of stretching navigation/tool spacing to 1920px.
 	 */
-	max-width: 1920px;
+	max-width: var(--nntm-w-rong);
 	margin-inline: auto;
-	padding-inline: clamp(var(--nntm-sp-5), 1.46vw, var(--nntm-sp-6));
+	padding-inline: var(--nntm-sp-5);
 	min-width: 0;
 }
 
@@ -547,6 +538,16 @@ body.nntm-dau-trang-de-len .nntm-header {
 
 .nntm-header__search-field:focus {
 	outline: none;
+}
+
+/*
+ * Nut "x" xoa chu da go — do TRINH DUYET tu ve cho input[type=search] khi
+ * co chu, khong phai element do code tao nen khong co class rieng de bam
+ * vao. Chi Chrome/Edge/Safari (dong WebKit/Blink) ho tro pseudo-element
+ * nay; Firefox khong ve nut nay nen khong can rule tuong duong.
+ */
+.nntm-header__search-field::-webkit-search-cancel-button {
+	cursor: pointer;
 }
 
 /* ----- Liên kết "Đăng nhập" (chỉ trạng thái A) ----- */

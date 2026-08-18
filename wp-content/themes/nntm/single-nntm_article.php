@@ -19,7 +19,7 @@
  *
  * Số đo áp dụng (bóc từ ảnh thiết kế, quy về khung 1366, là ƯỚC LƯỢNG —
  * xem ghi chú đầu assets/css/pages/bai-hanh-gia.css):
- *   Khung nội dung 1181px căn giữa · tiêu đề 42px cách mép trên dải 60px ·
+ *   Khung nội dung 1184px căn giữa · tiêu đề 52px cách mép trên dải 60px ·
  *   dòng ngày 15px cách tiêu đề 18px · đoạn văn 16px/1.75 cách nhau 12px ·
  *   ảnh trong bài 550×684 cách trên/dưới 28px · hàng nút cách đoạn cuối
  *   40px · đáy dải navy đệm dưới 90px.
@@ -118,7 +118,7 @@ else :
 							<?php echo is_user_logged_in() ? '' : 'data-nntm-auth-modal="dang-nhap"'; ?>
 						>
 							<svg class="nntm-bai-hanh-gia__tim" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
-								<path fill="currentColor" d="M12 21s-7.2-4.6-10-9.3C.4 8.6 1.6 5 5 4c2.1-.6 4 .3 5.3 2C11.6 4.3 13.5 3.4 15.6 4c3.4 1 4.6 4.6 3 7.7-2.8 4.7-10 9.3-10 9.3z" />
+								<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
 							</svg>
 							<?php esc_html_e( 'Yêu thích', 'nntm' ); ?>
 						</button>
@@ -134,19 +134,8 @@ else :
 			<div class="nntm-bai-hanh-gia__lien-quan">
 				<?php
 				/*
-				 * Tái dùng block nntm/card-list qua render_block() thay vì
-				 * viết lại HTML thẻ (không đụng file trong blocks/**).
-				 *
-				 * Ghi chú còn nợ: card-list hiện KHÔNG có thuộc tính loại trừ
-				 * bài đang xem khỏi danh sách, nên bài đang xem có thể lọt
-				 * vào chính "Bài viết liên quan" của nó nếu nó nằm trong
-				 * postsPerPage=8 bài mới nhất cùng term. Không tự sửa block
-				 * theo đúng giới hạn công việc — cần xử lý ở phần việc khác
-				 * (thêm attribute loại trừ hoặc excludePostId cho card-list).
-				 *
-				 * "showCardCta"/"cardCtaLabel" (dòng "Xem thêm" trên thẻ)
-				 * chưa có trong block.json tại thời điểm viết file này — cứ
-				 * truyền vào, WordPress bỏ qua thuộc tính lạ, không lỗi.
+				 * Reuse nntm/card-list for the related carousel. The current post is
+				 * excluded and autoplay advances one card every five seconds.
 				 */
 				echo render_block(
 					array(
@@ -158,8 +147,11 @@ else :
 							'termId'       => $nntm_term_id_hien_tai,
 							'variant'      => 'article',
 							'layout'       => 'carousel',
-							'postsPerPage' => 8,
-							'background'   => 'none',
+							'postsPerPage'     => 8,
+							'excludePostId'    => get_the_ID(),
+							'autoplay'         => true,
+							'autoplayInterval' => 5,
+							'background'       => 'none',
 							'showDate'     => false,
 							'showCategory' => false,
 							'showCardCta'  => true,

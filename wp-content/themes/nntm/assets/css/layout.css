@@ -37,6 +37,14 @@
 	}
 }
 
+
+/* Khung main full-width vẫn dừng ở desktop Figma 1366px. */
+.nntm-main--full {
+	width: 100%;
+	max-width: var(--nntm-w-rong);
+	margin-inline: auto;
+}
+
 /* ---------- Lưới ---------- */
 .nntm-grid {
 	display: grid;
