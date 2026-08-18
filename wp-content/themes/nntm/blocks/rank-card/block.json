@@ -9,13 +9,20 @@
 	"textdomain": "nntm",
 	"supports": {
 		"html": false,
-		"align": [ "wide", "full" ],
+		"align": [
+			"wide",
+			"full"
+		],
 		"customClassName": true
 	},
 	"attributes": {
 		"heading": {
 			"type": "string",
 			"default": "Nhập Pháp Giới"
+		},
+		"bgMediaType": {
+			"type": "string",
+			"default": "image"
 		},
 		"bgImageId": {
 			"type": "number",

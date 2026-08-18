@@ -25,7 +25,13 @@ if ( ! function_exists( 'nntm_banner_clean_slide' ) ) {
 	 * @return array|null
 	 */
 	function nntm_banner_clean_slide( array $slide ): ?array {
+		$media_type = isset( $slide['mediaType'] ) ? sanitize_key( (string) $slide['mediaType'] ) : 'image';
+		if ( ! in_array( $media_type, array( 'image', 'video' ), true ) ) {
+			$media_type = 'image';
+		}
+
 		$clean = array(
+			'mediaType' => $media_type,
 			'imageId'  => isset( $slide['imageId'] ) ? absint( $slide['imageId'] ) : 0,
 			'imageUrl' => isset( $slide['imageUrl'] ) ? esc_url_raw( (string) $slide['imageUrl'] ) : '',
 			'imageAlt' => isset( $slide['imageAlt'] ) ? sanitize_text_field( (string) $slide['imageAlt'] ) : '',
@@ -39,10 +45,10 @@ if ( ! function_exists( 'nntm_banner_clean_slide' ) ) {
 			'buttonLabel' => isset( $slide['buttonLabel'] ) ? sanitize_text_field( (string) $slide['buttonLabel'] ) : '',
 		);
 
-		$co_anh = ( $clean['imageId'] > 0 || '' !== $clean['imageUrl'] );
+		$co_media = ( $clean['imageId'] > 0 || '' !== $clean['imageUrl'] );
 		$co_chu = ( '' !== trim( $clean['heading'] ) || '' !== trim( $clean['text'] ) || $clean['showButton'] );
 
-		return ( $co_anh || $co_chu ) ? $clean : null;
+		return ( $co_media || $co_chu ) ? $clean : null;
 	}
 }
 
@@ -59,6 +65,29 @@ if ( ! function_exists( 'nntm_banner_render_anh' ) ) {
 	 * @return string
 	 */
 	function nntm_banner_render_anh( array $slide, int $index ): string {
+		$media_type = isset( $slide['mediaType'] ) ? (string) $slide['mediaType'] : 'image';
+
+		if ( 'video' === $media_type ) {
+			$video_url = '';
+			if ( $slide['imageId'] > 0 ) {
+				$attachment_url = wp_get_attachment_url( $slide['imageId'] );
+				if ( $attachment_url ) {
+					$video_url = $attachment_url;
+				}
+			}
+			if ( '' === $video_url && '' !== $slide['imageUrl'] ) {
+				$video_url = $slide['imageUrl'];
+			}
+
+			if ( '' === $video_url ) {
+				return '';
+			}
+
+			return sprintf(
+				'<video class="nntm-banner__img nntm-banner__video" src="%1$s" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>',
+				esc_url( $video_url )
+			);
+		}
 		$alt         = $slide['imageAlt'];
 		$trang_tri   = ( '' === $alt );
 		$thuoc_tinh  = array(

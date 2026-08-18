@@ -58,21 +58,23 @@
 				className: 'nntm-rank-card',
 				style: {
 					minHeight: ( attributes.minHeight || 690 ) + 'px',
-					backgroundImage: attributes.bgImageUrl ? 'url(' + attributes.bgImageUrl + ')' : undefined,
+					backgroundImage: attributes.bgImageUrl && 'video' !== ( attributes.bgMediaType || 'image' ) ? 'url(' + attributes.bgImageUrl + ')' : undefined,
 				},
 			} );
 			var cards = Array.isArray( attributes.cards ) ? attributes.cards : [];
 
 			function onSelectBgImage( media ) {
+				var mediaType = media && ( 'video' === media.type || ( media.mime && 0 === media.mime.indexOf( 'video/' ) ) ) ? 'video' : 'image';
 				setAttributes( {
+					bgMediaType: mediaType,
 					bgImageId: media && media.id ? media.id : 0,
 					bgImageUrl: media && media.url ? media.url : '',
-					bgImageAlt: media && media.alt ? media.alt : attributes.bgImageAlt,
+					bgImageAlt: 'image' === mediaType && media && media.alt ? media.alt : attributes.bgImageAlt,
 				} );
 			}
 
 			function onRemoveBgImage() {
-				setAttributes( { bgImageId: 0, bgImageUrl: '' } );
+				setAttributes( { bgMediaType: 'image', bgImageId: 0, bgImageUrl: '' } );
 			}
 
 			function updateCard( index, patch ) {
@@ -99,13 +101,13 @@
 					{},
 					el(
 						PanelBody,
-						{ title: __( 'Ảnh nền', 'nntm' ), initialOpen: true },
+						{ title: __( 'Nền hero: Ảnh / Video', 'nntm' ), initialOpen: true },
 						el(
 							MediaUploadCheck,
 							{},
 							el( MediaUpload, {
 								onSelect: onSelectBgImage,
-								allowedTypes: [ 'image' ],
+								allowedTypes: [ 'image', 'video' ],
 								value: attributes.bgImageId,
 								render: function ( mediaProps ) {
 									return el(
@@ -114,7 +116,7 @@
 										el(
 											Button,
 											{ onClick: mediaProps.open, variant: 'secondary' },
-											attributes.bgImageUrl ? __( 'Đổi ảnh khác', 'nntm' ) : __( 'Chọn ảnh nền', 'nntm' )
+											attributes.bgImageUrl ? __( 'Đổi ảnh / video', 'nntm' ) : __( 'Chọn ảnh hoặc video nền', 'nntm' )
 										),
 										attributes.bgImageUrl
 											? el(
@@ -124,7 +126,7 @@
 														variant: 'link',
 														isDestructive: true,
 													},
-													__( 'Gỡ ảnh', 'nntm' )
+													__( 'Gỡ media', 'nntm' )
 											  )
 											: null
 									);
@@ -132,7 +134,8 @@
 							} )
 						),
 						el( TextControl, {
-							label: __( 'Mô tả ảnh (alt)', 'nntm' ),
+							label: __( 'Mô tả nền (alt)', 'nntm' ),
+							help: __( 'Dùng cho ảnh. Video nền được phát không tiếng và lặp liên tục.', 'nntm' ),
 							value: attributes.bgImageAlt,
 							onChange: function ( value ) {
 								setAttributes( { bgImageAlt: value } );
@@ -268,6 +271,16 @@
 						)
 					)
 				),
+				attributes.bgImageUrl && 'video' === ( attributes.bgMediaType || 'image' )
+					? el( 'video', {
+						className: 'nntm-rank-card__bg-video',
+						src: attributes.bgImageUrl,
+						autoPlay: true,
+						muted: true,
+						loop: true,
+						playsInline: true,
+					} )
+					: null,
 				el(
 					'div',
 					{ className: 'nntm-rank-card__overlay' },

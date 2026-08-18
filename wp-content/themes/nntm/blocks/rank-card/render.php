@@ -33,14 +33,20 @@ require_once __DIR__ . '/inc/render-rank-card.php';
 
 $nntm_rc_heading = isset( $attributes['heading'] ) ? (string) $attributes['heading'] : '';
 
+$nntm_rc_bg_media_type = isset( $attributes['bgMediaType'] ) ? sanitize_key( (string) $attributes['bgMediaType'] ) : 'image';
+if ( ! in_array( $nntm_rc_bg_media_type, array( 'image', 'video' ), true ) ) {
+	$nntm_rc_bg_media_type = 'image';
+}
+
 $nntm_rc_bg_image_id  = isset( $attributes['bgImageId'] ) ? absint( $attributes['bgImageId'] ) : 0;
 $nntm_rc_bg_image_url = isset( $attributes['bgImageUrl'] ) ? esc_url_raw( (string) $attributes['bgImageUrl'] ) : '';
 $nntm_rc_bg_image_alt = isset( $attributes['bgImageAlt'] ) ? trim( (string) $attributes['bgImageAlt'] ) : '';
 
-// Ảnh nền ưu tiên lấy theo ID (kích cỡ "full" từ thư viện) — có ID thì lấy
-// đúng URL hiện hành của tệp, tránh lệch nếu ảnh trong thư viện đã đổi.
+// Media nền ưu tiên lấy theo ID để luôn dùng URL hiện hành trong thư viện.
 if ( $nntm_rc_bg_image_id > 0 ) {
-	$nntm_rc_bg_src = wp_get_attachment_image_url( $nntm_rc_bg_image_id, 'full' );
+	$nntm_rc_bg_src = 'video' === $nntm_rc_bg_media_type
+		? wp_get_attachment_url( $nntm_rc_bg_image_id )
+		: wp_get_attachment_image_url( $nntm_rc_bg_image_id, 'full' );
 	if ( $nntm_rc_bg_src ) {
 		$nntm_rc_bg_image_url = $nntm_rc_bg_src;
 	}
@@ -81,7 +87,7 @@ if ( empty( $nntm_rc_cards ) ) {
 }
 
 $nntm_rc_style = 'min-height:' . $nntm_rc_min_height . 'px;';
-if ( '' !== $nntm_rc_bg_image_url ) {
+if ( 'image' === $nntm_rc_bg_media_type && '' !== $nntm_rc_bg_image_url ) {
 	$nntm_rc_style .= 'background-image:url(' . esc_url( $nntm_rc_bg_image_url ) . ');';
 }
 
@@ -93,7 +99,7 @@ $nntm_rc_wrapper_extra = array(
 // Ảnh nền chỉ là CSS background-image (không có thẻ <img>) nên trình đọc
 // màn hình bỏ qua mặc định. Có mô tả (alt) thì gắn role="img" + aria-label
 // để người dùng vẫn biết nội dung ảnh; không có thì để mặc định (trang trí).
-if ( '' !== $nntm_rc_bg_image_alt ) {
+if ( 'image' === $nntm_rc_bg_media_type && '' !== $nntm_rc_bg_image_alt ) {
 	$nntm_rc_wrapper_extra['role']       = 'img';
 	$nntm_rc_wrapper_extra['aria-label'] = $nntm_rc_bg_image_alt;
 }
@@ -101,6 +107,9 @@ if ( '' !== $nntm_rc_bg_image_alt ) {
 $nntm_rc_wrapper_attributes = get_block_wrapper_attributes( $nntm_rc_wrapper_extra );
 ?>
 <section <?php echo $nntm_rc_wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput -- get_block_wrapper_attributes() da tu esc_attr() tung thuoc tinh. ?>>
+	<?php if ( 'video' === $nntm_rc_bg_media_type && '' !== $nntm_rc_bg_image_url ) : ?>
+		<video class="nntm-rank-card__bg-video" src="<?php echo esc_url( $nntm_rc_bg_image_url ); ?>" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+	<?php endif; ?>
 	<div class="nntm-rank-card__overlay">
 		<?php if ( '' !== trim( wp_strip_all_tags( $nntm_rc_heading ) ) ) : ?>
 			<h2 class="nntm-rank-card__heading"><?php echo wp_kses_post( $nntm_rc_heading ); ?></h2>

@@ -26,7 +26,7 @@
 	var Button = wp.components.Button;
 
 	function tamRong() {
-		return { imageId: 0, imageUrl: '', imageAlt: '', heading: '', text: '' };
+		return { mediaType: 'image', imageId: 0, imageUrl: '', imageAlt: '', heading: '', text: '' };
 	}
 
 	registerBlockType( 'nntm/banner', {
@@ -82,12 +82,15 @@
 						{},
 						el( MediaUpload, {
 							onSelect: function ( media ) {
+								var mediaType = media && ( 'video' === media.type || ( media.mime && 0 === media.mime.indexOf( 'video/' ) ) ) ? 'video' : 'image';
 								capNhatTam( chiSo, {
+									mediaType: mediaType,
 									imageId: media && media.id ? media.id : 0,
 									imageUrl: media && media.url ? media.url : '',
+									imageAlt: 'image' === mediaType && media && media.alt ? media.alt : ( tam.imageAlt || '' ),
 								} );
 							},
-							allowedTypes: [ 'image' ],
+							allowedTypes: [ 'image', 'video' ],
 							value: tam.imageId,
 							render: function ( mediaProps ) {
 								return el(
@@ -96,19 +99,19 @@
 									el(
 										Button,
 										{ onClick: mediaProps.open, variant: 'secondary' },
-										tam.imageUrl ? __( 'Đổi ảnh khác', 'nntm' ) : __( 'Chọn ảnh', 'nntm' )
+										tam.imageUrl ? __( 'Đổi ảnh / video', 'nntm' ) : __( 'Chọn ảnh hoặc video', 'nntm' )
 									),
 									tam.imageUrl
 										? el(
 												Button,
 												{
 													onClick: function () {
-														capNhatTam( chiSo, { imageId: 0, imageUrl: '' } );
+														capNhatTam( chiSo, { mediaType: 'image', imageId: 0, imageUrl: '' } );
 													},
 													variant: 'link',
 													isDestructive: true,
 												},
-												__( 'Gỡ ảnh', 'nntm' )
+												__( 'Gỡ media', 'nntm' )
 										  )
 										: null
 								);
@@ -116,8 +119,8 @@
 						} )
 					),
 					el( TextControl, {
-						label: __( 'Mô tả ảnh (alt)', 'nntm' ),
-						help: __( 'Để trống nếu ảnh chỉ để trang trí — chữ trên ảnh đã nói đủ nội dung.', 'nntm' ),
+						label: __( 'Mô tả media (alt)', 'nntm' ),
+						help: __( 'Ảnh dùng làm alt; video nền thường để trống vì chỉ mang tính trang trí.', 'nntm' ),
 						value: tam.imageAlt || '',
 						onChange: function ( gt ) {
 							capNhatTam( chiSo, { imageAlt: gt } );
@@ -204,11 +207,20 @@
 						'div',
 						{ className: 'nntm-banner-editor__stage' },
 						tamDau.imageUrl
-							? el( 'img', {
+							? ( 'video' === ( tamDau.mediaType || 'image' )
+								? el( 'video', {
+									className: 'nntm-banner-editor__img',
+									src: tamDau.imageUrl,
+									autoPlay: true,
+									muted: true,
+									loop: true,
+									playsInline: true,
+								  } )
+								: el( 'img', {
 									className: 'nntm-banner-editor__img',
 									src: tamDau.imageUrl,
 									alt: tamDau.imageAlt || '',
-							  } )
+								  } ) )
 							: el( 'div', { className: 'nntm-banner-editor__no-img' } ),
 						el( 'div', { className: 'nntm-banner-editor__overlay' } ),
 						el(
