@@ -29,6 +29,10 @@
 			"type": "string",
 			"default": "WHAT WILL EARTH LOOK LIKE?"
 		},
+		"caption": {
+			"type": "string",
+			"default": "Điện ảnh hóa Phật pháp, những câu chuyện về Đức Phật được chuyển điện ảnh một cách chân thật,...."
+		},
 		"mainVideoUrl": {
 			"type": "string",
 			"default": "https://www.youtube.com/watch?v=gJAbDSse5WM&list=RDgJAbDSse5WM&start_radio=1",

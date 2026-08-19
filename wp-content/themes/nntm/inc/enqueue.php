@@ -200,3 +200,112 @@ function nntm_enqueue_regular_article_detail_assets(): void {
 	);
 }
 add_action( 'wp_enqueue_scripts', 'nntm_enqueue_regular_article_detail_assets', 35 );
+
+/**
+ * Pixel-level homepage composition matched to Figma node 6376:6322.
+ *
+ * The homepage reuses generic blocks also used on archive/detail pages.
+ * Keep the frame-specific geometry in one page-scoped stylesheet so fixes
+ * here do not regress those shared block instances elsewhere.
+ */
+function nntm_enqueue_homepage_figma_assets(): void {
+	if ( ! is_front_page() ) {
+		return;
+	}
+
+	$css_path = NNTM_THEME_DIR . '/assets/css/pages/homepage-figma.css';
+	wp_enqueue_style(
+		'nntm-homepage-figma',
+		NNTM_THEME_URI . '/assets/css/pages/homepage-figma.css',
+		array(
+			'nntm-tokens',
+			'nntm-base',
+			'nntm-layout',
+			'nntm-header',
+			'nntm-footer',
+			'nntm-hero-slider-style',
+			'nntm-article-mosaic-style',
+			'nntm-article-feature-style',
+			'nntm-card-list-style',
+			'nntm-engineering-earth-style',
+		),
+		nntm_asset_version( $css_path )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'nntm_enqueue_homepage_figma_assets', 40 );
+
+/**
+ * Pixel-level Diệu Thượng composition matched to Figma node 6376:6694.
+ * Keep page-specific geometry out of shared Feature/Trú Xứ/footer styles.
+ */
+function nntm_enqueue_dieu_thuong_figma_assets(): void {
+	if ( ! is_page( 'dieu-thuong' ) ) {
+		return;
+	}
+
+	$css_path = NNTM_THEME_DIR . '/assets/css/pages/dieu-thuong-figma.css';
+	wp_enqueue_style(
+		'nntm-dieu-thuong-figma',
+		NNTM_THEME_URI . '/assets/css/pages/dieu-thuong-figma.css',
+		array(
+			'nntm-tokens',
+			'nntm-base',
+			'nntm-layout',
+			'nntm-header',
+			'nntm-footer',
+			'nntm-feature-style',
+			'nntm-tru-xu-list-style',
+		),
+		nntm_asset_version( $css_path )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'nntm_enqueue_dieu_thuong_figma_assets', 41 );
+
+/**
+ * Pixel reconciliation for the Liên Đàn page (Figma frame 6376:6744).
+ * Isolated to this slug so shared blocks keep their reusable defaults.
+ */
+function nntm_enqueue_lien_dan_figma_assets(): void {
+	if ( ! is_page( 'lien-dan' ) ) {
+		return;
+	}
+
+	$css_path = NNTM_THEME_DIR . '/assets/css/pages/lien-dan-figma.css';
+	wp_enqueue_style(
+		'nntm-lien-dan-figma',
+		NNTM_THEME_URI . '/assets/css/pages/lien-dan-figma.css',
+		array( 'nntm-tokens', 'nntm-base', 'nntm-layout', 'nntm-header', 'nntm-footer' ),
+		nntm_asset_version( $css_path )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'nntm_enqueue_lien_dan_figma_assets', 60 );
+
+/**
+ * Pixel reconciliation for Hoa Khai (Figma frame 6376:6603).
+ * Page-scoped so shared article-mosaic/card-list defaults remain reusable.
+ */
+function nntm_enqueue_hoa_khai_figma_assets(): void {
+	if ( ! is_page( 'hoa-khai' ) ) {
+		return;
+	}
+
+	$css_path = NNTM_THEME_DIR . '/assets/css/pages/hoa-khai-figma.css';
+	wp_enqueue_style(
+		'nntm-hoa-khai-figma',
+		NNTM_THEME_URI . '/assets/css/pages/hoa-khai-figma.css',
+		array( 'nntm-tokens', 'nntm-base', 'nntm-layout', 'nntm-header', 'nntm-footer', 'nntm-article-mosaic-style', 'nntm-card-list-style' ),
+		nntm_asset_version( $css_path )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'nntm_enqueue_hoa_khai_figma_assets', 61 );
+
+
+/** Pixel reconciliation for Vườn Xoài (Figma frame 6386:5177). */
+function nntm_enqueue_vuon_xoai_figma_assets(): void {
+	if ( ! is_page( 'vuon-xoai' ) ) { return; }
+	$css_path = NNTM_THEME_DIR . '/assets/css/pages/vuon-xoai-figma.css';
+	wp_enqueue_style( 'nntm-vuon-xoai-figma', NNTM_THEME_URI . '/assets/css/pages/vuon-xoai-figma.css', array( 'nntm-tokens', 'nntm-base', 'nntm-layout', 'nntm-header', 'nntm-footer', 'nntm-card-list-style', 'nntm-article-mosaic-style' ), nntm_asset_version( $css_path ) );
+	$js_path = NNTM_THEME_DIR . '/assets/js/vuon-xoai.js';
+	wp_enqueue_script( 'nntm-vuon-xoai', NNTM_THEME_URI . '/assets/js/vuon-xoai.js', array(), nntm_asset_version( $js_path ), true );
+}
+add_action( 'wp_enqueue_scripts', 'nntm_enqueue_vuon_xoai_figma_assets', 62 );
