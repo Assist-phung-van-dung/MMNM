@@ -305,7 +305,29 @@ function nntm_enqueue_vuon_xoai_figma_assets(): void {
 	if ( ! is_page( 'vuon-xoai' ) ) { return; }
 	$css_path = NNTM_THEME_DIR . '/assets/css/pages/vuon-xoai-figma.css';
 	wp_enqueue_style( 'nntm-vuon-xoai-figma', NNTM_THEME_URI . '/assets/css/pages/vuon-xoai-figma.css', array( 'nntm-tokens', 'nntm-base', 'nntm-layout', 'nntm-header', 'nntm-footer', 'nntm-card-list-style', 'nntm-article-mosaic-style' ), nntm_asset_version( $css_path ) );
-	$js_path = NNTM_THEME_DIR . '/assets/js/vuon-xoai.js';
-	wp_enqueue_script( 'nntm-vuon-xoai', NNTM_THEME_URI . '/assets/js/vuon-xoai.js', array(), nntm_asset_version( $js_path ), true );
 }
 add_action( 'wp_enqueue_scripts', 'nntm_enqueue_vuon_xoai_figma_assets', 62 );
+
+/** Pixel reconciliation for Nhập Pháp Giới (Figma frame 6376:6488). */
+function nntm_enqueue_nhap_phap_gioi_figma_assets(): void {
+	if ( ! is_page( 'nhap-phap-gioi' ) ) {
+		return;
+	}
+
+	$css_path = NNTM_THEME_DIR . '/assets/css/pages/nhap-phap-gioi-figma.css';
+	wp_enqueue_style(
+		'nntm-nhap-phap-gioi-figma',
+		NNTM_THEME_URI . '/assets/css/pages/nhap-phap-gioi-figma.css',
+		array(
+			'nntm-tokens',
+			'nntm-base',
+			'nntm-layout',
+			'nntm-header',
+			'nntm-footer',
+			'nntm-rank-card-style',
+			'nntm-card-list-style',
+		),
+		nntm_asset_version( $css_path )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'nntm_enqueue_nhap_phap_gioi_figma_assets', 63 );

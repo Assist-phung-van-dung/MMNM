@@ -29,29 +29,8 @@ $nntm_main_class = nntm_page_uses_section_blocks( get_queried_object() )
 			<?php if ( ! is_front_page() && ! nntm_should_hide_page_title( get_post() ) ) : ?>
 				<h1 class="nntm-page__title"><?php the_title(); ?></h1>
 			<?php endif; ?>
-
 			<div class="nntm-page__content">
-				<?php
-				if ( is_page( 'vuon-xoai' ) ) {
-					$vx_blocks = parse_blocks( get_the_content() );
-					$vx_has_gallery = false;
-					foreach ( $vx_blocks as $vx_block ) {
-						if ( 'nntm/dieu-thuong' === ( $vx_block['blockName'] ?? '' ) ) {
-							$vx_has_gallery = true;
-							break;
-						}
-					}
-
-					foreach ( $vx_blocks as $vx_index => $vx_block ) {
-						echo render_block( $vx_block ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- core block renderer escapes its output.
-						if ( ! $vx_has_gallery && 1 === $vx_index ) {
-							get_template_part( 'template-parts/vuon-xoai-gallery' );
-						}
-					}
-				} else {
-					the_content();
-				}
-				?>
+				<?php the_content(); ?>
 			</div>
 		</article>
 		<?php
