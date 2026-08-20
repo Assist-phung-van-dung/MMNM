@@ -102,6 +102,39 @@
      Hạng Cá Nhân", nền hàng đầu bảng (chữ trắng) và thanh tiến trình. */
   --nntm-do-tham:   #8B1E2D;
 
+
+  /* ---------- Màn chờ tải trang (preloader) ----------
+     Thêm 20/08/2026. Bảng màu RIÊNG của màn chờ, KHÔNG dùng ở chỗ nào khác
+     trong site: màn chờ là một lớp phủ toàn màn tối + vàng kim (theo bản
+     anh Úy chọn trong C:\AI4\mmtn\spiritual-preloader-all-effects-mouse.html),
+     còn site thì nền kem + rêu. Không có token nào sẵn có tương đương nên
+     phải khai mới thay vì pha từ token cũ — pha ra sẽ lệch màu bản gốc.
+
+     Mọi biến thể trong suốt của các màu này viết bằng
+     color-mix(in srgb, var(--token) N%, transparent) tại chỗ dùng, đúng
+     quy ước đang dùng cho --nntm-cham-dam / --nntm-the-kinh-dam. */
+  --nntm-tai-nen:        #11100D;  /* nền lớp phủ khi đang tải */
+  --nntm-tai-vang:       #DEC378;  /* vàng chủ đạo của hiệu ứng */
+  --nntm-tai-vang-nhat:  #EAD79B;  /* vàng sáng: tâm hào quang, ký hiệu */
+
+  --nntm-tai-mandala-nen: #100F0C;  /* nền hiệu ứng Mandala */
+  --nntm-tai-mandala:     #D9C078;  /* nét hoa văn Mandala */
+  --nntm-tai-mandala-tam: #EBD99E;  /* ký hiệu giữa Mandala */
+
+  --nntm-tai-trang-nen:  #0D0E11;  /* nền trời hiệu ứng Ánh Trăng */
+  --nntm-tai-trang:      #EFE3BC;  /* ánh trăng */
+  --nntm-tai-trang-dam:  #D7C68F;  /* mép tối của mặt trăng */
+  --nntm-tai-trang-vet:  #7C7052;  /* vết trên mặt trăng */
+
+  --nntm-tai-nhat-nen-1: #100C08;  /* nền hiệu ứng Mặt Trời (trên) */
+  --nntm-tai-nhat-nen-2: #171008;  /* nền hiệu ứng Mặt Trời (dưới) */
+  --nntm-tai-nhat-1:     #FFF8D9;  /* tâm mặt trời */
+  --nntm-tai-nhat-2:     #F8D98B;
+  --nntm-tai-nhat-3:     #E9AA3A;
+  --nntm-tai-nhat-4:     #CF7B1A;  /* viền ngoài mặt trời */
+  --nntm-tai-nhat-tia:   #F4CB68;  /* tia sáng xoay */
+  --nntm-tai-nhat-ky:    #71420D;  /* ký hiệu ☉ giữa mặt trời */
+
   /* ---------- Chữ ---------- */
   /* Battambang / Baskerville / Google Sans Flex / Century Gothic trong Figma
      KHÔNG dùng được trên web (thiếu tiếng Việt hoặc phải mua giấy phép).

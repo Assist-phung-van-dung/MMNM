@@ -296,7 +296,13 @@
 
 .nntm-thien-duong__embed {
 	display: grid;
-	grid-template-columns: 488px 685px;
+	/*
+	 * SUA 20/08/2026: px -> fr. Khoi nay nam NGOAI moi @media nen hai cot
+	 * cung do xuong ca dai 1152-1365; tu khi bo `zoom` thi 488+685+10 = 1183
+	 * vuot khung noi dung (1003 o man 1200) va cot phai bi cat 89px.
+	 * `fr` giu dung ti le Figma va tu co theo be rong.
+	 */
+	grid-template-columns: minmax(0, 488fr) minmax(0, 685fr);
 	gap: 10px;
 	height: 385px;
 	align-items: stretch;
@@ -318,8 +324,25 @@
 
 /* Keep the dynamic player functional but make its outer geometry match the
  * screenshot embedded in Figma. */
+
+/*
+ * SUA 20/08/2026 (anh Uy bao menu toc do bi an duoi khung o man lon):
+ * `overflow: hidden` o day CAT MAT popup .nntm-thien-duong__speed-menu.
+ * Popup do dat tuyet doi trong .__settings nam SAU trong khung nay, mo
+ * xuong duoi (`top: calc(100% + 8px)`) nen roi thang ra ngoai day khung
+ * 385px cua desktop va bi cat sach.
+ *
+ * blocks/thien-duong/style.css von da khai `overflow: visible` cho chinh
+ * phan tu nay, kem chu thich "cho popup speed menu thoat khoi khung
+ * player" — luat o day de len va vo hieu hoa no.
+ *
+ * Bo clip la an toan: noi dung ben trong KHONG the tran ra vi
+ * .__player-inner co `min-height: 0` va .__tracklist tu cuon rieng
+ * (`overflow-y: auto`). Clip o day chi la lop chan du phong, va cai gia
+ * phai tra la mat han menu toc do.
+ */
 .nntm-thien-duong__player {
-	overflow: hidden;
+	overflow: visible;
 	box-shadow: none;
 }
 

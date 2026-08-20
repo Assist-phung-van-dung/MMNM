@@ -43,13 +43,23 @@ body {
 }
 
 /*
- * Desktop design frame: 1366px. On wider monitors the complete site stays
- * centered at the original design size instead of stretching with viewport.
- * Intentional carousel overflow remains local to the component.
+ * KHUNG SITE — SỬA 20/08/2026 (anh Úy chốt đổi kiến trúc).
+ *
+ * TRƯỚC: `max-width: 1366px` ở đây khoá CẢ TRANG lại 1366 rồi canh giữa,
+ * nên trên màn 1920/2560 toàn bộ site — kể cả NỀN của từng dải section —
+ * chỉ rộng 1366 và hai bên là hai dải `--nntm-kem-dam` trơ ra.
+ *
+ * SAU: khung tràn hết bề rộng màn. Mỗi dải section tự chặn NỘI DUNG của nó
+ * ở `max-width: var(--nntm-w-rong)` và canh giữa (xem assets/css/responsive.css,
+ * mục "DẢI TRÀN MÀN — NỘI DUNG DỪNG Ở 1366"). Nhờ vậy nền/ảnh của section
+ * tràn hết màn còn nội dung vẫn đúng tỉ lệ Figma, KHÔNG dùng transform:
+ * scale() hay zoom để phóng giao diện.
+ *
+ * Vẫn giữ `overflow-x: clip`: các băng chạy ngang (marquee/carousel) cố ý
+ * tràn ra ngoài và không được phép sinh thanh cuộn ngang cho cả trang.
  */
 .nntm-site-frame {
 	width: 100%;
-	max-width: var(--nntm-w-rong);
 	min-height: 100vh;
 	margin-inline: auto;
 	display: flex;

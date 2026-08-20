@@ -180,7 +180,8 @@
 	}
 
 	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) > .nntm-card-list__band > .nntm-container {
-		width: 1366px;
+		width: 100%;
+		max-width: 1366px;
 		height: 544px;
 		max-width: none;
 		padding: 0;
@@ -311,7 +312,8 @@
 
 	.nntm-card-list__caption-below {
 		top: calc(100% + 10px);
-		width: 1082px;
+		width: 100%;
+		max-width: 1082px;
 		max-width: 1082px;
 		padding: 0 134px;
 		box-sizing: border-box;
@@ -343,7 +345,8 @@
 	}
 
 	.nntm-card-list--nen-cam > .nntm-card-list__band > .nntm-container {
-		width: 1266px;
+		width: 100%;
+		max-width: 1266px;
 		height: 566px;
 		max-width: 1266px;
 		padding: 0;
@@ -351,13 +354,15 @@
 	}
 
 	.nntm-card-list--nen-cam .nntm-card-list__header-row {
-		width: 1266px;
+		width: 100%;
+		max-width: 1266px;
 		justify-content: center;
 	}
 
 	.nntm-card-list--nen-cam .nntm-card-list__heading,
 	.nntm-card-list--nen-cam .nntm-card-list__subheading {
-		width: 1266px;
+		width: 100%;
+		max-width: 1266px;
 		padding: 0;
 		box-sizing: border-box;
 		text-align: center;
@@ -579,11 +584,19 @@
 		flex-wrap: wrap;
 	}
 
+	/*
+	 * SUA 20/08/2026: le tren/duoi tu 80/100 xuong 60/60.
+	 *
+	 * Hai so cu la cho de HOLD cho .__heading-above va .__caption-below khi
+	 * hai doan chu do con `position: absolute` (nam ngoai luong nen phai tu
+	 * chua cho). Tu dot nay blocks/card-list/style.css tra chung ve luong o
+	 * duoi 1152 (xem chu thich tai do) nen section da tu cao du — giu 80/100
+	 * thanh khoang trong chet.
+	 */
 	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) {
 		height: auto;
 		min-height: 0;
-		margin-top: 80px;
-		margin-bottom: 100px;
+		margin-block: var(--nntm-sp-10);
 	}
 
 	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) > .nntm-card-list__band,

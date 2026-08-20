@@ -67,7 +67,8 @@
 	}
 
 	.nntm-kchg-articles > .nntm-card-list__band > .nntm-container {
-		width: 1204px;
+		width: 100%;
+		max-width: 1204px;
 		max-width: 1204px;
 		padding: 0;
 	}
@@ -144,7 +145,8 @@
 	}
 
 	.nntm-kchg-nghi-quy > .nntm-card-list__band > .nntm-container {
-		width: 1266px;
+		width: 100%;
+		max-width: 1266px;
 		max-width: 1266px;
 		padding: 0;
 		display: flex;
@@ -308,7 +310,8 @@
 
 	.nntm-kchg-ranking .nntm-cong-tu__thong-ke,
 	.nntm-kchg-ranking .nntm-cong-tu__bxh {
-		width: 1000px;
+		width: 100%;
+		max-width: 1000px;
 		max-width: 1000px;
 		margin-inline: auto;
 	}

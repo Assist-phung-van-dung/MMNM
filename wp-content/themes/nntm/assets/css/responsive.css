@@ -1,52 +1,34 @@
 /* =============================================================
-   NNTM — Lớp responsive cho màn HẸP HƠN khung thiết kế (1366).
+   NNTM — LỚP RESPONSIVE
 
-   BÀI TOÁN
-   Figma khách gửi CHỈ có khung desktop 1366px. Nhưng laptop 1366x768
-   thật chỉ còn 1351px chỗ vẽ (thanh cuộn dọc Windows chiếm ~15px), nên:
-     - Mọi khối khai `width: 1366px` cứng bị .nntm-site-frame (overflow-x:
-       clip) CẮT MẤT 15px bên phải — cắt âm thầm, không hiện thanh cuộn
-       ngang nên trước giờ không ai thấy.
-     - Trang chủ còn nặng hơn: cả bố cục desktop nằm trong
-       `@media (min-width: 1366px)`, màn 1280 rơi thẳng xuống bố cục mặc
-       định của block, mất sạch tỉ lệ Figma.
+   BỐI CẢNH
+   Figma khách gửi CHỈ có khung desktop 1366px. Bố cục desktop vì thế là
+   một BẢN VẼ THEO PIXEL: riêng trang chủ có ~60 số đo cứng, gồm cả chiều
+   cao dải (768/870/945/819) và toạ độ tuyệt đối (left: 958, top: 772).
 
-   CÁCH GIẢI (anh Úy chốt 20/08/2026)
-   Bố cục desktop là một BẢN VẼ THEO PIXEL: riêng trang chủ có ~60 số đo
-   cứng, gồm cả chiều cao dải (768/870/945/819) và toạ độ tuyệt đối
-   (left: 958, top: 772). Không thể "fluid hoá" nó mà không vẽ lại cả
-   thiết kế — mà Figma lại không có bản tablet nào để bám. Nên:
+   KIẾN TRÚC (anh Úy chốt 20/08/2026 — thay hẳn cách làm trước đó)
 
-     - Từ 1152px trở lên: THU NHỎ ĐỒNG ĐỀU cả khung 1366 bằng `zoom`.
-     - Dưới 1152px: BỐ CỤC XẾP LẠI thật (reflow) theo ba bậc bên dưới.
+     >= 1366px : NỀN của mỗi dải section tràn hết bề rộng màn; NỘI DUNG
+                 bên trong dừng ở max-width 1366 và canh giữa. Tỉ lệ, cỡ
+                 chữ, khoảng cách của bản thiết kế giữ NGUYÊN — màn 1920 /
+                 2K / siêu rộng chỉ được thêm nền tràn, không phóng to gì.
+     1152-1365 : cùng cấu trúc đó, nhưng container co theo khung nhìn và
+                 mọi bề rộng cứng đổi sang `max-width` để tự thu.
+     <= 1151px : bố cục xếp lại (reflow) — xem thang bậc bên dưới.
 
-   Vì `zoom` tác động vào GIAI ĐOẠN DÀN TRANG (khác `transform: scale`
-   chỉ vẽ lại), `width: 100%` của .nntm-site-frame tự giải ra
-   `bề-rộng-thật / tỉ-lệ` = ĐÚNG 1366px đơn vị dàn trang ở mọi cỡ màn.
-   Nói cách khác: bên trong khung, bố cục LUÔN được dàn ở đúng 1366px
-   như Figma, rồi mới thu nhỏ để vừa màn. Không còn chỗ nào bị cắt.
-
-   VÌ SAO SÀN LÀ 1152px
-   Ở 1152 tỉ lệ thu nhỏ còn 83% (chữ thân bài 16 -> 13.3px). Hẹp hơn nữa
-   thì chữ quá nhỏ nên xếp lại là đúng. 1152 cũng đủ rộng để dải laptop
-   phổ biến (1280, 1366) và iPad Pro 11"/Air ngang (1180-1194) vẫn xem
-   được đúng tỉ lệ Figma.
-
-   HỆ QUẢ CẦN BIẾT
-   1. Điểm ngắt (@media) KHÔNG bị `zoom` ảnh hưởng — vẫn đo theo bề rộng
-      thật của màn. Nên mọi cổng desktop phải mở từ 1152px, không phải
-      1366px.
-   2. Chữ nhỏ đi theo tỉ lệ: 1366 -> 98.8%, 1280 -> 92.5%, 1152 -> 83%.
-      Dưới 1152px thì DỪNG thu nhỏ, chữ trở lại cỡ thật.
-   3. Người dùng phóng to trang (Ctrl++) làm bề rộng CSS hẹp lại; phóng
-      quá ngưỡng 1152px là rơi vào bố cục reflow, chữ trở lại cỡ thật.
+   ĐÃ BỎ: bản trước thu nhỏ đồng đều cả khung bằng `zoom` cho màn dưới
+   1366. Anh Úy chốt KHÔNG dùng `zoom` / `transform: scale()` nữa, nên
+   toàn bộ khối đó đã gỡ. Hệ quả cần biết: `zoom` từng bảo đảm bên trong
+   khung luôn được dàn ở đúng 1366px nên mọi số px cứng đều khớp; giờ
+   không còn lá chắn đó, các bề rộng cứng phải tự co bằng `max-width`
+   (xem chú thích tại từng chỗ đã đổi trong các file page/block).
 
    THANG ĐIỂM NGẮT CỦA TOÀN THEME (chuẩn hoá 20/08/2026 — trước đó có tới
    11 mốc rời rạc 1366/1224/1100/1025/901/782/768/760/700/640/600/520):
 
-     >= 1152px : khung thiết kế 1366, thu nhỏ vừa màn  (KHÔNG ĐỤNG)
+     >= 1152px : khung thiết kế 1366, nền tràn màn
      <= 1151px : tablet rộng — vẫn hai/ba cột, thu lề và cỡ chữ một bậc
-     <= 1023px : tablet — các lưới hai cột gộp về một (mosaic, feature)
+     <= 1023px : tablet — các lưới hai cột gộp về một (mosaic, feature, hero)
      <=  767px : điện thoại — xếp dọc hoàn toàn
      <=  480px : điện thoại nhỏ — drawer tràn màn, cỡ chữ nhỏ thêm một bậc
 
@@ -56,40 +38,44 @@
 
    Nạp SAU tokens/base/layout/header/footer — xem inc/enqueue.php.
    ============================================================= */
-@media (min-width: 1152px) {
-	.nntm-site-frame {
-		/*
-		 * Bề rộng thanh cuộn dọc phải TRỪ BẰNG TAY: `100vw` tính cả thanh
-		 * cuộn (1366 trên màn 1366) trong khi chỗ vẽ thật chỉ 1351. Lấy
-		 * 17px là mức rộng nhất của thanh cuộn cổ điển trên Windows —
-		 * chọn số lớn nhất để luôn thừa ~2px chứ không bao giờ thiếu.
-		 * Máy dùng thanh cuộn nổi (macOS) thì mất 17px bề rộng, mắt
-		 * thường không nhận ra.
-		 */
-		--nntm-be-thanh-cuon: 17px;
 
-		/*
-		 * min(1, ...) để màn RỘNG hơn 1383 không bị phóng to lên — khung
-		 * vẫn dừng ở 1366 và canh giữa như cũ. Không đặt trần trên bằng
-		 * @media vì màn 1366 thật rơi đúng vào mốc 1366 (điểm ngắt tính
-		 * cả thanh cuộn) nên `max-width: 1365px` sẽ bỏ sót chính nó.
-		 */
-		--nntm-ty-le-khung: min(
-			1,
-			calc((100vw - var(--nntm-be-thanh-cuon)) / var(--nntm-w-rong))
-		);
 
-		zoom: var(--nntm-ty-le-khung);
+/* =============================================================
+   DẢI TRÀN MÀN — NỘI DUNG DỪNG Ở 1366
 
-		/*
-		 * base.css khai `min-height: 100vh` cho khung. Sau khi thu nhỏ,
-		 * 100vh đơn vị dàn trang chỉ vẽ ra 100vh * tỉ-lệ nên trang ngắn
-		 * hở một dải nền body ở đáy. Chia lại cho tỉ lệ để chiều cao vẽ
-		 * ra đúng bằng một màn.
-		 */
-		min-height: calc(100vh / var(--nntm-ty-le-khung));
-	}
-}
+   base.css đã gỡ `max-width` của .nntm-site-frame nên khung tràn hết màn.
+   Việc còn lại: mỗi dải section phải tự chặn nội dung của nó.
+
+   Phần lớn block đã có sẵn lớp bọc trong (`__inner`) mang `max-width`
+   đúng số Figma (1366 / 1180 / 1082 / 1286…) nên tự khớp. Khối dưới đây
+   chỉ vá những dải KHÔNG có lớp bọc đó — đo bằng trình duyệt ở khung
+   1920 sau khi gỡ trần khung:
+
+     .nntm-hero-slider__stage      -> giãn 1905, không có trần
+     .nntm-card-list__band         -> nền tràn 1905 (ĐÚNG), nhưng khung
+                                      cuộn/băng bên trong cũng giãn theo
+     .nntm-engineering-earth       -> ngược lại: section chỉ 1180, nền đen
+                                      KHÔNG tràn màn
+     .nntm-header                  -> chỉ 1366, nền trắng không tràn màn
+
+   ĐÃ VÁ Ở ĐÂU (mỗi chỗ đều có chú thích tại chính nó):
+     header.css            gỡ trần 1366 của .nntm-header (thanh .__bar
+                           vốn đã có trần 1366 + canh giữa)
+     footer.css            .nntm-footer__bar: `max-width: none` -> 1326
+     base.css              gỡ trần 1366 của .nntm-site-frame
+     homepage-figma.css    dải đen Engineering Earth vẽ nền bằng ::before
+                           rộng 100vw, hộp dải giữ nguyên hình học;
+                           bốn khối tuyệt đối của hero cộng --nntm-cot-le
+     card-list / term-list / tru-xu-list / dieu-thuong-figma
+                           `.nntm-container { max-width: none }` -> trần
+                           1366 + canh giữa
+
+   Bề rộng cứng >= 600px trong các khối `@media (min-width: 1152px)` đã
+   đổi sang `width: 100%; max-width: <số cũ>` (33 khai báo) và các lưới
+   `grid-template-columns` px đổi sang `minmax(0, Nfr)` — nhờ vậy từ 1366
+   trở lên giá trị chạm trần nên KHÔNG đổi một pixel nào so với Figma, còn
+   dưới 1366 thì container tự co theo khung nhìn.
+   ============================================================= */
 
 
 /* =============================================================
@@ -129,26 +115,22 @@
 }
 
 
+
 /* =============================================================
-   DỰ PHÒNG CHO TRÌNH DUYỆT KHÔNG HIỂU `zoom`
+   --nntm-cot-le : LỀ TRÁI CỦA CỘT 1366 CĂN GIỮA
 
-   `zoom` chỉ vào bảng chuẩn CSS gần đây: Chrome/Edge/Safari đã có từ lâu,
-   Firefox thì từ bản 126 (5/2024). Dự án này vốn đã dùng `:has()`,
-   `color-mix()`, `overflow: clip` nên nền tảng tối thiểu vẫn là trình
-   duyệt đời mới — nhưng nếu gặp bản Firefox cũ hơn 126 thì `zoom` bị bỏ
-   qua, khung vẫn dàn ở 1366 trong chỗ vẽ hẹp hơn và base.css
-   (`overflow-x: clip`) sẽ CẮT ÂM THẦM phần thừa.
+   Dùng cho các khối định vị TUYỆT ĐỐI bên trong một dải đã tràn hết màn
+   (hero, dải đen…). Những khối đó neo bằng px đếm từ mép trái khung
+   thiết kế 1366 (`left: 93px`, `left: 958px`…); khi dải tràn ra 1920 thì
+   mép trái của dải không còn là mép cột nữa, nên phải cộng thêm phần
+   thừa hai bên.
 
-   Ở trường hợp đó cho tràn ra ngoài (hiện thanh cuộn ngang) thay vì cắt:
-   thà người dùng phải kéo ngang còn hơn mất nội dung mà không biết. Chỉ
-   mở trong dải 1152-1365 nên màn rộng vẫn giữ nguyên hàng rào `clip` của
-   base.css (không cho tràn ra hai dải nền ngoài khung 1366).
+   `100%` ở đây được thay thế NGUYÊN VĂN rồi mới tính, nên nó là bề rộng
+   KHỐI CHỨA của chính phần tử dùng biến — đúng bằng bề rộng dải. Màn hẹp
+   hơn 1366 thì hiệu số âm, `max()` kẹp về 0 và mọi số đo trở lại đúng
+   như bản gốc.
    ============================================================= */
 
-@supports not (zoom: 1) {
-	@media (min-width: 1152px) and (max-width: 1365px) {
-		.nntm-site-frame {
-			overflow-x: visible;
-		}
-	}
+:root {
+	--nntm-cot-le: max(0px, calc((100% - var(--nntm-w-rong)) / 2));
 }

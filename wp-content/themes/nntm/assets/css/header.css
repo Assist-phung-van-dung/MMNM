@@ -136,14 +136,28 @@
    nay von da la `--sticky` — dinh tren cung khi cuon. `absolute` se
    cuon mat theo trang, mat hanh vi dinh da chot.
    ============================================================= */
+/*
+ * SUA 20/08/2026: bo tran 1366 — thanh dau trang tran het be rong man.
+ *
+ * Truoc day khung site bi chan 1366 nen thanh nay chan theo cho khop. Gio
+ * khung tran man (base.css) ma thanh van 1366 thi tren man 1920 nen trang
+ * cua header chi phu 1366 o giua, hai ben lo anh banner ra — sai han y
+ * "nen tran het man".
+ *
+ * Noi dung ben trong KHONG doi: .nntm-header__bar da co
+ * `max-width: var(--nntm-w-rong); margin-inline: auto` nen cum logo/menu/
+ * cong cu van dung o cot 1366 canh giua.
+ *
+ * Bo luon transform: khong con gi phai canh giua nen `left/right: 0` la du,
+ * va nho vay header khong con la khoi chua cua drawer `position: fixed`
+ * (xem chu thich o khoi MENU THU GON cuoi file).
+ */
 body.nntm-dau-trang-de-len .nntm-header {
 	position: fixed;
 	top: 0;
-	left: 50%;
-	right: auto;
-	width: min(100%, var(--nntm-w-rong));
-	max-width: var(--nntm-w-rong);
-	transform: translateX(-50%);
+	left: 0;
+	right: 0;
+	width: 100%;
 }
 
 /*
@@ -483,7 +497,12 @@ body.nntm-dau-trang-de-len .nntm-header {
 .nntm-header__search-form {
 	display: flex;
 	align-items: center;
-	width: 263px;   /* tu Figma */
+	/* Duoi 1366 o tim kiem phai co lai duoc, khong thi cum ben phai tran ra
+	   ngoai khung nhin (do duoc cat 23px o man 1200 truoc khi sua). */
+	flex: 0 1 263px;
+	min-width: 0;
+	width: 100%;
+	max-width: 263px;   /* tu Figma */
 	height: 46px;   /* tu Figma */
 	gap: var(--nntm-sp-3);            /* 10 — tu Figma */
 	padding-inline: var(--nntm-sp-3); /* 10 — tu Figma */

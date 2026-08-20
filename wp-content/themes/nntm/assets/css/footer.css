@@ -68,7 +68,9 @@
 }
 
 .nntm-footer__bar {
-	max-width: none;
+	/* SUA 20/08/2026: `none` -> chan 1326 (so Figma) + canh giua; khung site
+	   khong con chan 1366 nen `none` se keo dai xam het 1920. */
+	max-width: 1326px;
 	margin-inline: auto;
 	background-color: var(--nntm-muc-nhat); /* tu Figma: khoi nen xam #4F4F4F, thut le nho dem ngang o .nntm-footer */
 	padding: var(--nntm-sp-5); /* 20 — dem trong khoi xam, quanh duong ke + hang noi dung */

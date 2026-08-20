@@ -504,9 +504,16 @@
 	}
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
 	/*
-	 * ĐIỆN THOẠI — xếp dọc theo luồng, chiều cao do nội dung quyết định.
+	 * DƯỚI 1024 — xếp dọc theo luồng, chiều cao do nội dung quyết định.
+	 *
+	 * SUA 20/08/2026: truoc day bac nay chi mo tu 767. Nhung o khung 768 dai
+	 * lien ket nhanh bi bo trong 64% be rong (chua cho the kinh mo ben phai)
+	 * nen chi con 442px trong khi bon o can 478px -> o CUOI bi cat mat 36px,
+	 * dung nhu anh Uy bao. Dai 1024-1151 thi du cho (606-687px) nen giu bo
+	 * cuc Figma; tu 1023 tro xuong xep doc, luc do dai lien ket nhanh xuong
+	 * dong tu do, khong the cat.
 	 *
 	 * CẤU TRÚC THẬT của khối là `stage > track > slide > content`: khối chữ
 	 * nằm TRONG từng tấm, mà tấm lại `position: absolute; inset: 0`. Nên chỉ
@@ -569,11 +576,24 @@
 		font-size: var(--nntm-fs-4xl);
 	}
 
+	/*
+	 * Bac 1024-1151 dat `flex-wrap: nowrap; overflow-x: auto` cho dai lien
+	 * ket nhanh (de dai luon dung MOT hang, giu cho dai cham tinh dung vi
+	 * tri bang phep cong). Dieu kien <=1023 la TAP CON cua <=1151 nen hai
+	 * luat do van do xuong day va se cat mat o cuoi.
+	 *
+	 * O bac xep doc khong con can mot hang nua (dai cham gio nam trong luong
+	 * flex, khong tinh theo `bottom`), nen tra ve xuong dong binh thuong va
+	 * bo cuon ngang.
+	 */
 	.nntm-hero-slider__quicklinks {
 		gap: var(--nntm-sp-2);
+		flex-wrap: wrap;
+		overflow-x: visible;
 	}
 
 	.nntm-hero-slider__quicklink {
+		flex: 0 1 auto;
 		min-height: 40px;
 		padding: var(--nntm-sp-1) var(--nntm-sp-4);
 		font-size: var(--nntm-fs-xs);
