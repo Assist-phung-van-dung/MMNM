@@ -58,7 +58,7 @@
 	text-underline-offset: 2px;
 }
 
-@media (min-width: 901px) {
+@media (min-width: 1152px) {
 	.nntm-lien-dan-khoa .nntm-card-list__carousel {
 		position: relative;
 		display: block;
@@ -404,7 +404,7 @@
 }
 
 /* -------------------- RESPONSIVE SAFETY -------------------- */
-@media (max-width: 900px) {
+@media (max-width: 1151px) {
 	.nntm-lien-dan-khoa > .nntm-card-list__band,
 	.nntm-lien-dan-lich > .nntm-card-list__band,
 	.nntm-thien-duong,
@@ -433,7 +433,7 @@
 	.nntm-lien-dan-khoa .nntm-card-list__heading,
 	.nntm-lien-dan-lich .nntm-card-list__heading,
 	.nntm-thien-duong__heading {
-		font-size: clamp(36px, 9vw, 52px);
+		font-size: clamp(36px, 9vw, var(--nntm-fs-4xl)); /* tran theo token de bam bac chu tablet cua responsive.css */
 		line-height: 1.1;
 	}
 
@@ -473,24 +473,78 @@
 		height: auto;
 	}
 
+	/*
+	 * TABLET (768-1151): giu hai cot nhung chuyen sang TI LE.
+	 *
+	 * Khoi THIEN DUONG cua trang nay khai `grid-template-columns: 488px 685px`
+	 * NGOAI moi @media (nam sau khi khoi min-width:1152px da dong) nen hai cot
+	 * cung do o mo cong: do duoc cot phai tran 194px ra ngoai khung o 1024 va
+	 * 450px o 768. Doi sang `488fr 685fr` — dung ti le Figma nhung tu co theo
+	 * be rong. Bo luon chieu cao co dinh 385px cua desktop.
+	 */
 	.nntm-thien-duong__embed {
-		grid-template-columns: 1fr;
+		grid-template-columns: 488fr 685fr;
 		height: auto;
 	}
 
-	.nntm-thien-duong__cover,
-	.nntm-thien-duong__player {
+	.nntm-thien-duong__cover {
 		width: 100%;
 		height: auto;
 		min-height: 0;
 		aspect-ratio: 16 / 10;
 	}
 
+	/*
+	 * SUA 20/08/2026: KHONG khoa lai ti le khung cho trinh phat. Truoc day
+	 * trinh phat dung chung luat voi anh bia nen bi ep ve 16/10, trong khi
+	 * ben trong no la danh sach bai co so dong thay doi + toolbar; do duoc
+	 * mat 87px noi dung o khung 390 va 84px o khung 768 (list co
+	 * overflow:hidden nen cat am tham). De blocks/thien-duong/style.css lo
+	 * phan nay: `aspect-ratio: auto; min-height: 320px`.
+	 */
+	.nntm-thien-duong__player {
+		width: 100%;
+		height: auto;
+	}
+
 	.nntm-footer.nntm-footer--inner {
-		padding: 10px;
+		padding: var(--nntm-sp-3);
+	}
+
+	/*
+	 * SUA 20/08/2026 (anh Uy bao chan trang Lien Dan chua dung).
+	 *
+	 * HAI LOI, cung mot goc: khoi COMPACT FOOTER o giua file nay nam NGOAI
+	 * moi @media nen `height` cung cua no do xuong ca man hep, ma khoi
+	 * "responsive safety" nay truoc day chi go cho .nntm-footer--inner va
+	 * .__bar, BO SOT .__row.
+	 *
+	 * 1. `.__row { height: 46px }` con nguyen o moi co man. Tu 1023px tro
+	 *    xuong footer.css xep hang do thanh COT, noi dung can 194px trong khi
+	 *    hang van cao 46px -> dai menu chan trang do ra NGOAI dai den, do duoc
+	 *    tran 81px o khung 375. Doi chieu /hoa-khai/ (cung dung .--inner nhung
+	 *    khong nap file nay) thi hang tu cao 198px, khong tran.
+	 * 2. Thanh trong cao 76px o dai 1024-1151 trong khi /hoa-khai/ giu dung 107
+	 *    cua Figma. Giu lai san 107 cho khop, chi cho phep cao THEM khi noi
+	 *    dung can.
+	 */
+	.nntm-footer--inner .nntm-footer__row {
+		height: auto;
 	}
 
 	.nntm-footer--inner .nntm-footer__bar {
-		padding: 15px;
+		min-height: 107px;
+		padding: var(--nntm-sp-4);
+	}
+}
+
+/* =============================================================
+   ĐIỆN THOẠI (<= 767px) — Thiền Đường xếp dọc.
+   Dải 768–1151 giữ hai cột (ảnh bìa | trình phát) như thiết kế; chỉ điện
+   thoại mới dồn về một cột.
+   ============================================================= */
+@media (max-width: 767px) {
+	.nntm-thien-duong__embed {
+		grid-template-columns: 1fr;
 	}
 }

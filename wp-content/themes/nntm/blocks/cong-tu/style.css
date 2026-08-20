@@ -370,7 +370,7 @@
 
 /* ---------- Mobile ---------- */
 /* SUY DOAN: chưa có Figma mobile cho khối này. */
-@media (max-width: 700px) {
+@media (max-width: 767px) {
 	.nntm-cong-tu {
 		padding-inline: var(--nntm-sp-5);
 	}

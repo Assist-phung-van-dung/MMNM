@@ -754,7 +754,7 @@ body.nntm-r1 {
    là suy ra để trang không vỡ, không phải số đo từ thiết kế.
    ============================================================= */
 
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-r1-bai-viet__list {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		column-gap: var(--nntm-sp-8);
@@ -769,7 +769,7 @@ body.nntm-r1 {
 	}
 }
 
-@media (max-width: 782px) {
+@media (max-width: 767px) {
 	.nntm-r1-header {
 		width: calc(100% - var(--nntm-sp-6));
 		top: var(--nntm-sp-3);

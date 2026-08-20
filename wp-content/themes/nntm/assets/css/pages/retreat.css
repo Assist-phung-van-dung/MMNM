@@ -285,13 +285,13 @@
 	overflow: hidden;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-retreat-topic .nntm-article-rows__inner {
 		padding-block: 40px 60px;
 	}
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767px) {
 	.nntm-retreat-topic .nntm-article-rows__inner {
 		width: calc(100% - 30px);
 	}

@@ -201,7 +201,7 @@
    hinh chi thu nho be rong the, khong doi sang bo cuc luoi, de giu dung
    tinh chat "cuon ngang" ma Figma the hien. */
 
-@media (max-width: 600px) {
+@media (max-width: 767px) {
 	.nntm-term-card {
 		flex-basis: 220px;                      /* SUY DOAN: thu nho de vua man hinh nho */
 	}

@@ -652,15 +652,15 @@
    Duoi diem ngat nay: anh bia va trinh phat xep doc, bo khoa aspect-ratio
    cua trinh phat de danh sach bai co du cho hien thi tren man hep.
    ============================================================= */
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-thien-duong__inner {
 		padding: var(--nntm-sp-8) var(--nntm-sp-5);
 	}
 
-	.nntm-thien-duong__embed {
-		grid-template-columns: 1fr;
-	}
-
+	/*
+	 * TABLET (768-1151): GIU hai cot — luoi co so `453fr 817fr` tu chia ti le.
+	 * Xep doc chuyen xuong <=767 (xem khoi duoi).
+	 */
 	.nntm-thien-duong__cover {
 		aspect-ratio: 453 / 300; /* SUY DOAN: thap hon de khong chiem qua nhieu chieu cao man hinh doc */
 	}
@@ -668,6 +668,13 @@
 	.nntm-thien-duong__player {
 		aspect-ratio: auto;
 		min-height: 320px;
+	}
+}
+
+/* DIEN THOAI (<=767): moi xep doc anh bia va trinh phat. */
+@media (max-width: 767px) {
+	.nntm-thien-duong__embed {
+		grid-template-columns: 1fr;
 	}
 }
 
@@ -755,7 +762,7 @@
 	opacity: .65;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 767px) {
 	.nntm-thien-duong__live-status {
 		top: var(--nntm-sp-2);
 		right: var(--nntm-sp-2);

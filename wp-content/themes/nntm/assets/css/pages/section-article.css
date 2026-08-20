@@ -277,7 +277,7 @@
 	cursor: pointer;
 }
 
-@media (max-width: 1224px) {
+@media (max-width: 1151px) {
 	.nntm-related-carousel__nav--prev {
 		left: var(--nntm-sp-3);
 	}
@@ -287,7 +287,7 @@
 	}
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-article-detail__inner,
 	.nntm-article-related {
 		padding-block: var(--nntm-sp-8);
@@ -298,7 +298,7 @@
 	}
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767px) {
 	.nntm-section-shell {
 		width: min(1184px, calc(100% - 30px));
 	}

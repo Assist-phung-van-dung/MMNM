@@ -77,8 +77,15 @@
 			return parseFloat( styles.columnGap || styles.gap || '0' ) || 0;
 		}
 
+		/*
+		 * DÙNG offsetWidth, KHÔNG dùng getBoundingClientRect().width:
+		 * assets/css/responsive.css thu nhỏ cả .nntm-site-frame bằng `zoom` ở
+		 * màn dưới 1366, khiến rect trả về số ĐÃ THU NHỎ trong khi
+		 * track.scrollLeft / clientWidth vẫn theo đơn vị dàn trang. Trộn hai
+		 * hệ đo này làm bước cuộn lệch đúng bằng tỉ lệ zoom.
+		 */
 		function itemStep() {
-			var itemWidth = originalItems[ 0 ].getBoundingClientRect().width;
+			var itemWidth = originalItems[ 0 ].offsetWidth;
 			return itemWidth + trackGap();
 		}
 
@@ -107,7 +114,7 @@
 			return clone;
 		}
 
-		var visibleEstimate = Math.max( 1, Math.ceil( root.getBoundingClientRect().width / Math.max( 1, itemStep() ) ) );
+		var visibleEstimate = Math.max( 1, Math.ceil( root.offsetWidth / Math.max( 1, itemStep() ) ) );
 		var cloneCount = Math.min( originalItems.length, visibleEstimate + 1 );
 		var beforeFragment = document.createDocumentFragment();
 		var afterFragment = document.createDocumentFragment();
@@ -388,7 +395,8 @@
 		// các thẻ, để mỗi lần bấm nút/nhấn phím là "sang đúng một thẻ".
 		function scrollStep() {
 			var firstItem = track.querySelector( '.nntm-card-list__track-item' );
-			var itemWidth = firstItem ? firstItem.getBoundingClientRect().width : track.clientWidth;
+			// offsetWidth, không phải rect — xem chú thích ở itemStep() phía trên.
+			var itemWidth = firstItem ? firstItem.offsetWidth : track.clientWidth;
 			var trackStyles = window.getComputedStyle( track );
 			var gap = parseFloat( trackStyles.columnGap || trackStyles.gap || '0' ) || 0;
 

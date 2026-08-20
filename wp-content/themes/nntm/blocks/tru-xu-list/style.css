@@ -183,7 +183,7 @@
    rất cao (tỉ lệ 280/498) — cuộn ngang trên điện thoại sẽ khiến mỗi thẻ
    chiếm gần hết chiều cao màn hình mà vẫn không thấy được thẻ kế bên. */
 
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-tru-xu-list__grid { grid-template-columns: repeat(2, 1fr); }
 }
 

@@ -205,7 +205,7 @@
 	color: var(--nntm-chinh-hover);
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-article-rows__inner {
 		padding-block: var(--nntm-sp-8) var(--nntm-sp-10);
 	}
@@ -226,7 +226,7 @@
 	}
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767px) {
 	.nntm-article-rows__inner {
 		width: min(1184px, calc(100% - 30px));
 	}

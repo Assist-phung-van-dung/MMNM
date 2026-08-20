@@ -148,15 +148,45 @@ if ( ! $nntm_ct_trang_243 || 'page' !== $nntm_ct_trang_243->post_type ) {
 
 $nntm_ct_block_marker = 'wp:nntm/cong-tu';
 
-if ( false !== strpos( $nntm_ct_trang_243->post_content, $nntm_ct_block_marker ) ) {
-	echo "Page 243 da co block nntm/cong-tu - bo qua chen lai.\n";
-} else {
-	$nntm_ct_block_attrs = array(
-		'heading'    => 'Thống Kê Của Đạo Tràng',
-		'bxhHeading' => 'Bảng Xếp Hạng Cá Nhân',
-		'background' => 'kem',
-	);
+$nntm_ct_block_attrs = array(
+	'heading'    => 'Thống Kê Của Đạo Tràng',
+	'bxhHeading' => 'Bảng Xếp Hạng Cá Nhân',
+	'background' => 'vang',
+	'className'  => 'nntm-kchg-ranking',
+);
 
+if ( false !== strpos( $nntm_ct_trang_243->post_content, $nntm_ct_block_marker ) ) {
+	/*
+	 * Idempotent upgrade: block da ton tai thi cap nhat attrs thiet ke moi
+	 * tai dung vi tri hien co, KHONG day no len/xuong va KHONG xoa block khac.
+	 */
+	$nntm_ct_blocks = parse_blocks( $nntm_ct_trang_243->post_content );
+	$nntm_ct_changed = false;
+
+	foreach ( $nntm_ct_blocks as &$nntm_ct_block ) {
+		if ( 'nntm/cong-tu' !== ( $nntm_ct_block['blockName'] ?? '' ) ) {
+			continue;
+		}
+
+		$nntm_ct_block['attrs'] = array_merge(
+			is_array( $nntm_ct_block['attrs'] ?? null ) ? $nntm_ct_block['attrs'] : array(),
+			$nntm_ct_block_attrs
+		);
+		$nntm_ct_changed = true;
+	}
+	unset( $nntm_ct_block );
+
+	if ( $nntm_ct_changed ) {
+		$nntm_ct_noi_dung_moi = implode( "\n\n", array_map( 'serialize_block', $nntm_ct_blocks ) );
+		wp_update_post(
+			array(
+				'ID'           => 243,
+				'post_content' => $nntm_ct_noi_dung_moi,
+			)
+		);
+		echo "Da cap nhat block nntm/cong-tu tai vi tri hien co: nen vang + class nntm-kchg-ranking.\n";
+	}
+} else {
 	$nntm_ct_block_content = function_exists( 'nntm_home_block_pattern_content' )
 		? nntm_home_block_pattern_content( 'nntm/cong-tu', $nntm_ct_block_attrs )
 		: ( '<!-- wp:nntm/cong-tu ' . wp_json_encode( $nntm_ct_block_attrs, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . ' /-->' );

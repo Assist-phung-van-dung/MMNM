@@ -219,7 +219,7 @@
 	to { opacity: 1; transform: none; }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1151px) {
 	.nntm-feature-carousel {
 		--fc-active-width: min(626px, 58vw);
 		--fc-active-height: min(352px, 32.62vw);
@@ -236,7 +236,7 @@
 	.nntm-feature-carousel__arrow { top: 135px; }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
 	.nntm-feature-carousel {
 		--fc-active-width: min(620px, 78vw);
 		--fc-active-height: 43.86vw;
@@ -260,7 +260,7 @@
 	.nntm-feature-carousel__copy { padding-inline: 18px; }
 }
 
-@media (max-width: 520px) {
+@media (max-width: 767px) {
 	.nntm-feature-carousel {
 		--fc-active-width: 84vw;
 		--fc-active-height: 47.23vw;

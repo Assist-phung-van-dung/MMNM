@@ -26,4 +26,5 @@ require_once NNTM_THEME_DIR . '/inc/retreat.php';
 require NNTM_THEME_DIR . '/inc/hanh-gia.php';
 require NNTM_THEME_DIR . '/inc/an-pham.php';
 require NNTM_THEME_DIR . '/inc/cong-tu.php';
+require NNTM_THEME_DIR . '/inc/kim-cuong-hanh-gia.php';
 require NNTM_THEME_DIR . '/inc/search.php';

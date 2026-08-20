@@ -18,7 +18,9 @@
 		function stepSize() {
 			var card = originals[ 0 ];
 			var gap = parseFloat( window.getComputedStyle( track ).gap ) || 20;
-			return ( card ? card.getBoundingClientRect().width : 350 ) + gap;
+			// offsetWidth chứ không phải rect: responsive.css thu nhỏ khung bằng
+			// `zoom` dưới 1366 nên rect lệch hệ đo với track.scrollTo().
+			return ( card ? card.offsetWidth : 350 ) + gap;
 		}
 		function move( direction ) {
 			var step = stepSize();

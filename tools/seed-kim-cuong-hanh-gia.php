@@ -38,8 +38,8 @@
  *   3. Ghi noi dung trang "Kim Cuong Hanh Gia" (ID 243, dang rong) thanh
  *      4 block dung 4 dai theo thiet ke (TRANG THAI CUOI CUNG, chay lai
  *      bao nhieu lan cung phai ra dung nhu vay):
- *        a. nntm/banner       - anh dai dien vang (attachment 241),
- *                                tranVien=true, className=nntm-banner--khu-dau
+ *        a. nntm/banner       - video Kim Cuong (attachment 447),
+ *                                tranVien=true, className=nntm-banner--khu-dau nntm-kchg-hero
  *                                (doi ten 14/08/2026, dung chung voi banner
  *                                dau trang cua Dai Si Hanh Gia)
  *        b. nntm/card-list    - variant kim-cuong, nen vang, loc theo
@@ -225,25 +225,26 @@ if ( ! $page || 'page' !== $page->post_type ) {
 	exit( "LOI: khong tim thay trang dich (ID {$page_id}).\n" );
 }
 
-// Dai 1: banner anh dai dien vang — TRAN VIEN (tran het chieu rong man
+// Dai 1: banner video Kim Cuong — TRAN VIEN (tran het chieu rong man
 // hinh), className DUNG CHUNG voi banner dau trang cua Dai Si (doi ten
 // 14/08/2026 tu "nntm-banner--kc-dau" thanh "nntm-banner--khu-dau" vi ca
 // hai khu gio dung chung mot kieu banner dau trang khong chu — xem
 // blocks/banner/style.css va tools/seed-dai-si-hanh-gia.php). CA HAI thuoc
 // tinh nay TUNG bi gan bang mot script tam roi mat khi chay lai script nay
 // — nay da chuyen han vao day, xem ghi chu dau file.
-$banner_image_id = 241;
+$banner_image_id = 447;
 
 $banner_attrs = array(
-	'className' => 'nntm-banner--khu-dau',
+	'className' => 'nntm-banner--khu-dau nntm-kchg-hero',
 	'tranVien'  => true,
 	'slides'    => array(
 		array(
-			'imageId'  => $banner_image_id,
-			'imageUrl' => wp_get_attachment_url( $banner_image_id ) ?: '',
-			'imageAlt' => '',
-			'heading'  => '',
-			'text'     => '',
+			'imageId'   => $banner_image_id,
+			'imageUrl'  => wp_get_attachment_url( $banner_image_id ) ?: '',
+			'imageAlt'  => '',
+			'heading'   => '',
+			'text'      => '',
+			'mediaType' => 'video',
 		),
 	),
 );
@@ -251,6 +252,7 @@ $banner_attrs = array(
 // Dai 2: luoi bai Kim Cuong, nen vang, variant kim-cuong.
 $card_list_kim_cuong_attrs = array(
 	'heading'      => 'Kim Cương Hành Giả',
+	'className'    => 'nntm-kchg-articles',
 	'postType'     => 'nntm_article',
 	'taxonomy'     => 'nntm_section',
 	'termId'       => $kim_cuong_term_id,
@@ -275,7 +277,7 @@ $card_list_kim_cuong_attrs = array(
 // Page ghep tu block (/nghi-quy/), khong phai kho luu tru cua nntm_publication.
 $card_list_nghi_quy_attrs = array(
 	'heading'       => 'Nghi Quỹ',
-	'className'     => 'nntm-kc-nghi-quy',
+	'className'     => 'nntm-kc-nghi-quy nntm-kchg-nghi-quy',
 	'postType'      => 'nntm_publication',
 	'variant'       => 'books',
 	'layout'        => 'marquee',
@@ -288,14 +290,12 @@ $card_list_nghi_quy_attrs = array(
 );
 
 // Dai 4: banner "Le Dan Khong Tuoc" — nut "Tham gia" lay URL qua filter
-// nntm_tham_gia_chuoi_tri_url (phan Cong Tu se cam vao sau). Tam dung lai
-// anh 239 (da co san trong Thu vien, dung chung voi banner Dai Si) vi chua
-// co anh rieng cho dai nay — ghi ro trong bao cao la anh tam. TRAN VIEN +
-// className rieng, cung ly do nhu Dai 1 — xem ghi chu dau file.
-$le_dan_image_id = 239;
+// nntm_tham_gia_chuoi_tri_url. Dung attachment 399 (artwork Khong Tuoc dang
+// duoc Page 243 su dung), TRAN VIEN + className semantic rieng.
+$le_dan_image_id = 399;
 
 $banner_le_dan_attrs = array(
-	'className' => 'nntm-banner--kc-ledan',
+	'className' => 'nntm-banner--kc-ledan nntm-kchg-le-dan',
 	'tranVien'  => true,
 	'slides'    => array(
 		array(
@@ -354,8 +354,8 @@ wp_update_post( array(
 ) );
 
 echo "\nDa ghi de trang 'Kim Cuong Hanh Gia' (ID {$page_id}):\n";
-echo "  1. nntm/banner — anh {$banner_image_id}, tranVien=true, className=nntm-banner--khu-dau.\n";
-echo "  2. nntm/card-list — variant kim-cuong, nen vang, termId={$kim_cuong_term_id}, 6 bai/trang, phan trang bat.\n";
-echo "  3. nntm/card-list — Nghi Quy, variant books, nen kem, nntm_publication, layout=marquee, className=nntm-kc-nghi-quy, Xem Tat ca -> /nghi-quy/.\n";
-echo "  4. nntm/banner — Le Dan Khong Tuoc, nut Tham gia (anh {$le_dan_image_id}, anh tam - chua co thiet ke rieng), tranVien=true, className=nntm-banner--kc-ledan.\n";
+echo "  1. nntm/banner — video {$banner_image_id}, tranVien=true, className=nntm-banner--khu-dau nntm-kchg-hero.\n";
+echo "  2. nntm/card-list — variant kim-cuong, className=nntm-kchg-articles, nen vang, termId={$kim_cuong_term_id}, 6 bai/trang.\n";
+echo "  3. nntm/card-list — Nghi Quy, layout=marquee, className=nntm-kc-nghi-quy nntm-kchg-nghi-quy, Xem Tat ca -> /nghi-quy/.\n";
+echo "  4. nntm/banner — Le Dan Khong Tuoc, anh {$le_dan_image_id}, tranVien=true, className=nntm-banner--kc-ledan nntm-kchg-le-dan.\n";
 echo "\nXem trang: " . get_permalink( $page_id ) . "\n";

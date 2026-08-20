@@ -255,21 +255,6 @@ body.nntm-dau-trang-de-len .nntm-header {
 	gap: var(--nntm-sp-2); /* 8 — tu Figma: khoang cach cac phan trong khu phai trang thai A */
 }
 
-/* Màn hẹp hơn khung thiết kế thì thu khoảng cách trước, giữ đủ chỗ cho chữ. */
-@media (max-width: 1365px) {
-	.nntm-header--guest .nntm-header__bar,
-	.nntm-header--auth .nntm-header__bar {
-		gap: var(--nntm-sp-8); /* 40 */
-	}
-}
-
-@media (max-width: 1200px) {
-	.nntm-header--guest .nntm-header__bar,
-	.nntm-header--auth .nntm-header__bar {
-		gap: var(--nntm-sp-5); /* 20 */
-	}
-}
-
 /* ---------- Logo chữ (khi chưa tải logo ảnh qua Tuỳ biến giao diện) ---------- */
 .nntm-header__logo {
 	display: flex;
@@ -756,66 +741,434 @@ body.nntm-dau-trang-de-len .nntm-header {
 	}
 }
 
-/* ---------- SUY DOAN: chua co Figma mobile ---------- */
-/* Duoi 1024px: gap menu chinh vao panel truot tu ben phai, hien nut
-   hamburger. Day la suy doan hoan toan vi Figma chi co khung 1366px. */
-@media (max-width: 1023px) {
+/* =============================================================
+   MENU THU GỌN — DƯỚI 1152px  (dựng lại 20/08/2026)
+
+   SUY DOAN: Figma chỉ có khung desktop 1366px, toàn bộ khối này là thiết
+   kế tự dựng. Ghi lại đầy đủ lý do để lần sau có Figma mobile thì đối
+   chiếu được.
+
+   VÌ SAO ĐỔI HẲN CÁCH LÀM
+   Bản trước gập menu ở 1023px và chỉ gập <nav>. Đo bằng trình duyệt thật
+   thấy ba lỗi:
+
+   1. DRAWER CAO 74px THAY VÌ CAO HẾT MÀN — lỗi nặng nhất, và không nằm ở
+      CSS của drawer. `body.nntm-dau-trang-de-len .nntm-header` có
+      `transform: translateX(-50%)` để canh giữa; một phần tử CÓ transform
+      trở thành KHỐI CHỨA của mọi con `position: fixed`. Nên `inset-block: 0`
+      của drawer giải ra theo chiều cao <header> (74px) chứ không theo khung
+      nhìn → drawer thành ô 320×74 có thanh cuộn, nhét 6 mục menu (224px)
+      vào đó. Trang KHÔNG có banner thì header không có transform nên
+      drawer lại cao đúng — cùng một CSS mà hai trang hiện hai kiểu.
+      => Dưới 1152px bỏ hẳn transform: khung nhìn hẹp hơn 1366 nên không
+         còn gì phải canh giữa, `left/right: 0` là đủ. Bỏ luôn
+         backdrop-filter của trạng thái --auth vì nó cũng tạo khối chứa.
+
+   2. Ở 1024px MENU NGANG TRÀN RA NGOÀI KHUNG rồi ĐÈ LÊN LOGO: <ul> rộng
+      589px trong ô 438px nên tự trôi sang trái tới x=132, trong khi logo
+      kết thúc ở x=167. Sáu mục tiếng Việt + ô tìm kiếm + "Đăng nhập" +
+      ngôn ngữ cần ~1160px mới đủ; thành viên đăng nhập có 7 mục nên còn
+      chật hơn nữa.
+      => Gập menu từ 1152px (không phải 1023px): đó đúng là mốc khung thiết
+         kế 1366 thu nhỏ còn 83% — hẹp hơn nữa thì chữ quá nhỏ, gập lại là
+         phải. Từ 1152px trở lên vẫn là menu ngang đúng Figma, không đụng.
+
+   3. Ô TÌM KIẾM BỊ `display: none` trên điện thoại nên không còn chỗ nào
+      để tìm, còn "Đăng nhập" + ngôn ngữ vẫn nằm lại trên thanh: ở khung
+      375px chúng chỉ còn 89px và chèn vào nhau.
+      => Cả ba thứ đó chuyển vào trong drawer (xem .nntm-header__panel
+         trong header.php).
+
+   CẤU TRÚC: .nntm-header__panel là `display: contents` từ 1152px trở lên
+   nên desktop KHÔNG hề biết tới khối bọc này; dưới 1152px nó thành drawer
+   trượt từ phải, chứa lần lượt: đầu panel (nhãn + nút đóng) → menu chính
+   → tìm kiếm → đăng nhập/tài khoản → ngôn ngữ.
+   ============================================================= */
+
+/* Khối bọc chỉ có tác dụng ở drawer — desktop coi như không tồn tại. */
+.nntm-header__panel {
+	display: contents;
+}
+
+.nntm-header__panel-head,
+.nntm-header__scrim {
+	display: none;
+}
+
+@media (max-width: 1151px) {
+
+	/* ----- Lỗi gốc: gỡ transform/backdrop-filter để `position: fixed` của
+	         drawer neo vào KHUNG NHÌN, không neo vào <header> ----- */
+	.nntm-header,
+	body.nntm-dau-trang-de-len .nntm-header,
+	.nntm-header--auth {
+		left: 0;
+		right: 0;
+		width: 100%;
+		max-width: none;
+		transform: none;
+		backdrop-filter: none;
+		-webkit-backdrop-filter: none;
+	}
+
+	/* Trạng thái --auth mất kính mờ thì phải có nền đặc để chữ còn đọc được. */
+	.nntm-header.nntm-header--auth:not(.nntm-header--trong) {
+		background-color: var(--nntm-trang);
+	}
+
+	/* ----- Thanh header: logo bên trái, nút menu sát phải ----- */
+	.nntm-header--guest .nntm-header__bar,
+	.nntm-header--auth .nntm-header__bar {
+		gap: var(--nntm-sp-4);
+		padding-block: var(--nntm-sp-2);
+		padding-inline: var(--nntm-sp-5);
+	}
+
+	.nntm-header__brand {
+		flex: 1 1 auto;
+	}
+
 	.nntm-header__menu-toggle {
 		display: inline-flex;
+		flex: none;
+		margin-inline-start: auto;
 	}
 
-	.nntm-header__nav {
-		position: fixed;
-		inset-block: 0;
-		right: 0;
-		width: min(320px, 85vw);
+	/* Hamburger đổi thành dấu X khi menu đang mở. */
+	.nntm-header--menu-open .nntm-header__menu-toggle-icon {
+		background-color: transparent;
+	}
+
+	.nntm-header--menu-open .nntm-header__menu-toggle-icon::before {
+		top: 0;
+		transform: rotate(45deg);
+	}
+
+	.nntm-header--menu-open .nntm-header__menu-toggle-icon::after {
+		top: 0;
+		transform: rotate(-45deg);
+	}
+
+	/* ----- Panel trượt ----- */
+	.nntm-header__panel {
+		display: flex;
 		flex-direction: column;
-		align-items: stretch;
+		position: fixed;
+		top: 0;
+		right: 0;
+		z-index: 2;                     /* trên .nntm-header__scrim (z-index 1) */
+		width: min(360px, 88vw);
+		height: 100dvh;
+		padding: 0;
 		background-color: var(--nntm-nen-noi);
-		box-shadow: var(--nntm-sh-lift);
-		padding: var(--nntm-sp-9) var(--nntm-sp-5) var(--nntm-sp-5);
-		transform: translateX(100%);
-		transition: transform var(--nntm-dur) var(--nntm-ease);
-		overflow-y: auto;
-		z-index: 200;
 		color: var(--nntm-chu);
+		box-shadow: var(--nntm-sh-lift);
+		overflow-y: auto;
+		/* Cuộn hết drawer thì KHÔNG kéo theo trang phía sau. */
+		overscroll-behavior: contain;
+		transform: translateX(100%);
+		/*
+		 * visibility: hidden khi đóng để các mục nằm ngoài màn không ăn tiêu
+		 * điểm bàn phím. Trễ 0s khi mở, trễ đúng thời gian trượt khi đóng —
+		 * không có độ trễ đó thì panel tắt ngay, mất hoạt ảnh đóng.
+		 */
+		visibility: hidden;
+		transition:
+			transform var(--nntm-dur) var(--nntm-ease),
+			visibility 0s linear var(--nntm-dur);
 	}
 
-	.nntm-header--menu-open .nntm-header__nav {
-		transform: translateX(0);
+	.nntm-header--menu-open .nntm-header__panel {
+		transform: none;
+		visibility: visible;
+		transition:
+			transform var(--nntm-dur) var(--nntm-ease),
+			visibility 0s linear 0s;
+	}
+
+	/* ----- Đầu panel: nhãn + nút đóng ----- */
+	.nntm-header__panel-head {
+		display: flex;
+		flex: none;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--nntm-sp-4);
+		min-height: 64px;
+		padding-inline: var(--nntm-sp-5);
+		border-bottom: 1px solid var(--nntm-duong-vien);
+	}
+
+	.nntm-header__panel-title {
+		font-family: var(--nntm-font-display);
+		font-size: var(--nntm-fs-lg);
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--nntm-chinh);
+	}
+
+	.nntm-header__panel-close {
+		display: inline-flex;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+		margin-inline-end: calc(-1 * var(--nntm-sp-3));
+		padding: 0;
+		border: 0;
+		border-radius: var(--nntm-r-sm);
+		background: none;
+		color: var(--nntm-chu);
+		cursor: pointer;
+	}
+
+	.nntm-header__panel-close:hover,
+	.nntm-header__panel-close:focus-visible {
+		background-color: var(--nntm-nga);
+		color: var(--nntm-chinh);
+	}
+
+	/* ----- Menu chính dạng danh sách dòng ----- */
+	.nntm-header__nav {
+		flex: none;
+		display: block;
 	}
 
 	.nntm-main-nav {
 		flex-direction: column;
 		align-items: stretch;
-		gap: var(--nntm-sp-3);
+		gap: 0;
 	}
 
+	.nntm-main-nav > li {
+		display: block;
+	}
+
+	/*
+	 * Bỏ khoá `height: 29px` của bản desktop (số đó có để baseline các mục
+	 * ngang bằng nhau; ở danh sách dọc thì vô nghĩa và làm dòng quá sát).
+	 * 52px là vùng bấm tối thiểu dễ chạm bằng ngón tay.
+	 */
+	.nntm-main-nav a {
+		display: flex;
+		justify-content: flex-start;
+		height: auto;
+		min-height: 52px;
+		padding-inline: var(--nntm-sp-5);
+		border-bottom: 1px solid var(--nntm-duong-vien);
+		font-size: var(--nntm-fs-md);
+		line-height: var(--nntm-lh-vua);
+		color: var(--nntm-chu);
+		white-space: normal;
+	}
+
+	.nntm-main-nav a:hover,
+	.nntm-main-nav a:focus-visible {
+		background-color: var(--nntm-nga);
+		color: var(--nntm-chinh);
+	}
+
+	/*
+	 * GO trang thai "chu mau sang" cua .nntm-header--trong cho phan nam TRONG
+	 * drawer. Luat `.nntm-header--trong .nntm-main-nav a { color: trang }`
+	 * (header.css, do dac ta 0,0,3,0) dung cho menu NGANG de len banner; con
+	 * o drawer thi nen la panel trang, chu trang thanh vo hinh. Ghep du ba do
+	 * dac ta de thang chinh luat do.
+	 */
+	.nntm-header--trong .nntm-main-nav a,
+	.nntm-header--trong .nntm-header__account-toggle {
+		color: var(--nntm-chu);
+	}
+
+	.nntm-header--trong .nntm-main-nav a:hover,
+	.nntm-header--trong .nntm-main-nav a:focus-visible {
+		color: var(--nntm-chinh);
+	}
+
+	/*
+	 * Mục đang xem: desktop là "viên thuốc" bo tròn — trong danh sách dọc
+	 * chiếm cả bề rộng thì viên thuốc trông lệch, nên đổi sang vạch màu bên
+	 * trái + nền rất nhạt. Vẫn dùng đúng màu --nntm-chinh của viên thuốc.
+	 */
+	.nntm-main-nav .current-menu-item > a,
+	.nntm-main-nav .current_page_item > a,
+	.nntm-main-nav .current-menu-ancestor > a,
+	.nntm-main-nav .current_page_ancestor > a {
+		padding-inline: var(--nntm-sp-5);
+		border-radius: 0;
+		background-color: color-mix(in srgb, var(--nntm-chinh) 10%, transparent);
+		box-shadow: inset 3px 0 0 var(--nntm-chinh);
+		font-size: var(--nntm-fs-md);
+		line-height: var(--nntm-lh-vua);
+		color: var(--nntm-chinh);
+	}
+
+	.nntm-main-nav .current-menu-item > a:hover,
+	.nntm-main-nav .current_page_item > a:hover,
+	.nntm-main-nav .current-menu-ancestor > a:hover,
+	.nntm-main-nav .current_page_ancestor > a:hover {
+		color: var(--nntm-chinh);
+	}
+
+	/* Submenu cấp 2: mở/đóng bằng lớp --open (header.js), thụt vào cho rõ cấp. */
 	.nntm-main-nav .sub-menu {
 		position: static;
+		display: none;
+		gap: 0;
+		min-width: 0;
+		padding: 0;
+		border-radius: 0;
+		background-color: var(--nntm-nga);
+		box-shadow: none;
 		opacity: 1;
 		visibility: visible;
 		transform: none;
-		box-shadow: none;
-		display: none;
 		transition: none;
 	}
 
 	.nntm-main-nav .menu-item-has-children.nntm-main-nav__item--open > .sub-menu {
-		display: flex;
+		display: block;
 	}
 
-	.nntm-header__tools {
-		gap: var(--nntm-sp-3);
+	.nntm-main-nav .sub-menu a {
+		min-height: 46px;
+		padding-inline-start: var(--nntm-sp-9);
+		font-size: var(--nntm-fs-15);
+	}
+
+	/* ----- Khu công cụ: tìm kiếm / đăng nhập / ngôn ngữ ----- */
+	.nntm-header__tools,
+	.nntm-header--guest .nntm-header__tools,
+	.nntm-header--auth .nntm-header__tools {
+		flex: none;
+		flex-direction: column;
+		align-items: stretch;
+		justify-content: flex-start;
+		gap: var(--nntm-sp-4);
+		height: auto;
+		/* Đẩy xuống đáy panel khi menu ngắn; menu dài thì cuộn bình thường. */
+		margin-top: auto;
+		padding: var(--nntm-sp-5);
 	}
 
 	.nntm-header__search-form {
-		display: none; /* SUY DOAN: chua co Figma mobile — an o thanh header, se can cho khac (vd trang rieng) */
+		display: flex;
+		width: 100%;
+		height: 48px;
+	}
+
+	.nntm-header__search-field {
+		min-width: 0;
+	}
+
+	/* "Đăng nhập" từ liên kết chữ thành nút đủ rộng, dễ chạm. */
+	.nntm-header__login {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 48px;
+		border-radius: var(--nntm-r-sm);
+		background-color: var(--nntm-chinh);
+		font-size: var(--nntm-fs-base);
+		font-weight: 500;
+		line-height: 1.2;
+		color: var(--nntm-kem);
+	}
+
+	.nntm-header__login:hover,
+	.nntm-header__login:focus-visible {
+		background-color: var(--nntm-chinh-hover);
+		color: var(--nntm-kem);
+	}
+
+	/* Cung ly do nhu khoi tren: trong drawer "Dang nhap" la nut co nen rieng. */
+	.nntm-header--trong .nntm-header__login {
+		color: var(--nntm-kem);
+	}
+
+	/* Menu tài khoản: trong drawer thì mở tại chỗ, không thả xuống nổi. */
+	.nntm-header__account {
+		display: flex;
+		flex-direction: column;
+		gap: var(--nntm-sp-3);
+	}
+
+	.nntm-header__account-toggle {
+		align-self: flex-start;
+		min-width: 48px;
+		min-height: 48px;
+	}
+
+	.nntm-header__account-panel {
+		position: static;
+		width: 100%;
+		min-width: 0;
+		margin: 0;
+		box-shadow: none;
+	}
+
+	.nntm-header__account-menu a {
+		display: flex;
+		align-items: center;
+		min-height: 44px;
+	}
+
+	.nntm-header__lang,
+	.nntm-header--guest .nntm-header__lang,
+	.nntm-header--auth .nntm-header__lang {
+		align-self: flex-start;
+		width: auto;
+		min-width: 0;
+	}
+
+	/* ----- Lớp phủ phía sau drawer ----- */
+	.nntm-header__scrim {
+		display: block;
+		position: fixed;
+		inset: 0;
+		z-index: 1;
+		background-color: color-mix(in srgb, var(--nntm-den) 45%, transparent);
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity var(--nntm-dur) var(--nntm-ease);
+	}
+
+	.nntm-header--menu-open .nntm-header__scrim {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	/*
+	 * Khoá cuộn trang khi drawer mở (lớp do header.js gắn lên <html>).
+	 * scrollbar-gutter: stable giữ chỗ thanh cuộn để lúc khoá nội dung
+	 * không giật ngang 15px.
+	 */
+	html {
+		scrollbar-gutter: stable;
+	}
+
+	html.nntm-menu-dang-mo,
+	html.nntm-menu-dang-mo body {
+		overflow: hidden;
+	}
+}
+
+/* Điện thoại: drawer chiếm cả bề rộng — chừa 15px ở khung 375 là vô nghĩa. */
+@media (max-width: 480px) {
+	.nntm-header__panel {
+		width: 100%;
+	}
+
+	.nntm-header--guest .nntm-header__bar,
+	.nntm-header--auth .nntm-header__bar {
+		padding-inline: var(--nntm-sp-4);
 	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.nntm-header__nav {
+	.nntm-header__panel,
+	.nntm-header__scrim {
 		transition: none;
 	}
 }

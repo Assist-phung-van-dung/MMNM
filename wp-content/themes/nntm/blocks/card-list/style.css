@@ -13,12 +13,21 @@
 .nntm-card-list {
 	display: block;
 }
+.page-id-242 .nntm-card-list__header-row {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--nntm-sp-5);
+}
 
 .nntm-card-list__header-row {
 	display: flex;
-	align-items: flex-end;
+	align-items: center;
 	justify-content: space-between;
 	gap: var(--nntm-sp-5);
+}
+.page-id-242 .nntm-card-list__header-row {
+	justify-content: center;
 }
 
 .nntm-card-list__view-all {
@@ -63,7 +72,7 @@
 	position: relative;
 }
 
-@media (min-width: 901px) {
+@media (min-width: 1152px) {
 	/* Chia hai cột thật: vùng cuộn bắt đầu sau cột tiêu đề và bị cắt tại đó,
 	   nên thẻ không thể chạy đè lên chữ Khoá Tu. */
 	.nntm-lien-dan-khoa .nntm-card-list__carousel {
@@ -379,7 +388,7 @@
 }
 
 /* Hover theo ảnh mẫu: cả dãy bìa thu lại, xếp chồng và xòe như kệ sách. */
-@media (hover: hover) and (min-width: 901px) {
+@media (hover: hover) and (min-width: 1152px) {
 	.nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) {
 		align-items: center;
 		padding-block: var(--nntm-sp-6);
@@ -413,12 +422,12 @@
 	}
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1151px) {
 	.nntm-hk-publications .nntm-card-list__track-item { flex-basis: min(78vw, 320px); }
 	.nntm-hk-publications .nntm-card-list__carousel { --nntm-carousel-gutter: var(--nntm-sp-5); }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1151px) {
 	.nntm-lien-dan-khoa .nntm-card-list__header-row {
 		position: static;
 		width: auto;
@@ -523,7 +532,7 @@
  * Ghi de max-width mac dinh cua .nntm-container (1220) va gap mac dinh
  * cua .nntm-grid--3 (50) CHI trong pham vi khoi nen-cham nay.
  */
-@media (min-width: 1024px) {
+@media (min-width: 1152px) {
 	.nntm-card-list--nen-cham > .nntm-card-list__band > .nntm-container {
 		max-width: 1204px;
 	}
@@ -610,7 +619,7 @@
 	margin-bottom: var(--nntm-sp-8);
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1152px) {
 	.nntm-card-list--nen-vang > .nntm-card-list__band > .nntm-container {
 		max-width: 1204px; /* 384*3 + 26*2 = 1204 — khung desktop da chot */
 	}
@@ -908,7 +917,7 @@
 
 /* SUY DOAN: chua co Figma mobile — man hep thi bo het cac lui 93/200/73/90
    cua bo cuc tran vien, ve canh le thuong cho khoi khong tran ra ngoai. */
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-card-list__heading-above {
 		padding-inline: var(--nntm-sp-5);
 	}
@@ -1313,7 +1322,7 @@ a.nntm-card-list__paging-so:focus-visible {
 /* SUY DOAN: chua co Figma tablet — muc tieu "~2.2 the" (2 the nguyen + mot
    phan the thu 3), cung nguyen tac "lo mot phan the sau" nhu desktop. Thu gon
    khoang vien (gutter) hai ben cho vua khung hep hon 1366. */
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-card-list__carousel {
 		--nntm-carousel-per-view: 2.2;
 		--nntm-carousel-gap-count: 2;
@@ -1323,7 +1332,7 @@ a.nntm-card-list__paging-so:focus-visible {
 
 /* SUY DOAN: chua co Figma mobile — muc tieu "~1.2 the" (1 the nguyen + mot
    phan the thu 2), thu gon khoang vien (gutter) hai ben va nut o man nho. */
-@media (max-width: 600px) {
+@media (max-width: 767px) {
 	.nntm-card-list__carousel {
 		--nntm-carousel-per-view: 1.2;
 		--nntm-carousel-gap-count: 1;
@@ -1571,7 +1580,7 @@ a.nntm-card-list__paging-so:focus-visible {
 
 /* SUY DOAN: chua co Figma mobile — thu gon vien trai va giu the 348px
    (khong thu nho them de anh YouTube khong bi meo qua muc). */
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-card-list__yt-marquee {
 		padding-inline-start: var(--nntm-sp-7);
 	}
@@ -1886,7 +1895,7 @@ a.nntm-card-list__paging-so:focus-visible {
 	text-align: center;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1151px) {
 	.nntm-kc-nghi-quy .nntm-card-list__marquee-item {
 		flex: 0 0 min(80vw, 300px);
 	}

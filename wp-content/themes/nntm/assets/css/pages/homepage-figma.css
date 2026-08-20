@@ -31,27 +31,67 @@
 	display: contents;
 }
 
-/* ---------- Desktop source-of-truth: Figma 1366px ---------- */
-@media (min-width: 1366px) {
+/* ---------- Desktop source-of-truth: Figma 1366px ----------
+ * Cổng mở từ 1025px (không phải 1366px): responsive.css thu nhỏ đồng đều
+ * cả .nntm-site-frame nên bên trong khung bố cục LUÔN được dàn ở đúng
+ * 1366px đơn vị dàn trang. Mọi số đo px cứng dưới đây vì thế vẫn khớp
+ * Figma ở mọi cỡ màn từ 1025 trở lên. */
+@media (min-width: 1152px) {
 	/* ===== HEADER — node 6376:6487 ===== */
+	/*
+	 * Chi so do CHUNG cho ca hai trang thai. Mau nen / bong / mau chu tach
+	 * rieng theo --trong va --dac o hai khoi duoi.
+	 *
+	 * SUA 20/08/2026 (anh Uy bao): truoc day khoi nay son `background:
+	 * var(--nntm-trang)` + bong + chu mau muc cho CA `.nntm-header--trong`,
+	 * nen o dinh trang chu dau trang van trang doc — dung H1 la phai TRONG
+	 * SUOT de len banner, cuon qua 80px moi chuyen sang trang dac
+	 * (assets/js/header-scroll.js doi hai class nay).
+	 */
 	.home .nntm-header,
-	.home .nntm-header.nntm-header--trong,
-	.home .nntm-header.nntm-header--dac,
 	.home .nntm-header--guest,
 	.home .nntm-header--auth {
 		height: 76px;
 		padding-block: 4px;
-		background: var(--nntm-trang);
 		backdrop-filter: none;
 		-webkit-backdrop-filter: none;
-		box-shadow: 0 20px 40px rgba(116, 119, 102, 0.2);
-		color: var(--nntm-muc-nhat);
 	}
 
+	/* O dinh trang: trong suot, khong bong, chu/icon mau sang de doc tren anh. */
+	.home .nntm-header.nntm-header--trong {
+		background: transparent;
+		box-shadow: none;
+		color: var(--nntm-trang);
+	}
+
+	/*
+	 * Chu/icon KHONG co nen rieng doi sang mau sang. Phai ghep ca `.home` va
+	 * `--trong`: khoi MENU o duoi file khai `.home .nntm-main-nav a` (cung do
+	 * dac ta 0,0,3,0 voi luat `--trong` cua header.css nhung nam SAU nen
+	 * thang) — do dung la ly do menu trang chu van mau muc dam khi dau trang
+	 * dang trong suot. O tim kiem (nen --nntm-vien) va nut ngon ngu (nen
+	 * --nntm-chinh) khong doi: chung tuong phan voi nen cua chinh minh.
+	 */
 	.home .nntm-header--trong .nntm-header__logo,
 	.home .nntm-header--trong .nntm-main-nav a,
 	.home .nntm-header--trong .nntm-header__login,
 	.home .nntm-header--trong .nntm-header__account-toggle {
+		color: var(--nntm-trang);
+	}
+
+	/* Da cuon qua 80px: nen trang dac + bong dung Figma. */
+	.home .nntm-header.nntm-header--dac,
+	.home .nntm-header--guest.nntm-header--dac,
+	.home .nntm-header--auth.nntm-header--dac {
+		background: var(--nntm-trang);
+		box-shadow: 0 20px 40px rgba(116, 119, 102, 0.2);
+		color: var(--nntm-muc-nhat);
+	}
+
+	.home .nntm-header--dac .nntm-header__logo,
+	.home .nntm-header--dac .nntm-main-nav a,
+	.home .nntm-header--dac .nntm-header__login,
+	.home .nntm-header--dac .nntm-header__account-toggle {
 		color: var(--nntm-muc-nhat);
 	}
 
@@ -1303,8 +1343,7 @@
 	}
 
 	.home .nntm-footer__logo-line {
-		transform: scaleX(1.29);
-		transform-origin: center;
+        text-align: center;
 	}
 
 	.home .nntm-footer__nav {
@@ -1328,7 +1367,7 @@
 }
 
 /* ---------- Responsive safety (Figma has no tablet/mobile source frames) ---------- */
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.home .nntm-engineering-earth--homepage-figma {
 		width: 100%;
 		height: auto;
@@ -1410,7 +1449,7 @@
 	}
 }
 
-@media (min-width: 1366px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 1152px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
 	.home .nntm-card-list__yt-cell,
 	.home .nntm-article-mosaic__lead,
 	.home .nntm-article-mosaic__medium-card,

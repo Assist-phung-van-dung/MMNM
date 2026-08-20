@@ -228,7 +228,7 @@
 	margin: 0;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-feature {
 		height: auto;
 		padding: 40px;
@@ -258,6 +258,18 @@
 		height: auto;
 		min-height: 106px;
 		padding-block: 24px;
+	}
+
+	/*
+	 * SUA 20/08/2026: bac chu tablet. Truoc day hai tieu de nay chi ha xuong
+	 * 40px o khoi <=767, nen o dai 768-1024 van giu 52px cua desktop — do
+	 * duoc 52px tren khung 768. Lay dung cung mot bac 40/48 nhu khoi <=767
+	 * de ca dai tablet thong nhat voi bac chu chung o assets/css/responsive.css.
+	 */
+	.nntm-feature__heading,
+	.nntm-tru-xu-list--list .nntm-tru-xu-list__heading {
+		font-size: 40px;
+		line-height: 48px;
 	}
 }
 

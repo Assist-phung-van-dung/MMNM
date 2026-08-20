@@ -131,7 +131,7 @@
 	color: var(--nntm-chinh);
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1152px) {
 	.nntm-article-detail__related .nntm-card-list__carousel {
 		position: relative;
 		display: block;
@@ -260,7 +260,7 @@
 
 }
 
-@media (max-width: 1224px) {
+@media (max-width: 1151px) {
 	.nntm-article-detail__related .nntm-card-list__nav--prev {
 		left: var(--nntm-sp-3);
 	}
@@ -270,7 +270,7 @@
 	}
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1023px) {
 	.nntm-article-detail__inner {
 		padding-block: var(--nntm-sp-8);
 	}
@@ -285,7 +285,7 @@
 	}
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767px) {
 	.nntm-article-detail__inner,
 	.nntm-article-detail__related .nntm-card-list__band > .nntm-container {
 		width: calc(100% - 30px);

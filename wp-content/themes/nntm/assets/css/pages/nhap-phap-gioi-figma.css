@@ -53,7 +53,7 @@
 	color: var(--nntm-chinh-hover);
 }
 
-@media (min-width: 1025px) {
+@media (min-width: 1152px) {
 	/* ---------- Rank Card: y=76, h=692 ---------- */
 	.nntm-rank-card {
 		height: 692px;
@@ -513,7 +513,7 @@
 }
 
 /* Motion polish: only transform/opacity/filter, never width/margin reflow. */
-@media (min-width: 1025px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 1152px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
 	.nntm-card-list__yt-cell {
 		transition: transform 420ms cubic-bezier(.22, 1, .36, 1), box-shadow 420ms cubic-bezier(.22, 1, .36, 1);
 	}
@@ -560,7 +560,7 @@
 
 /* No mobile/tablet Figma frame exists. Keep shared responsive architecture
  * and only release desktop fixed heights so content can wrap safely. */
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-header { height: auto; }
 	.nntm-header__logo { height: 36px; }
 
@@ -596,7 +596,7 @@
 	.nntm-card-list__heading-above,
 	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) .nntm-card-list__heading,
 	.nntm-card-list--nen-cam .nntm-card-list__heading {
-		font-size: clamp(38px, 8vw, 52px);
+		font-size: clamp(38px, 8vw, var(--nntm-fs-4xl)); /* tran theo token — xem responsive.css */
 		line-height: 1.15;
 	}
 
@@ -619,7 +619,7 @@
 	}
 }
 
-@media (max-width: 760px) {
+@media (max-width: 767px) {
 	.nntm-rank-card__card {
 		width: min(100%, 360px);
 		height: auto;

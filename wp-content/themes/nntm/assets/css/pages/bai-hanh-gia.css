@@ -211,7 +211,7 @@
  * 3 card đầy đủ + một phần card thứ 4. Hai nút nằm ngoài khung nội dung
  * nhưng vẫn ở trong frame 1366 (91px lề mỗi bên).
  */
-@media (min-width: 1024px) {
+@media (min-width: 1152px) {
 	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__carousel {
 		position: relative;
 		display: block;
@@ -256,7 +256,7 @@
    Ước lượng thu gọn theo cùng tỷ lệ giữ khoảng trắng, chưa đối chiếu
    với bất kỳ bản thiết kế mobile chính thức nào.
    ============================================================= */
-@media (max-width: 900px) {
+@media (max-width: 1023px) {
 	.nntm-bai-hanh-gia__than {
 		padding: var(--nntm-sp-8) 0 var(--nntm-sp-9);
 	}
@@ -294,7 +294,7 @@
    Nút 58x58 nền trắng; trên dải trắng chỉ còn thấy mũi tên có thân.
    Scope riêng để không đổi icon các Card List khác trong site.
    ============================================================= */
-@media (min-width: 1024px) {
+@media (min-width: 1152px) {
 	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__nav {
 		border-radius: 0;
 		background: var(--nntm-trang);

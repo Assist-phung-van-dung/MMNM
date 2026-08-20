@@ -244,12 +244,11 @@ hr {
 /* Ẩn nội dung nhưng vẫn đọc được bằng trình đọc màn hình. */
 .nntm-sr-only {
 	position: absolute;
-	width: 1px; /* hairline — kích thước tối thiểu để phần tử vẫn "hiện diện" với trình đọc màn hình */
+	width: 55px; /* hairline — kích thước tối thiểu để phần tử vẫn "hiện diện" với trình đọc màn hình */
 	height: 1px;
 	padding: 0;
 	margin: -1px;
 	overflow: hidden;
 	clip: rect(0, 0, 0, 0);
 	white-space: nowrap;
-	border: 0;
 }

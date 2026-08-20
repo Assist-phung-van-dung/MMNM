@@ -24,7 +24,15 @@
 		}
 
 		function step() {
-			return cards[ 0 ].getBoundingClientRect().width + gapSize();
+			/*
+			 * Dùng offsetWidth chứ KHÔNG dùng getBoundingClientRect().width:
+			 * assets/css/responsive.css thu nhỏ cả .nntm-site-frame bằng `zoom`
+			 * ở màn dưới 1366. Khi đó rect trả về số ĐÃ THU NHỎ, còn
+			 * track.clientWidth và track.scrollTo() lại tính theo đơn vị dàn
+			 * trang (chưa thu nhỏ) — trộn hai hệ này làm bước trượt lệch đúng
+			 * bằng tỉ lệ zoom (sai ~17% ở màn 1152).
+			 */
+			return cards[ 0 ].offsetWidth + gapSize();
 		}
 
 		function visibleCount() {

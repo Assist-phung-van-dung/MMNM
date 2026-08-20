@@ -4,7 +4,7 @@
 .nntm-main--full .nntm-page,
 .nntm-main--full .nntm-page__content { margin:0; padding:0; }
 
-@media (min-width:1025px) {
+@media (min-width:1152px) {
   /* Frame stack: header 76 + news 811 + dharma 954 + publications 650 + footer 147 = 2638. */
   .nntm-hk-news { height:811px; min-height:811px; background:#fff; overflow:hidden; }
   .nntm-hk-news .nntm-article-mosaic__inner {
@@ -167,7 +167,7 @@
 .nntm-hk-news .nntm-article-mosaic__media-link:hover img,
 .nntm-hk-dharma .nntm-article-mosaic__media-link:hover img { transform:scale(1.025); filter:brightness(1.03); }
 
-@media (max-width:1024px) {
+@media (max-width:1151px) {
   .nntm-hk-news,
   .nntm-hk-dharma,
   .nntm-hk-publications > .nntm-card-list__band,
@@ -175,13 +175,14 @@
   .nntm-hk-news .nntm-article-mosaic__inner,
   .nntm-hk-dharma .nntm-article-mosaic__inner { height:auto; padding:40px 20px; }
   .nntm-hk-news .nntm-article-mosaic__heading,
-  .nntm-hk-dharma .nntm-article-mosaic__heading { height:auto; font-size:clamp(38px,7vw,52px); line-height:1.15; }
+  .nntm-hk-dharma .nntm-article-mosaic__heading { height:auto; font-size:clamp(38px,7vw,var(--nntm-fs-4xl)); line-height:1.15; }
+  /* TABLET (1024-1151): giu hai cot, chi bo be rong 1180px cung cua desktop.
+     Gop mot cot chuyen xuong khoi <=1023 o cuoi file — o khung 1136px danh
+     sach mot cot lam the dan dau rong 1076px, la bo cuc cua dien thoai. */
   .nntm-hk-news .nntm-article-mosaic__list,
-  .nntm-hk-dharma .nntm-article-mosaic__list { width:100%; grid-template-columns:1fr; }
+  .nntm-hk-dharma .nntm-article-mosaic__list { width:100%; }
   .nntm-hk-news .nntm-article-mosaic__lead,
   .nntm-hk-dharma .nntm-article-mosaic__lead { width:100%; max-width:none; }
-  .nntm-hk-news .nntm-article-mosaic__lead-img--short,
-  .nntm-hk-dharma .nntm-article-mosaic__lead-img--tall { width:100%; height:auto; aspect-ratio:16/10; }
   .nntm-hk-publications > .nntm-card-list__band { padding:40px 0; }
   .nntm-hk-publications .nntm-card-list__carousel { height:auto; }
   .nntm-hk-publications .nntm-card-list__track { height:auto; padding:0 20px; gap:16px; }
@@ -196,4 +197,12 @@
 
 @media (prefers-reduced-motion:reduce) {
   .nntm-hk-news *, .nntm-hk-dharma *, .nntm-hk-publications * { transition:none; }
+}
+
+/* DUOI 1024: gop hai cot ve mot; anh dan dau chuyen ti le ngang. */
+@media (max-width:1023px) {
+  .nntm-hk-news .nntm-article-mosaic__list,
+  .nntm-hk-dharma .nntm-article-mosaic__list { grid-template-columns:1fr; }
+  .nntm-hk-news .nntm-article-mosaic__lead-img--short,
+  .nntm-hk-dharma .nntm-article-mosaic__lead-img--tall { width:100%; height:auto; aspect-ratio:16/10; }
 }

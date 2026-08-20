@@ -526,14 +526,9 @@
    hang the vua/nho tu dong xuong dong khi khong du cho thay vi tran ra
    ngoai man hinh.
    ============================================================= */
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-article-mosaic__inner {
 		padding: var(--nntm-sp-8) var(--nntm-sp-5);
-	}
-
-	.nntm-article-mosaic__list,
-	.nntm-article-mosaic__list--solo {
-		grid-template-columns: 1fr;
 	}
 
 	.nntm-article-mosaic__secondary {
@@ -551,6 +546,20 @@
 	.nntm-article-mosaic__medium-card,
 	.nntm-article-mosaic__small-card {
 		flex: 1 1 220px;
+	}
+}
+
+/*
+ * DUOI 1024: gop hai cot ve mot. Truoc day luat nay nam o
+ * khoi <=1151 nen tren man 1136px danh sach cung xep mot cot, the dan dau
+ * rong 1076px — bo cuc cua dien thoai dat tren khung tablet. Luoi co so
+ * cua khoi da la `349fr 811fr` nen dai 768-1151 tu chia ti le dung ma
+ * khong can luat nao.
+ */
+@media (max-width: 1023px) {
+	.nntm-article-mosaic__list,
+	.nntm-article-mosaic__list--solo {
+		grid-template-columns: 1fr;
 	}
 }
 
@@ -639,7 +648,7 @@
 }
 
 /* SUY DOAN: chua co Figma mobile — luoi 3 cot thu ve 2 roi 1. */
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-article-mosaic__grid {
 		grid-template-columns: repeat(2, 1fr);
 		row-gap: var(--nntm-sp-7);
@@ -650,7 +659,7 @@
 	}
 }
 
-@media (max-width: 600px) {
+@media (max-width: 767px) {
 	.nntm-article-mosaic__grid {
 		grid-template-columns: 1fr;
 	}
@@ -773,7 +782,7 @@
 	margin-top: var(--nntm-sp-5);
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-hk-news .nntm-article-mosaic__inner,
 	.nntm-hk-dharma .nntm-article-mosaic__inner {
 		padding: var(--nntm-sp-8) var(--nntm-sp-5);

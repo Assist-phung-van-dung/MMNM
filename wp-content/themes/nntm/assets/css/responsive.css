@@ -1,0 +1,154 @@
+/* =============================================================
+   NNTM — Lớp responsive cho màn HẸP HƠN khung thiết kế (1366).
+
+   BÀI TOÁN
+   Figma khách gửi CHỈ có khung desktop 1366px. Nhưng laptop 1366x768
+   thật chỉ còn 1351px chỗ vẽ (thanh cuộn dọc Windows chiếm ~15px), nên:
+     - Mọi khối khai `width: 1366px` cứng bị .nntm-site-frame (overflow-x:
+       clip) CẮT MẤT 15px bên phải — cắt âm thầm, không hiện thanh cuộn
+       ngang nên trước giờ không ai thấy.
+     - Trang chủ còn nặng hơn: cả bố cục desktop nằm trong
+       `@media (min-width: 1366px)`, màn 1280 rơi thẳng xuống bố cục mặc
+       định của block, mất sạch tỉ lệ Figma.
+
+   CÁCH GIẢI (anh Úy chốt 20/08/2026)
+   Bố cục desktop là một BẢN VẼ THEO PIXEL: riêng trang chủ có ~60 số đo
+   cứng, gồm cả chiều cao dải (768/870/945/819) và toạ độ tuyệt đối
+   (left: 958, top: 772). Không thể "fluid hoá" nó mà không vẽ lại cả
+   thiết kế — mà Figma lại không có bản tablet nào để bám. Nên:
+
+     - Từ 1152px trở lên: THU NHỎ ĐỒNG ĐỀU cả khung 1366 bằng `zoom`.
+     - Dưới 1152px: BỐ CỤC XẾP LẠI thật (reflow) theo ba bậc bên dưới.
+
+   Vì `zoom` tác động vào GIAI ĐOẠN DÀN TRANG (khác `transform: scale`
+   chỉ vẽ lại), `width: 100%` của .nntm-site-frame tự giải ra
+   `bề-rộng-thật / tỉ-lệ` = ĐÚNG 1366px đơn vị dàn trang ở mọi cỡ màn.
+   Nói cách khác: bên trong khung, bố cục LUÔN được dàn ở đúng 1366px
+   như Figma, rồi mới thu nhỏ để vừa màn. Không còn chỗ nào bị cắt.
+
+   VÌ SAO SÀN LÀ 1152px
+   Ở 1152 tỉ lệ thu nhỏ còn 83% (chữ thân bài 16 -> 13.3px). Hẹp hơn nữa
+   thì chữ quá nhỏ nên xếp lại là đúng. 1152 cũng đủ rộng để dải laptop
+   phổ biến (1280, 1366) và iPad Pro 11"/Air ngang (1180-1194) vẫn xem
+   được đúng tỉ lệ Figma.
+
+   HỆ QUẢ CẦN BIẾT
+   1. Điểm ngắt (@media) KHÔNG bị `zoom` ảnh hưởng — vẫn đo theo bề rộng
+      thật của màn. Nên mọi cổng desktop phải mở từ 1152px, không phải
+      1366px.
+   2. Chữ nhỏ đi theo tỉ lệ: 1366 -> 98.8%, 1280 -> 92.5%, 1152 -> 83%.
+      Dưới 1152px thì DỪNG thu nhỏ, chữ trở lại cỡ thật.
+   3. Người dùng phóng to trang (Ctrl++) làm bề rộng CSS hẹp lại; phóng
+      quá ngưỡng 1152px là rơi vào bố cục reflow, chữ trở lại cỡ thật.
+
+   THANG ĐIỂM NGẮT CỦA TOÀN THEME (chuẩn hoá 20/08/2026 — trước đó có tới
+   11 mốc rời rạc 1366/1224/1100/1025/901/782/768/760/700/640/600/520):
+
+     >= 1152px : khung thiết kế 1366, thu nhỏ vừa màn  (KHÔNG ĐỤNG)
+     <= 1151px : tablet rộng — vẫn hai/ba cột, thu lề và cỡ chữ một bậc
+     <= 1023px : tablet — các lưới hai cột gộp về một (mosaic, feature)
+     <=  767px : điện thoại — xếp dọc hoàn toàn
+     <=  480px : điện thoại nhỏ — drawer tràn màn, cỡ chữ nhỏ thêm một bậc
+
+   Đầu trang tự gập menu vào drawer từ 1151px (xem header.css): ở 1024px
+   sáu mục tiếng Việt + ô tìm kiếm + đăng nhập + ngôn ngữ cần ~1160px nên
+   menu ngang tràn ra ngoài rồi đè lên logo.
+
+   Nạp SAU tokens/base/layout/header/footer — xem inc/enqueue.php.
+   ============================================================= */
+@media (min-width: 1152px) {
+	.nntm-site-frame {
+		/*
+		 * Bề rộng thanh cuộn dọc phải TRỪ BẰNG TAY: `100vw` tính cả thanh
+		 * cuộn (1366 trên màn 1366) trong khi chỗ vẽ thật chỉ 1351. Lấy
+		 * 17px là mức rộng nhất của thanh cuộn cổ điển trên Windows —
+		 * chọn số lớn nhất để luôn thừa ~2px chứ không bao giờ thiếu.
+		 * Máy dùng thanh cuộn nổi (macOS) thì mất 17px bề rộng, mắt
+		 * thường không nhận ra.
+		 */
+		--nntm-be-thanh-cuon: 17px;
+
+		/*
+		 * min(1, ...) để màn RỘNG hơn 1383 không bị phóng to lên — khung
+		 * vẫn dừng ở 1366 và canh giữa như cũ. Không đặt trần trên bằng
+		 * @media vì màn 1366 thật rơi đúng vào mốc 1366 (điểm ngắt tính
+		 * cả thanh cuộn) nên `max-width: 1365px` sẽ bỏ sót chính nó.
+		 */
+		--nntm-ty-le-khung: min(
+			1,
+			calc((100vw - var(--nntm-be-thanh-cuon)) / var(--nntm-w-rong))
+		);
+
+		zoom: var(--nntm-ty-le-khung);
+
+		/*
+		 * base.css khai `min-height: 100vh` cho khung. Sau khi thu nhỏ,
+		 * 100vh đơn vị dàn trang chỉ vẽ ra 100vh * tỉ-lệ nên trang ngắn
+		 * hở một dải nền body ở đáy. Chia lại cho tỉ lệ để chiều cao vẽ
+		 * ra đúng bằng một màn.
+		 */
+		min-height: calc(100vh / var(--nntm-ty-le-khung));
+	}
+}
+
+
+/* =============================================================
+   BẬC CỠ CHỮ HIỂN THỊ CHO MÀN HẸP
+
+   SUY DOAN: chưa có Figma mobile. Ba token dưới đây là cỡ chữ TIÊU ĐỀ
+   LỚN của bản desktop 1366 (58 / 52 / 38). Từ 1151px trở xuống bố cục
+   xếp lại nhưng KHÔNG có bậc chữ nào tương ứng, nên đo được tiêu đề
+   58px nằm trên khung 390px (khoảng 6 ký tự một dòng).
+
+   Hạ thẳng ở TOKEN thay vì đi sửa từng component là có ý:
+     - Một chỗ duy nhất, mọi trang/block dùng token đều co theo, không
+       phải nhớ vá 25 file.
+     - Chỉ GIẢM cỡ nên không thể sinh tràn mới.
+     - Các chỗ đã tự lo bằng clamp() ở khối <=1024 riêng (Liên Đàn,
+       Hoa Khai, Nhập Pháp Giới...) viết px cứng nên không bị đụng —
+       giữ nguyên quyết định đã chốt của từng trang.
+
+   Chỉ đụng ba token TIÊU ĐỀ; cỡ chữ thân bài (base/md/lg) giữ nguyên
+   để không làm hụt độ đọc.
+   ============================================================= */
+
+@media (max-width: 1151px) {
+	:root {
+		--nntm-fs-5xl: 2.75rem;  /* 44 — desktop 58 */
+		--nntm-fs-4xl: 2.5rem;   /* 40 — desktop 52 */
+		--nntm-fs-3xl: 2rem;     /* 32 — desktop 38 */
+	}
+}
+
+@media (max-width: 767px) {
+	:root {
+		--nntm-fs-5xl: 2.125rem;  /* 34 */
+		--nntm-fs-4xl: 2rem;      /* 32 */
+		--nntm-fs-3xl: 1.75rem;   /* 28 */
+	}
+}
+
+
+/* =============================================================
+   DỰ PHÒNG CHO TRÌNH DUYỆT KHÔNG HIỂU `zoom`
+
+   `zoom` chỉ vào bảng chuẩn CSS gần đây: Chrome/Edge/Safari đã có từ lâu,
+   Firefox thì từ bản 126 (5/2024). Dự án này vốn đã dùng `:has()`,
+   `color-mix()`, `overflow: clip` nên nền tảng tối thiểu vẫn là trình
+   duyệt đời mới — nhưng nếu gặp bản Firefox cũ hơn 126 thì `zoom` bị bỏ
+   qua, khung vẫn dàn ở 1366 trong chỗ vẽ hẹp hơn và base.css
+   (`overflow-x: clip`) sẽ CẮT ÂM THẦM phần thừa.
+
+   Ở trường hợp đó cho tràn ra ngoài (hiện thanh cuộn ngang) thay vì cắt:
+   thà người dùng phải kéo ngang còn hơn mất nội dung mà không biết. Chỉ
+   mở trong dải 1152-1365 nên màn rộng vẫn giữ nguyên hàng rào `clip` của
+   base.css (không cho tràn ra hai dải nền ngoài khung 1366).
+   ============================================================= */
+
+@supports not (zoom: 1) {
+	@media (min-width: 1152px) and (max-width: 1365px) {
+		.nntm-site-frame {
+			overflow-x: visible;
+		}
+	}
+}
