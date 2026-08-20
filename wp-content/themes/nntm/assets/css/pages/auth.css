@@ -306,7 +306,6 @@
   position: relative;
   z-index: 1;
   max-height: 90vh;
-  overflow-y: auto;
 }
 
 /* Modal KHÔNG dùng ảnh nền phong cảnh núi — chỉ nổi trên lớp phủ tối,
@@ -317,8 +316,8 @@
 
 .nntm-auth-modal__close {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 0px;
+  right: 0px;
   z-index: 2;
   width: 32px;
   height: 32px;
