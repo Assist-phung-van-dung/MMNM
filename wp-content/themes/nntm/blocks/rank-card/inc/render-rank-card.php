@@ -177,8 +177,9 @@ function nntm_rank_card_render_cta( array $card, bool $can_access ): string {
 			: wp_login_url( $card['targetUrl'] );
 
 		return sprintf(
-			'<a class="nntm-rank-card__cta" href="%1$s" data-nntm-auth-modal="dang-nhap">%2$s &rarr;</a>',
+			'<a class="nntm-rank-card__cta" href="%1$s" data-nntm-auth-modal="dang-nhap" data-nntm-auth-redirect="%2$s">%3$s &rarr;</a>',
 			esc_url( $login_url ),
+			esc_url( $card['targetUrl'] ),
 			esc_html( $card['ctaLabel'] )
 		);
 	}

@@ -64,6 +64,37 @@ thuần, không trắng trang.
 | `nntm_search_model` | đổi model đọc ảnh |
 | `nntm_an_pham_can_access` | cổng quyền ấn phẩm (của theme, dùng lại) |
 
+### Bật/tắt qua .env
+
+Không có công tắc chung. Tìm bằng ảnh và tìm trong PDF tắt/bật **riêng từng
+cái**, chỉnh tay trong **`wp-content/plugins/nntm-search/.env`** — không phải
+`.env` ở gốc site (file đó chỉ dành cho `tools/figma-sync.mjs`), và **không
+sửa `wp-config.php` hay `wp-config.docker.php`** — hai file đó không còn liên
+quan gì đến cờ này nữa, plugin tự đọc `.env` của chính nó.
+
+```
+NNTM_SEARCH_IMAGE_ENABLED=false   # tắt tìm bằng ảnh
+NNTM_SEARCH_PDF_ENABLED=false     # tắt tìm trong PDF
+```
+
+Không khai dòng nào thì mặc định **bật cả hai**. Đặt `.env` trong
+`wp-content/plugins/nntm-search/` cố ý — thư mục này **luôn được bind-mount từ
+Windows ở cả hai cách chạy** (`docker-compose.yml` mục `volumes` gắn nguyên
+`wp-content`, còn chạy không Docker thì đó là chính filesystem đang chạy), nên
+một file duy nhất áp dụng cho cả hai, sửa xong **có hiệu lực ngay lần tải
+trang kế tiếp — không cần restart, không cần `docker compose up -d`**.
+
+Tắt một cái thì: route REST tương ứng không đăng ký nữa (ảnh), lập chỉ mục lúc
+tải file lên bị bỏ qua, kết quả tìm không còn dòng nào của loại đó, và ở phía
+ảnh nút camera trên thanh tìm kiếm cũng biến mất luôn thay vì để một nút bấm
+vào chỉ ra lỗi. Khác với việc `tools/embed-service` không chạy (mục 7) — đó là
+tắt ngoài ý muốn, âm thầm và trả lỗi 503; đây là tắt **có chủ đích**, sạch sẽ.
+
+Cơ chế: đầu `nntm-search.php` tự đọc `.env` cùng thư mục (dự án không có
+composer/vendor nên tự viết, không kéo thư viện ngoài) bằng `putenv()` từng
+dòng, rồi `define()` hai hằng số ngay tại đó — trước khi các `includes/*.php`
+khác được nạp.
+
 ---
 
 ## 3. Quyền — chỗ dễ vỡ nhất

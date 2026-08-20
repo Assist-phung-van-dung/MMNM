@@ -29,7 +29,6 @@ $nntm_main_class = nntm_page_uses_section_blocks( get_queried_object() )
 			<?php if ( ! is_front_page() && ! nntm_should_hide_page_title( get_post() ) ) : ?>
 				<h1 class="nntm-page__title"><?php the_title(); ?></h1>
 			<?php endif; ?>
-
 			<div class="nntm-page__content">
 				<?php the_content(); ?>
 			</div>

@@ -1,0 +1,297 @@
+/* =============================================================
+   NNTM — Chi tiết nntm_article THƯỜNG
+   Áp dụng cho bài ngoài Đại Sĩ / Kim Cương / Nghi Quỹ.
+   Desktop source-of-truth: frame 1366px, content 1184px.
+   ============================================================= */
+
+.single-nntm_article:not(.is-bai-hanh-gia) .nntm-article-detail {
+	width: 100%;
+	max-width: var(--nntm-w-rong);
+	margin-inline: auto;
+	background: var(--nntm-trang);
+}
+
+.nntm-article-detail__inner {
+	width: min(1184px, calc(100% - 40px));
+	max-width: 1184px;
+	margin-inline: auto;
+	padding: 58px 0 72px;
+}
+
+.nntm-article-detail__title {
+	margin: 0;
+	font-family: var(--nntm-font-display);
+	font-size: var(--nntm-fs-4xl);
+	font-weight: 600;
+	line-height: var(--nntm-lh-chat);
+	color: var(--nntm-chinh);
+}
+
+.nntm-article-detail__meta {
+	display: flex;
+	align-items: center;
+	gap: var(--nntm-sp-2);
+	margin-top: var(--nntm-sp-3);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-xs);
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-reu-nhat);
+}
+
+.nntm-article-detail__meta-dot {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: currentColor;
+	flex: none;
+}
+
+.nntm-article-detail__intro {
+	max-width: 100%;
+	margin-top: 34px;
+	font-family: var(--nntm-font-serif);
+	font-size: var(--nntm-fs-base);
+	line-height: 1.65;
+	color: var(--nntm-chinh);
+}
+
+.nntm-article-detail__media {
+	width: 100%;
+	margin: 20px 0 0;
+	aspect-ratio: 3 / 2;
+	overflow: hidden;
+	background: var(--nntm-xam-nhat);
+}
+
+.nntm-article-detail__media img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.nntm-article-detail__content {
+	margin-top: 20px;
+	font-family: var(--nntm-font-serif);
+	font-size: var(--nntm-fs-base);
+	line-height: 1.65;
+	color: var(--nntm-chinh);
+}
+
+/* base.css gán màu trực tiếp lên p/li nên ghi đè đúng trong vùng bài. */
+.nntm-article-detail__content :where(p, li, blockquote, figcaption, h2, h3, h4, h5, h6) {
+	color: var(--nntm-chinh);
+}
+
+.nntm-article-detail__content > * + * {
+	margin-top: var(--nntm-sp-2);
+}
+
+.nntm-article-detail__content img,
+.nntm-article-detail__content figure {
+	max-width: 100%;
+}
+
+.nntm-article-detail__favorite {
+	margin-top: 30px;
+}
+
+/* ---------- Bài Viết Liên Quan: dùng cùng card-list carousel với Hành Giả ---------- */
+.nntm-article-detail__related {
+	width: 100%;
+	max-width: var(--nntm-w-rong);
+	margin-inline: auto;
+	padding: 58px 0 76px;
+	background: var(--nntm-kem);
+	overflow: hidden;
+}
+
+.nntm-article-detail__related .nntm-card-list,
+.nntm-article-detail__related .nntm-card-list__band {
+	background: transparent;
+}
+
+.nntm-article-detail__related .nntm-card-list__band > .nntm-container {
+	width: min(1184px, calc(100% - 40px));
+	max-width: 1184px;
+	margin-inline: auto;
+	padding-inline: 0;
+}
+
+.nntm-article-detail__related .nntm-card-list__header-row {
+	width: 100%;
+}
+
+.nntm-article-detail__related .nntm-card-list__heading {
+	margin: 0 0 30px;
+	font-family: var(--nntm-font-display);
+	font-size: var(--nntm-fs-4xl);
+	font-weight: 600;
+	line-height: var(--nntm-lh-chat);
+	color: var(--nntm-chinh);
+}
+
+@media (min-width: 1024px) {
+	.nntm-article-detail__related .nntm-card-list__carousel {
+		position: relative;
+		display: block;
+		--nntm-carousel-gutter: 0px;
+	}
+
+	.nntm-article-detail__related .nntm-card-list__track {
+		gap: var(--nntm-sp-5);
+		padding-bottom: 0;
+		scrollbar-width: none;
+	}
+
+	.nntm-article-detail__related .nntm-card-list__track::-webkit-scrollbar {
+		display: none;
+	}
+
+	.nntm-article-detail__related .nntm-card-list__track-item {
+		flex: 0 0 348px;
+		margin-inline: 0;
+	}
+
+	.nntm-article-detail__related .nntm-card-list__track-item:first-child,
+	.nntm-article-detail__related .nntm-card-list__track-item:last-child {
+		margin-inline: 0;
+	}
+
+	.nntm-article-detail__related .nntm-card-list__track-item:first-child {
+		scroll-snap-align: start;
+	}
+
+	.nntm-article-detail__related .nntm-card--article {
+		gap: 0;
+		background: var(--nntm-trang);
+	}
+
+	.nntm-article-detail__related .nntm-card--article .nntm-card__body {
+		gap: var(--nntm-sp-2);
+		padding: 15px 15px 18px;
+	}
+
+	.nntm-article-detail__related .nntm-card--article .nntm-card__title {
+		font-size: var(--nntm-fs-base);
+		line-height: var(--nntm-lh-vua);
+	}
+
+	.nntm-article-detail__related .nntm-card--article .nntm-card__excerpt {
+		font-size: var(--nntm-fs-sm);
+		line-height: 1.55;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 3;
+		overflow: hidden;
+	}
+
+	.nntm-article-detail__related .nntm-card--article .nntm-card__cta {
+		padding-block: 4px 0;
+		font-size: var(--nntm-fs-xs);
+		line-height: var(--nntm-lh-vua);
+		text-decoration: underline;
+		text-underline-offset: 0.18em;
+	}
+
+	/* Nút 58x58 nằm ngoài content 1184 nhưng vẫn trong frame 1366. */
+	.nntm-article-detail__related .nntm-card-list__nav {
+		position: absolute;
+		top: 116px;
+		z-index: 4;
+		width: 58px;
+		height: 58px;
+		padding: 0;
+		border: 0;
+		border-radius: 0;
+		background: var(--nntm-trang);
+		color: var(--nntm-den);
+		box-shadow: none;
+		transform: translateY(-50%);
+	}
+
+	.nntm-article-detail__related .nntm-card-list__nav--prev {
+		left: -75px;
+	}
+
+	.nntm-article-detail__related .nntm-card-list__nav--next {
+		right: -75px;
+	}
+
+	.nntm-article-detail__related .nntm-card-list__nav:hover:not(:disabled),
+	.nntm-article-detail__related .nntm-card-list__nav:focus-visible:not(:disabled) {
+		background: var(--nntm-trang);
+		border-color: transparent;
+		color: var(--nntm-den);
+	}
+
+	/* Mũi tên ngang thật để icon luôn thẳng, không lệch do border xoay. */
+	.nntm-article-detail__related .nntm-card-list__nav-icon {
+		display: inline-grid;
+		place-items: center;
+		width: 28px;
+		height: 28px;
+		margin: 0;
+		border: 0;
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 24px;
+		font-weight: 400;
+		font-style: normal;
+		line-height: 1;
+		transform: none;
+	}
+
+	.nntm-article-detail__related .nntm-card-list__nav-icon::before {
+		display: block;
+		transform: translateY(-1px);
+	}
+
+	.nntm-article-detail__related .nntm-card-list__nav--prev .nntm-card-list__nav-icon::before {
+		content: '←';
+	}
+
+	.nntm-article-detail__related .nntm-card-list__nav--next .nntm-card-list__nav-icon::before {
+		content: '→';
+	}
+
+	.nntm-article-detail__related .nntm-card-list__nav-icon::after {
+		content: none;
+	}
+
+}
+
+@media (max-width: 1224px) {
+	.nntm-article-detail__related .nntm-card-list__nav--prev {
+		left: var(--nntm-sp-3);
+	}
+
+	.nntm-article-detail__related .nntm-card-list__nav--next {
+		right: var(--nntm-sp-3);
+	}
+}
+
+@media (max-width: 900px) {
+	.nntm-article-detail__inner {
+		padding-block: var(--nntm-sp-8);
+	}
+
+	.nntm-article-detail__title,
+	.nntm-article-detail__related .nntm-card-list__heading {
+		font-size: var(--nntm-fs-3xl);
+	}
+
+	.nntm-article-detail__related {
+		padding-block: var(--nntm-sp-8);
+	}
+}
+
+@media (max-width: 640px) {
+	.nntm-article-detail__inner,
+	.nntm-article-detail__related .nntm-card-list__band > .nntm-container {
+		width: calc(100% - 30px);
+	}
+
+	.nntm-article-detail__media {
+		aspect-ratio: 4 / 3;
+	}
+}

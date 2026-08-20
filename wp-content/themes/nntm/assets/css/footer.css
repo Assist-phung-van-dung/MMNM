@@ -61,7 +61,7 @@
  * thay cho quyet dinh giu lai truoc do.
  */
 .nntm-footer {
-	background-color: var(--nntm-trang); /* tu Figma: nen trang phia tren/duoi khoi xam */
+	background-color: var(--nntm-den); /* nền ngoài footer theo yêu cầu hiện tại */
 	color: var(--nntm-vien);
 	padding-inline: var(--nntm-sp-5); /* 20 — tao khoang thut cho khoi xam ben trong so voi mep trai/phai */
 	padding-block: var(--nntm-sp-4);  /* 15 — khoang trang phia tren/duoi khoi xam */

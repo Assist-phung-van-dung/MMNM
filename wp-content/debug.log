@@ -113,3 +113,21 @@ Stack trace:
 [16-Aug-2026 07:53:18 UTC] Automatic updates complete.
 [16-Aug-2026 08:02:36 UTC] Automatic updates starting...
 [16-Aug-2026 08:02:36 UTC] Automatic updates complete.
+[18-Aug-2026 00:38:53 UTC] Automatic updates starting...
+[18-Aug-2026 00:38:54 UTC]   Automatic plugin updates starting...
+[18-Aug-2026 00:38:54 UTC]   Automatic plugin updates complete.
+[18-Aug-2026 00:38:55 UTC] Automatic updates complete.
+[18-Aug-2026 01:18:58 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function nntm_render_section_article_row() in C:\xampp8_2\htdocs\NNTM\wp-content\themes\nntm\taxonomy-nntm_section.php:30
+Stack trace:
+#0 C:\xampp8_2\htdocs\NNTM\wp-includes\template-loader.php(132): include()
+#1 C:\xampp8_2\htdocs\NNTM\wp-blog-header.php(19): require_once('C:\\xampp8_2\\htd...')
+#2 C:\xampp8_2\htdocs\NNTM\index.php(17): require('C:\\xampp8_2\\htd...')
+#3 {main}
+  thrown in C:\xampp8_2\htdocs\NNTM\wp-content\themes\nntm\taxonomy-nntm_section.php on line 30
+[18-Aug-2026 01:19:00 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function nntm_render_section_article_row() in C:\xampp8_2\htdocs\NNTM\wp-content\themes\nntm\taxonomy-nntm_section.php:30
+Stack trace:
+#0 C:\xampp8_2\htdocs\NNTM\wp-includes\template-loader.php(132): include()
+#1 C:\xampp8_2\htdocs\NNTM\wp-blog-header.php(19): require_once('C:\\xampp8_2\\htd...')
+#2 C:\xampp8_2\htdocs\NNTM\index.php(17): require('C:\\xampp8_2\\htd...')
+#3 {main}
+  thrown in C:\xampp8_2\htdocs\NNTM\wp-content\themes\nntm\taxonomy-nntm_section.php on line 30

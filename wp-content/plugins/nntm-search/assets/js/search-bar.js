@@ -242,71 +242,76 @@
 	} );
 
 	/* =====================================================================
-	 * Search by image.
+	 * Search by image. Config-gated: define( 'NNTM_SEARCH_IMAGE_ENABLED', false )
+	 * in wp-config.php turns this whole block off, not just the button — an
+	 * operator without tools/embed-service running wants no dead control at
+	 * all, not a button that always fails.
 	 * ===================================================================== */
 
-	var cameraButton = form.querySelector( '.nntm-header__search-camera' );
-	var fileInput    = form.querySelector( '.nntm-header__search-file' );
+	if ( nntmSearch.imageEnabled ) {
+		var cameraButton = form.querySelector( '.nntm-header__search-camera' );
+		var fileInput    = form.querySelector( '.nntm-header__search-file' );
 
-	// The theme ships both elements hidden. Only the plugin reveals them, so
-	// disabling the plugin removes the button instead of leaving a dead control.
-	if ( cameraButton && fileInput ) {
-		cameraButton.hidden = false;
+		// The theme ships both elements hidden. Only the plugin reveals them, so
+		// disabling the plugin removes the button instead of leaving a dead control.
+		if ( cameraButton && fileInput ) {
+			cameraButton.hidden = false;
 
-		cameraButton.addEventListener( 'click', function () {
-			fileInput.click();
-		} );
+			cameraButton.addEventListener( 'click', function () {
+				fileInput.click();
+			} );
 
-		fileInput.addEventListener( 'change', function () {
-			if ( fileInput.files && fileInput.files[ 0 ] ) {
-				searchByImage( fileInput.files[ 0 ] );
-			}
-			// Clearing the value lets the SAME file fire 'change' again.
-			fileInput.value = '';
-		} );
-	}
-
-	// Drag an image onto the search bar.
-	[ 'dragenter', 'dragover' ].forEach( function ( name ) {
-		form.addEventListener( name, function ( event ) {
-			event.preventDefault();
-			form.classList.add( 'is-dropping' );
-		} );
-	} );
-
-	[ 'dragleave', 'drop' ].forEach( function ( name ) {
-		form.addEventListener( name, function () {
-			form.classList.remove( 'is-dropping' );
-		} );
-	} );
-
-	form.addEventListener( 'drop', function ( event ) {
-		event.preventDefault();
-
-		var file = event.dataTransfer && event.dataTransfer.files ? event.dataTransfer.files[ 0 ] : null;
-
-		if ( file && file.type.indexOf( 'image/' ) === 0 ) {
-			searchByImage( file );
-		}
-	} );
-
-	// Paste an image (Ctrl+V) while the field has focus — screenshot straight in,
-	// no need to save it to disk first.
-	field.addEventListener( 'paste', function ( event ) {
-		var items = event.clipboardData ? event.clipboardData.items : null;
-
-		if ( ! items ) {
-			return;
+			fileInput.addEventListener( 'change', function () {
+				if ( fileInput.files && fileInput.files[ 0 ] ) {
+					searchByImage( fileInput.files[ 0 ] );
+				}
+				// Clearing the value lets the SAME file fire 'change' again.
+				fileInput.value = '';
+			} );
 		}
 
-		for ( var i = 0; i < items.length; i++ ) {
-			if ( items[ i ].type.indexOf( 'image/' ) === 0 ) {
+		// Drag an image onto the search bar.
+		[ 'dragenter', 'dragover' ].forEach( function ( name ) {
+			form.addEventListener( name, function ( event ) {
 				event.preventDefault();
-				searchByImage( items[ i ].getAsFile() );
+				form.classList.add( 'is-dropping' );
+			} );
+		} );
+
+		[ 'dragleave', 'drop' ].forEach( function ( name ) {
+			form.addEventListener( name, function () {
+				form.classList.remove( 'is-dropping' );
+			} );
+		} );
+
+		form.addEventListener( 'drop', function ( event ) {
+			event.preventDefault();
+
+			var file = event.dataTransfer && event.dataTransfer.files ? event.dataTransfer.files[ 0 ] : null;
+
+			if ( file && file.type.indexOf( 'image/' ) === 0 ) {
+				searchByImage( file );
+			}
+		} );
+
+		// Paste an image (Ctrl+V) while the field has focus — screenshot straight in,
+		// no need to save it to disk first.
+		field.addEventListener( 'paste', function ( event ) {
+			var items = event.clipboardData ? event.clipboardData.items : null;
+
+			if ( ! items ) {
 				return;
 			}
-		}
-	} );
+
+			for ( var i = 0; i < items.length; i++ ) {
+				if ( items[ i ].type.indexOf( 'image/' ) === 0 ) {
+					event.preventDefault();
+					searchByImage( items[ i ].getAsFile() );
+					return;
+				}
+			}
+		} );
+	}
 
 	/**
 	 * Build the "this picture shows: …" heading from the detected keywords.

@@ -1,0 +1,1540 @@
+/* =============================================================
+   Homepage — pixel alignment to Figma frame 6376:6322 (1366px desktop)
+
+   This file is intentionally page-scoped. The same blocks are reused on
+   taxonomy/detail pages, so the homepage composition is corrected here
+   instead of changing shared component geometry for the whole site.
+
+   Typography family substitutions remain the project-approved mapping:
+   Battambang -> Be Vietnam Pro, Baskerville -> Lora, EB Garamond unchanged.
+   ============================================================= */
+
+.home {
+	--nntm-home-w: 1366px;
+	/* Figma page canvas is white; individual cream/orange/black sections paint
+	 * their own backgrounds. Keeping the page itself white also fixes the
+	 * inter-section strip below Gót Son / above Engineering Earth. */
+	background-color: var(--nntm-trang);
+}
+
+.home .nntm-site-frame {
+	background-color: var(--nntm-trang);
+}
+
+/* Homepage footer adds wrappers only to mirror the desktop Figma hierarchy.
+ * Outside the 1366px source frame keep those wrappers transparent so the
+ * theme's existing responsive footer behavior remains unchanged. */
+.home .nntm-footer__share-row,
+.home .nntm-footer__sub,
+.home .nntm-footer__sub-content,
+.home .nntm-footer__left {
+	display: contents;
+}
+
+/* ---------- Desktop source-of-truth: Figma 1366px ---------- */
+@media (min-width: 1366px) {
+	/* ===== HEADER — node 6376:6487 ===== */
+	.home .nntm-header,
+	.home .nntm-header.nntm-header--trong,
+	.home .nntm-header.nntm-header--dac,
+	.home .nntm-header--guest,
+	.home .nntm-header--auth {
+		height: 76px;
+		padding-block: 4px;
+		background: var(--nntm-trang);
+		backdrop-filter: none;
+		-webkit-backdrop-filter: none;
+		box-shadow: 0 20px 40px rgba(116, 119, 102, 0.2);
+		color: var(--nntm-muc-nhat);
+	}
+
+	.home .nntm-header--trong .nntm-header__logo,
+	.home .nntm-header--trong .nntm-main-nav a,
+	.home .nntm-header--trong .nntm-header__login,
+	.home .nntm-header--trong .nntm-header__account-toggle {
+		color: var(--nntm-muc-nhat);
+	}
+
+	.home .nntm-header__bar,
+	.home .nntm-header--guest .nntm-header__bar,
+	.home .nntm-header--auth .nntm-header__bar {
+		height: 68px;
+		max-width: var(--nntm-home-w);
+		padding: 10px 20px;
+		gap: 0;
+		justify-content: space-between;
+		box-sizing: border-box;
+	}
+
+	.home .nntm-header__brand {
+		flex: 0 0 147px;
+	}
+
+	.home .nntm-header__logo,
+	.home .custom-logo-link,
+	.home .custom-logo {
+		width: 147px;
+		height: 48px;
+		max-height: 48px;
+		object-fit: contain;
+	}
+
+	.home .nntm-header__logo {
+		font-size: 20px;
+		line-height: 0.95;
+	}
+
+	/* The Figma logo artwork is wider than the theme's text fallback while
+	 * keeping the same cap height. Scale only the fallback glyphs so the
+	 * 147x48 brand box stays unchanged. */
+	.home .nntm-header__logo-line {
+		transform: scaleX(1.29);
+		transform-origin: center;
+	}
+
+	.home .nntm-header__nav {
+		flex: 0 0 auto;
+		justify-content: center;
+	}
+
+	.home .nntm-main-nav {
+		gap: 20px;
+	}
+
+	.home .nntm-main-nav a,
+	.home .nntm-main-nav .current-menu-item > a,
+	.home .nntm-main-nav .current_page_item > a,
+	.home .nntm-main-nav .current-menu-ancestor > a,
+	.home .nntm-main-nav .current_page_ancestor > a {
+		font-family: var(--nntm-font-sans);
+		font-size: 16px;
+		font-weight: 400;
+		line-height: 29px;
+		color: var(--nntm-muc-nhat);
+	}
+
+	.home .nntm-main-nav .current-menu-item > a,
+	.home .nntm-main-nav .current_page_item > a,
+	.home .nntm-main-nav .current-menu-ancestor > a,
+	.home .nntm-main-nav .current_page_ancestor > a {
+		font-weight: 700;
+		font-size: 15px;
+		line-height: 1;
+		color: var(--nntm-kem);
+	}
+
+	.home .nntm-header__tools {
+		flex: 0 0 430px;
+		width: 430px;
+		height: 46px;
+		gap: 5px;
+	}
+
+	.home .nntm-header__search-form {
+		flex: 0 0 263px;
+		width: 263px;
+		height: 46px;
+		gap: 10px;
+		padding-inline: 10px;
+	}
+
+	.home .nntm-header__search-submit,
+	.home .nntm-header__search-submit svg {
+		width: 30px;
+		height: 30px;
+	}
+
+	.home .nntm-header__search-field,
+	.home .nntm-header__login,
+	.home .nntm-lang-select__toggle {
+		font-family: var(--nntm-font-sans);
+		font-size: 14px;
+	}
+
+	.home .nntm-header--guest .nntm-header__lang,
+	.home .nntm-header--auth .nntm-header__lang,
+	.home .nntm-lang-select__toggle {
+		width: 36px;
+		min-width: 36px;
+		height: 36px;
+		padding: 0;
+	}
+
+	.home .nntm-lang-select__toggle svg {
+		display: none;
+	}
+
+	/* ===== HERO / BANNER — node 6376:6325 ===== */
+	.home .nntm-hero-slider__stage {
+		height: 768px;
+		aspect-ratio: auto;
+		background: var(--nntm-xam);
+	}
+
+	.home .nntm-hero-slider__img {
+		object-fit: cover;
+		object-position: center 64%;
+	}
+
+	.home .nntm-hero-slider__overlay {
+		background-color: rgba(0, 0, 0, 0.1);
+		background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 15%, rgba(255, 255, 255, 0) 100%);
+	}
+
+	.home .nntm-hero-slider__nav {
+		display: none;
+	}
+
+	.home .nntm-hero-slider__content {
+		left: 93px;
+		right: auto;
+		top: 232px;
+		width: 809px;
+		max-width: 809px;
+		gap: 20px;
+	}
+
+	.home .nntm-hero-slider__heading {
+		font-family: var(--nntm-font-display);
+		font-size: 58px;
+		font-weight: 600;
+		line-height: 68px;
+		letter-spacing: 0;
+		color: var(--nntm-trang);
+		max-width: 809px;
+	}
+
+	.home .nntm-hero-slider__text {
+		font-family: var(--nntm-font-sans);
+		font-size: 18px;
+		font-weight: 400;
+		line-height: 24px;
+		letter-spacing: 0;
+		color: var(--nntm-trang);
+		max-width: 809px;
+	}
+
+	.home .nntm-hero-slider__cta {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 66px;
+		height: 43px;
+		padding: 0;
+		box-sizing: border-box;
+		font-family: var(--nntm-font-sans);
+		font-size: 13px;
+		font-weight: 700;
+		line-height: normal;
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+
+	.home .nntm-hero-slider__dots {
+		left: 93px;
+		top: 525px;
+		height: 12px;
+		gap: 8px;
+	}
+
+	.home .nntm-hero-slider__dot {
+		width: 8px;
+		height: 8px;
+		background-color: var(--nntm-reu);
+		opacity: 1;
+		transform: none;
+	}
+
+	.home .nntm-hero-slider__dot.is-active {
+		width: 12px;
+		height: 12px;
+		background-color: var(--nntm-trang);
+		transform: none;
+	}
+
+	.home .nntm-hero-slider__quicklinks {
+		left: 83px;
+		bottom: 20px;
+		gap: 10px;
+		max-width: 855px;
+	}
+
+	.home .nntm-hero-slider__quicklink {
+		height: 45px;
+		min-height: 45px;
+		padding: 10px;
+		box-sizing: border-box;
+		border: 1px solid var(--nntm-reu-nhat);
+		font-family: var(--nntm-font-sans);
+		font-size: 14px;
+		font-weight: 400;
+		line-height: 25px;
+	}
+
+
+	.home .nntm-hero-slider__quicklink:nth-child(1) { width: 112px; }
+	.home .nntm-hero-slider__quicklink:nth-child(2) { width: 101px; }
+	.home .nntm-hero-slider__quicklink:nth-child(3) { width: 75px; }
+	.home .nntm-hero-slider__quicklink:nth-child(4) { width: 87px; }
+
+	.home .nntm-hero-slider__sidecard {
+		left: 958px;
+		right: auto;
+		top: 577px;
+		bottom: auto;
+		width: 388px;
+		height: 162px;
+		box-sizing: border-box;
+		padding: 20px;
+		gap: 0;
+		border-radius: 0;
+		background: rgba(247, 241, 222, 0.2);
+		backdrop-filter: blur(5px);
+		-webkit-backdrop-filter: blur(5px);
+	}
+
+	.home .nntm-hero-slider__sidecard-heading {
+		font-family: var(--nntm-font-sans);
+		font-size: 16px;
+		font-weight: 700;
+		line-height: 22px;
+		color: var(--nntm-trang);
+		margin-bottom: 5px;
+	}
+
+	.home .nntm-hero-slider__sidecard-text {
+		font-family: var(--nntm-font-serif);
+		font-size: 15px;
+		font-style: italic;
+		font-weight: 400;
+		line-height: 22px;
+		color: var(--nntm-kem);
+		margin-bottom: 8px;
+	}
+
+	.home .nntm-hero-slider__sidecard-cta {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 76px;
+		height: 43px;
+		padding: 0;
+		box-sizing: border-box;
+		font-family: var(--nntm-font-sans);
+		font-size: 13px;
+		font-weight: 700;
+		line-height: normal;
+		color: var(--nntm-trang);
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+
+	/* ===== FEATURED MOSAIC — node 6588:9007 ===== */
+	.home .nntm-article-mosaic--lead-tall.nntm-article-mosaic--phai-mosaic {
+		height: 870px;
+		background: var(--nntm-kem);
+		box-sizing: border-box;
+	}
+
+	.home .nntm-article-mosaic--lead-tall.nntm-article-mosaic--phai-mosaic .nntm-article-mosaic__inner {
+		height: 870px;
+		padding: 30px 70px;
+		gap: 0;
+		box-sizing: border-box;
+		background: var(--nntm-kem);
+		position: relative;
+	}
+
+	.home .nntm-article-mosaic--lead-tall.nntm-article-mosaic--phai-mosaic .nntm-article-mosaic__content {
+		width: 1200px;
+		padding: 10px;
+		box-sizing: border-box;
+		margin-inline: auto;
+	}
+
+	.home .nntm-article-mosaic--lead-tall.nntm-article-mosaic--phai-mosaic .nntm-article-mosaic__list {
+		width: 1180px;
+		height: 702px;
+		grid-template-columns: 349px 811px;
+		gap: 20px;
+		align-items: flex-start;
+	}
+
+	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__lead {
+		width: 349px;
+		height: 702px;
+		border-radius: 20px;
+		overflow: visible;
+	}
+
+	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__lead-img--tall {
+		width: 349px;
+		height: 541px;
+		aspect-ratio: auto;
+		border-radius: 0;
+	}
+
+	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__lead-body {
+		gap: 10px;
+		padding-top: 10px;
+	}
+
+	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__lead-text {
+		gap: 15px;
+		padding-bottom: 10px;
+	}
+
+	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__lead-title {
+		font-size: 38px;
+		font-weight: 600;
+		line-height: 44px;
+		color: var(--nntm-muc);
+	}
+
+	.home .nntm-article-mosaic__card-cta,
+	.home .nntm-article-mosaic__viewall {
+		font-family: var(--nntm-font-sans);
+		font-size: 13px;
+		font-weight: 700;
+		line-height: normal;
+	}
+
+	.home .nntm-article-mosaic__card-cta {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 66px;
+		height: 43px;
+		padding: 0;
+		box-sizing: border-box;
+		color: var(--nntm-muc);
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+
+	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__secondary {
+		width: 811px;
+		height: 663px;
+		padding-inline: 20px;
+		box-sizing: border-box;
+		gap: 0;
+	}
+
+	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__medium-row {
+		width: 771px;
+		height: 381px;
+		gap: 35px;
+		align-items: flex-start;
+	}
+
+	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__medium-card {
+		flex: 0 0 370px;
+		width: 370px;
+		gap: 12px;
+	}
+
+	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__medium-body,
+	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__small-body {
+		gap: 0;
+	}
+
+	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__medium-img,
+	.home .nntm-article-mosaic--lead-tall.nntm-article-mosaic--phai-mosaic .nntm-article-mosaic__medium-img {
+		width: 370px;
+		height: 265.684px;
+		aspect-ratio: auto;
+	}
+
+	.home .nntm-article-mosaic__medium-title,
+	.home .nntm-article-mosaic__small-title {
+		font-family: var(--nntm-font-sans);
+		font-size: 18px;
+		font-weight: 700;
+		line-height: 30px;
+		letter-spacing: 0;
+		color: var(--nntm-reu);
+	}
+
+	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__small-row {
+		width: 771px;
+		gap: 0;
+		justify-content: space-between;
+		align-items: flex-start;
+	}
+
+	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__small-card {
+		flex: 0 0 227px;
+		width: 227px;
+		height: 282px;
+		gap: 10px;
+	}
+
+	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__small-img,
+	.home .nntm-article-mosaic--lead-tall.nntm-article-mosaic--phai-mosaic .nntm-article-mosaic__small-img {
+		width: 227px;
+		height: 163px;
+		aspect-ratio: auto;
+	}
+
+	.home .nntm-article-mosaic__small-title {
+		height: 60px;
+		min-height: 60px;
+	}
+
+	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__viewall-wrap {
+		position: absolute;
+		left: 0;
+		/* Figma: CTA is y=742 inside CONTENT, whose own y=30 inside SECTION.
+		 * The absolute containing block here is SECTION/inner, so use 30+742. */
+		top: 772px;
+		width: 100%;
+		margin: 0;
+	}
+
+	.home .nntm-article-mosaic__viewall {
+		width: 114px;
+		height: 53px;
+		padding: 0;
+		box-sizing: border-box;
+		border: 1px solid var(--nntm-reu);
+		color: var(--nntm-reu);
+		border-radius: 0;
+	}
+
+	/* ===== ARTICLE FEATURE — node 6376:6467 ===== */
+	.home .nntm-article-feature {
+		height: 1005px;
+		padding: 60px 70px 0;
+		box-sizing: border-box;
+		background: var(--nntm-trang);
+	}
+
+	.home .nntm-article-feature__inner {
+		position: relative;
+		width: 1180px;
+		height: 945px;
+		max-width: 1180px;
+		margin-inline: auto;
+		display: grid;
+		grid-template-columns: 618px 532px;
+		column-gap: 30px;
+		align-items: center;
+		padding: 0;
+	}
+
+	.home .nntm-article-feature__quote {
+		left: -70px;
+		top: -13px;
+		width: 69px;
+		height: 51px;
+	}
+
+	.home .nntm-article-feature__text {
+		width: 618px;
+		height: 821px;
+		align-self: center;
+		padding: 0;
+		gap: 0;
+	}
+
+	.home .nntm-article-feature__title {
+		font-size: 38px;
+		font-weight: 600;
+		line-height: 44px;
+		color: var(--nntm-muc);
+	}
+
+	.home .nntm-article-feature__attribution {
+		margin-top: 10px;
+		font-family: var(--nntm-font-serif);
+		font-size: 15px;
+		font-style: italic;
+		font-weight: 400;
+		line-height: 22px;
+		color: var(--nntm-reu);
+	}
+
+	.home .nntm-article-feature__box {
+		width: 618px;
+		height: 659px;
+		margin-top: 20px;
+		padding: 30px;
+		gap: 10px;
+		box-sizing: border-box;
+		background: var(--nntm-kem);
+	}
+
+	.home .nntm-article-feature__body,
+	.home .nntm-article-feature__body > p {
+		font-family: var(--nntm-font-serif);
+		font-size: 18px;
+		font-weight: 400;
+		line-height: 26px;
+		color: var(--nntm-muc);
+	}
+
+	.home .nntm-article-feature__body {
+		flex: 0 0 546px;
+		width: 558px;
+		height: 546px;
+		max-width: 558px;
+		overflow: hidden;
+	}
+
+	.home .nntm-article-feature__cta {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 58px;
+		height: 43px;
+		flex: 0 0 43px;
+		margin-top: 0;
+		padding: 0;
+		box-sizing: border-box;
+		font-family: var(--nntm-font-sans);
+		font-size: 13px;
+		font-weight: 700;
+		line-height: normal;
+		color: var(--nntm-trang-lanh);
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+
+	.home .nntm-article-feature__media-link {
+		position: relative;
+		width: 532px;
+		height: 945px;
+		align-self: stretch;
+	}
+
+	.home .nntm-article-feature__media {
+		position: absolute;
+		top: 66px;
+		left: 0;
+		width: 532px;
+		height: 819px;
+		aspect-ratio: auto;
+	}
+
+	.home .nntm-article-feature__img-el {
+		width: 532px;
+		height: 819px;
+		object-fit: cover;
+	}
+
+	/* ===== GÓT SON / XUYÊN VẠN KIẾP — node 6376:6399 ===== */
+	.home .nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) {
+		height: 544px;
+		margin-top: 56px;
+		position: relative;
+		z-index: 2;
+	}
+
+	.home .nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) > .nntm-card-list__band {
+		height: 544px;
+		padding: 0;
+		box-sizing: border-box;
+		background: var(--nntm-den);
+	}
+
+	.home .nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) > .nntm-card-list__band > .nntm-container {
+		width: 1366px;
+		height: 544px;
+		max-width: none;
+		padding: 0;
+		position: relative;
+	}
+
+	.home .nntm-card-list__heading-above {
+		height: 68px;
+		padding-inline: 93px;
+		font-size: 58px;
+		font-weight: 600;
+		line-height: 68px;
+		color: var(--nntm-den);
+		background: transparent;
+	}
+
+	.home .nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) .nntm-card-list__header-row {
+		height: 68px;
+	}
+
+	.home .nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) .nntm-card-list__heading {
+		height: 68px;
+		margin: 0;
+		padding-left: 200px;
+		font-size: 58px;
+		font-weight: 600;
+		line-height: 68px;
+		color: var(--nntm-trang-lanh);
+	}
+
+	.home .nntm-card-list--nen-toi .nntm-card-list__yt-marquee {
+		padding-left: 73px;
+		margin-top: 45px;
+		overflow: hidden;
+	}
+
+	.home .nntm-card-list--nen-toi .nntm-card-list__yt-track {
+		gap: 20px;
+		--nntm-home-yt-loop-offset: 10px;
+		animation: nntm-home-yt-marquee var(--nntm-yt-duration, 40s) linear infinite;
+		animation-delay: 600ms;
+	}
+
+	.home .nntm-card-list--nen-toi .nntm-card-list__yt-cell {
+		flex: 0 0 388px;
+		width: 388px;
+		height: 360px;
+		padding: 20px;
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		gap: 15px;
+		background: rgba(0, 0, 0, 0.5);
+		backdrop-filter: blur(5px);
+		-webkit-backdrop-filter: blur(5px);
+		overflow: hidden;
+	}
+
+	.home .nntm-card-list--nen-toi .nntm-card-list__yt-item {
+		flex: 0 0 203px;
+		width: 348px;
+		height: 203px;
+		border-radius: 0;
+		box-shadow: none;
+		background: transparent;
+	}
+
+	.home .nntm-card-list--nen-toi .nntm-card-list__yt-media {
+		width: 348px;
+		height: 203px;
+		aspect-ratio: auto;
+	}
+
+	.home .nntm-card-list__yt-thumb {
+		object-fit: cover;
+	}
+
+	/* The overlay itself must keep covering the whole media box. Previously
+	 * width/height:75px was applied to BOTH overlay and SVG, which pinned the
+	 * play button to the top-left. Only the glyph is 75x75 in Figma. */
+	.home .nntm-card-list__yt-play {
+		inset: 0;
+		width: auto;
+		height: auto;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 2;
+		pointer-events: none;
+	}
+
+	.home .nntm-card-list__yt-play svg {
+		width: 75px;
+		height: 75px;
+		filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.18));
+	}
+
+	.home .nntm-card-list__yt-frame {
+		z-index: 1;
+	}
+
+	.home .nntm-card-list--nen-toi .nntm-card-list__yt-title {
+		font-family: var(--nntm-font-sans);
+		font-size: 18px;
+		font-weight: 700;
+		line-height: 30px;
+		letter-spacing: 0;
+		text-transform: none;
+		color: var(--nntm-trang);
+		max-width: 348px;
+		-webkit-line-clamp: 2;
+	}
+
+	.home .nntm-card-list__caption-below {
+		top: calc(100% + 10px);
+		width: 1082px;
+		max-width: 1082px;
+		padding: 0 134px;
+		box-sizing: border-box;
+		font-family: var(--nntm-font-serif);
+		font-size: 18px;
+		font-style: italic;
+		font-weight: 400;
+		line-height: 26px;
+		letter-spacing: 0;
+		color: var(--nntm-muc); /* Figma #3F3B3B */
+		background: var(--nntm-trang);
+	}
+
+	/* ===== ENGINEERING EARTH — node 6376:6412 ===== */
+	.home .nntm-engineering-earth--homepage-figma {
+		position: relative;
+		width: 1180px;
+		height: 714px;
+		margin: 80px auto 0;
+		overflow: visible;
+		background: var(--nntm-trang);
+	}
+
+	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__white {
+		position: static;
+		width: 100%;
+		height: 100%;
+		min-height: 0;
+		padding: 0;
+		background: var(--nntm-trang);
+	}
+
+	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__heading-group {
+		position: absolute;
+		left: 40px;
+		top: 60px;
+		width: 1100px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 10px;
+		text-align: center;
+		transform: none;
+		z-index: 2;
+	}
+
+	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__heading {
+		width: 100%;
+		font-family: var(--nntm-font-display);
+		font-size: 58px;
+		font-weight: 600;
+		line-height: 68px;
+		letter-spacing: 0;
+		color: var(--nntm-reu); /* Figma #747766 */
+	}
+
+	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__subheading {
+		font-family: var(--nntm-font-serif);
+		font-size: 18px;
+		font-weight: 400;
+		line-height: 26px;
+		color: var(--nntm-reu);
+	}
+
+	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__band {
+		position: absolute;
+		left: 50%;
+		top: 174px;
+		width: 1366px;
+		height: 418px;
+		padding: 60px 140px;
+		box-sizing: border-box;
+		transform: translateX(-50%);
+		background: var(--nntm-den);
+	}
+
+	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__band-inner {
+		width: 1156px;
+		height: 298px;
+		display: flex;
+		align-items: flex-start;
+		gap: 20px;
+		position: relative;
+		margin: 0;
+		padding: 0;
+		max-width: none;
+	}
+
+	.home .nntm-engineering-earth__figma-main {
+		flex: 0 0 590px;
+		width: 590px;
+		height: 298px;
+		display: block;
+		border-radius: 0;
+		box-shadow: 0 20px 40px rgba(116, 119, 102, 0.2);
+		overflow: hidden;
+	}
+
+	.home .nntm-engineering-earth__figma-main img {
+		width: 590px;
+		height: 298px;
+		object-fit: cover;
+	}
+
+	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__band-text {
+		position: static;
+		width: 546px;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 10px;
+		padding: 0;
+		margin: 0;
+	}
+
+	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__band-title {
+		font-size: 52px;
+		font-weight: 600;
+		line-height: 60px;
+		color: var(--nntm-trang);
+	}
+
+	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__band-subtitle {
+		font-family: var(--nntm-font-serif);
+		font-size: 15px;
+		font-style: italic;
+		font-weight: 400;
+		line-height: 22px;
+		color: var(--nntm-kem);
+	}
+
+	.home .nntm-engineering-earth__caption {
+		position: absolute;
+		left: 40px;
+		top: 612px;
+		width: 590px;
+		font-family: var(--nntm-font-serif);
+		font-size: 18px;
+		font-weight: 400;
+		line-height: 26px;
+		color: var(--nntm-muc);
+	}
+
+	.home .nntm-engineering-earth__figma-pip {
+		position: absolute;
+		left: 772px;
+		top: 421px;
+		width: 388px;
+		height: 243px;
+		padding: 20px;
+		box-sizing: border-box;
+		background: rgba(0, 0, 0, 0.7);
+		backdrop-filter: blur(5px);
+		-webkit-backdrop-filter: blur(5px);
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+		z-index: 3;
+	}
+
+	.home .nntm-engineering-earth__figma-pip img {
+		width: 348px;
+		height: 203px;
+		object-fit: cover;
+	}
+
+	.home .nntm-engineering-earth__figma-main:focus-visible,
+	.home .nntm-engineering-earth__figma-pip:focus-visible {
+		outline: 2px solid var(--nntm-kem);
+		outline-offset: 3px;
+	}
+
+	/* ===== HOẠT ĐỘNG - SỰ KIỆN — node 6585:8120 ===== */
+	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid {
+		height: 816px;
+		margin-top: 56px;
+		box-sizing: border-box;
+		background: var(--nntm-trang);
+	}
+
+	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid .nntm-article-mosaic__inner {
+		height: 816px;
+		padding: 30px 80px;
+		gap: 20px;
+		box-sizing: border-box;
+		background: var(--nntm-trang);
+	}
+
+	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid .nntm-article-mosaic__heading {
+		width: 1180px;
+		height: 68px;
+		margin-inline: auto;
+		font-size: 58px;
+		font-weight: 600;
+		line-height: 68px;
+		color: var(--nntm-reu);
+	}
+
+	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid .nntm-article-mosaic__content {
+		width: 1200px;
+		padding: 10px;
+		box-sizing: border-box;
+		margin-inline: auto;
+	}
+
+	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid .nntm-article-mosaic__list {
+		width: 1180px;
+		height: 565px;
+		grid-template-columns: 349px 811px;
+		gap: 20px;
+		align-items: flex-start;
+	}
+
+	.home .nntm-article-mosaic--lead-short .nntm-article-mosaic__lead {
+		width: 349px;
+		height: 565px;
+		border-radius: 20px;
+		overflow: visible;
+	}
+
+	.home .nntm-article-mosaic--lead-short .nntm-article-mosaic__lead-img--short {
+		width: 349px;
+		height: 233.67px;
+		aspect-ratio: auto;
+	}
+
+	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid .nntm-article-mosaic__lead-body {
+		flex: 0 0 274px;
+		height: 274px;
+		padding-top: 30px;
+		gap: 10px;
+		box-sizing: border-box;
+	}
+
+	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid .nntm-article-mosaic__lead-text {
+		flex: 0 0 191px;
+		height: 191px;
+		box-sizing: border-box;
+	}
+
+	.home .nntm-article-mosaic--lead-short .nntm-article-mosaic__lead-title {
+		font-size: 38px;
+		font-weight: 600;
+		line-height: 44px;
+		color: var(--nntm-muc);
+	}
+
+	.home .nntm-article-mosaic--lead-short .nntm-article-mosaic__lead-excerpt {
+		font-family: var(--nntm-font-serif);
+		font-size: 18px;
+		font-weight: 400;
+		line-height: 26px;
+		color: var(--nntm-reu);
+	}
+
+	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid .nntm-article-mosaic__secondary {
+		width: 811px;
+		height: 564px;
+		padding-inline: 20px;
+		box-sizing: border-box;
+	}
+
+	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid .nntm-article-mosaic__grid {
+		width: 771px;
+		height: 564px;
+		grid-template-columns: repeat(3, 227px);
+		grid-template-rows: repeat(2, 282px);
+		column-gap: 40px;
+		row-gap: 0;
+	}
+
+	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid .nntm-article-mosaic__small-card {
+		width: 227px;
+		height: 282px;
+		min-height: 282px;
+		gap: 10px;
+	}
+
+	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid .nntm-article-mosaic__small-img {
+		width: 227px;
+		height: 163px;
+		aspect-ratio: auto;
+	}
+
+	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid .nntm-article-mosaic__viewall-wrap {
+		margin-top: 0;
+	}
+
+	/* ===== GITA — node 6376:6450 ===== */
+	.home .nntm-card-list--nen-cam {
+		height: 666px;
+		box-sizing: border-box;
+	}
+
+	.home .nntm-card-list--nen-cam > .nntm-card-list__band {
+		height: 666px;
+		padding: 50px;
+		box-sizing: border-box;
+		background: var(--nntm-cam);
+	}
+
+	.home .nntm-card-list--nen-cam > .nntm-card-list__band > .nntm-container {
+		width: 1266px;
+		height: 566px;
+		max-width: 1266px;
+		padding: 0;
+		position: relative;
+	}
+
+	.home .nntm-card-list--nen-cam .nntm-card-list__header-row {
+		width: 1266px;
+		justify-content: center;
+	}
+
+	.home .nntm-card-list--nen-cam .nntm-card-list__heading,
+	.home .nntm-card-list--nen-cam .nntm-card-list__subheading {
+		width: 1266px;
+		padding: 0;
+		text-align: center;
+		color: var(--nntm-kem);
+		box-sizing: border-box;
+	}
+
+	.home .nntm-card-list--nen-cam .nntm-card-list__heading {
+		margin: 0 0 10px;
+		font-size: 52px;
+		font-weight: 600;
+		line-height: 60px;
+	}
+
+	.home .nntm-card-list--nen-cam .nntm-card-list__subheading {
+		margin: 0 0 30px;
+		font-family: var(--nntm-font-serif);
+		font-size: 18px;
+		font-weight: 400;
+		line-height: 26px;
+	}
+
+	.home .nntm-card-list--nen-cam .nntm-card-list__yt-marquee {
+		width: calc(100% + 100px);
+		margin-left: -50px;
+		padding-left: 90px;
+		overflow: hidden;
+	}
+
+	.home .nntm-card-list--nen-cam .nntm-card-list__yt-track {
+		gap: 20px;
+		--nntm-home-yt-loop-offset: 10px;
+		animation: nntm-home-yt-marquee var(--nntm-yt-duration, 40s) linear infinite;
+		animation-delay: 600ms;
+	}
+
+	/* The homepage animation shorthand above resets animation-play-state.
+	 * Re-assert pause after the shorthand with higher specificity so hovering
+	 * a previewing iframe really freezes the marquee under the pointer. */
+	.home .nntm-card-list__yt-marquee:hover > .nntm-card-list__yt-track,
+	.home .nntm-card-list__yt-marquee:focus-within > .nntm-card-list__yt-track {
+		animation-play-state: paused;
+	}
+
+	.home .nntm-card-list--nen-cam .nntm-card-list__yt-cell--framed {
+		flex: 0 0 388px;
+		width: 388px;
+		height: 360px;
+	}
+
+	.home .nntm-card-list--nen-cam .nntm-card-list__yt-item--framed {
+		width: 388px;
+		height: 360px;
+		min-height: 360px;
+		padding: 20px;
+		gap: 15px;
+		box-sizing: border-box;
+		border-radius: 0;
+		background: var(--nntm-den);
+		box-shadow: none;
+	}
+
+	.home .nntm-card-list--nen-cam .nntm-card-list__yt-cell--framed:first-child .nntm-card-list__yt-item--framed {
+		background: rgba(0, 0, 0, 0.7);
+		backdrop-filter: blur(5px);
+		-webkit-backdrop-filter: blur(5px);
+	}
+
+	.home .nntm-card-list--nen-cam .nntm-card-list__yt-media {
+		width: 348px;
+		height: 203px;
+		aspect-ratio: auto;
+	}
+
+	.home .nntm-card-list--nen-cam .nntm-card-list__yt-title {
+		font-family: var(--nntm-font-sans);
+		font-size: 18px;
+		font-weight: 700;
+		line-height: 30px;
+		letter-spacing: 0;
+		text-transform: none;
+		color: var(--nntm-trang);
+		max-width: 348px;
+		-webkit-line-clamp: 3;
+	}
+
+	.home .nntm-card-list--nen-cam .nntm-card-list__icons {
+		height: 50px;
+		min-height: 50px;
+		margin-top: 30px;
+		gap: 30px;
+	}
+
+	.home .nntm-card-list--nen-cam .nntm-card-list__icon--spotify,
+	.home .nntm-card-list--nen-cam .nntm-card-list__icon--spotify svg {
+		width: 50px;
+		height: 50px;
+	}
+
+	.home .nntm-card-list--nen-cam .nntm-card-list__icon--youtube,
+	.home .nntm-card-list--nen-cam .nntm-card-list__icon--youtube svg {
+		width: 60px;
+		height: 47px;
+	}
+
+	/* ===== FOOTER — node 6376:6324 =====
+	 * Match the Figma hierarchy instead of faking the 50px parent gap across
+	 * three siblings. In Figma the 50px gap is between SHARE and SUB; the
+	 * rule + bottom row live together inside SUB with a 21px row gap.
+	 */
+	.home .nntm-footer {
+		height: 299.25px;
+		padding: 20px;
+		box-sizing: border-box;
+		background: var(--nntm-den);
+		margin-top: 0;
+	}
+
+	.home .nntm-footer__bar {
+		width: 1326px;
+		height: 259.25px;
+		max-width: none;
+		margin: 0;
+		padding: 20px;
+		box-sizing: border-box;
+		background: var(--nntm-muc-nhat);
+	}
+
+	.home .nntm-footer__inner {
+		width: 1286px;
+		max-width: 1286px;
+		height: auto;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 50px;
+	}
+
+	.home .nntm-footer__share-row {
+		width: 100%;
+		padding-top: 30px;
+		box-sizing: border-box;
+		display: flex;
+		align-items: flex-start;
+	}
+
+	.home .nntm-footer__share {
+		min-height: 44px;
+		margin: 0;
+		padding: 0;
+		gap: 10px;
+		flex-wrap: nowrap;
+		font-family: var(--nntm-font-display);
+		font-size: 38px;
+		font-weight: 600;
+		line-height: 44px;
+		color: var(--nntm-vien);
+	}
+
+	.home .nntm-footer__share-link {
+		min-height: 0;
+		padding: 5px 20px;
+		border-radius: 5px;
+		background: var(--nntm-vien);
+		box-shadow: 0 5px 30px rgba(116, 119, 102, 0.2);
+		font-family: var(--nntm-font-sans);
+		font-size: 23px;
+		font-style: normal;
+		font-weight: 700;
+		line-height: normal;
+		color: var(--nntm-reu);
+	}
+
+	.home .nntm-footer__sub {
+		width: 100%;
+		padding: 10px;
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.home .nntm-footer__sub-content {
+		width: 100%;
+		display: flex;
+		flex-wrap: wrap;
+		align-content: center;
+		align-items: center;
+		justify-content: space-between;
+		/* Figma row-gap is 21px with a zero-height line; our 1px CSS border
+		 * consumes one pixel, so 20px yields the same 21px visual separation. */
+		row-gap: 20px;
+	}
+
+	.home .nntm-footer__rule {
+		flex: 0 0 1225px;
+		width: 1225px;
+		height: 0;
+		margin: 0;
+		border: 0;
+		border-top: 1px solid var(--nntm-reu-dam);
+	}
+
+	.home .nntm-footer__row {
+		flex: 0 0 1226px;
+		width: 1226px;
+		height: 46.25px;
+		min-height: 46.25px;
+		margin: 0;
+		gap: 0;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.home .nntm-footer__left {
+		flex: 0 0 667.5px;
+		width: 667.5px;
+		display: flex;
+		align-items: center;
+		gap: 20px;
+	}
+
+	.home .nntm-footer__logo {
+		flex: 0 0 143px;
+		width: 143px;
+		height: 46.25px;
+		min-height: 46.25px;
+		justify-content: center;
+		font-size: 20px;
+		line-height: 1.05;
+	}
+
+	.home .nntm-footer__logo-line {
+		transform: scaleX(1.29);
+		transform-origin: center;
+	}
+
+	.home .nntm-footer__nav {
+		flex: 0 0 auto;
+		min-width: 0;
+	}
+
+	.home .nntm-footer-nav {
+		gap: 10px;
+		flex-wrap: nowrap;
+	}
+
+	.home .nntm-footer-nav a,
+	.home .nntm-footer__copyright {
+		font-family: var(--nntm-font-sans);
+		font-size: 16px;
+		font-weight: 400;
+		line-height: 22px;
+		color: var(--nntm-vien);
+	}
+}
+
+/* ---------- Responsive safety (Figma has no tablet/mobile source frames) ---------- */
+@media (max-width: 1024px) {
+	.home .nntm-engineering-earth--homepage-figma {
+		width: 100%;
+		height: auto;
+		margin-top: 40px;
+		padding: 0 20px 40px;
+		box-sizing: border-box;
+	}
+
+	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__white,
+	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__heading-group,
+	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__band,
+	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__band-inner,
+	.home .nntm-engineering-earth__caption,
+	.home .nntm-engineering-earth__figma-pip {
+		position: static;
+		width: 100%;
+		height: auto;
+		transform: none;
+	}
+
+	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__heading-group {
+		padding: 40px 0 30px;
+	}
+
+	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__band {
+		padding: 40px 20px;
+	}
+
+	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__band-inner {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 24px;
+	}
+
+	.home .nntm-engineering-earth__figma-main,
+	.home .nntm-engineering-earth__figma-main img {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 590 / 298;
+	}
+
+	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__band-text {
+		width: 100%;
+	}
+
+	.home .nntm-engineering-earth__figma-pip {
+		max-width: 388px;
+		margin: -20px 20px 0 auto;
+		padding: 20px;
+	}
+
+	.home .nntm-engineering-earth__figma-pip img {
+		width: 100%;
+		height: auto;
+	}
+
+	.home .nntm-engineering-earth__caption {
+		padding: 24px 0 0;
+	}
+
+	.home .nntm-card-list__caption-below {
+		box-sizing: border-box;
+	}
+}
+
+
+/* =============================================================
+   HOMEPAGE MOTION / HOVER POLISH
+   - Continuous marquee stays GPU-only (transform) and loops on the exact
+     beginning of the duplicated half, including half the 20px seam gap.
+   - Hover motion is intentionally subtle so the moving track does not jump.
+   ============================================================= */
+@keyframes nntm-home-yt-marquee {
+	from {
+		transform: translate3d(0, 0, 0);
+	}
+	to {
+		transform: translate3d(calc(-50% - var(--nntm-home-yt-loop-offset, 0px)), 0, 0);
+	}
+}
+
+@media (min-width: 1366px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+	.home .nntm-card-list__yt-cell,
+	.home .nntm-article-mosaic__lead,
+	.home .nntm-article-mosaic__medium-card,
+	.home .nntm-article-mosaic__small-card,
+	.home .nntm-engineering-earth__figma-main,
+	.home .nntm-engineering-earth__figma-pip {
+		transition:
+			transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+			box-shadow 420ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.home .nntm-card-list__yt-item {
+		transform-origin: center;
+		backface-visibility: hidden;
+		will-change: transform;
+		transition:
+			transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+			box-shadow 420ms cubic-bezier(0.22, 1, 0.36, 1),
+			background-color 320ms ease;
+	}
+
+	.home .nntm-card-list__yt-thumb,
+	.home .nntm-article-mosaic__img-el,
+	.home .nntm-article-feature__img-el,
+	.home .nntm-engineering-earth__figma-main img,
+	.home .nntm-engineering-earth__figma-pip img {
+		transition:
+			opacity 320ms ease,
+			transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+			filter 420ms ease;
+	}
+
+	.home .nntm-card-list__yt-play svg {
+		transform: scale(1);
+		transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1), opacity 280ms ease;
+	}
+
+	.home .nntm-card-list__yt-cell:has(.nntm-card-list__yt-item:hover),
+	.home .nntm-card-list__yt-cell:has(.nntm-card-list__yt-item:focus-visible) {
+		transform: translateY(-5px);
+	}
+
+	.home .nntm-card-list__yt-item:hover,
+	.home .nntm-card-list__yt-item:focus-visible,
+	.home .nntm-card-list__yt-item.is-playing {
+		transform: scale(1.025);
+		box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+	}
+
+	.home .nntm-card-list__yt-item:hover .nntm-card-list__yt-thumb,
+	.home .nntm-card-list__yt-item:focus-visible .nntm-card-list__yt-thumb {
+		transform: scale(1.04);
+		filter: saturate(1.035) contrast(1.02);
+	}
+
+	.home .nntm-card-list__yt-item:hover .nntm-card-list__yt-play svg,
+	.home .nntm-card-list__yt-item:focus-visible .nntm-card-list__yt-play svg {
+		transform: scale(1.045);
+	}
+
+	.home .nntm-article-mosaic__lead:hover,
+	.home .nntm-article-mosaic__medium-card:hover,
+	.home .nntm-article-mosaic__small-card:hover {
+		transform: translateY(-4px);
+	}
+
+	.home .nntm-article-mosaic__lead:hover .nntm-article-mosaic__img-el,
+	.home .nntm-article-mosaic__medium-card:hover .nntm-article-mosaic__img-el,
+	.home .nntm-article-mosaic__small-card:hover .nntm-article-mosaic__img-el,
+	.home .nntm-article-feature__media-link:hover .nntm-article-feature__img-el,
+	.home .nntm-engineering-earth__figma-main:hover img,
+	.home .nntm-engineering-earth__figma-pip:hover img {
+		transform: scale(1.035);
+		filter: saturate(1.025) contrast(1.015);
+	}
+
+	.home .nntm-engineering-earth__figma-pip:hover,
+	.home .nntm-engineering-earth__figma-pip:focus-visible {
+		transform: translateY(-5px);
+		box-shadow: 0 16px 38px rgba(0, 0, 0, 0.24);
+	}
+
+	.home .nntm-article-mosaic__viewall,
+	.home .nntm-card-list__view-all,
+	.home .nntm-hero-slider__cta,
+	.home .nntm-hero-slider__sidecard-cta {
+		transition:
+			transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+			background-color 260ms ease,
+			color 260ms ease,
+			border-color 260ms ease,
+			box-shadow 260ms ease;
+	}
+
+	.home .nntm-article-mosaic__viewall:hover,
+	.home .nntm-article-mosaic__viewall:focus-visible,
+	.home .nntm-card-list__view-all:hover,
+	.home .nntm-card-list__view-all:focus-visible {
+		transform: translateY(-2px);
+		background: var(--nntm-reu);
+		color: var(--nntm-kem);
+		box-shadow: 0 10px 24px rgba(116, 119, 102, 0.2);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.home .nntm-card-list--nen-toi .nntm-card-list__yt-track,
+	.home .nntm-card-list--nen-cam .nntm-card-list__yt-track {
+		animation: none;
+	}
+
+	.home .nntm-card-list__yt-cell,
+	.home .nntm-card-list__yt-item,
+	.home .nntm-card-list__yt-thumb,
+	.home .nntm-article-mosaic__lead,
+	.home .nntm-article-mosaic__medium-card,
+	.home .nntm-article-mosaic__small-card,
+	.home .nntm-article-mosaic__img-el,
+	.home .nntm-engineering-earth__figma-main,
+	.home .nntm-engineering-earth__figma-pip,
+	.home .nntm-engineering-earth__figma-main img,
+	.home .nntm-engineering-earth__figma-pip img {
+		transition: none;
+		transform: none;
+	}
+}
+

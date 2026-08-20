@@ -9,7 +9,10 @@
 	"textdomain": "nntm",
 	"supports": {
 		"html": false,
-		"align": [ "wide", "full" ],
+		"align": [
+			"wide",
+			"full"
+		],
 		"customClassName": true
 	},
 	"attributes": {
@@ -19,21 +22,56 @@
 			"items": {
 				"type": "object",
 				"properties": {
-					"imageId": { "type": "number" },
-					"imageUrl": { "type": "string" },
-					"imageAlt": { "type": "string" },
-					"heading": { "type": "string" },
-					"text": { "type": "string" },
-					"showButton": { "type": "boolean", "default": false },
-					"buttonLabel": { "type": "string", "default": "Tham gia" }
+					"mediaType": {
+						"type": "string",
+						"default": "image"
+					},
+					"imageId": {
+						"type": "number"
+					},
+					"imageUrl": {
+						"type": "string"
+					},
+					"imageAlt": {
+						"type": "string"
+					},
+					"heading": {
+						"type": "string"
+					},
+					"text": {
+						"type": "string"
+					},
+					"showButton": {
+						"type": "boolean",
+						"default": false
+					},
+					"buttonLabel": {
+						"type": "string",
+						"default": "Tham gia"
+					}
 				}
 			}
 		},
-		"emblemId": { "type": "number", "default": 0 },
-		"emblemUrl": { "type": "string", "default": "" },
-		"emblemAlt": { "type": "string", "default": "" },
-		"autoplay": { "type": "boolean", "default": true },
-		"interval": { "type": "number", "default": 6 },
+		"emblemId": {
+			"type": "number",
+			"default": 0
+		},
+		"emblemUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"emblemAlt": {
+			"type": "string",
+			"default": ""
+		},
+		"autoplay": {
+			"type": "boolean",
+			"default": true
+		},
+		"interval": {
+			"type": "number",
+			"default": 6
+		},
 		"tranVien": {
 			"type": "boolean",
 			"default": false,

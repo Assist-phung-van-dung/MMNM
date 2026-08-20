@@ -1,0 +1,199 @@
+/* Hoa Khai — desktop reconciliation against Figma frame 6376:6603.
+ * Reference: design/figma/6376-6603@1x.png. Loaded only on /hoa-khai/.
+ */
+.nntm-main--full .nntm-page,
+.nntm-main--full .nntm-page__content { margin:0; padding:0; }
+
+@media (min-width:1025px) {
+  /* Frame stack: header 76 + news 811 + dharma 954 + publications 650 + footer 147 = 2638. */
+  .nntm-hk-news { height:811px; min-height:811px; background:#fff; overflow:hidden; }
+  .nntm-hk-news .nntm-article-mosaic__inner {
+    height:811px; max-width:1366px; padding:30px 93px 40px; gap:25px; box-sizing:border-box; background:#fff;
+  }
+  .nntm-hk-news .nntm-article-mosaic__heading,
+  .nntm-hk-dharma .nntm-article-mosaic__heading {
+    margin:0; height:68px; font-family:var(--nntm-font-display); font-size:52px; font-weight:600; line-height:68px; color:#747766;
+  }
+  .nntm-hk-news .nntm-article-mosaic__content,
+  .nntm-hk-dharma .nntm-article-mosaic__content { padding:0; }
+  .nntm-hk-news .nntm-article-mosaic__list { grid-template-columns:349px 811px; gap:20px; width:1180px; }
+  .nntm-hk-news .nntm-article-mosaic__lead { width:349px; }
+  .nntm-hk-news .nntm-article-mosaic__lead-img--short { width:349px; height:234px; aspect-ratio:auto; }
+  .nntm-hk-news .nntm-article-mosaic__lead-body { padding-top:30px; gap:10px; }
+  .nntm-hk-news .nntm-article-mosaic__lead-text { gap:15px; padding:0; }
+  .nntm-hk-news .nntm-article-mosaic__lead-title { font-size:38px; line-height:44px; font-weight:600; }
+  .nntm-hk-news .nntm-article-mosaic__lead-excerpt { font-size:18px; line-height:26px; color:#747766; }
+  .nntm-hk-news .nntm-article-mosaic__secondary { padding:0 20px; }
+  .nntm-hk-news .nntm-article-mosaic__grid { grid-template-columns:repeat(3,227px); column-gap:40px; row-gap:0; }
+  .nntm-hk-news .nntm-article-mosaic__small-card { width:227px; min-height:282px; gap:10px; }
+  .nntm-hk-news .nntm-article-mosaic__small-img { width:227px; height:163px; aspect-ratio:auto; }
+  .nntm-hk-news .nntm-article-mosaic__small-title,
+  .nntm-hk-news .nntm-article-mosaic__medium-title,
+  .nntm-hk-dharma .nntm-article-mosaic__small-title,
+  .nntm-hk-dharma .nntm-article-mosaic__medium-title {
+    min-height:60px; font-family:var(--nntm-font-sans); font-size:18px; font-weight:700; line-height:30px; color:#747766;
+  }
+  .nntm-hk-news .nntm-article-mosaic__card-cta,
+  .nntm-hk-dharma .nntm-article-mosaic__card-cta { font-size:13px; line-height:23px; font-weight:700; color:#333; }
+  .nntm-hk-news .nntm-article-mosaic__viewall-wrap { margin-top:auto; }
+  .nntm-hk-news .nntm-article-mosaic__viewall,
+  .nntm-hk-dharma .nntm-article-mosaic__viewall { width:114px; height:53px; padding:0; font-size:13px; font-weight:700; line-height:23px; }
+
+  .nntm-hk-dharma { height:954px; min-height:954px; background:#f7f1de; overflow:hidden; }
+  .nntm-hk-dharma .nntm-article-mosaic__inner {
+    height:954px; max-width:1366px; padding:30px 93px 49px; gap:22px; box-sizing:border-box; background:#f7f1de;
+  }
+  .nntm-hk-dharma .nntm-article-mosaic__list { grid-template-columns:349px 811px; gap:20px; width:1180px; }
+  .nntm-hk-dharma .nntm-article-mosaic__lead { width:349px; }
+  .nntm-hk-dharma .nntm-article-mosaic__lead-img--tall { width:349px; height:541px; aspect-ratio:auto; }
+  .nntm-hk-dharma .nntm-article-mosaic__lead-body { padding-top:10px; gap:10px; }
+  .nntm-hk-dharma .nntm-article-mosaic__lead-text { padding:0; gap:15px; }
+  .nntm-hk-dharma .nntm-article-mosaic__lead-title { font-size:38px; line-height:44px; font-weight:600; }
+  .nntm-hk-dharma .nntm-article-mosaic__secondary { padding:0 20px; gap:42px; }
+  .nntm-hk-dharma .nntm-article-mosaic__medium-row { gap:35px; }
+  .nntm-hk-dharma .nntm-article-mosaic__medium-card { flex:0 0 370px; width:370px; gap:12px; }
+  .nntm-hk-dharma .nntm-article-mosaic__medium-img { width:370px; height:266px; aspect-ratio:auto; }
+  .nntm-hk-dharma .nntm-article-mosaic__small-row { gap:45px; }
+  .nntm-hk-dharma .nntm-article-mosaic__small-card { flex:0 0 227px; width:227px; gap:10px; }
+  .nntm-hk-dharma .nntm-article-mosaic__small-img { width:227px; height:163px; aspect-ratio:auto; }
+  .nntm-hk-dharma .nntm-article-mosaic__viewall-wrap { margin-top:auto; }
+
+  /* Publications — exact desktop geometry from Figma export 6376:6603.
+   * Infinite-loop behaviour is handled by blocks/card-list/view.js only for
+   * .nntm-hk-publications; this CSS keeps layout stable while the track moves. */
+  .nntm-hk-publications > .nntm-card-list__band { height:650px; min-height:650px; padding:30px 0; background:#000; overflow:hidden; }
+  .nntm-hk-publications > .nntm-card-list__band > .nntm-container { height:590px; max-width:none; padding:0; }
+  .nntm-hk-publications .nntm-card-list__header-row { height:60px; justify-content:center; margin:0 0 30px; padding:0; }
+  .nntm-hk-publications .nntm-card-list__heading { margin:0; font-size:52px; font-weight:600; line-height:60px; color:#f7f1de; }
+
+  .nntm-hk-publications .nntm-card-list__carousel {
+    --nntm-carousel-gutter:110px;
+    position:relative; display:block; height:500px; overflow:visible;
+  }
+  .nntm-hk-publications .nntm-card-list__track {
+    box-sizing:border-box; height:500px; gap:20px; padding:0 110px;
+    overflow-x:auto; overflow-y:hidden; scroll-snap-type:none; scroll-behavior:auto;
+    scrollbar-width:none; -ms-overflow-style:none; overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+  .nntm-hk-publications .nntm-card-list__track::-webkit-scrollbar { display:none; width:0; height:0; }
+  .nntm-hk-publications .nntm-card-list__track-item,
+  .nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card-list__track-item {
+    flex:0 0 388px; width:388px; height:500px; margin:0; scroll-snap-align:none; transform:none;
+    transition:none;
+  }
+  .nntm-hk-publications .nntm-card-list__track-item:first-child,
+  .nntm-hk-publications .nntm-card-list__track-item:last-child { margin-inline:0; }
+  .nntm-hk-publications .nntm-card-list__track-item--clone { pointer-events:none; }
+
+  .nntm-hk-publications .nntm-card--books,
+  .nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card--books {
+    box-sizing:border-box; height:500px; min-height:500px; padding:20px; gap:15px;
+    border:1px solid #4f4f4f; background:#000; box-shadow:none; backdrop-filter:none;
+    transform:none; transition:border-color 320ms cubic-bezier(.22,1,.36,1), box-shadow 320ms cubic-bezier(.22,1,.36,1), background-color 320ms cubic-bezier(.22,1,.36,1);
+  }
+  .nntm-hk-publications .nntm-card--books .nntm-card__img,
+  .nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card__img {
+    width:348px; height:348px; aspect-ratio:auto; box-shadow:none; overflow:hidden;
+  }
+  .nntm-hk-publications .nntm-card--books .nntm-card__img-el {
+    width:100%; height:100%; object-fit:cover;
+    transition:transform 520ms cubic-bezier(.22,1,.36,1), filter 420ms cubic-bezier(.22,1,.36,1);
+  }
+  .nntm-hk-publications .nntm-card--books .nntm-card__body,
+  .nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card__body { display:flex; gap:8px; }
+  .nntm-hk-publications .nntm-card__title { font-size:18px; line-height:30px; font-weight:700; color:#fff; transition:color 260ms ease; }
+  .nntm-hk-publications .nntm-card__cta {
+    padding:0; font-size:13px; line-height:23px; font-weight:700; color:#fff; text-decoration:underline;
+    text-underline-offset:3px; transition:color 260ms ease, transform 320ms cubic-bezier(.22,1,.36,1), opacity 260ms ease;
+  }
+
+  .nntm-hk-publications .nntm-card-list__nav {
+    top:250px; width:58px; height:58px; border:0; border-radius:0; background:#fff; color:#000;
+    transform:translateY(-50%); box-shadow:0 8px 24px rgba(0,0,0,.18);
+    transition:transform 280ms cubic-bezier(.22,1,.36,1), background-color 220ms ease, box-shadow 280ms ease;
+  }
+  .nntm-hk-publications .nntm-card-list__nav--prev { left:34px; }
+  .nntm-hk-publications .nntm-card-list__nav--next { right:12px; }
+
+  /* Arrow direction fix: card-list/style.css defines a generic rotation on the
+   * whole icon after the Hoa Khai arrow is built from a horizontal shaft +
+   * ::after head. Neutralize that second rotation so prev is <- and next is ->. */
+  .nntm-hk-publications .nntm-card-list__nav--prev .nntm-card-list__nav-icon,
+  .nntm-hk-publications .nntm-card-list__nav--next .nntm-card-list__nav-icon {
+    margin:0;
+    transform:none;
+  }
+  .nntm-hk-publications .nntm-card-list__nav--prev .nntm-card-list__nav-icon::after {
+    left:0; right:auto;
+    transform:translateY(-50%) rotate(-135deg);
+  }
+  .nntm-hk-publications .nntm-card-list__nav--next .nntm-card-list__nav-icon::after {
+    left:auto; right:0;
+    transform:translateY(-50%) rotate(45deg);
+  }
+  .nntm-hk-publications .nntm-card-list__nav:hover,
+  .nntm-hk-publications .nntm-card-list__nav:focus-visible {
+    background:#f7f1de; transform:translateY(-50%) scale(1.055); box-shadow:0 12px 30px rgba(0,0,0,.28);
+  }
+  .nntm-hk-publications .nntm-card-list__nav:active { transform:translateY(-50%) scale(.96); }
+
+  /* Remove the old shelf/fan reflow effect. Figma keeps every card 388x500;
+   * hover polishes the card but never changes neighbouring card geometry. */
+  .nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) { align-items:stretch; padding-block:0; }
+  .nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card-list__track-item:hover { z-index:auto; transform:none; }
+  .nntm-hk-publications .nntm-card:not(.nntm-card--empty):hover,
+  .nntm-hk-publications .nntm-card:not(.nntm-card--empty):focus-visible {
+    border-color:#747766; box-shadow:inset 0 0 0 1px rgba(247,241,222,.16);
+  }
+  .nntm-hk-publications .nntm-card:not(.nntm-card--empty):hover .nntm-card__img-el,
+  .nntm-hk-publications .nntm-card:not(.nntm-card--empty):focus-visible .nntm-card__img-el { transform:scale(1.035); filter:brightness(1.045) contrast(1.015); }
+  .nntm-hk-publications .nntm-card:not(.nntm-card--empty):hover .nntm-card__title,
+  .nntm-hk-publications .nntm-card:not(.nntm-card--empty):focus-visible .nntm-card__title { color:#f7f1de; }
+  .nntm-hk-publications .nntm-card:not(.nntm-card--empty):hover .nntm-card__cta,
+  .nntm-hk-publications .nntm-card:not(.nntm-card--empty):focus-visible .nntm-card__cta { color:#f7f1de; transform:translateX(4px); }
+
+  /* Compact inner footer in this frame: 147px = 20 + 107 + 20. */
+  .nntm-footer--inner { height:147px; min-height:147px; padding:20px; }
+  .nntm-footer--inner .nntm-footer__bar { height:107px; min-height:107px; padding:20px; }
+  .nntm-footer--inner .nntm-footer__inner { max-width:1286px; }
+  .nntm-footer--inner .nntm-footer__row { min-height:46px; }
+}
+
+/* Smooth but restrained hover for the article sections. Publications has
+ * its own non-reflow interaction rules above. */
+.nntm-hk-news .nntm-article-mosaic__media-link img,
+.nntm-hk-dharma .nntm-article-mosaic__media-link img { transition:transform 360ms cubic-bezier(.22,1,.36,1), filter 360ms cubic-bezier(.22,1,.36,1); }
+.nntm-hk-news .nntm-article-mosaic__media-link:hover img,
+.nntm-hk-dharma .nntm-article-mosaic__media-link:hover img { transform:scale(1.025); filter:brightness(1.03); }
+
+@media (max-width:1024px) {
+  .nntm-hk-news,
+  .nntm-hk-dharma,
+  .nntm-hk-publications > .nntm-card-list__band,
+  .nntm-footer--inner { height:auto; min-height:0; }
+  .nntm-hk-news .nntm-article-mosaic__inner,
+  .nntm-hk-dharma .nntm-article-mosaic__inner { height:auto; padding:40px 20px; }
+  .nntm-hk-news .nntm-article-mosaic__heading,
+  .nntm-hk-dharma .nntm-article-mosaic__heading { height:auto; font-size:clamp(38px,7vw,52px); line-height:1.15; }
+  .nntm-hk-news .nntm-article-mosaic__list,
+  .nntm-hk-dharma .nntm-article-mosaic__list { width:100%; grid-template-columns:1fr; }
+  .nntm-hk-news .nntm-article-mosaic__lead,
+  .nntm-hk-dharma .nntm-article-mosaic__lead { width:100%; max-width:none; }
+  .nntm-hk-news .nntm-article-mosaic__lead-img--short,
+  .nntm-hk-dharma .nntm-article-mosaic__lead-img--tall { width:100%; height:auto; aspect-ratio:16/10; }
+  .nntm-hk-publications > .nntm-card-list__band { padding:40px 0; }
+  .nntm-hk-publications .nntm-card-list__carousel { height:auto; }
+  .nntm-hk-publications .nntm-card-list__track { height:auto; padding:0 20px; gap:16px; }
+  .nntm-hk-publications .nntm-card-list__track-item,
+  .nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card-list__track-item { flex:0 0 min(82vw,388px); width:min(82vw,388px); height:auto; }
+  .nntm-hk-publications .nntm-card--books,
+  .nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card--books { height:auto; min-height:0; }
+  .nntm-hk-publications .nntm-card--books .nntm-card__img,
+  .nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card__img { width:100%; height:auto; aspect-ratio:1/1; }
+  .nntm-footer--inner .nntm-footer__bar { height:auto; min-height:107px; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .nntm-hk-news *, .nntm-hk-dharma *, .nntm-hk-publications * { transition:none; }
+}

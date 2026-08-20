@@ -1,0 +1,651 @@
+/*
+ * Nhập Pháp Giới — Figma frame 6376:6488.
+ * Reference: design/figma/6376-6488@1x.png, cropped to the actual
+ * 1366 x 2352 frame. The exported PNG is wider because the two video
+ * marquees intentionally overflow beyond the frame on the right.
+ *
+ * Frame stack at 1366px:
+ *   Header                     76px
+ *   Rank Card hero            692px
+ *   Gót Son title band         99px
+ *   Xuyên Vạn Kiếp            544px
+ *   Caption band              108px
+ *   GITA                      666px
+ *   White separator            21px
+ *   Compact footer            146px
+ */
+
+.nntm-main--full .nntm-page,
+.nntm-main--full .nntm-page__content {
+	margin: 0;
+	padding: 0;
+}
+
+/* ---------- Header: Figma keeps the inner-page header plain ---------- */
+.nntm-header {
+	height: 76px;
+	box-sizing: border-box;
+}
+
+.nntm-header__logo {
+	height: 48px;
+	line-height: 1;
+}
+
+.nntm-main-nav .current-menu-item > a,
+.nntm-main-nav .current_page_item > a,
+.nntm-main-nav .current-menu-ancestor > a,
+.nntm-main-nav .current_page_ancestor > a {
+	padding: 0;
+	background: transparent;
+	border-radius: 0;
+	font-family: var(--nntm-font-serif);
+	font-size: var(--nntm-fs-base);
+	font-weight: 400;
+	line-height: var(--nntm-lh-rong);
+	color: var(--nntm-muc-nhat);
+}
+
+.nntm-main-nav .current-menu-item > a:hover,
+.nntm-main-nav .current_page_item > a:hover,
+.nntm-main-nav .current-menu-ancestor > a:hover,
+.nntm-main-nav .current_page_ancestor > a:hover {
+	color: var(--nntm-chinh-hover);
+}
+
+@media (min-width: 1025px) {
+	/* ---------- Rank Card: y=76, h=692 ---------- */
+	.nntm-rank-card {
+		height: 692px;
+		min-height: 692px;
+		/* Figma scales the 2688px source to ~2016px inside the 1366px hero
+		 * (ORB fit scale 0.7502), then centers it horizontally. */
+		background-size: 147.6% auto;
+		background-position: center 47.5%;
+	}
+
+	.nntm-rank-card__overlay {
+		height: 692px;
+		min-height: 0;
+		padding: 110px 0 0;
+		box-sizing: border-box;
+		background-color: rgba(0, 0, 0, .10);
+	}
+
+	.nntm-rank-card__heading {
+		height: 46px;
+		margin: 0;
+		font-family: var(--nntm-font-display);
+		font-size: 40px;
+		font-weight: 600;
+		line-height: 46px;
+		color: var(--nntm-trang);
+		text-align: center;
+	}
+
+	.nntm-rank-card__row {
+		width: 100%;
+		margin-top: 30px;
+		gap: 30px;
+		flex-wrap: nowrap;
+	}
+
+	.nntm-rank-card__card {
+		width: 360px;
+		height: 384px;
+		padding: 30px;
+		box-sizing: border-box;
+		background-color: rgba(0, 0, 0, .50);
+		-webkit-backdrop-filter: blur(5px);
+		backdrop-filter: blur(5px);
+		border: 0;
+		border-radius: 0;
+		transition: transform 420ms cubic-bezier(.22, 1, .36, 1), background-color 320ms ease, box-shadow 420ms cubic-bezier(.22, 1, .36, 1);
+	}
+
+	.nntm-rank-card__card-media {
+		width: 300px;
+		height: 211px;
+		flex: 0 0 211px;
+		overflow: hidden;
+	}
+
+	.nntm-rank-card__card-img,
+	.nntm-rank-card__card-img--placeholder {
+		width: 300px;
+		height: 211px;
+		object-fit: cover;
+		transition: transform 650ms cubic-bezier(.22, 1, .36, 1), filter 420ms ease;
+	}
+
+	.nntm-rank-card__card-title {
+		margin: 30px 0 0;
+		font-family: var(--nntm-font-display);
+		font-size: 24px;
+		font-weight: 700;
+		line-height: 30px;
+		color: var(--nntm-trang);
+	}
+
+	.nntm-rank-card__cta {
+		margin-top: 12px;
+		font-family: var(--nntm-font-serif);
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 20px;
+		color: var(--nntm-trang);
+		text-decoration: none;
+		transition: transform 260ms cubic-bezier(.22, 1, .36, 1), opacity 260ms ease;
+	}
+
+
+	.nntm-rank-card__card:hover,
+	.nntm-rank-card__card:focus-within {
+		transform: translateY(-4px);
+		background-color: rgba(0, 0, 0, .56);
+		box-shadow: 0 16px 38px rgba(0, 0, 0, .2);
+	}
+
+	.nntm-rank-card__card:hover .nntm-rank-card__card-img,
+	.nntm-rank-card__card:focus-within .nntm-rank-card__card-img {
+		transform: scale(1.025);
+		filter: saturate(1.025) contrast(1.015);
+	}
+
+	.nntm-rank-card__card:hover .nntm-rank-card__cta,
+	.nntm-rank-card__card:focus-within .nntm-rank-card__cta {
+		transform: translateX(3px);
+	}
+
+	/* ---------- Gót Son / Xuyên Vạn Kiếp ----------
+	 * White title band: 99px. The heading-above itself is absolutely
+	 * anchored to the top of the black section, exactly like Figma.
+	 */
+	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) {
+		height: 544px;
+		min-height: 544px;
+		margin-top: 99px;
+		margin-bottom: 108px;
+		position: relative;
+		z-index: 2;
+	}
+
+	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) > .nntm-card-list__band {
+		height: 544px;
+		min-height: 544px;
+		padding: 0;
+		box-sizing: border-box;
+		background: var(--nntm-den);
+		overflow: hidden;
+	}
+
+	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) > .nntm-card-list__band > .nntm-container {
+		width: 1366px;
+		height: 544px;
+		max-width: none;
+		padding: 0;
+		position: relative;
+	}
+
+	.nntm-card-list__heading-above {
+		height: 95px;
+		padding-inline: 93px;
+		font-family: var(--nntm-font-display);
+		font-size: 58px;
+		font-weight: 600;
+		line-height: 68px;
+		color: var(--nntm-den);
+		background: transparent;
+	}
+
+	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) .nntm-card-list__header-row {
+		height: 68px;
+	}
+
+	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) .nntm-card-list__heading {
+		height: 68px;
+		margin: 0;
+		padding-left: 200px;
+		font-family: var(--nntm-font-display);
+		font-size: 58px;
+		font-weight: 600;
+		line-height: 68px;
+		color: var(--nntm-trang-lanh);
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-marquee {
+		padding-left: 73px;
+		margin-top: 45px;
+		overflow: hidden;
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-track {
+		gap: 20px;
+		--nntm-npg-yt-loop-offset: 10px;
+		animation: nntm-npg-yt-marquee var(--nntm-yt-duration, 40s) linear infinite;
+		animation-delay: 600ms;
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-cell {
+		flex: 0 0 388px;
+		width: 388px;
+		height: 360px;
+		padding: 20px;
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		gap: 15px;
+		background: rgba(0, 0, 0, .5);
+		-webkit-backdrop-filter: blur(5px);
+		backdrop-filter: blur(5px);
+		overflow: hidden;
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-item {
+		flex: 0 0 203px;
+		width: 348px;
+		height: 203px;
+		border-radius: 0;
+		box-shadow: none;
+		background: transparent;
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-media {
+		width: 348px;
+		height: 203px;
+		aspect-ratio: auto;
+	}
+
+	.nntm-card-list__yt-thumb {
+		object-fit: cover;
+	}
+
+	.nntm-card-list__yt-play {
+		inset: 0;
+		width: auto;
+		height: auto;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 2;
+		pointer-events: none;
+	}
+
+	.nntm-card-list__yt-play svg {
+		width: 75px;
+		height: 75px;
+		filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .18));
+	}
+
+	.nntm-card-list__yt-frame {
+		z-index: 1;
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-title {
+		max-width: 348px;
+		font-family: var(--nntm-font-sans);
+		font-size: 18px;
+		font-weight: 700;
+		line-height: 30px;
+		letter-spacing: 0;
+		text-transform: none;
+		color: var(--nntm-trang);
+		-webkit-line-clamp: 2;
+	}
+
+	/* Figma caption band is pure white across the full 1366px frame.
+	 * The caption itself is only 1082px wide; without this full-width layer,
+	 * the 108px margin below the black section reveals --nntm-nen (cream)
+	 * at both sides and makes the band look like the wrong background. */
+	.nntm-card-list--nen-toi:has(> .nntm-card-list__caption-below)::after {
+		content: "";
+		position: absolute;
+		top: 100%;
+		left: 0;
+		right: 0;
+		height: 108px;
+		background: #fff;
+		z-index: 0;
+		pointer-events: none;
+	}
+
+	.nntm-card-list__caption-below {
+		top: calc(100% + 10px);
+		width: 1082px;
+		max-width: 1082px;
+		padding: 0 134px;
+		box-sizing: border-box;
+		font-family: var(--nntm-font-serif);
+		font-size: 18px;
+		font-style: italic;
+		font-weight: 400;
+		line-height: 26px;
+		letter-spacing: 0;
+		color: var(--nntm-muc);
+		background: transparent;
+		z-index: 1;
+	}
+
+	/* ---------- GITA: y=1519, h=666 ---------- */
+	.nntm-card-list--nen-cam {
+		height: 666px;
+		min-height: 666px;
+		margin-bottom: 21px;
+		box-sizing: border-box;
+	}
+
+	.nntm-card-list--nen-cam > .nntm-card-list__band {
+		height: 666px;
+		padding: 50px;
+		box-sizing: border-box;
+		background: var(--nntm-cam);
+		overflow: hidden;
+	}
+
+	.nntm-card-list--nen-cam > .nntm-card-list__band > .nntm-container {
+		width: 1266px;
+		height: 566px;
+		max-width: 1266px;
+		padding: 0;
+		position: relative;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__header-row {
+		width: 1266px;
+		justify-content: center;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__heading,
+	.nntm-card-list--nen-cam .nntm-card-list__subheading {
+		width: 1266px;
+		padding: 0;
+		box-sizing: border-box;
+		text-align: center;
+		color: var(--nntm-kem);
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__heading {
+		margin: 0 0 10px;
+		font-family: var(--nntm-font-display);
+		font-size: 52px;
+		font-weight: 600;
+		line-height: 60px;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__subheading {
+		margin: 0 0 30px;
+		font-family: var(--nntm-font-serif);
+		font-size: 18px;
+		font-weight: 400;
+		line-height: 26px;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-marquee {
+		width: calc(100% + 100px);
+		margin-left: -50px;
+		padding-left: 90px;
+		overflow: hidden;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-track {
+		gap: 20px;
+		--nntm-npg-yt-loop-offset: 10px;
+		animation: nntm-npg-yt-marquee var(--nntm-yt-duration, 40s) linear infinite;
+		animation-delay: 600ms;
+	}
+
+	.nntm-card-list__yt-marquee:hover > .nntm-card-list__yt-track,
+	.nntm-card-list__yt-marquee:focus-within > .nntm-card-list__yt-track {
+		animation-play-state: paused;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-cell--framed {
+		flex: 0 0 388px;
+		width: 388px;
+		height: 360px;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-item--framed {
+		width: 388px;
+		height: 360px;
+		min-height: 360px;
+		padding: 20px;
+		gap: 15px;
+		box-sizing: border-box;
+		border-radius: 0;
+		background: var(--nntm-den);
+		box-shadow: none;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-cell--framed:first-child .nntm-card-list__yt-item--framed {
+		background: rgba(0, 0, 0, .7);
+		-webkit-backdrop-filter: blur(5px);
+		backdrop-filter: blur(5px);
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-media {
+		width: 348px;
+		height: 203px;
+		aspect-ratio: auto;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-title {
+		max-width: 348px;
+		font-family: var(--nntm-font-sans);
+		font-size: 18px;
+		font-weight: 700;
+		line-height: 30px;
+		letter-spacing: 0;
+		text-transform: none;
+		color: var(--nntm-trang);
+		-webkit-line-clamp: 3;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__icons {
+		height: 50px;
+		min-height: 50px;
+		margin-top: 30px;
+		gap: 30px;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__icon--spotify,
+	.nntm-card-list--nen-cam .nntm-card-list__icon--spotify svg {
+		width: 50px;
+		height: 50px;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__icon--youtube,
+	.nntm-card-list--nen-cam .nntm-card-list__icon--youtube svg {
+		width: 60px;
+		height: 47px;
+	}
+
+	/* ---------- Compact footer: y=2206, h=146 ---------- */
+	.nntm-footer.nntm-footer--inner {
+		height: 146px;
+		min-height: 146px;
+		padding: 20px;
+		box-sizing: border-box;
+		background: var(--nntm-den);
+	}
+
+	.nntm-footer--inner .nntm-footer__bar {
+		height: 106px;
+		min-height: 106px;
+		padding: 20px;
+		box-sizing: border-box;
+		background: var(--nntm-muc-nhat);
+		display: flex;
+		align-items: center;
+	}
+
+	.nntm-footer--inner .nntm-footer__inner {
+		width: 100%;
+		max-width: 1286px;
+		padding-inline: 10px;
+		box-sizing: border-box;
+	}
+
+	.nntm-footer--inner .nntm-footer__row {
+		height: 46px;
+		min-height: 46px;
+		gap: 20px;
+	}
+
+	.nntm-footer--inner .nntm-footer__logo {
+		min-height: 46px;
+		font-size: 20px;
+		line-height: 1.15;
+	}
+
+	.nntm-footer--inner .nntm-footer-nav a,
+	.nntm-footer--inner .nntm-footer__copyright {
+		font-size: 16px;
+		line-height: 22px;
+	}
+}
+
+/* Exact duplicated-half movement: include half the 20px seam gap so the
+ * reset lands on the same pixel and never produces a visible jump. */
+@keyframes nntm-npg-yt-marquee {
+	from { transform: translate3d(0, 0, 0); }
+	to { transform: translate3d(calc(-50% - var(--nntm-npg-yt-loop-offset, 0px)), 0, 0); }
+}
+
+/* Motion polish: only transform/opacity/filter, never width/margin reflow. */
+@media (min-width: 1025px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+	.nntm-card-list__yt-cell {
+		transition: transform 420ms cubic-bezier(.22, 1, .36, 1), box-shadow 420ms cubic-bezier(.22, 1, .36, 1);
+	}
+
+	.nntm-card-list__yt-item {
+		transform-origin: center;
+		backface-visibility: hidden;
+		will-change: transform;
+		transition: transform 420ms cubic-bezier(.22, 1, .36, 1), box-shadow 420ms cubic-bezier(.22, 1, .36, 1), background-color 320ms ease;
+	}
+
+	.nntm-card-list__yt-thumb {
+		transition: opacity 320ms ease, transform 700ms cubic-bezier(.22, 1, .36, 1), filter 420ms ease;
+	}
+
+	.nntm-card-list__yt-play svg {
+		transform: scale(1);
+		transition: transform 360ms cubic-bezier(.22, 1, .36, 1), opacity 280ms ease;
+	}
+
+	.nntm-card-list__yt-cell:has(.nntm-card-list__yt-item:hover),
+	.nntm-card-list__yt-cell:has(.nntm-card-list__yt-item:focus-visible) {
+		transform: translateY(-5px);
+	}
+
+	.nntm-card-list__yt-item:hover,
+	.nntm-card-list__yt-item:focus-visible,
+	.nntm-card-list__yt-item.is-playing {
+		transform: scale(1.025);
+		box-shadow: 0 14px 34px rgba(0, 0, 0, .22);
+	}
+
+	.nntm-card-list__yt-item:hover .nntm-card-list__yt-thumb,
+	.nntm-card-list__yt-item:focus-visible .nntm-card-list__yt-thumb {
+		transform: scale(1.04);
+		filter: saturate(1.035) contrast(1.02);
+	}
+
+	.nntm-card-list__yt-item:hover .nntm-card-list__yt-play svg,
+	.nntm-card-list__yt-item:focus-visible .nntm-card-list__yt-play svg {
+		transform: scale(1.045);
+	}
+}
+
+/* No mobile/tablet Figma frame exists. Keep shared responsive architecture
+ * and only release desktop fixed heights so content can wrap safely. */
+@media (max-width: 1024px) {
+	.nntm-header { height: auto; }
+	.nntm-header__logo { height: 36px; }
+
+	.nntm-rank-card {
+		height: auto;
+		min-height: 690px;
+	}
+
+	.nntm-rank-card__overlay {
+		height: auto;
+		min-height: 690px;
+		padding: 50px 20px;
+	}
+
+	.nntm-rank-card__row {
+		flex-wrap: wrap;
+	}
+
+	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) {
+		height: auto;
+		min-height: 0;
+		margin-top: 80px;
+		margin-bottom: 100px;
+	}
+
+	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) > .nntm-card-list__band,
+	.nntm-card-list--nen-cam,
+	.nntm-card-list--nen-cam > .nntm-card-list__band {
+		height: auto;
+		min-height: 0;
+	}
+
+	.nntm-card-list__heading-above,
+	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) .nntm-card-list__heading,
+	.nntm-card-list--nen-cam .nntm-card-list__heading {
+		font-size: clamp(38px, 8vw, 52px);
+		line-height: 1.15;
+	}
+
+	.nntm-card-list__heading-above { padding-inline: 30px; }
+	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) .nntm-card-list__heading { padding-left: 30px; }
+	.nntm-card-list__caption-below { width: min(100% - 40px, 1082px); padding: 0; }
+
+	.nntm-card-list--nen-cam > .nntm-card-list__band { padding: 50px 0; }
+	.nntm-card-list--nen-cam > .nntm-card-list__band > .nntm-container,
+	.nntm-card-list--nen-cam .nntm-card-list__header-row,
+	.nntm-card-list--nen-cam .nntm-card-list__heading,
+	.nntm-card-list--nen-cam .nntm-card-list__subheading { width: 100%; }
+	.nntm-card-list--nen-cam .nntm-card-list__heading,
+	.nntm-card-list--nen-cam .nntm-card-list__subheading { padding-inline: 24px; }
+
+	.nntm-footer.nntm-footer--inner,
+	.nntm-footer--inner .nntm-footer__bar {
+		height: auto;
+		min-height: 0;
+	}
+}
+
+@media (max-width: 760px) {
+	.nntm-rank-card__card {
+		width: min(100%, 360px);
+		height: auto;
+		min-height: 384px;
+	}
+	.nntm-rank-card__card-media,
+	.nntm-rank-card__card-img,
+	.nntm-rank-card__card-img--placeholder {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 300 / 211;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-card-list--nen-toi .nntm-card-list__yt-track,
+	.nntm-card-list--nen-cam .nntm-card-list__yt-track {
+		animation: none;
+	}
+	.nntm-rank-card__card,
+	.nntm-rank-card__card-img,
+	.nntm-card-list__yt-cell,
+	.nntm-card-list__yt-item,
+	.nntm-card-list__yt-thumb,
+	.nntm-card-list__yt-play svg {
+		transition: none;
+		transform: none;
+	}
+}

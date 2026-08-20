@@ -29,7 +29,22 @@
 		}
 
 		event.preventDefault();
-		openModal( modal );
+		openModal( modal, trigger );
+	} );
+
+
+	// Khi submit sai tài khoản/mật khẩu, PHP render lại modal ở trạng thái
+	// mở để người dùng thấy lỗi ngay. Đặt focus vào field đầu tiên sau khi DOM
+	// sẵn sàng, không buộc họ bấm "Đăng nhập" lần nữa.
+	document.addEventListener( 'DOMContentLoaded', function () {
+		var modal = document.getElementById( MODAL_ID );
+		if ( ! modal || modal.hidden ) {
+			return;
+		}
+		var focusable = getFocusable( modal );
+		if ( focusable.length ) {
+			focusable[ 0 ].focus();
+		}
 	} );
 
 	document.addEventListener( 'keydown', function ( event ) {
@@ -51,8 +66,20 @@
 	/**
 	 * @param {HTMLElement} modal
 	 */
-	function openModal( modal ) {
+	function openModal( modal, trigger ) {
 		lastFocusedEl = document.activeElement;
+
+		// Mỗi trigger có thể yêu cầu quay lại một URL khác sau khi đăng nhập.
+		// Header quay lại trang đang xem; thẻ Kim Cương quay thẳng tới trang
+		// đích. Secret/cookie không đi qua JS, đây chỉ là URL redirect.
+		var redirectInput = modal.querySelector( 'input[name="redirect_to"]' );
+		var redirectTo = trigger && trigger.getAttribute
+			? trigger.getAttribute( 'data-nntm-auth-redirect' )
+			: '';
+		if ( redirectInput && redirectTo ) {
+			redirectInput.value = redirectTo;
+		}
+
 		modal.hidden = false;
 
 		var closeButtons = modal.querySelectorAll( '[data-nntm-auth-modal-close]' );

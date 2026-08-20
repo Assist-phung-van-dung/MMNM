@@ -29,9 +29,29 @@ const NNTM_SEARCH_IMAGE_MIMES     = array( 'image/jpeg', 'image/png', 'image/web
 add_action( 'rest_api_init', 'nntm_search_register_image_route' );
 
 /**
+ * Whether search-by-image is switched on for this environment.
+ *
+ * Off by config, not just by the Python service being down: an operator who
+ * has deliberately not deployed tools/embed-service (e.g. staging, or a box
+ * without the CLIP model) wants the upload button gone and the endpoint 404,
+ * not a live button that always 503s.
+ *
+ *   define( 'NNTM_SEARCH_IMAGE_ENABLED', false );
+ *
+ * @return bool
+ */
+function nntm_search_image_enabled(): bool {
+	return ! defined( 'NNTM_SEARCH_IMAGE_ENABLED' ) || (bool) NNTM_SEARCH_IMAGE_ENABLED;
+}
+
+/**
  * Register the image search endpoint.
  */
 function nntm_search_register_image_route(): void {
+	if ( ! nntm_search_image_enabled() ) {
+		return;
+	}
+
 	register_rest_route(
 		NNTM_SEARCH_NS,
 		'/image',
@@ -85,7 +105,8 @@ function nntm_search_permission_image() {
  * @return WP_REST_Response|WP_Error
  */
 function nntm_search_handle_image( WP_REST_Request $request ) {
-	$file = $request->get_file_params()['anh'] ?? null;
+	$started_at = microtime( true );
+	$file       = $request->get_file_params()['anh'] ?? null;
 
 	if ( ! is_array( $file ) || ! isset( $file['tmp_name'] ) || UPLOAD_ERR_OK !== ( $file['error'] ?? -1 ) ) {
 		return new WP_Error( 'nntm_no_image', __( 'Chưa chọn ảnh.', 'nntm' ), array( 'status' => 400 ) );
@@ -122,6 +143,8 @@ function nntm_search_handle_image( WP_REST_Request $request ) {
 	$read = nntm_search_image_keywords( $file['tmp_name'] );
 
 	if ( is_wp_error( $read ) ) {
+		nntm_search_log_image_request( 'error', 0, $started_at );
+
 		return new WP_Error( 'nntm_service_failed', $read->get_error_message(), array( 'status' => 503 ) );
 	}
 
@@ -148,6 +171,8 @@ function nntm_search_handle_image( WP_REST_Request $request ) {
 		}
 
 		if ( ! empty( $rows ) ) {
+			nntm_search_log_image_request( 'keyword', count( $rows ), $started_at );
+
 			return rest_ensure_response(
 				array(
 					'keywords' => $keywords,
@@ -163,13 +188,23 @@ function nntm_search_handle_image( WP_REST_Request $request ) {
 	// Nothing matched the words — fall back to visual similarity.
 	$vector = nntm_search_embed_image( $file['tmp_name'] );
 
+	/*
+	 * The Python service already succeeded once in this very request (the
+	 * keyword read above). A failure here means the service went down or
+	 * timed out in between — a real service failure, not "no similar image
+	 * exists". Answering 200 with an empty list would be indistinguishable
+	 * from a legitimate empty result, which is exactly what the audit flagged:
+	 * a service failure must never look like "not found".
+	 */
 	if ( is_wp_error( $vector ) ) {
-		return rest_ensure_response(
-			array( 'keywords' => $keywords, 'mode' => 'keyword', 'results' => array(), 'total' => 0, 'see_all' => '' )
-		);
+		nntm_search_log_image_request( 'error', 0, $started_at );
+
+		return new WP_Error( 'nntm_service_failed', $vector->get_error_message(), array( 'status' => 503 ) );
 	}
 
 	$nearest = nntm_search_vector_search( $vector, nntm_search_viewer_acl(), 30 );
+
+	nntm_search_log_image_request( 'similar', count( $nearest ), $started_at );
 
 	return rest_ensure_response(
 		array(
@@ -178,6 +213,33 @@ function nntm_search_handle_image( WP_REST_Request $request ) {
 			'results'  => nntm_search_group_by_post( $nearest, 6 ),
 			'total'    => count( $nearest ),
 			'see_all'  => '',
+		)
+	);
+}
+
+/**
+ * One structured log line per finished /image request.
+ *
+ * `request_id` matches the id attached to every Python call this request
+ * made (see nntm_search_log_python_call() in includes/embed.php), so a log
+ * reader can join the two. Deliberately NOT logged: the uploaded image,
+ * base64, cookies, or any request/authorization header.
+ *
+ * @param string $mode         'keyword' | 'similar' | 'error'.
+ * @param int    $result_count Number of rows returned.
+ * @param float  $started_at   microtime(true) captured at the top of the handler.
+ */
+function nntm_search_log_image_request( string $mode, int $result_count, float $started_at ): void {
+	// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- structured, no sensitive fields.
+	error_log(
+		'[nntm-search] ' . wp_json_encode(
+			array(
+				'request_id'   => nntm_search_request_id(),
+				'route'        => '/image',
+				'mode'         => $mode,
+				'result_count' => $result_count,
+				'total_ms'     => (int) round( ( microtime( true ) - $started_at ) * 1000 ),
+			)
 		)
 	);
 }
@@ -265,11 +327,23 @@ function nntm_search_index_image( int $attachment_id ) {
  * @param int $attachment_id New attachment ID.
  */
 function nntm_search_on_add_image( int $attachment_id ): void {
-	if ( ! wp_attachment_is_image( $attachment_id ) ) {
+	if ( ! nntm_search_image_enabled() || ! wp_attachment_is_image( $attachment_id ) ) {
 		return;
 	}
 
-	nntm_search_index_image( $attachment_id );
+	$result = nntm_search_index_image( $attachment_id );
+
+	if ( is_wp_error( $result ) ) {
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- no raw file/image data, only ids and an error code.
+		error_log(
+			sprintf(
+				'[nntm-search] index image failed: attachment_id=%d code=%s message=%s',
+				$attachment_id,
+				$result->get_error_code(),
+				$result->get_error_message()
+			)
+		);
+	}
 }
 add_action( 'add_attachment', 'nntm_search_on_add_image' );
 

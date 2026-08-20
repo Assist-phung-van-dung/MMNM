@@ -196,10 +196,9 @@ body.nntm-dau-trang-de-len .nntm-header {
 .nntm-header__bar {
 	display: flex;
 	align-items: center;
-	/*
-	 * Desktop design frame is 1366px. Keep the header inside that frame on
-	 * wider monitors instead of stretching navigation/tool spacing to 1920px.
-	 */
+	/* Figma desktop được chốt ở 1366px: không giãn khoảng cách menu/tools
+	 * theo monitor 1920/2560. Responsive chỉ co xuống dưới 1366px. */
+	width: 100%;
 	max-width: var(--nntm-w-rong);
 	margin-inline: auto;
 	padding-inline: var(--nntm-sp-5);

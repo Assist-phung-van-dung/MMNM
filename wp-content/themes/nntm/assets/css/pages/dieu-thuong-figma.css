@@ -1,0 +1,330 @@
+/*
+ * Diệu Thượng — page-scoped Figma composition for node 6376:6694.
+ * Reference: design/figma/6376-6694@1x.png (1366 x 1032) and exact
+ * Tông Chỉ media export design/figma/6376-6694-tong-chi.png (865 x 377).
+ *
+ * Keep generic block styles reusable elsewhere; only geometry that is
+ * specific to /dieu-thuong/ lives here.
+ */
+
+/* ---------- Header ---------- */
+.nntm-header {
+	height: 76px;
+}
+
+.nntm-header__logo {
+	height: 48px;
+	line-height: 1;
+}
+
+/* Figma page does not show the current-menu pill on this inner page. */
+.nntm-main-nav .current-menu-item > a,
+.nntm-main-nav .current_page_item > a,
+.nntm-main-nav .current-menu-ancestor > a,
+.nntm-main-nav .current_page_ancestor > a {
+	padding: 0;
+	background: transparent;
+	border-radius: 0;
+	font-family: var(--nntm-font-serif);
+	font-size: var(--nntm-fs-base);
+	font-weight: 400;
+	line-height: var(--nntm-lh-rong);
+	color: var(--nntm-muc-nhat);
+}
+
+.nntm-main-nav .current-menu-item > a:hover,
+.nntm-main-nav .current_page_item > a:hover,
+.nntm-main-nav .current-menu-ancestor > a:hover,
+.nntm-main-nav .current_page_ancestor > a:hover {
+	color: var(--nntm-chinh-hover);
+}
+
+/* ---------- Tông Chỉ ---------- */
+.nntm-feature {
+	height: 485px;
+	padding: 54px 60px 54px;
+	background: var(--nntm-trang-lanh);
+}
+
+.nntm-feature .nntm-container {
+	width: 100%;
+	max-width: none;
+	margin: 0;
+	padding: 0;
+}
+
+.nntm-feature__content {
+	display: grid;
+	grid-template-columns: 379px minmax(0, 1fr);
+	gap: 0;
+	width: 100%;
+	height: 377px;
+	align-items: stretch;
+}
+
+.nntm-feature__text {
+	padding: 30px;
+	background: var(--nntm-kem);
+}
+
+.nntm-feature__text {
+	justify-content: flex-start;
+}
+
+.nntm-feature__text-inner {
+	gap: 24px;
+	margin-top: 73px;
+}
+
+.nntm-feature__heading {
+	font-family: var(--nntm-font-display);
+	font-size: 52px;
+	font-weight: 600;
+	line-height: 60px;
+	color: var(--nntm-reu);
+}
+
+.nntm-feature__body {
+	gap: 0;
+	font-family: var(--nntm-font-serif);
+	font-size: 18px;
+	font-weight: 400;
+	line-height: 29px;
+	color: var(--nntm-reu);
+	white-space: pre-line;
+}
+
+.nntm-feature__media {
+	height: 377px;
+	background: transparent;
+}
+
+.nntm-feature__media::after {
+	display: none;
+}
+
+.nntm-feature__media-img,
+.nntm-feature__media-placeholder {
+	width: 100%;
+	height: 377px;
+	aspect-ratio: auto;
+	object-fit: cover;
+	object-position: center;
+}
+
+/* The reference is static artwork; hover should feel polished without
+ * moving the composition enough to break the intended crop. */
+.nntm-feature__media-img {
+	transition: transform 600ms cubic-bezier(.22,.61,.36,1), filter 600ms cubic-bezier(.22,.61,.36,1);
+}
+
+.nntm-feature__content:hover .nntm-feature__media-img {
+	transform: scale(1.008);
+	filter: saturate(1.015);
+}
+
+/* ---------- Trú Xứ ---------- */
+.nntm-tru-xu-list--list {
+	min-height: 325px;
+	padding: 60px 0 52px;
+	background: var(--nntm-kem);
+}
+
+.nntm-tru-xu-list--list .nntm-container {
+	width: 100%;
+	max-width: none;
+	margin: 0;
+	padding-inline: 80px;
+}
+
+.nntm-tru-xu-list--list .nntm-tru-xu-list__heading {
+	margin: 0 0 30px;
+	font-family: var(--nntm-font-display);
+	font-size: 52px;
+	font-weight: 600;
+	line-height: 60px;
+	color: var(--nntm-reu);
+}
+
+.nntm-tru-xu-list--list .nntm-tru-xu-list__plain-list {
+	gap: 0;
+	max-width: 760px;
+	margin: 0;
+	padding-left: 27px;
+	list-style: disc outside;
+	font-family: var(--nntm-font-serif);
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 26px;
+	color: var(--nntm-den);
+}
+
+.nntm-tru-xu-list__plain-list a {
+	transition: color 240ms cubic-bezier(.22,.61,.36,1), transform 240ms cubic-bezier(.22,.61,.36,1);
+}
+
+.nntm-tru-xu-list__plain-list a:hover,
+.nntm-tru-xu-list__plain-list a:focus-visible {
+	display: inline-block;
+	padding-left: 0;
+	color: var(--nntm-reu);
+	transform: translateX(4px);
+}
+
+/* ---------- Compact inner-page footer ---------- */
+.nntm-footer--inner {
+	height: 146px;
+	padding: 20px;
+	background: var(--nntm-den);
+}
+
+.nntm-footer--inner .nntm-footer__bar {
+	display: flex;
+	align-items: center;
+	min-height: 0;
+	height: 106px;
+	padding: 0 30px;
+	background: var(--nntm-muc-nhat);
+}
+
+.nntm-footer--inner .nntm-footer__inner {
+	width: 100%;
+	max-width: none;
+}
+
+.nntm-footer--inner .nntm-footer__row {
+	display: grid;
+	grid-template-columns: 143px auto 1fr;
+	align-items: center;
+	gap: 20px;
+	width: 1226px;
+	max-width: 100%;
+	min-height: 46px;
+}
+
+.nntm-footer--inner .nntm-footer__logo {
+	width: 143px;
+	min-height: 46px;
+	font-size: 20px;
+	line-height: 1.08;
+	color: var(--nntm-kem);
+}
+
+.nntm-footer--inner .nntm-footer__nav {
+	justify-self: start;
+}
+
+.nntm-footer--inner .nntm-footer-nav,
+.nntm-footer--inner .nntm-footer__copyright {
+	font-family: var(--nntm-font-serif);
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 22px;
+	color: var(--nntm-vien);
+}
+
+.nntm-footer--inner .nntm-footer__copyright {
+	justify-self: end;
+	margin: 0;
+}
+
+@media (max-width: 1024px) {
+	.nntm-feature {
+		height: auto;
+		padding: 40px;
+	}
+
+	.nntm-feature__content {
+		grid-template-columns: 34% minmax(0, 1fr);
+		height: auto;
+	}
+
+	.nntm-feature__media,
+	.nntm-feature__media-img,
+	.nntm-feature__media-placeholder {
+		height: auto;
+		min-height: 320px;
+	}
+
+	.nntm-tru-xu-list--list .nntm-container {
+		padding-inline: 48px;
+	}
+
+	.nntm-footer--inner {
+		height: auto;
+	}
+
+	.nntm-footer--inner .nntm-footer__bar {
+		height: auto;
+		min-height: 106px;
+		padding-block: 24px;
+	}
+}
+
+@media (max-width: 767px) {
+	.nntm-feature {
+		padding: 28px 20px 40px;
+	}
+
+	.nntm-feature__content,
+	.nntm-feature--media-left .nntm-feature__content {
+		grid-template-columns: 1fr;
+		gap: 0;
+	}
+
+	.nntm-feature__media,
+	.nntm-feature--media-left .nntm-feature__media {
+		order: 0;
+		min-height: 220px;
+	}
+
+	.nntm-feature__text,
+	.nntm-feature--media-left .nntm-feature__text {
+		order: 1;
+		padding: 28px 24px;
+	}
+
+	.nntm-feature__heading,
+	.nntm-tru-xu-list--list .nntm-tru-xu-list__heading {
+		font-size: 40px;
+		line-height: 48px;
+	}
+
+	.nntm-tru-xu-list--list {
+		min-height: 0;
+		padding: 44px 0;
+	}
+
+	.nntm-tru-xu-list--list .nntm-container {
+		padding-inline: 24px;
+	}
+
+	.nntm-footer--inner .nntm-footer__bar {
+		padding: 24px;
+	}
+
+	.nntm-footer--inner .nntm-footer__row {
+		grid-template-columns: 1fr;
+		gap: 14px;
+		text-align: center;
+	}
+
+	.nntm-footer--inner .nntm-footer__logo,
+	.nntm-footer--inner .nntm-footer__nav,
+	.nntm-footer--inner .nntm-footer__copyright {
+		justify-self: center;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-feature__media-img,
+	.nntm-tru-xu-list__plain-list a {
+		transition: none;
+	}
+
+	.nntm-feature__content:hover .nntm-feature__media-img,
+	.nntm-tru-xu-list__plain-list a:hover,
+	.nntm-tru-xu-list__plain-list a:focus-visible {
+		transform: none;
+	}
+}

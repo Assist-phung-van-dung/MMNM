@@ -18,8 +18,20 @@
 }
 
 .nntm-favorite-button__icon {
-	flex: 0 0 auto;
+	display: block;
+	width: 20px;
+	height: 20px;
+	flex: 0 0 20px;
 	color: var(--nntm-do-tham);
+	position: relative;
+	top: -1px; /* căn quang học đầu tim với baseline chữ */
+}
+
+.nntm-favorite-button__label {
+	display: inline-flex;
+	align-items: center;
+	min-height: 20px;
+	line-height: 20px;
 }
 
 .nntm-favorite-button__icon path {

@@ -1,0 +1,496 @@
+/*
+ * Lien Dan — desktop reconciliation against Figma frame 6376:6744.
+ * Reference: design/figma/6376-6744@1x.png, cropped to the 1366x1807 frame.
+ * Loaded only on /lien-dan/ so shared card-list/footer architecture stays intact.
+ */
+
+/* The page is a stack of full-width blocks; Gutenberg paragraph margins must not
+ * create seams between the measured section boundaries. */
+.nntm-main--full .nntm-page,
+.nntm-main--full .nntm-page__content {
+	margin: 0;
+	padding: 0;
+}
+
+/* -------------------- KHOA TU: y=76, h=544 -------------------- */
+.nntm-lien-dan-khoa > .nntm-card-list__band {
+	height: 544px;
+	min-height: 544px;
+	padding: 59px 0 60px;
+	background: var(--nntm-kem);
+	overflow: hidden;
+	position: relative;
+}
+
+.nntm-lien-dan-khoa > .nntm-card-list__band > .nntm-container {
+	height: 100%;
+	max-width: none;
+	padding: 0;
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__header-row {
+	position: absolute;
+	z-index: 4;
+	left: 91px;
+	top: 209px;
+	width: 230px;
+	margin: 0;
+	padding: 0;
+	align-items: flex-start;
+	flex-direction: column;
+	gap: 25px;
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__heading {
+	margin: 0;
+	font-family: var(--nntm-font-display);
+	font-size: 52px;
+	font-weight: 600;
+	line-height: 60px;
+	color: var(--nntm-chinh);
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__view-all {
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 23px;
+	color: var(--nntm-chu);
+	text-underline-offset: 2px;
+}
+
+@media (min-width: 901px) {
+	.nntm-lien-dan-khoa .nntm-card-list__carousel {
+		position: relative;
+		display: block;
+		margin-left: 460px;
+		width: calc(100% - 460px);
+		height: 425px;
+		overflow: hidden;
+	}
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__track {
+	gap: 20px;
+	height: 425px;
+	padding: 0;
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__track-item {
+	flex: 0 0 388px;
+	height: 425px;
+	margin: 0;
+}
+
+.nntm-lien-dan-khoa .nntm-card--khoa-tu {
+	height: 425px;
+	min-height: 425px;
+	padding: 20px;
+	gap: 15px;
+	background: var(--nntm-trang);
+	box-shadow: 0 4px 20px rgba(0, 0, 0, .15);
+	backdrop-filter: blur(10px);
+}
+
+.nntm-lien-dan-khoa .nntm-card--khoa-tu .nntm-card__img {
+	width: 348px;
+	height: 203px;
+	aspect-ratio: auto;
+}
+
+.nntm-lien-dan-khoa .nntm-card--khoa-tu .nntm-card__img-el {
+	object-fit: cover;
+}
+
+.nntm-lien-dan-khoa .nntm-card--khoa-tu .nntm-card__body {
+	gap: 8px;
+}
+
+.nntm-lien-dan-khoa .nntm-card--khoa-tu .nntm-card__title {
+	font-size: 18px;
+	font-weight: 700;
+	line-height: 30px;
+	color: var(--nntm-chu);
+}
+
+.nntm-lien-dan-khoa .nntm-card--khoa-tu .nntm-card__excerpt {
+	font-family: var(--nntm-font-serif);
+	font-size: 15px;
+	font-weight: 400;
+	line-height: 22px;
+	color: var(--nntm-chinh);
+}
+
+.nntm-lien-dan-khoa .nntm-card--khoa-tu .nntm-card__cta,
+.nntm-lien-dan-lich .nntm-card--khoa-tu .nntm-card__cta {
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 23px;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+/* -------------------- LICH TU: y=620, h=404 -------------------- */
+.nntm-lien-dan-lich > .nntm-card-list__band {
+	height: 404px;
+	min-height: 404px;
+	padding: 40px 0 49px;
+	background: var(--nntm-trang);
+	overflow: hidden;
+}
+
+.nntm-lien-dan-lich > .nntm-card-list__band > .nntm-container {
+	max-width: none;
+	padding: 0;
+}
+
+.nntm-lien-dan-lich .nntm-card-list__header-row {
+	width: 100%;
+	max-width: none;
+	height: 60px;
+	margin: 0 0 20px;
+	padding: 0 91px;
+	align-items: flex-start;
+}
+
+.nntm-lien-dan-lich .nntm-card-list__heading {
+	margin: 0;
+	font-family: var(--nntm-font-display);
+	font-size: 52px;
+	font-weight: 600;
+	line-height: 60px;
+	color: var(--nntm-chinh);
+}
+
+.nntm-lien-dan-lich .nntm-card-list__carousel {
+	--nntm-carousel-gutter: 91px;
+	position: relative;
+	display: block;
+	height: 233px;
+	gap: 0;
+}
+
+.nntm-lien-dan-lich .nntm-card-list__track {
+	gap: 20px;
+	height: 233px;
+	padding: 0;
+}
+
+.nntm-lien-dan-lich .nntm-card-list__track-item {
+	flex: 0 0 348px;
+	height: 233px;
+}
+
+.nntm-lien-dan-lich .nntm-card--khoa-tu {
+	position: relative;
+	height: 233px;
+	min-height: 233px;
+	padding: 0;
+	gap: 0;
+	box-shadow: none;
+	backdrop-filter: none;
+	overflow: hidden;
+}
+
+.nntm-lien-dan-lich .nntm-card--khoa-tu .nntm-card__img {
+	width: 348px;
+	height: 233px;
+	aspect-ratio: auto;
+}
+
+.nntm-lien-dan-lich .nntm-card--khoa-tu .nntm-card__img-el {
+	object-fit: cover;
+}
+
+.nntm-lien-dan-lich .nntm-card--khoa-tu .nntm-card__body {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	min-height: 67px;
+	padding: 8px 10px;
+	gap: 3px;
+	background: color-mix(in srgb, var(--nntm-trang) 60%, transparent);
+	backdrop-filter: blur(4px);
+}
+
+.nntm-lien-dan-lich .nntm-card--khoa-tu .nntm-card__title {
+	font-family: var(--nntm-font-sans);
+	font-size: 16px;
+	font-weight: 700;
+	line-height: 22px;
+	color: var(--nntm-chu);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.nntm-lien-dan-lich .nntm-card--khoa-tu .nntm-card__cta {
+	line-height: 18px;
+	color: var(--nntm-chu);
+}
+
+/* Figma arrows are 58px square floating controls. */
+.nntm-lien-dan-khoa .nntm-card-list__nav,
+.nntm-lien-dan-lich .nntm-card-list__nav {
+	position: absolute;
+	z-index: 5;
+	top: 50%;
+	width: 58px;
+	height: 58px;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: var(--nntm-trang);
+	color: var(--nntm-den);
+	box-shadow: var(--nntm-sh-soft);
+	transform: translateY(-50%);
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__nav--prev,
+.nntm-lien-dan-lich .nntm-card-list__nav--prev {
+	left: 30px;
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__nav--next,
+.nntm-lien-dan-lich .nntm-card-list__nav--next {
+	right: 20px;
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__nav:hover:not(:disabled),
+.nntm-lien-dan-khoa .nntm-card-list__nav:focus-visible:not(:disabled),
+.nntm-lien-dan-lich .nntm-card-list__nav:hover:not(:disabled),
+.nntm-lien-dan-lich .nntm-card-list__nav:focus-visible:not(:disabled) {
+	background: var(--nntm-trang);
+	color: var(--nntm-chinh);
+	transform: translateY(-50%) scale(1.04);
+}
+
+/* -------------------- THIEN DUONG: y=1024, h=636 -------------------- */
+.nntm-thien-duong {
+	height: 636px;
+	min-height: 636px;
+	background: var(--nntm-cam);
+}
+
+.nntm-thien-duong__inner {
+	width: 100%;
+	max-width: 1366px;
+	height: 636px;
+	margin: 0 auto;
+	padding: 60px 91px 60px;
+	gap: 30px;
+}
+
+.nntm-thien-duong__header {
+	height: 60px;
+	justify-content: center;
+}
+
+.nntm-thien-duong__heading {
+	font-family: var(--nntm-font-display);
+	font-size: 52px;
+	font-weight: 600;
+	line-height: 60px;
+	color: var(--nntm-trang);
+}
+
+.nntm-thien-duong__embed {
+	display: grid;
+	grid-template-columns: 488px 685px;
+	gap: 10px;
+	height: 385px;
+	align-items: stretch;
+}
+
+.nntm-thien-duong__cover,
+.nntm-thien-duong__player {
+	height: 385px;
+	min-height: 385px;
+	aspect-ratio: auto;
+	border-radius: 0;
+}
+
+.nntm-thien-duong__cover-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+/* Keep the dynamic player functional but make its outer geometry match the
+ * screenshot embedded in Figma. */
+.nntm-thien-duong__player {
+	overflow: hidden;
+	box-shadow: none;
+}
+
+/* -------------------- COMPACT FOOTER: y=1660, h=147 -------------------- */
+.nntm-footer.nntm-footer--inner {
+	height: 147px;
+	min-height: 147px;
+	padding: 20px;
+	background: var(--nntm-den);
+}
+
+.nntm-footer--inner .nntm-footer__bar {
+	height: 107px;
+	min-height: 107px;
+	padding: 20px;
+	background: var(--nntm-muc-nhat);
+	display: flex;
+	align-items: center;
+}
+
+.nntm-footer--inner .nntm-footer__inner {
+	width: 100%;
+	max-width: 1286px;
+}
+
+.nntm-footer--inner .nntm-footer__row {
+	height: 46px;
+	min-height: 46px;
+	gap: 20px;
+}
+
+.nntm-footer--inner .nntm-footer__logo {
+	min-height: 46px;
+	font-size: 20px;
+	line-height: 1.15;
+}
+
+.nntm-footer--inner .nntm-footer-nav a,
+.nntm-footer--inner .nntm-footer__copyright {
+	font-size: 16px;
+	line-height: 22px;
+}
+
+/* -------------------- MOTION / HOVER POLISH -------------------- */
+.nntm-lien-dan-khoa .nntm-card--khoa-tu,
+.nntm-lien-dan-lich .nntm-card--khoa-tu {
+	transition: transform 300ms cubic-bezier(.2,.7,.2,1), box-shadow 300ms cubic-bezier(.2,.7,.2,1);
+}
+
+.nntm-lien-dan-khoa .nntm-card--khoa-tu .nntm-card__img-el,
+.nntm-lien-dan-lich .nntm-card--khoa-tu .nntm-card__img-el {
+	transition: transform 500ms cubic-bezier(.2,.7,.2,1);
+}
+
+.nntm-lien-dan-khoa .nntm-card--khoa-tu:hover,
+.nntm-lien-dan-khoa .nntm-card--khoa-tu:focus-visible {
+	transform: translateY(-4px);
+	box-shadow: 0 14px 32px rgba(0, 0, 0, .16);
+}
+
+.nntm-lien-dan-lich .nntm-card--khoa-tu:hover,
+.nntm-lien-dan-lich .nntm-card--khoa-tu:focus-visible {
+	transform: translateY(-3px);
+}
+
+.nntm-lien-dan-khoa .nntm-card--khoa-tu:hover .nntm-card__img-el,
+.nntm-lien-dan-khoa .nntm-card--khoa-tu:focus-visible .nntm-card__img-el,
+.nntm-lien-dan-lich .nntm-card--khoa-tu:hover .nntm-card__img-el,
+.nntm-lien-dan-lich .nntm-card--khoa-tu:focus-visible .nntm-card__img-el {
+	transform: scale(1.025);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-lien-dan-khoa .nntm-card--khoa-tu,
+	.nntm-lien-dan-lich .nntm-card--khoa-tu,
+	.nntm-lien-dan-khoa .nntm-card--khoa-tu .nntm-card__img-el,
+	.nntm-lien-dan-lich .nntm-card--khoa-tu .nntm-card__img-el,
+	.nntm-lien-dan-khoa .nntm-card-list__nav,
+	.nntm-lien-dan-lich .nntm-card-list__nav {
+		transition: none;
+	}
+}
+
+/* -------------------- RESPONSIVE SAFETY -------------------- */
+@media (max-width: 900px) {
+	.nntm-lien-dan-khoa > .nntm-card-list__band,
+	.nntm-lien-dan-lich > .nntm-card-list__band,
+	.nntm-thien-duong,
+	.nntm-thien-duong__inner,
+	.nntm-footer.nntm-footer--inner,
+	.nntm-footer--inner .nntm-footer__bar {
+		height: auto;
+		min-height: 0;
+	}
+
+	.nntm-lien-dan-khoa > .nntm-card-list__band,
+	.nntm-lien-dan-lich > .nntm-card-list__band {
+		padding: 40px 0;
+	}
+
+	.nntm-lien-dan-khoa .nntm-card-list__header-row,
+	.nntm-lien-dan-lich .nntm-card-list__header-row {
+		position: static;
+		width: auto;
+		height: auto;
+		margin: 0 20px 24px;
+		padding: 0;
+		gap: 12px;
+	}
+
+	.nntm-lien-dan-khoa .nntm-card-list__heading,
+	.nntm-lien-dan-lich .nntm-card-list__heading,
+	.nntm-thien-duong__heading {
+		font-size: clamp(36px, 9vw, 52px);
+		line-height: 1.1;
+	}
+
+	.nntm-lien-dan-khoa .nntm-card-list__carousel,
+	.nntm-lien-dan-lich .nntm-card-list__carousel {
+		width: 100%;
+		height: auto;
+		margin-left: 0;
+		overflow: hidden;
+	}
+
+	.nntm-lien-dan-khoa .nntm-card-list__track,
+	.nntm-lien-dan-lich .nntm-card-list__track {
+		height: auto;
+		gap: 16px;
+	}
+
+	.nntm-lien-dan-khoa .nntm-card-list__track-item {
+		flex-basis: min(84vw, 388px);
+		height: auto;
+	}
+
+	.nntm-lien-dan-lich .nntm-card-list__track-item {
+		flex-basis: min(84vw, 348px);
+	}
+
+	.nntm-lien-dan-khoa .nntm-card-list__track-item:first-child,
+	.nntm-lien-dan-lich .nntm-card-list__track-item:first-child {
+		margin-inline-start: 20px;
+	}
+
+	.nntm-thien-duong__inner {
+		padding: 40px 20px;
+	}
+
+	.nntm-thien-duong__header {
+		height: auto;
+	}
+
+	.nntm-thien-duong__embed {
+		grid-template-columns: 1fr;
+		height: auto;
+	}
+
+	.nntm-thien-duong__cover,
+	.nntm-thien-duong__player {
+		width: 100%;
+		height: auto;
+		min-height: 0;
+		aspect-ratio: 16 / 10;
+	}
+
+	.nntm-footer.nntm-footer--inner {
+		padding: 10px;
+	}
+
+	.nntm-footer--inner .nntm-footer__bar {
+		padding: 15px;
+	}
+}

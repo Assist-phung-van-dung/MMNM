@@ -128,7 +128,9 @@ function nntm_hanh_gia_chan_quyen(): void {
 	$post = get_queried_object();
 	$cap  = nntm_bai_thuoc_hanh_gia( $post instanceof WP_Post ? $post : null );
 
-	if ( null === $cap ) {
+	// Quyết định mới: Đại Sĩ và nội dung chung của Nhập Pháp Giới là
+	// public. Chỉ nhánh Kim Cương mới yêu cầu đăng nhập.
+	if ( 'kim_cuong' !== $cap ) {
 		return;
 	}
 
@@ -176,7 +178,7 @@ add_action( 'template_redirect', 'nntm_hanh_gia_chan_quyen' );
 function nntm_trang_can_dang_nhap(): array {
 	return (array) apply_filters(
 		'nntm_trang_can_dang_nhap',
-		array( 'dai-si-hanh-gia', 'kim-cuong-hanh-gia' )
+		array( 'kim-cuong-hanh-gia' )
 	);
 }
 
@@ -204,7 +206,7 @@ function nntm_term_khu_han_che(): array {
 		'nntm_term_khu_han_che',
 		// 'nhap-phap-gioi': term CHA — bài gắn thẳng vào đây (không qua 2 term
 		// con) từng lọt qua, xem ghi chú SỬA 17/08/2026 ở nntm_trang_can_dang_nhap().
-		array( 'nhap-phap-gioi', 'dai-si-hanh-gia', 'kim-cuong-hanh-gia' )
+		array( 'kim-cuong-hanh-gia' )
 	);
 }
 
@@ -349,6 +351,57 @@ function nntm_hanh_gia_loai_khoi_truy_van( WP_Query $query ): void {
 	$query->set( 'tax_query', $tax_query );
 }
 add_action( 'pre_get_posts', 'nntm_hanh_gia_loai_khoi_truy_van' );
+
+/**
+ * Đồng bộ quyền của hai thẻ trên trang Nhập Pháp Giới với quyết định mới
+ * mà không bắt quản trị phải mở Gutenberg và lưu lại block cũ:
+ * - Đại Sĩ Hành Giả: public.
+ * - Kim Cương Hành Giả: cần đăng nhập.
+ *
+ * Block cũ trong database vẫn có requiredAccess="login" cho cả hai; filter
+ * này là lớp tương thích runtime. Khi admin sửa/lưu block sau này, quy tắc
+ * vẫn không bị lệch.
+ *
+ * @param bool  $can_access Kết quả gốc của block.
+ * @param array $card       Dữ liệu thẻ rank-card.
+ * @return bool
+ */
+function nntm_nhap_phap_gioi_rank_card_access( bool $can_access, array $card ): bool {
+	$target_url = isset( $card['targetUrl'] ) ? (string) $card['targetUrl'] : '';
+	$path       = $target_url ? (string) wp_parse_url( $target_url, PHP_URL_PATH ) : '';
+	$slug       = $path ? sanitize_title( basename( untrailingslashit( $path ) ) ) : '';
+
+	if ( 'dai-si-hanh-gia' === $slug ) {
+		return true;
+	}
+
+	if ( 'kim-cuong-hanh-gia' === $slug ) {
+		return current_user_can( 'manage_options' ) || is_user_logged_in();
+	}
+
+	return $can_access;
+}
+add_filter( 'nntm_rank_card_can_access', 'nntm_nhap_phap_gioi_rank_card_access', 10, 2 );
+
+/**
+ * CSS khóa riêng trang Nhập Pháp Giới theo frame thiết kế 1366px.
+ * Gót Son/GITA dùng chính block chung với homepage; stylesheet này chỉ
+ * khóa các mốc của hero/rank-card và không sửa style global của card-list.
+ */
+function nntm_nhap_phap_gioi_enqueue_assets(): void {
+	if ( ! is_page( 'nhap-phap-gioi' ) ) {
+		return;
+	}
+
+	$css_path = NNTM_THEME_DIR . '/assets/css/pages/nhap-phap-gioi.css';
+	wp_enqueue_style(
+		'nntm-nhap-phap-gioi',
+		NNTM_THEME_URI . '/assets/css/pages/nhap-phap-gioi.css',
+		array( 'nntm-tokens', 'nntm-base', 'nntm-layout' ),
+		nntm_asset_version( $css_path )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'nntm_nhap_phap_gioi_enqueue_assets', 30 );
 
 /* =========================================================================
  * 4. CSS riêng cho khu Hành Giả — chỉ nạp đúng trang cần.

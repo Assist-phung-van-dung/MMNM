@@ -43,6 +43,25 @@ function nntm_search_model(): string {
 }
 
 /**
+ * Correlates one WordPress request to every Python call it makes.
+ *
+ * Generated once per PHP request and reused for all of them, so a log reader
+ * can join the WordPress-side line with the matching Uvicorn access-log lines
+ * by this value alone — no need to guess which request caused which call.
+ *
+ * @return string
+ */
+function nntm_search_request_id(): string {
+	static $id = null;
+
+	if ( null === $id ) {
+		$id = substr( wp_generate_password( 16, false, false ), 0, 12 );
+	}
+
+	return $id;
+}
+
+/**
  * POST a file to the service as multipart/form-data.
  *
  * @param string $endpoint  Path, e.g. '/anh/tu-khoa'.
@@ -72,29 +91,72 @@ function nntm_search_post_file( string $endpoint, string $file_path, string $fie
 		. $body . "\r\n"
 		. "--{$boundary}--\r\n";
 
+	$request_id = nntm_search_request_id();
+	$started_at = microtime( true );
+
 	$response = wp_remote_post(
 		nntm_search_service_url() . $endpoint,
 		array(
 			'timeout' => $timeout,
-			'headers' => array( 'Content-Type' => 'multipart/form-data; boundary=' . $boundary ),
+			'headers' => array(
+				'Content-Type' => 'multipart/form-data; boundary=' . $boundary,
+				'X-Request-Id' => $request_id,
+			),
 			'body'    => $payload,
 		)
 	);
+
+	$http_ms = (int) round( ( microtime( true ) - $started_at ) * 1000 );
 
 	if ( is_wp_error( $response ) ) {
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 			error_log( '[nntm-search] service: ' . $response->get_error_message() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 		}
+
+		nntm_search_log_python_call( $request_id, $endpoint, $http_ms, false );
+
 		return $generic;
 	}
 
-	if ( 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
+	$status = (int) wp_remote_retrieve_response_code( $response );
+
+	nntm_search_log_python_call( $request_id, $endpoint, $http_ms, 200 === $status );
+
+	if ( 200 !== $status ) {
 		return $generic;
 	}
 
 	$data = json_decode( (string) wp_remote_retrieve_body( $response ), true );
 
 	return is_array( $data ) ? $data : $generic;
+}
+
+/**
+ * One structured log line per call to the Python service.
+ *
+ * Every caller of nntm_search_post_file() goes through here, so this is the
+ * single chokepoint for Python-call timing — no need to instrument each of
+ * the callers (image keyword read, image embed, PDF text extraction)
+ * separately. Deliberately NOT logged: file contents, base64, cookies, or any
+ * request/authorization header.
+ *
+ * @param string $request_id Correlates to the matching Uvicorn access-log line.
+ * @param string $endpoint   Python endpoint called, e.g. '/anh/tu-khoa'.
+ * @param int    $http_ms    Wall-clock time of the HTTP round trip.
+ * @param bool   $ok         Whether the call returned HTTP 200.
+ */
+function nntm_search_log_python_call( string $request_id, string $endpoint, int $http_ms, bool $ok ): void {
+	// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- structured, no sensitive fields.
+	error_log(
+		'[nntm-search] ' . wp_json_encode(
+			array(
+				'request_id'      => $request_id,
+				'python_endpoint' => $endpoint,
+				'python_http_ms'  => $http_ms,
+				'ok'              => $ok,
+			)
+		)
+	);
 }
 
 /**

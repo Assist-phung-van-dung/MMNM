@@ -1,0 +1,24 @@
+.nntm-fgc-editor-root { max-width: 100%; }
+.nntm-fgc-editor-root .nntm-feature-gallery-carousel { min-height: 650px; }
+.nntm-fgc-editor-main-preview { pointer-events: auto; }
+.nntm-fgc-editor-main-preview .nntm-feature-gallery-carousel__detail { pointer-events: none; }
+.nntm-fgc-editor-placeholder { display:flex; align-items:center; justify-content:center; width:100%; height:100%; min-height:220px; padding:20px; box-sizing:border-box; background:#eee9d8; color:#747766; font-size:14px; text-align:center; }
+.nntm-fgc-editor-media-control { margin: 8px 0 14px; }
+.nntm-fgc-editor-media-thumb { display:block; width:100%; max-width:320px; aspect-ratio:16/9; margin:0 0 8px; object-fit:cover; background:#eee; }
+.nntm-fgc-editor-media-empty { display:flex; align-items:center; justify-content:center; width:100%; max-width:320px; aspect-ratio:16/9; margin:0 0 8px; background:#f0f0f0; border:1px dashed #aaa; color:#666; font-size:12px; }
+.nntm-fgc-editor-media-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.nntm-fgc-editor-popup-preview { width:min(100%,1184px); margin:24px auto 0; background:#000; color:#fff; padding:18px; box-sizing:border-box; }
+.nntm-fgc-editor-popup-bar { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:14px; color:#f7f1de; }
+.nntm-fgc-editor-popup-stage { position:relative; display:grid; grid-template-columns:48px minmax(0,1fr) 48px; gap:12px; align-items:center; min-height:390px; }
+.nntm-fgc-editor-popup-card { min-width:0; text-align:center; }
+.nntm-fgc-editor-popup-card img { display:block; width:100%; height:330px; object-fit:contain; background:#000; }
+.nntm-fgc-editor-popup-copy { max-width:760px; margin:10px auto 0; }
+.nntm-fgc-editor-popup-copy h4 { margin:0; color:#fff; font-size:20px; line-height:28px; }
+.nntm-fgc-editor-popup-copy p { margin:7px 0 0; color:#e0e0e0; font-size:14px; line-height:22px; }
+.nntm-fgc-editor-popup-empty { display:flex; align-items:center; justify-content:center; height:330px; background:#171717; color:#aaa; }
+.nntm-fgc-editor-popup-arrow { display:flex; align-items:center; justify-content:center; width:48px; height:48px; padding:0; border:1px solid rgba(255,255,255,.35); background:transparent; color:#fff; font-size:22px; }
+@media (max-width: 782px) {
+	.nntm-fgc-editor-root .nntm-feature-gallery-carousel { min-height:520px; }
+	.nntm-fgc-editor-popup-stage { grid-template-columns:40px minmax(0,1fr) 40px; }
+	.nntm-fgc-editor-popup-card img,.nntm-fgc-editor-popup-empty { height:240px; }
+}

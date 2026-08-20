@@ -1,0 +1,316 @@
+/* =============================================================
+   Khóa Tu / Lịch Tu
+   - Listing: cùng hệ 1366 / 1184 và hàng so le như Nguyên Thủy.
+   - Detail: tái dùng article-detail, chỉ thêm action + modal đăng ký.
+   ============================================================= */
+
+.tax-nntm_topic.term-khoa-tu .nntm-site-frame,
+.tax-nntm_topic.term-lich-tu .nntm-site-frame,
+.single-nntm_retreat .nntm-site-frame {
+	background-color: var(--nntm-trang);
+}
+
+/* ---------- Listing ---------- */
+.nntm-retreat-topic {
+	width: 100%;
+	max-width: var(--nntm-w-rong);
+	margin-inline: auto;
+	background-color: var(--nntm-trang);
+}
+
+.nntm-retreat-topic .nntm-article-rows__inner {
+	width: min(1184px, calc(100% - 40px));
+	max-width: 1184px;
+	margin-inline: auto;
+	padding: 60px 0 72px;
+}
+
+.nntm-retreat-topic .nntm-article-rows__heading {
+	margin-bottom: 30px;
+}
+
+.nntm-retreat-topic .nntm-article-rows__list {
+	padding-bottom: 0;
+}
+
+.nntm-retreat-topic .nntm-article-rows__actions {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 40px;
+	margin-top: 4px;
+}
+
+.nntm-retreat-topic .nntm-article-rows__more {
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-xs);
+	font-weight: 700;
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-chu);
+	text-decoration: underline;
+	text-underline-offset: 0.18em;
+}
+
+.nntm-retreat-topic .nntm-section-pagination {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 30px;
+	width: 100%;
+	margin-top: 60px;
+}
+
+.nntm-retreat-topic .nntm-section-pagination__numbers {
+	display: flex;
+	align-items: center;
+	gap: 30px;
+}
+
+.nntm-retreat-topic .nntm-section-pagination__arrow {
+	width: 58px;
+	height: 58px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--nntm-den);
+	color: var(--nntm-trang);
+	text-decoration: none;
+	font-size: var(--nntm-fs-lg);
+}
+
+.nntm-retreat-topic .nntm-section-pagination__arrow.is-disabled {
+	opacity: 0.85;
+}
+
+.nntm-retreat-topic .nntm-section-pagination__number,
+.nntm-retreat-topic .nntm-section-pagination__ellipsis {
+	min-width: 12px;
+	text-align: center;
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+	line-height: 1;
+	color: var(--nntm-reu-nhat);
+	text-decoration: none;
+}
+
+.nntm-retreat-topic .nntm-section-pagination__number.is-current {
+	color: var(--nntm-chu);
+}
+
+/* ---------- Detail ---------- */
+.single-nntm_retreat .nntm-article-detail {
+	width: 100%;
+	max-width: var(--nntm-w-rong);
+	margin-inline: auto;
+	background-color: var(--nntm-trang);
+}
+
+.nntm-retreat-detail__actions {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 32px;
+	margin-top: 30px;
+}
+
+.nntm-retreat-detail__register,
+.nntm-retreat-detail__share {
+	appearance: none;
+	border: 0;
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-xs);
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.nntm-retreat-detail__register {
+	min-height: 48px;
+	padding: 0 28px;
+	background-color: var(--nntm-muc);
+	color: var(--nntm-trang);
+}
+
+.nntm-retreat-detail__register:hover,
+.nntm-retreat-detail__register:focus-visible {
+	background-color: var(--nntm-chinh);
+}
+
+.nntm-retreat-detail__share {
+	padding: 0;
+	background: transparent;
+	color: var(--nntm-chu);
+}
+
+.nntm-retreat-detail__share:hover,
+.nntm-retreat-detail__share:focus-visible {
+	color: var(--nntm-chinh-hover);
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
+}
+
+.nntm-retreat-detail__actions .nntm-favorite-button {
+	margin: 0;
+}
+
+/* Related dùng chính rule card-list của article-detail; chỉ chỉnh title case. */
+.nntm-retreat-detail__related .nntm-card-list__heading {
+	text-transform: none;
+}
+
+/* ---------- Modal đăng ký ---------- */
+.nntm-modal-open {
+	overflow: hidden;
+}
+
+.nntm-retreat-modal[hidden] {
+	display: none;
+}
+
+.nntm-retreat-modal {
+	position: fixed;
+	inset: 0;
+	z-index: 100000;
+	display: grid;
+	place-items: center;
+	padding: 20px;
+}
+
+.nntm-retreat-modal__backdrop {
+	position: absolute;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.48);
+}
+
+.nntm-retreat-modal__dialog {
+	position: relative;
+	z-index: 1;
+	width: min(560px, 100%);
+	max-height: calc(100vh - 40px);
+	overflow: auto;
+	padding: 36px;
+	background-color: var(--nntm-trang);
+	box-shadow: var(--nntm-sh-card);
+}
+
+.nntm-retreat-modal__close {
+	position: absolute;
+	top: 12px;
+	right: 14px;
+	width: 40px;
+	height: 40px;
+	border: 0;
+	background: transparent;
+	color: var(--nntm-chu);
+	font-size: 30px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.nntm-retreat-modal__title {
+	margin: 0;
+	font-family: var(--nntm-font-display);
+	font-size: var(--nntm-fs-3xl);
+	color: var(--nntm-chinh);
+}
+
+.nntm-retreat-modal__retreat-name {
+	margin: 8px 0 24px;
+	font-family: var(--nntm-font-serif);
+	color: var(--nntm-chu-phu);
+}
+
+.nntm-retreat-modal__form {
+	display: grid;
+	gap: 16px;
+}
+
+.nntm-retreat-modal__field {
+	display: grid;
+	gap: 7px;
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+	font-weight: 600;
+	color: var(--nntm-chu);
+}
+
+.nntm-retreat-modal__field input,
+.nntm-retreat-modal__field textarea {
+	width: 100%;
+	border: 1px solid var(--nntm-duong-vien);
+	border-radius: 0;
+	padding: 11px 12px;
+	background: var(--nntm-trang);
+	color: var(--nntm-chu);
+	font: inherit;
+}
+
+.nntm-retreat-modal__field input:focus,
+.nntm-retreat-modal__field textarea:focus {
+	outline: 2px solid var(--nntm-chinh);
+	outline-offset: 1px;
+}
+
+.nntm-retreat-modal__submit {
+	justify-self: start;
+	min-height: 48px;
+	padding: 0 28px;
+	border: 0;
+	background: var(--nntm-muc);
+	color: var(--nntm-trang);
+	font-family: var(--nntm-font-sans);
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.nntm-retreat-modal__submit:disabled {
+	opacity: 0.55;
+	cursor: default;
+}
+
+.nntm-retreat-modal__message {
+	min-height: 1.5em;
+	margin: 0;
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+}
+
+.nntm-retreat-modal__message.is-success { color: var(--nntm-chinh); }
+.nntm-retreat-modal__message.is-error { color: var(--nntm-do-tham); }
+
+.nntm-retreat-modal__honeypot {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+@media (max-width: 1024px) {
+	.nntm-retreat-topic .nntm-article-rows__inner {
+		padding-block: 40px 60px;
+	}
+}
+
+@media (max-width: 640px) {
+	.nntm-retreat-topic .nntm-article-rows__inner {
+		width: calc(100% - 30px);
+	}
+
+	.nntm-retreat-topic .nntm-section-pagination,
+	.nntm-retreat-topic .nntm-section-pagination__numbers {
+		gap: 16px;
+	}
+
+	.nntm-retreat-topic .nntm-section-pagination__arrow {
+		width: 48px;
+		height: 48px;
+	}
+
+	.nntm-retreat-detail__actions {
+		gap: 18px 24px;
+	}
+
+	.nntm-retreat-modal__dialog {
+		padding: 30px 20px 24px;
+	}
+}
