@@ -128,8 +128,8 @@
 	 * keeping the same cap height. Scale only the fallback glyphs so the
 	 * 147x48 brand box stays unchanged. */
 	.home .nntm-header__logo-line {
-		transform: scaleX(1.29);
-		transform-origin: center;
+		/* transform: scaleX(1.29);
+		transform-origin: center; */
 	}
 
 	.home .nntm-header__nav {
