@@ -291,7 +291,7 @@
    SUY DOAN: chưa có Figma mobile — Figma chỉ có khung desktop 1366px.
    Dưới điểm ngắt này: dải xếp dọc (sân khấu video trên, chữ dưới).
    ============================================================= */
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-engineering-earth__white {
 		min-height: 0;
 		padding-block: var(--nntm-sp-8);
@@ -307,7 +307,16 @@
 
 	.nntm-engineering-earth__band-inner {
 		grid-template-columns: 1fr;
-		grid-template-rows: 240px auto; /* SUY DOAN: chua co Figma mobile — hang 1 danh cho khung media, hang 2 cho chu */
+		/*
+		 * SUA 20/08/2026: hang 1 de `auto`, KHONG khoa 240px.
+		 *
+		 * .__video-slot--main da tu mang `aspect-ratio: 590 / 298` (dung ti le
+		 * Figma). Khoa thang hang grid ve 240px la ep nguoc lai ti le do: do
+		 * duoc anh poster ben trong cao 340px trong o cao 240px nen mat 100px
+		 * (overflow:hidden cat am tham), khung 390 mat 42px. De `auto` thi
+		 * chieu cao tu ti le khung tinh ra, vua khit va dung ti le thiet ke.
+		 */
+		grid-template-rows: auto auto;
 		height: auto;
 	}
 

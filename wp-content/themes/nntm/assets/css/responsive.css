@@ -1,0 +1,136 @@
+/* =============================================================
+   NNTM — LỚP RESPONSIVE
+
+   BỐI CẢNH
+   Figma khách gửi CHỈ có khung desktop 1366px. Bố cục desktop vì thế là
+   một BẢN VẼ THEO PIXEL: riêng trang chủ có ~60 số đo cứng, gồm cả chiều
+   cao dải (768/870/945/819) và toạ độ tuyệt đối (left: 958, top: 772).
+
+   KIẾN TRÚC (anh Úy chốt 20/08/2026 — thay hẳn cách làm trước đó)
+
+     >= 1366px : NỀN của mỗi dải section tràn hết bề rộng màn; NỘI DUNG
+                 bên trong dừng ở max-width 1366 và canh giữa. Tỉ lệ, cỡ
+                 chữ, khoảng cách của bản thiết kế giữ NGUYÊN — màn 1920 /
+                 2K / siêu rộng chỉ được thêm nền tràn, không phóng to gì.
+     1152-1365 : cùng cấu trúc đó, nhưng container co theo khung nhìn và
+                 mọi bề rộng cứng đổi sang `max-width` để tự thu.
+     <= 1151px : bố cục xếp lại (reflow) — xem thang bậc bên dưới.
+
+   ĐÃ BỎ: bản trước thu nhỏ đồng đều cả khung bằng `zoom` cho màn dưới
+   1366. Anh Úy chốt KHÔNG dùng `zoom` / `transform: scale()` nữa, nên
+   toàn bộ khối đó đã gỡ. Hệ quả cần biết: `zoom` từng bảo đảm bên trong
+   khung luôn được dàn ở đúng 1366px nên mọi số px cứng đều khớp; giờ
+   không còn lá chắn đó, các bề rộng cứng phải tự co bằng `max-width`
+   (xem chú thích tại từng chỗ đã đổi trong các file page/block).
+
+   THANG ĐIỂM NGẮT CỦA TOÀN THEME (chuẩn hoá 20/08/2026 — trước đó có tới
+   11 mốc rời rạc 1366/1224/1100/1025/901/782/768/760/700/640/600/520):
+
+     >= 1152px : khung thiết kế 1366, nền tràn màn
+     <= 1151px : tablet rộng — vẫn hai/ba cột, thu lề và cỡ chữ một bậc
+     <= 1023px : tablet — các lưới hai cột gộp về một (mosaic, feature, hero)
+     <=  767px : điện thoại — xếp dọc hoàn toàn
+     <=  480px : điện thoại nhỏ — drawer tràn màn, cỡ chữ nhỏ thêm một bậc
+
+   Đầu trang tự gập menu vào drawer từ 1151px (xem header.css): ở 1024px
+   sáu mục tiếng Việt + ô tìm kiếm + đăng nhập + ngôn ngữ cần ~1160px nên
+   menu ngang tràn ra ngoài rồi đè lên logo.
+
+   Nạp SAU tokens/base/layout/header/footer — xem inc/enqueue.php.
+   ============================================================= */
+
+
+/* =============================================================
+   DẢI TRÀN MÀN — NỘI DUNG DỪNG Ở 1366
+
+   base.css đã gỡ `max-width` của .nntm-site-frame nên khung tràn hết màn.
+   Việc còn lại: mỗi dải section phải tự chặn nội dung của nó.
+
+   Phần lớn block đã có sẵn lớp bọc trong (`__inner`) mang `max-width`
+   đúng số Figma (1366 / 1180 / 1082 / 1286…) nên tự khớp. Khối dưới đây
+   chỉ vá những dải KHÔNG có lớp bọc đó — đo bằng trình duyệt ở khung
+   1920 sau khi gỡ trần khung:
+
+     .nntm-hero-slider__stage      -> giãn 1905, không có trần
+     .nntm-card-list__band         -> nền tràn 1905 (ĐÚNG), nhưng khung
+                                      cuộn/băng bên trong cũng giãn theo
+     .nntm-engineering-earth       -> ngược lại: section chỉ 1180, nền đen
+                                      KHÔNG tràn màn
+     .nntm-header                  -> chỉ 1366, nền trắng không tràn màn
+
+   ĐÃ VÁ Ở ĐÂU (mỗi chỗ đều có chú thích tại chính nó):
+     header.css            gỡ trần 1366 của .nntm-header (thanh .__bar
+                           vốn đã có trần 1366 + canh giữa)
+     footer.css            .nntm-footer__bar: `max-width: none` -> 1326
+     base.css              gỡ trần 1366 của .nntm-site-frame
+     homepage-figma.css    dải đen Engineering Earth vẽ nền bằng ::before
+                           rộng 100vw, hộp dải giữ nguyên hình học;
+                           bốn khối tuyệt đối của hero cộng --nntm-cot-le
+     card-list / term-list / tru-xu-list / dieu-thuong-figma
+                           `.nntm-container { max-width: none }` -> trần
+                           1366 + canh giữa
+
+   Bề rộng cứng >= 600px trong các khối `@media (min-width: 1152px)` đã
+   đổi sang `width: 100%; max-width: <số cũ>` (33 khai báo) và các lưới
+   `grid-template-columns` px đổi sang `minmax(0, Nfr)` — nhờ vậy từ 1366
+   trở lên giá trị chạm trần nên KHÔNG đổi một pixel nào so với Figma, còn
+   dưới 1366 thì container tự co theo khung nhìn.
+   ============================================================= */
+
+
+/* =============================================================
+   BẬC CỠ CHỮ HIỂN THỊ CHO MÀN HẸP
+
+   SUY DOAN: chưa có Figma mobile. Ba token dưới đây là cỡ chữ TIÊU ĐỀ
+   LỚN của bản desktop 1366 (58 / 52 / 38). Từ 1151px trở xuống bố cục
+   xếp lại nhưng KHÔNG có bậc chữ nào tương ứng, nên đo được tiêu đề
+   58px nằm trên khung 390px (khoảng 6 ký tự một dòng).
+
+   Hạ thẳng ở TOKEN thay vì đi sửa từng component là có ý:
+     - Một chỗ duy nhất, mọi trang/block dùng token đều co theo, không
+       phải nhớ vá 25 file.
+     - Chỉ GIẢM cỡ nên không thể sinh tràn mới.
+     - Các chỗ đã tự lo bằng clamp() ở khối <=1024 riêng (Liên Đàn,
+       Hoa Khai, Nhập Pháp Giới...) viết px cứng nên không bị đụng —
+       giữ nguyên quyết định đã chốt của từng trang.
+
+   Chỉ đụng ba token TIÊU ĐỀ; cỡ chữ thân bài (base/md/lg) giữ nguyên
+   để không làm hụt độ đọc.
+   ============================================================= */
+
+@media (max-width: 1151px) {
+	:root {
+		--nntm-fs-5xl: 2.75rem;  /* 44 — desktop 58 */
+		--nntm-fs-4xl: 2.5rem;   /* 40 — desktop 52 */
+		--nntm-fs-3xl: 2rem;     /* 32 — desktop 38 */
+	}
+}
+
+@media (max-width: 767px) {
+	:root {
+		--nntm-fs-5xl: 2.125rem;  /* 34 */
+		--nntm-fs-4xl: 2rem;      /* 32 */
+		--nntm-fs-3xl: 1.75rem;   /* 28 */
+	}
+}
+
+
+
+/* =============================================================
+   --nntm-cot-le : LỀ TRÁI CỦA CỘT 1366 CĂN GIỮA
+
+   Dùng cho các khối định vị TUYỆT ĐỐI bên trong một dải đã tràn hết màn
+   (hero, dải đen…). Những khối đó neo bằng px đếm từ mép trái khung
+   thiết kế 1366 (`left: 93px`, `left: 958px`…); khi dải tràn ra 1920 thì
+   mép trái của dải không còn là mép cột nữa, nên phải cộng thêm phần
+   thừa hai bên.
+
+   `100%` ở đây được thay thế NGUYÊN VĂN rồi mới tính, nên nó là bề rộng
+   KHỐI CHỨA của chính phần tử dùng biến — đúng bằng bề rộng dải. Màn hẹp
+   hơn 1366 thì hiệu số âm, `max()` kẹp về 0 và mọi số đo trở lại đúng
+   như bản gốc.
+   ============================================================= */
+
+:root {
+	--nntm-cot-le: max(0px, calc((100% - var(--nntm-w-rong)) / 2));
+}

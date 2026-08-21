@@ -124,14 +124,14 @@
 
 .nntm-dt__cta:hover { color: var(--nntm-trang); background: var(--nntm-reu); }
 
-@media (max-width: 900px) {
+@media (max-width: 1023px) {
 	.nntm-dt__banner { height: 390px; }
 	.nntm-dt__story-inner { width: min(100% - 48px, 860px); padding-top: 130px; padding-bottom: 64px; }
 	.nntm-dt__portrait { top: -105px; width: 210px; height: 210px; }
 	.nntm-dt__gallery { gap: 22px; }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767px) {
 	.nntm-dt__banner { height: 300px; }
 	.nntm-dt__story-inner { width: min(100% - 36px, 560px); padding: 104px 0 52px; }
 	.nntm-dt__portrait { top: -82px; width: 164px; height: 164px; }

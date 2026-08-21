@@ -13,12 +13,21 @@
 .nntm-card-list {
 	display: block;
 }
+.page-id-242 .nntm-card-list__header-row {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--nntm-sp-5);
+}
 
 .nntm-card-list__header-row {
 	display: flex;
-	align-items: flex-end;
+	align-items: center;
 	justify-content: space-between;
 	gap: var(--nntm-sp-5);
+}
+.page-id-242 .nntm-card-list__header-row {
+	justify-content: center;
 }
 
 .nntm-card-list__view-all {
@@ -44,7 +53,9 @@
 
 .nntm-lien-dan-khoa > .nntm-card-list__band > .nntm-container,
 .nntm-lien-dan-lich > .nntm-card-list__band > .nntm-container {
-	max-width: none;
+	/* SUA 20/08/2026: `none` -> tran 1366 + canh giua (khung site da bo tran). */
+	max-width: var(--nntm-w-rong);
+	margin-inline: auto;
 	padding-inline: 0;
 }
 
@@ -63,7 +74,7 @@
 	position: relative;
 }
 
-@media (min-width: 901px) {
+@media (min-width: 1152px) {
 	/* Chia hai cột thật: vùng cuộn bắt đầu sau cột tiêu đề và bị cắt tại đó,
 	   nên thẻ không thể chạy đè lên chữ Khoá Tu. */
 	.nntm-lien-dan-khoa .nntm-card-list__carousel {
@@ -267,7 +278,9 @@
 }
 
 .nntm-hk-publications > .nntm-card-list__band > .nntm-container {
-	max-width: none;
+	/* SUA 20/08/2026: `none` -> tran 1366 + canh giua (khung site da bo tran). */
+	max-width: var(--nntm-w-rong);
+	margin-inline: auto;
 	padding-inline: 0;
 }
 
@@ -379,7 +392,7 @@
 }
 
 /* Hover theo ảnh mẫu: cả dãy bìa thu lại, xếp chồng và xòe như kệ sách. */
-@media (hover: hover) and (min-width: 901px) {
+@media (hover: hover) and (min-width: 1152px) {
 	.nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) {
 		align-items: center;
 		padding-block: var(--nntm-sp-6);
@@ -413,12 +426,12 @@
 	}
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1151px) {
 	.nntm-hk-publications .nntm-card-list__track-item { flex-basis: min(78vw, 320px); }
 	.nntm-hk-publications .nntm-card-list__carousel { --nntm-carousel-gutter: var(--nntm-sp-5); }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1151px) {
 	.nntm-lien-dan-khoa .nntm-card-list__header-row {
 		position: static;
 		width: auto;
@@ -523,7 +536,7 @@
  * Ghi de max-width mac dinh cua .nntm-container (1220) va gap mac dinh
  * cua .nntm-grid--3 (50) CHI trong pham vi khoi nen-cham nay.
  */
-@media (min-width: 1024px) {
+@media (min-width: 1152px) {
 	.nntm-card-list--nen-cham > .nntm-card-list__band > .nntm-container {
 		max-width: 1204px;
 	}
@@ -610,7 +623,7 @@
 	margin-bottom: var(--nntm-sp-8);
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1152px) {
 	.nntm-card-list--nen-vang > .nntm-card-list__band > .nntm-container {
 		max-width: 1204px; /* 384*3 + 26*2 = 1204 — khung desktop da chot */
 	}
@@ -768,7 +781,17 @@
    ============================================================= */
 .nntm-card-list:has(> .nntm-card-list__heading-above) > .nntm-card-list__band > .nntm-container,
 .nntm-card-list--nen-cam > .nntm-card-list__band > .nntm-container {
-	max-width: none;
+	/*
+	 * SUA 20/08/2026: `max-width: none` doi thanh tran 1366 + canh giua.
+	 *
+	 * Y do cu van dung: go tran 1220 va dem 40 cua .nntm-container de bang
+	 * the bat dau dung x=73/90 tinh tu mep KHUNG THIET KE. Nhung tu khi
+	 * base.css bo tran 1366 cua khung site, `none` co nghia la keo het 1920
+	 * — bang the giai ra giua man, sai han thiet ke. Chan lai dung 1366 roi
+	 * canh giua thi giu duoc y do goc ma nen dai (.__band) van tran man.
+	 */
+	max-width: var(--nntm-w-rong);
+	margin-inline: auto;
 	padding-inline: 0;
 }
 
@@ -908,7 +931,7 @@
 
 /* SUY DOAN: chua co Figma mobile — man hep thi bo het cac lui 93/200/73/90
    cua bo cuc tran vien, ve canh le thuong cho khoi khong tran ra ngoai. */
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-card-list__heading-above {
 		padding-inline: var(--nntm-sp-5);
 	}
@@ -930,6 +953,43 @@
 
 	.nntm-card-list__caption-below {
 		padding-inline: var(--nntm-sp-5);
+	}
+
+	/* =============================================================
+	   SUA 20/08/2026 (anh Uy bao caption-below de len section duoi o mobile,
+	   ca trang chu va Nhap Phap Gioi).
+
+	   VI SAO: khoi ghi chu dai o dau file giai thich ro y do — tren KHUNG
+	   1366 cua Figma, .__heading-above va .__caption-below duoc dua RA KHOI
+	   LUONG (`position: absolute`) de <section> do dung 544px nhu thiet ke,
+	   con hai doan chu do co y de len section tren/duoi (hai section ke deu
+	   nen trang nen khong lo).
+
+	   Ly le do CHI dung o khung 1366. Cang hep man thi caption cang nhieu
+	   dong: do duoc cao 77px o 1366 -> 78px o 768 -> 157px o 375, trong khi
+	   khoang trong dau section ke tiep lai cang co lai. Ket qua do duoc:
+	   caption de len section ke tiep 8px o 1366 (dung y do), 22px o 1024,
+	   48px o 768 va 127px o 375 — tuc dam thang vao noi dung.
+
+	   Duoi 1152 minh khong con dung lai ban ve theo pixel nua, nen tra hai
+	   doan chu ve LUONG: <section> tu cao them dung bang chung, khong the
+	   de len bat cu gi. Khong con so cung nao phai canh tay.
+	   ============================================================= */
+	.nntm-card-list__heading-above,
+	.nntm-card-list__caption-below {
+		position: static;
+		top: auto;
+		bottom: auto;
+		left: auto;
+		right: auto;
+	}
+
+	.nntm-card-list__heading-above {
+		margin-block-end: var(--nntm-sp-5);
+	}
+
+	.nntm-card-list__caption-below {
+		margin-block-start: var(--nntm-sp-5);
 	}
 }
 
@@ -1313,7 +1373,7 @@ a.nntm-card-list__paging-so:focus-visible {
 /* SUY DOAN: chua co Figma tablet — muc tieu "~2.2 the" (2 the nguyen + mot
    phan the thu 3), cung nguyen tac "lo mot phan the sau" nhu desktop. Thu gon
    khoang vien (gutter) hai ben cho vua khung hep hon 1366. */
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-card-list__carousel {
 		--nntm-carousel-per-view: 2.2;
 		--nntm-carousel-gap-count: 2;
@@ -1323,7 +1383,7 @@ a.nntm-card-list__paging-so:focus-visible {
 
 /* SUY DOAN: chua co Figma mobile — muc tieu "~1.2 the" (1 the nguyen + mot
    phan the thu 2), thu gon khoang vien (gutter) hai ben va nut o man nho. */
-@media (max-width: 600px) {
+@media (max-width: 767px) {
 	.nntm-card-list__carousel {
 		--nntm-carousel-per-view: 1.2;
 		--nntm-carousel-gap-count: 1;
@@ -1571,7 +1631,7 @@ a.nntm-card-list__paging-so:focus-visible {
 
 /* SUY DOAN: chua co Figma mobile — thu gon vien trai va giu the 348px
    (khong thu nho them de anh YouTube khong bi meo qua muc). */
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-card-list__yt-marquee {
 		padding-inline-start: var(--nntm-sp-7);
 	}
@@ -1886,7 +1946,7 @@ a.nntm-card-list__paging-so:focus-visible {
 	text-align: center;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1151px) {
 	.nntm-kc-nghi-quy .nntm-card-list__marquee-item {
 		flex: 0 0 min(80vw, 300px);
 	}

@@ -2,7 +2,8 @@
    NNTM — Bố cục dùng chung: container, lưới, tiện ích khoảng cách.
    Mobile-first: viết mặc định cho màn nhỏ trước, min-width nới dần.
 
-   Điểm ngắt: 480 / 768 / 1024 / 1366 (khớp --nntm-w-rong).
+   Điểm ngắt: 480 / 768 / 1024 / 1025 (khung thiết kế 1366 — xem responsive.css:
+   từ 1025px trở lên khung luôn dàn ở đúng 1366px rồi thu nhỏ vừa màn).
    Figma khách gửi CHỈ có khung desktop 1366px, CHƯA có bản mobile.
    Mọi chỗ có suy đoán responsive được đánh dấu bằng chú thích
    "SUY DOAN: chua co Figma mobile" ngay tại vị trí đó.
@@ -31,7 +32,7 @@
 	}
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1152px) {
 	.nntm-container {
 		padding-inline: var(--nntm-sp-8);
 	}
@@ -78,7 +79,7 @@
 	}
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1152px) {
 	.nntm-grid--3 {
 		grid-template-columns: repeat(3, 1fr);
 	}
@@ -94,9 +95,11 @@
 	}
 }
 
-@media (min-width: 1366px) {
+@media (min-width: 1152px) {
 	.nntm-grid--4 {
-		/* Khung Figma 1366 — mật độ khoảng cách dày như thiết kế gốc. */
+		/* Khung Figma 1366 — mật độ khoảng cách dày như thiết kế gốc. Cổng mở
+		   từ 1025 vì responsive.css thu nhỏ cả khung cho vừa màn, bên trong
+		   vẫn là 1366px đơn vị dàn trang. */
 		gap: var(--nntm-sp-8);
 	}
 }

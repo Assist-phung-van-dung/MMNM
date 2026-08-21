@@ -306,19 +306,18 @@
   position: relative;
   z-index: 1;
   max-height: 90vh;
-  overflow-y: auto;
 }
 
 /* Modal KHÔNG dùng ảnh nền phong cảnh núi — chỉ nổi trên lớp phủ tối,
    nên thẻ kính mờ bên trong cần nền một chút đậm hơn để chữ trắng đọc được. */
 .nntm-auth-modal__panel .nntm-auth-card {
-  background: rgba(60, 60, 60, 0.55);
+    background: rgb(0 0 0);
 }
 
 .nntm-auth-modal__close {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 0px;
+  right: 0px;
   z-index: 2;
   width: 32px;
   height: 32px;
@@ -332,7 +331,7 @@
 
 /* ---------- Mobile ---------- */
 /* SUY DOAN: chua co Figma mobile — thu nho the lai cho vua man hinh. */
-@media (max-width: 600px) {
+@media (max-width: 767px) {
   .nntm-auth-card,
   .nntm-auth-card--rong {
     width: 100%;

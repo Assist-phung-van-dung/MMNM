@@ -78,7 +78,7 @@ html.nntm-fgc-modal-open,body.nntm-fgc-modal-open { overflow: hidden; }
 
 @keyframes nntm-fgc-copy-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-@media (max-width:1100px) {
+@media (max-width:1151px) {
 	.nntm-feature-gallery-carousel { --fgc-active-width:min(626px,58vw); --fgc-active-height:min(352px,32.62vw); --fgc-inner-offset:12.1vw; --fgc-outer-offset:22.6vw; --fgc-inner-y:min(42px,3.91vw); --fgc-outer-y:min(71px,6.52vw); min-height:680px; padding:70px 0 54px; }
 	.nntm-feature-gallery-carousel__heading { font-size:48px; line-height:56px; }
 	.nntm-feature-gallery-carousel__slider { height: calc(var(--fgc-active-height) + 86px); margin-top:34px; }
@@ -86,7 +86,7 @@ html.nntm-fgc-modal-open,body.nntm-fgc-modal-open { overflow: hidden; }
 	.nntm-feature-gallery-modal__panel { padding-inline: 50px; }
 	.nntm-feature-gallery-modal__viewport { width: min(920px,calc(100vw - 190px)); }
 }
-@media (max-width:768px) {
+@media (max-width: 767px) {
 	.nntm-feature-gallery-carousel { --fgc-active-width:min(620px,78vw); --fgc-active-height:43.86vw; --fgc-inner-offset:17vw; --fgc-outer-offset:32vw; --fgc-inner-y:5.26vw; --fgc-outer-y:8.77vw; min-height:0; padding:50px 0 48px; }
 	.nntm-feature-gallery-carousel__header,.nntm-feature-gallery-carousel__slider { width:min(100% - 24px,720px); }
 	.nntm-feature-gallery-carousel__heading { font-size:40px; line-height:48px; }
@@ -107,7 +107,7 @@ html.nntm-fgc-modal-open,body.nntm-fgc-modal-open { overflow: hidden; }
 	.nntm-feature-gallery-modal__body h4 { font-size: 18px; line-height: 26px; }
 	.nntm-feature-gallery-modal__body p { font-size: 14px; line-height: 21px; }
 }
-@media (max-width:520px) {
+@media (max-width: 767px) {
 	.nntm-feature-gallery-carousel { --fgc-active-width:84vw; --fgc-active-height:47.23vw; --fgc-inner-offset:20vw; --fgc-outer-offset:37vw; --fgc-inner-y:5.67vw; --fgc-outer-y:9.45vw; padding:40px 0 42px; }
 	.nntm-feature-gallery-carousel__heading { font-size:34px; line-height:42px; }
 	.nntm-feature-gallery-carousel__slide[data-position="-2"],.nntm-feature-gallery-carousel__slide[data-position="2"] { opacity:0; }

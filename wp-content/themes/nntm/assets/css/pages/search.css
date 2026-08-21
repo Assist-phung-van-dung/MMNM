@@ -141,7 +141,7 @@
    Dưới 900px hàng so le xếp dọc; lúc đó việc đảo bên không còn ý nghĩa
    nên bỏ luôn, tránh cảnh ảnh nhảy xuống dưới chữ ở hàng chẵn. */
 
-@media (max-width: 900px) {
+@media (max-width: 1023px) {
 	.nntm-search .nntm-article-rows__row,
 	.nntm-search .nntm-article-rows__row--reversed {
 		grid-template-columns: 1fr;

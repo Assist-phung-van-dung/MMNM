@@ -153,7 +153,7 @@ a.nntm-rank-card__cta:focus-visible {
 /* ---------- Responsive ---------- */
 /* SUY DOAN: chua co Figma mobile. The xep doc, dan het chieu rong khung
    hep, giu dung ty le anh/tieu de/nut de khong vo bo cuc. */
-@media (max-width: 900px) {
+@media (max-width: 1023px) {
 	.nntm-rank-card__overlay {
 		padding-top: var(--nntm-sp-10);
 	}

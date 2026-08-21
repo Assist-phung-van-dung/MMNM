@@ -68,7 +68,9 @@
 }
 
 .nntm-footer__bar {
-	max-width: none;
+	/* SUA 20/08/2026: `none` -> chan 1326 (so Figma) + canh giua; khung site
+	   khong con chan 1366 nen `none` se keo dai xam het 1920. */
+	max-width: 1326px;
 	margin-inline: auto;
 	background-color: var(--nntm-muc-nhat); /* tu Figma: khoi nen xam #4F4F4F, thut le nho dem ngang o .nntm-footer */
 	padding: var(--nntm-sp-5); /* 20 — dem trong khoi xam, quanh duong ke + hang noi dung */
@@ -251,7 +253,7 @@
 /* SUY DOAN: chua co Figma mobile — bo le trai 30 bat doi xung, chuyen ve
    can deu; xep doc khi khong con du cho cho ba khoi tren mot hang. */
 
-@media (max-width: 1365px) {
+@media (max-width: 1151px) {
 	.nntm-footer {
 		padding-inline: var(--nntm-sp-3);
 		padding-block: var(--nntm-sp-3);
@@ -262,7 +264,7 @@
 	}
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1023px) {
 	.nntm-footer__row {
 		flex-direction: column;
 		align-items: flex-start;
@@ -279,7 +281,7 @@
 	}
 }
 
-@media (max-width: 600px) {
+@media (max-width: 767px) {
 	.home .nntm-footer__share {
 		font-size: var(--nntm-fs-2xl);
 		line-height: var(--nntm-lh-chat);

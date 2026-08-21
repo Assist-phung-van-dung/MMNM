@@ -201,7 +201,7 @@
    hinh chi thu nho be rong the, khong doi sang bo cuc luoi, de giu dung
    tinh chat "cuon ngang" ma Figma the hien. */
 
-@media (max-width: 600px) {
+@media (max-width: 767px) {
 	.nntm-term-card {
 		flex-basis: 220px;                      /* SUY DOAN: thu nho de vua man hinh nho */
 	}
@@ -230,7 +230,9 @@
 }
 
 .nntm-term-list--phap-toa .nntm-container {
-	max-width: none;
+	/* SUA 20/08/2026: `none` -> tran 1366 + canh giua (khung site da bo tran). */
+	max-width: var(--nntm-w-rong);
+	margin-inline: auto;
 	padding-left: 124px;
 	padding-right: 0;
 }

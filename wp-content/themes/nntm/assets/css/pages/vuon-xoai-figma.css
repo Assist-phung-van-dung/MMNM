@@ -1,7 +1,7 @@
 /* Vườn Xoài — Figma frame 6386:5177. Page-scoped geometry only. */
 .nntm-main--full .nntm-page,.nntm-main--full .nntm-page__content{margin:0;padding:0}
 
-@media (min-width:901px){
+@media (min-width:1152px){
 /* Chuyện Về Thầy Tôi: y=76, h=600 */
 .nntm-lien-dan-khoa>.nntm-card-list__band{height:600px;min-height:600px;padding:60px 0 115px;background:#f7f1de;overflow:hidden;position:relative}
 .nntm-lien-dan-khoa>.nntm-card-list__band>.nntm-container{height:100%;max-width:none;padding:0}
@@ -56,5 +56,5 @@
 .nntm-lien-dan-khoa .nntm-card--khoa-tu,.nntm-lien-dan-lich .nntm-card--khoa-tu{transition:transform 360ms cubic-bezier(.22,.61,.36,1),box-shadow 360ms ease}
 .nntm-lien-dan-khoa .nntm-card--khoa-tu:hover,.nntm-lien-dan-lich .nntm-card--khoa-tu:hover{transform:translateY(-3px)}.nntm-lien-dan-khoa .nntm-card--khoa-tu:hover .nntm-card__img-el,.nntm-lien-dan-lich .nntm-card--khoa-tu:hover .nntm-card__img-el{transform:scale(1.025)}
 
-@media(max-width:900px){.nntm-lien-dan-khoa>.nntm-card-list__band,.nntm-lien-dan-lich>.nntm-card-list__band,.nntm-vx-shell,.nntm-vx-shell + .nntm-article-mosaic{height:auto;min-height:0}.nntm-vx-shell__inner{padding:55px 20px}.nntm-vx-shell__title{font-size:40px;line-height:48px}.nntm-vx-shell__stage{width:100%;height:auto;margin-top:32px}.nntm-vx-shell__slides{height:min(52vw,352px)}.nntm-vx-shell__slide{width:min(76vw,626px);height:100%}.nntm-vx-shell__slide:not(.is-active){opacity:0}.nntm-vx-shell__nav{top:calc(50% - 29px);background:rgba(255,255,255,.88)}.nntm-vx-shell__caption{margin-top:20px}}
+@media(max-width:1151px){.nntm-lien-dan-khoa>.nntm-card-list__band,.nntm-lien-dan-lich>.nntm-card-list__band,.nntm-vx-shell,.nntm-vx-shell + .nntm-article-mosaic{height:auto;min-height:0}.nntm-vx-shell__inner{padding:55px 20px}.nntm-vx-shell__title{font-size:40px;line-height:48px}.nntm-vx-shell__stage{width:100%;height:auto;margin-top:32px}.nntm-vx-shell__slides{height:min(52vw,352px)}.nntm-vx-shell__slide{width:min(76vw,626px);height:100%}.nntm-vx-shell__slide:not(.is-active){opacity:0}.nntm-vx-shell__nav{top:calc(50% - 29px);background:rgba(255,255,255,.88)}.nntm-vx-shell__caption{margin-top:20px}}
 @media(prefers-reduced-motion:reduce){.nntm-vx-shell__slide,.nntm-vx-shell__nav,.nntm-card--khoa-tu,.nntm-card__img-el{transition:none}}

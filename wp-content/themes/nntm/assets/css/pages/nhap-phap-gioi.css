@@ -88,7 +88,7 @@
 /* Khi màn nhỏ, bỏ các offset desktop của dải Gót Son; block global đã có
    responsive riêng, đây chỉ bảo đảm override page-specific không giữ lại
    khoảng thụt lớn. */
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-card-list__heading-above {
 		padding-inline: var(--nntm-sp-5);
 	}

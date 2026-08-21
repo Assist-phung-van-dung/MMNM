@@ -1,0 +1,434 @@
+/*
+ * Kim Cương Hành Giả — Figma 6376:7066.
+ *
+ * IMPORTANT: this stylesheet is enqueued only on /kim-cuong-hanh-gia/.
+ * It intentionally does NOT use WordPress generated page selectors such as
+ * the generated numeric page class. The five visual bands receive stable semantic classes from
+ * inc/kim-cuong-hanh-gia.php (and the seed files preserve the same classes).
+ *
+ * Confirmed content order:
+ *   1. .nntm-kchg-hero
+ *   2. .nntm-kchg-articles
+ *   3. .nntm-kchg-nghi-quy
+ *   4. .nntm-kchg-le-dan
+ *   5. .nntm-kchg-ranking
+ */
+
+.nntm-main--full .nntm-page,
+.nntm-main--full .nntm-page__content {
+	margin: 0;
+	padding: 0;
+}
+
+/* The DOM order from Gutenberg is already the design order.  Do not reorder
+ * with flex/order: editor order and front-end order must stay identical. */
+.nntm-page__content {
+	display: block;
+}
+
+@media (min-width: 1152px) {
+	/* Shared desktop header in the source Figma system. */
+	.nntm-header {
+		height: 76px;
+		min-height: 76px;
+	}
+
+	/* ------------------------------------------------------------------
+	 * 1. Banner đầu — current page uses the 1280x720 Kim Cương video.
+	 * The later full-page artwork uses the shallower 533px treatment.
+	 * ------------------------------------------------------------------ */
+	.nntm-kchg-hero,
+	.nntm-kchg-hero .nntm-banner__stage {
+		height: 533px;
+		min-height: 533px;
+		max-height: 533px;
+	}
+
+	.nntm-kchg-hero .nntm-banner__img,
+	.nntm-kchg-hero .nntm-banner__video {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center center;
+	}
+
+	/* There is no foreground copy on the opening video. */
+	.nntm-kchg-hero .nntm-banner__overlay {
+		background: transparent;
+	}
+
+	/* ------------------------------------------------------------------
+	 * 2. Kim Cương Hành Giả — gold 3x2 article grid.
+	 * ------------------------------------------------------------------ */
+	.nntm-kchg-articles > .nntm-card-list__band {
+		padding: 60px 10px 50px;
+		background: var(--nntm-vang-nghe);
+		box-sizing: border-box;
+	}
+
+	.nntm-kchg-articles > .nntm-card-list__band > .nntm-container {
+		width: 100%;
+		max-width: 1204px;
+		max-width: 1204px;
+		padding: 0;
+	}
+
+	.nntm-kchg-articles .nntm-card-list__heading {
+		margin: 0 0 30px;
+		padding: 0;
+		font-family: var(--nntm-font-display);
+		font-size: 38px;
+		font-weight: 600;
+		line-height: 46px;
+		text-align: center;
+		color: var(--nntm-trang);
+	}
+
+	.nntm-kchg-articles .nntm-grid--3 {
+		grid-template-columns: repeat(3, 384px);
+		column-gap: 26px;
+		row-gap: 32px;
+		justify-content: center;
+	}
+
+	.nntm-kchg-articles .nntm-card--kim-cuong {
+		min-height: 418px;
+		padding: 23px;
+		gap: 14px;
+		border-radius: 0;
+		background: var(--nntm-nen-noi);
+		box-shadow: none;
+	}
+
+	.nntm-kchg-articles .nntm-card--kim-cuong .nntm-card__img {
+		width: 100%;
+		aspect-ratio: 341 / 209;
+		border-radius: 0;
+		overflow: hidden;
+	}
+
+	.nntm-kchg-articles .nntm-card--kim-cuong .nntm-card__title {
+		font-size: 16px;
+		line-height: 1.35;
+	}
+
+	.nntm-kchg-articles .nntm-card--kim-cuong .nntm-card__excerpt {
+		font-size: 14px;
+		line-height: 1.55;
+	}
+
+	.nntm-kchg-articles .nntm-card-list__paging {
+		margin-top: 30px;
+		justify-content: center;
+		gap: 20px;
+	}
+
+	.nntm-kchg-articles .nntm-card-list__paging-btn {
+		width: 56px;
+		height: 56px;
+		padding: 0;
+		border: 0;
+		border-radius: 0;
+		background: var(--nntm-den);
+		color: var(--nntm-trang);
+	}
+
+	/* ------------------------------------------------------------------
+	 * 3. Nghi Quỹ — books marquee.  Only the cards move; title and CTA
+	 * remain fixed.  No carousel arrows/scrollbar are introduced here.
+	 * ------------------------------------------------------------------ */
+	.nntm-kchg-nghi-quy > .nntm-card-list__band {
+		padding: 60px 50px 50px;
+		background: var(--nntm-kem);
+		box-sizing: border-box;
+		overflow: hidden;
+	}
+
+	.nntm-kchg-nghi-quy > .nntm-card-list__band > .nntm-container {
+		width: 100%;
+		max-width: 1266px;
+		max-width: 1266px;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.nntm-kchg-nghi-quy .nntm-card-list__header-row {
+		display: contents;
+	}
+
+	.nntm-kchg-nghi-quy .nntm-card-list__heading {
+		order: 1;
+		margin: 0 0 30px;
+		font-family: var(--nntm-font-display);
+		font-size: 32px;
+		font-weight: 600;
+		line-height: 40px;
+		text-align: center;
+		color: var(--nntm-chu);
+	}
+
+	.nntm-kchg-nghi-quy .nntm-card-list__marquee {
+		order: 2;
+		width: 100%;
+		overflow: hidden;
+	}
+
+	.nntm-kchg-nghi-quy .nntm-card-list__marquee-track {
+		gap: 14px;
+	}
+
+	.nntm-kchg-nghi-quy .nntm-card-list__marquee-item {
+		flex: 0 0 346px;
+	}
+
+	.nntm-kchg-nghi-quy .nntm-card--books {
+		min-height: 527px;
+		padding: 24px 0;
+		gap: 18px;
+		border: 0;
+		border-radius: 0;
+		background: var(--nntm-nen-noi);
+		box-shadow: none;
+		text-align: center;
+	}
+
+	.nntm-kchg-nghi-quy .nntm-card--books .nntm-card__img {
+		width: 299px;
+		aspect-ratio: 299 / 376;
+		margin-inline: auto;
+	}
+
+	.nntm-kchg-nghi-quy .nntm-card--books .nntm-card__body {
+		gap: 18px;
+		align-items: center;
+	}
+
+	.nntm-kchg-nghi-quy .nntm-card--books .nntm-card__title {
+		font-size: 16px;
+		font-weight: 700;
+		text-align: center;
+	}
+
+	.nntm-kchg-nghi-quy .nntm-card--books .nntm-card__cta {
+		align-self: center;
+		font-size: 13px;
+		font-weight: 400;
+	}
+
+	.nntm-kchg-nghi-quy .nntm-card-list__view-all {
+		order: 3;
+		align-self: center;
+		margin-top: 35px;
+		width: 107px;
+		height: 46px;
+		border: 1px solid var(--nntm-duong-vien);
+		border-radius: 0;
+		background: var(--nntm-nen-noi);
+		color: var(--nntm-chu);
+		font-size: 13px;
+		font-weight: 400;
+		text-decoration: none;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	/* ------------------------------------------------------------------
+	 * 4. Lễ Đàn Khổng Tước — full-bleed peacock artwork, left copy.
+	 * ------------------------------------------------------------------ */
+	.nntm-kchg-le-dan,
+	.nntm-kchg-le-dan .nntm-banner__stage {
+		height: 615px;
+		min-height: 615px;
+		max-height: 615px;
+	}
+
+	.nntm-kchg-le-dan .nntm-banner__img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center 54%;
+	}
+
+	.nntm-kchg-le-dan .nntm-banner__text {
+		align-items: flex-start;
+		justify-content: center;
+		padding: 0 0 0 92px;
+		text-align: left;
+	}
+
+	.nntm-kchg-le-dan .nntm-banner__text-inner {
+		align-items: flex-start;
+		max-width: 520px;
+	}
+
+	.nntm-kchg-le-dan .nntm-banner__heading {
+		font-size: 37px;
+		font-weight: 600;
+		line-height: 46px;
+		text-align: left;
+		text-wrap: initial;
+	}
+
+	.nntm-kchg-le-dan .nntm-banner__sub {
+		margin-top: 10px;
+		font-size: 14px;
+		line-height: 22px;
+		text-align: left;
+	}
+
+	.nntm-kchg-le-dan .nntm-banner__btn {
+		width: 118px;
+		height: 49px;
+		margin-top: 20px;
+		padding: 0;
+		border-radius: 0;
+	}
+
+	/* ------------------------------------------------------------------
+	 * 5. Thống Kê / Bảng Xếp Hạng — keep the table scrollable inside the
+	 * band.  The section height is content-driven because the number of
+	 * ranking rows is data, not artwork.
+	 * ------------------------------------------------------------------ */
+	.nntm-kchg-ranking {
+		width: 100%;
+		padding: 60px 40px 70px;
+		box-sizing: border-box;
+		background: var(--nntm-vang-nghe);
+	}
+
+	.nntm-kchg-ranking .nntm-cong-tu__thong-ke-heading {
+		margin: 0 0 30px;
+		font-family: var(--nntm-font-display);
+		font-size: 35px;
+		font-weight: 600;
+		line-height: 43px;
+		text-align: center;
+		color: var(--nntm-trang);
+	}
+
+	.nntm-kchg-ranking .nntm-cong-tu__thong-ke,
+	.nntm-kchg-ranking .nntm-cong-tu__bxh {
+		width: 100%;
+		max-width: 1000px;
+		max-width: 1000px;
+		margin-inline: auto;
+	}
+
+	.nntm-kchg-ranking .nntm-cong-tu__thong-ke {
+		min-height: 135px;
+		padding: 40px;
+		box-sizing: border-box;
+	}
+
+	.nntm-kchg-ranking .nntm-cong-tu__bxh-heading {
+		margin: 0 0 35px;
+		font-family: var(--nntm-font-display);
+		font-size: 28px;
+		font-weight: 600;
+		line-height: 36px;
+		text-align: center;
+		color: var(--nntm-do-tham);
+	}
+
+	.nntm-kchg-ranking .nntm-cong-tu__bxh-cuon {
+		max-height: 560px;
+		overflow-y: auto;
+		background: var(--nntm-vang-nghe);
+		box-shadow: none;
+		scrollbar-width: thin;
+		scrollbar-color: var(--nntm-den) transparent;
+	}
+
+	.nntm-kchg-ranking .nntm-cong-tu__bxh-bang tbody tr {
+		height: 52px;
+	}
+
+	/* Compact inner-page footer. */
+	.nntm-footer.nntm-footer--inner {
+		height: 146px;
+		min-height: 146px;
+		padding: 20px;
+		box-sizing: border-box;
+	}
+
+	.nntm-footer--inner .nntm-footer__bar {
+		height: 106px;
+		min-height: 106px;
+		padding: 20px;
+		box-sizing: border-box;
+		display: flex;
+		align-items: center;
+	}
+}
+
+@media (min-width: 1152px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+	.nntm-kchg-articles .nntm-card--kim-cuong {
+		transition: transform 420ms cubic-bezier(.22, 1, .36, 1), box-shadow 420ms cubic-bezier(.22, 1, .36, 1);
+	}
+
+	.nntm-kchg-articles .nntm-card--kim-cuong .nntm-card__img-el {
+		transition: transform 650ms cubic-bezier(.22, 1, .36, 1), filter 420ms ease;
+	}
+
+	.nntm-kchg-articles .nntm-card--kim-cuong:hover,
+	.nntm-kchg-articles .nntm-card--kim-cuong:focus-within {
+		transform: translateY(-5px);
+		box-shadow: 0 16px 34px rgba(0, 0, 0, .12);
+	}
+
+	.nntm-kchg-articles .nntm-card--kim-cuong:hover .nntm-card__img-el,
+	.nntm-kchg-articles .nntm-card--kim-cuong:focus-within .nntm-card__img-el {
+		transform: scale(1.025);
+		filter: saturate(1.03) contrast(1.02);
+	}
+
+	.nntm-kchg-le-dan .nntm-banner__btn {
+		transition: transform 320ms cubic-bezier(.22, 1, .36, 1), background-color 260ms ease, color 260ms ease;
+	}
+
+	.nntm-kchg-le-dan .nntm-banner__btn:hover,
+	.nntm-kchg-le-dan .nntm-banner__btn:focus-visible {
+		transform: translateY(-3px);
+	}
+}
+
+/* No mobile/tablet Figma frame exists for this screen.  Release desktop
+ * fixed banner/footer heights and keep the reusable block responsiveness. */
+@media (max-width: 1151px) {
+	.nntm-kchg-hero,
+	.nntm-kchg-hero .nntm-banner__stage,
+	.nntm-kchg-le-dan,
+	.nntm-kchg-le-dan .nntm-banner__stage,
+	.nntm-footer.nntm-footer--inner,
+	.nntm-footer--inner .nntm-footer__bar {
+		height: auto;
+		min-height: 0;
+		max-height: none;
+	}
+
+	.nntm-kchg-articles > .nntm-card-list__band,
+	.nntm-kchg-nghi-quy > .nntm-card-list__band,
+	.nntm-kchg-ranking {
+		padding-inline: 20px;
+	}
+
+	.nntm-kchg-nghi-quy .nntm-card-list__marquee-item {
+		flex-basis: min(80vw, 300px);
+	}
+
+	.nntm-kchg-ranking .nntm-cong-tu__thong-ke,
+	.nntm-kchg-ranking .nntm-cong-tu__bxh {
+		width: 100%;
+		max-width: 1000px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-kchg-articles .nntm-card--kim-cuong,
+	.nntm-kchg-articles .nntm-card--kim-cuong .nntm-card__img-el,
+	.nntm-kchg-le-dan .nntm-banner__btn {
+		transition: none;
+	}
+}

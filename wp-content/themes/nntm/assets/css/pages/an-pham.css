@@ -357,7 +357,7 @@
 	text-underline-offset: 0.18em;
 }
 
-@media (max-width: 1224px) {
+@media (max-width: 1151px) {
 	.nntm-an-pham-carousel__nav--prev {
 		left: var(--nntm-sp-3);
 	}
@@ -367,7 +367,7 @@
 	}
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-an-pham__than .nntm-an-pham__khung,
 	.nntm-an-pham-related {
 		padding-block: var(--nntm-sp-8);
@@ -390,7 +390,7 @@
 	}
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767px) {
 	.nntm-an-pham__khung {
 		width: min(1184px, calc(100% - 30px));
 	}

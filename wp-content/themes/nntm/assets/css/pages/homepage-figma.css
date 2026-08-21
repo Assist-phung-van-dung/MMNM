@@ -31,27 +31,67 @@
 	display: contents;
 }
 
-/* ---------- Desktop source-of-truth: Figma 1366px ---------- */
-@media (min-width: 1366px) {
+/* ---------- Desktop source-of-truth: Figma 1366px ----------
+ * Cổng mở từ 1025px (không phải 1366px): responsive.css thu nhỏ đồng đều
+ * cả .nntm-site-frame nên bên trong khung bố cục LUÔN được dàn ở đúng
+ * 1366px đơn vị dàn trang. Mọi số đo px cứng dưới đây vì thế vẫn khớp
+ * Figma ở mọi cỡ màn từ 1025 trở lên. */
+@media (min-width: 1152px) {
 	/* ===== HEADER — node 6376:6487 ===== */
+	/*
+	 * Chi so do CHUNG cho ca hai trang thai. Mau nen / bong / mau chu tach
+	 * rieng theo --trong va --dac o hai khoi duoi.
+	 *
+	 * SUA 20/08/2026 (anh Uy bao): truoc day khoi nay son `background:
+	 * var(--nntm-trang)` + bong + chu mau muc cho CA `.nntm-header--trong`,
+	 * nen o dinh trang chu dau trang van trang doc — dung H1 la phai TRONG
+	 * SUOT de len banner, cuon qua 80px moi chuyen sang trang dac
+	 * (assets/js/header-scroll.js doi hai class nay).
+	 */
 	.home .nntm-header,
-	.home .nntm-header.nntm-header--trong,
-	.home .nntm-header.nntm-header--dac,
 	.home .nntm-header--guest,
 	.home .nntm-header--auth {
 		height: 76px;
 		padding-block: 4px;
-		background: var(--nntm-trang);
 		backdrop-filter: none;
 		-webkit-backdrop-filter: none;
-		box-shadow: 0 20px 40px rgba(116, 119, 102, 0.2);
-		color: var(--nntm-muc-nhat);
 	}
 
+	/* O dinh trang: trong suot, khong bong, chu/icon mau sang de doc tren anh. */
+	.home .nntm-header.nntm-header--trong {
+		background: transparent;
+		box-shadow: none;
+		color: var(--nntm-trang);
+	}
+
+	/*
+	 * Chu/icon KHONG co nen rieng doi sang mau sang. Phai ghep ca `.home` va
+	 * `--trong`: khoi MENU o duoi file khai `.home .nntm-main-nav a` (cung do
+	 * dac ta 0,0,3,0 voi luat `--trong` cua header.css nhung nam SAU nen
+	 * thang) — do dung la ly do menu trang chu van mau muc dam khi dau trang
+	 * dang trong suot. O tim kiem (nen --nntm-vien) va nut ngon ngu (nen
+	 * --nntm-chinh) khong doi: chung tuong phan voi nen cua chinh minh.
+	 */
 	.home .nntm-header--trong .nntm-header__logo,
 	.home .nntm-header--trong .nntm-main-nav a,
 	.home .nntm-header--trong .nntm-header__login,
 	.home .nntm-header--trong .nntm-header__account-toggle {
+		color: var(--nntm-trang);
+	}
+
+	/* Da cuon qua 80px: nen trang dac + bong dung Figma. */
+	.home .nntm-header.nntm-header--dac,
+	.home .nntm-header--guest.nntm-header--dac,
+	.home .nntm-header--auth.nntm-header--dac {
+		background: var(--nntm-trang);
+		box-shadow: 0 20px 40px rgba(116, 119, 102, 0.2);
+		color: var(--nntm-muc-nhat);
+	}
+
+	.home .nntm-header--dac .nntm-header__logo,
+	.home .nntm-header--dac .nntm-main-nav a,
+	.home .nntm-header--dac .nntm-header__login,
+	.home .nntm-header--dac .nntm-header__account-toggle {
 		color: var(--nntm-muc-nhat);
 	}
 
@@ -88,8 +128,8 @@
 	 * keeping the same cap height. Scale only the fallback glyphs so the
 	 * 147x48 brand box stays unchanged. */
 	.home .nntm-header__logo-line {
-		transform: scaleX(1.29);
-		transform-origin: center;
+		/* transform: scaleX(1.29);
+		transform-origin: center; */
 	}
 
 	.home .nntm-header__nav {
@@ -98,7 +138,8 @@
 	}
 
 	.home .nntm-main-nav {
-		gap: 20px;
+		/* 1.46vw = 20/1366: giu dung 20 tu 1366 tro len, hep hon thi thu lai. */
+		gap: clamp(10px, 1.46vw, 20px);
 	}
 
 	.home .nntm-main-nav a,
@@ -123,16 +164,29 @@
 		color: var(--nntm-kem);
 	}
 
+	/*
+	 * SUA 20/08/2026: cum ben phai duoc phep CO LAI duoi 1366.
+	 *
+	 * Truoc day `flex: 0 0` (khong co, khong gian) an toan vi khung site luon
+	 * la 1366. Gio khung tran man va co that duoi 1366, tong be rong can
+	 * (logo 147 + menu ~605 + cum phai 430 + dem 40 = 1222) vuot khung nhin
+	 * 1185 o man 1200 -> do duoc cum phai bi cat 23px, o 1152 cat 71px.
+	 * Doi sang `0 1` de o tim kiem thu lai truoc, giu du cho cho menu.
+	 */
 	.home .nntm-header__tools {
-		flex: 0 0 430px;
-		width: 430px;
+		flex: 0 1 430px;
+		min-width: 0;
+		width: 100%;
+		max-width: 430px;
 		height: 46px;
 		gap: 5px;
 	}
 
 	.home .nntm-header__search-form {
-		flex: 0 0 263px;
-		width: 263px;
+		flex: 0 1 263px;
+		min-width: 0;
+		width: 100%;
+		max-width: 263px;
 		height: 46px;
 		gap: 10px;
 		padding-inline: 10px;
@@ -185,11 +239,17 @@
 		display: none;
 	}
 
+	/*
+	 * SUA 20/08/2026: cong them --nntm-cot-le. San khau hero gio tran het
+	 * man (anh tran man theo y anh Uy) nen `left: 93px` khong con dem tu mep
+	 * cot 1366 nua — thieu no thi tren man 1920 chu dinh sat mep man.
+	 */
 	.home .nntm-hero-slider__content {
-		left: 93px;
+		left: calc(var(--nntm-cot-le) + 93px);
 		right: auto;
 		top: 232px;
-		width: 809px;
+		width: 100%;
+		max-width: 809px;
 		max-width: 809px;
 		gap: 20px;
 	}
@@ -231,7 +291,7 @@
 	}
 
 	.home .nntm-hero-slider__dots {
-		left: 93px;
+		left: calc(var(--nntm-cot-le) + 93px);
 		top: 525px;
 		height: 12px;
 		gap: 8px;
@@ -253,7 +313,7 @@
 	}
 
 	.home .nntm-hero-slider__quicklinks {
-		left: 83px;
+		left: calc(var(--nntm-cot-le) + 83px);
 		bottom: 20px;
 		gap: 10px;
 		max-width: 855px;
@@ -278,7 +338,7 @@
 	.home .nntm-hero-slider__quicklink:nth-child(4) { width: 87px; }
 
 	.home .nntm-hero-slider__sidecard {
-		left: 958px;
+		left: calc(var(--nntm-cot-le) + 958px);
 		right: auto;
 		top: 577px;
 		bottom: auto;
@@ -346,16 +406,18 @@
 	}
 
 	.home .nntm-article-mosaic--lead-tall.nntm-article-mosaic--phai-mosaic .nntm-article-mosaic__content {
-		width: 1200px;
+		width: 100%;
+		max-width: 1200px;
 		padding: 10px;
 		box-sizing: border-box;
 		margin-inline: auto;
 	}
 
 	.home .nntm-article-mosaic--lead-tall.nntm-article-mosaic--phai-mosaic .nntm-article-mosaic__list {
-		width: 1180px;
+		width: 100%;
+		max-width: 1180px;
 		height: 702px;
-		grid-template-columns: 349px 811px;
+		grid-template-columns: minmax(0, 349fr) minmax(0, 811fr);
 		gap: 20px;
 		align-items: flex-start;
 	}
@@ -413,7 +475,8 @@
 	}
 
 	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__secondary {
-		width: 811px;
+		width: 100%;
+		max-width: 811px;
 		height: 663px;
 		padding-inline: 20px;
 		box-sizing: border-box;
@@ -421,15 +484,19 @@
 	}
 
 	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__medium-row {
-		width: 771px;
+		width: 100%;
+		max-width: 771px;
 		height: 381px;
 		gap: 35px;
 		align-items: flex-start;
 	}
 
 	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__medium-card {
-		flex: 0 0 370px;
-		width: 370px;
+		/* 0 1 + min-width 0: giu 370 tu 1366 tro len, hep hon thi co theo. */
+		flex: 0 1 370px;
+		min-width: 0;
+		width: 100%;
+		max-width: 370px;
 		gap: 12px;
 	}
 
@@ -440,7 +507,8 @@
 
 	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__medium-img,
 	.home .nntm-article-mosaic--lead-tall.nntm-article-mosaic--phai-mosaic .nntm-article-mosaic__medium-img {
-		width: 370px;
+		width: 100%;
+		max-width: 370px;
 		height: 265.684px;
 		aspect-ratio: auto;
 	}
@@ -456,22 +524,26 @@
 	}
 
 	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__small-row {
-		width: 771px;
+		width: 100%;
+		max-width: 771px;
 		gap: 0;
 		justify-content: space-between;
 		align-items: flex-start;
 	}
 
 	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__small-card {
-		flex: 0 0 227px;
-		width: 227px;
+		flex: 0 1 227px;
+		min-width: 0;
+		width: 100%;
+		max-width: 227px;
 		height: 282px;
 		gap: 10px;
 	}
 
 	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__small-img,
 	.home .nntm-article-mosaic--lead-tall.nntm-article-mosaic--phai-mosaic .nntm-article-mosaic__small-img {
-		width: 227px;
+		width: 100%;
+		max-width: 227px;
 		height: 163px;
 		aspect-ratio: auto;
 	}
@@ -511,12 +583,13 @@
 
 	.home .nntm-article-feature__inner {
 		position: relative;
-		width: 1180px;
+		width: 100%;
+		max-width: 1180px;
 		height: 945px;
 		max-width: 1180px;
 		margin-inline: auto;
 		display: grid;
-		grid-template-columns: 618px 532px;
+		grid-template-columns: minmax(0, 618fr) minmax(0, 532fr);
 		column-gap: 30px;
 		align-items: center;
 		padding: 0;
@@ -530,7 +603,8 @@
 	}
 
 	.home .nntm-article-feature__text {
-		width: 618px;
+		width: 100%;
+		max-width: 618px;
 		height: 821px;
 		align-self: center;
 		padding: 0;
@@ -555,7 +629,8 @@
 	}
 
 	.home .nntm-article-feature__box {
-		width: 618px;
+		width: 100%;
+		max-width: 618px;
 		height: 659px;
 		margin-top: 20px;
 		padding: 30px;
@@ -602,7 +677,9 @@
 
 	.home .nntm-article-feature__media-link {
 		position: relative;
-		width: 532px;
+		/* Co lai duoc duoi 1366; tu 1366 tro len van dung 532 nhu Figma. */
+		width: 100%;
+		max-width: 532px;
 		height: 945px;
 		align-self: stretch;
 	}
@@ -611,13 +688,14 @@
 		position: absolute;
 		top: 66px;
 		left: 0;
-		width: 532px;
+		width: 100%;
+		max-width: 532px;
 		height: 819px;
 		aspect-ratio: auto;
 	}
 
 	.home .nntm-article-feature__img-el {
-		width: 532px;
+		width: 100%;
 		height: 819px;
 		object-fit: cover;
 	}
@@ -638,9 +716,12 @@
 	}
 
 	.home .nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) > .nntm-card-list__band > .nntm-container {
-		width: 1366px;
+		/* SUA 20/08/2026: `max-width: none` -> chan 1366 + canh giua. Nen dai
+		   (.__band) van tran het man, chi noi dung dung lai o cot 1366. */
+		width: 100%;
+		max-width: var(--nntm-w-rong);
+		margin-inline: auto;
 		height: 544px;
-		max-width: none;
 		padding: 0;
 		position: relative;
 	}
@@ -754,7 +835,8 @@
 
 	.home .nntm-card-list__caption-below {
 		top: calc(100% + 10px);
-		width: 1082px;
+		width: 100%;
+		max-width: 1082px;
 		max-width: 1082px;
 		padding: 0 134px;
 		box-sizing: border-box;
@@ -771,7 +853,8 @@
 	/* ===== ENGINEERING EARTH — node 6376:6412 ===== */
 	.home .nntm-engineering-earth--homepage-figma {
 		position: relative;
-		width: 1180px;
+		width: 100%;
+		max-width: 1180px;
 		height: 714px;
 		margin: 80px auto 0;
 		overflow: visible;
@@ -791,7 +874,9 @@
 		position: absolute;
 		left: 40px;
 		top: 60px;
-		width: 1100px;
+		width: 100%;
+		/* Tru ca hai le 40 de khong vuot ra ngoai dai khi man hep hon 1180. */
+		max-width: min(1100px, calc(100% - 80px));
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -819,20 +904,53 @@
 		color: var(--nntm-reu);
 	}
 
+	/*
+	 * SUA 20/08/2026: nen den cua dai tran HET be rong man, con hop dai va
+	 * moi thu ben trong GIU NGUYEN 1366 nhu Figma.
+	 *
+	 * Cach lam: khong dong vao hinh hoc cua chinh `.__band` (neu keo no
+	 * rong ra thi `padding: 60px 140px` se do tu mep man vao, keo ca hang
+	 * video lech han). Thay vao do ve nen bang mot ::before rong 100vw canh
+	 * giua khung nhin. `.__band` co `transform` nen no da la mot ngu canh
+	 * xep lop rieng — `z-index: -1` chi lui ra sau NOI DUNG cua dai, khong
+	 * lui ra sau ca trang.
+	 */
 	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__band {
 		position: absolute;
 		left: 50%;
 		top: 174px;
-		width: 1366px;
+		/* min() de duoi 1366 dai khong tran ra ngoai khung nhin roi bi cat. */
+		width: min(1366px, 100vw);
 		height: 418px;
-		padding: 60px 140px;
+		/*
+		 * Dem ngang KHONG deu — dung nhu Figma: hang video cach le trai 140 va
+		 * le phai 70 (140 + 1156 + 70 = 1366). Truoc day khai `padding: 60px
+		 * 140px` roi de hang video rong 1156 THO ra khoi hop dem 70px; viet
+		 * thanh hai gia tri thi hang video chi can `width: 100%` la ra dung
+		 * 1156, va tu co lai khi man hep hon 1366.
+		 *   10.25vw = 140/1366   |   5.12vw = 70/1366
+		 */
+		padding-block: 60px;
+		padding-inline: clamp(var(--nntm-sp-5), 10.25vw, 140px) clamp(var(--nntm-sp-3), 5.12vw, 70px);
 		box-sizing: border-box;
+		transform: translateX(-50%);
+		background: none;
+	}
+
+	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__band::before {
+		content: "";
+		position: absolute;
+		z-index: -1;
+		inset-block: 0;
+		left: 50%;
+		width: 100vw;
 		transform: translateX(-50%);
 		background: var(--nntm-den);
 	}
 
 	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__band-inner {
-		width: 1156px;
+		width: 100%;
+		max-width: 1156px;
 		height: 298px;
 		display: flex;
 		align-items: flex-start;
@@ -840,12 +958,14 @@
 		position: relative;
 		margin: 0;
 		padding: 0;
-		max-width: none;
 	}
 
 	.home .nntm-engineering-earth__figma-main {
-		flex: 0 0 590px;
-		width: 590px;
+		/* 0 1: cho phep co lai o dai 1152-1365, khong cho gian them. */
+		flex: 0 1 590px;
+		min-width: 0;
+		width: 100%;
+		max-width: 590px;
 		height: 298px;
 		display: block;
 		border-radius: 0;
@@ -854,7 +974,7 @@
 	}
 
 	.home .nntm-engineering-earth__figma-main img {
-		width: 590px;
+		width: 100%;
 		height: 298px;
 		object-fit: cover;
 	}
@@ -900,9 +1020,12 @@
 
 	.home .nntm-engineering-earth__figma-pip {
 		position: absolute;
-		left: 772px;
+		/* 65.42% = 772/1180: neo theo TI LE cua dai 1180 nen khi dai co lai
+		   duoi 1366, the nho van nam trong khung (truoc do tran 23px o 1152). */
+		left: min(772px, 65.42%);
 		top: 421px;
-		width: 388px;
+		width: 100%;
+		max-width: 388px;
 		height: 243px;
 		padding: 20px;
 		box-sizing: border-box;
@@ -942,7 +1065,8 @@
 	}
 
 	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid .nntm-article-mosaic__heading {
-		width: 1180px;
+		width: 100%;
+		max-width: 1180px;
 		height: 68px;
 		margin-inline: auto;
 		font-size: 58px;
@@ -952,16 +1076,18 @@
 	}
 
 	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid .nntm-article-mosaic__content {
-		width: 1200px;
+		width: 100%;
+		max-width: 1200px;
 		padding: 10px;
 		box-sizing: border-box;
 		margin-inline: auto;
 	}
 
 	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid .nntm-article-mosaic__list {
-		width: 1180px;
+		width: 100%;
+		max-width: 1180px;
 		height: 565px;
-		grid-template-columns: 349px 811px;
+		grid-template-columns: minmax(0, 349fr) minmax(0, 811fr);
 		gap: 20px;
 		align-items: flex-start;
 	}
@@ -1009,30 +1135,35 @@
 	}
 
 	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid .nntm-article-mosaic__secondary {
-		width: 811px;
+		width: 100%;
+		max-width: 811px;
 		height: 564px;
 		padding-inline: 20px;
 		box-sizing: border-box;
 	}
 
 	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid .nntm-article-mosaic__grid {
-		width: 771px;
+		width: 100%;
+		max-width: 771px;
 		height: 564px;
-		grid-template-columns: repeat(3, 227px);
+		/* minmax(0,…) de cot co the co duoi kich thuoc noi dung khi man hep. */
+		grid-template-columns: repeat(3, minmax(0, 227fr));
 		grid-template-rows: repeat(2, 282px);
 		column-gap: 40px;
 		row-gap: 0;
 	}
 
 	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid .nntm-article-mosaic__small-card {
-		width: 227px;
+		width: 100%;
+		max-width: 227px;
 		height: 282px;
 		min-height: 282px;
 		gap: 10px;
 	}
 
 	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid .nntm-article-mosaic__small-img {
-		width: 227px;
+		width: 100%;
+		max-width: 227px;
 		height: 163px;
 		aspect-ratio: auto;
 	}
@@ -1055,7 +1186,8 @@
 	}
 
 	.home .nntm-card-list--nen-cam > .nntm-card-list__band > .nntm-container {
-		width: 1266px;
+		width: 100%;
+		max-width: 1266px;
 		height: 566px;
 		max-width: 1266px;
 		padding: 0;
@@ -1063,13 +1195,15 @@
 	}
 
 	.home .nntm-card-list--nen-cam .nntm-card-list__header-row {
-		width: 1266px;
+		width: 100%;
+		max-width: 1266px;
 		justify-content: center;
 	}
 
 	.home .nntm-card-list--nen-cam .nntm-card-list__heading,
 	.home .nntm-card-list--nen-cam .nntm-card-list__subheading {
-		width: 1266px;
+		width: 100%;
+		max-width: 1266px;
 		padding: 0;
 		text-align: center;
 		color: var(--nntm-kem);
@@ -1188,20 +1322,25 @@
 	}
 
 	.home .nntm-footer__bar {
-		width: 1326px;
+		/* SUA 20/08/2026: chan 1326 + canh giua. Truoc day la `max-width: none;
+		   margin: 0` vi khung site da chan 1366 nen khoi xam tu vua; gio khung
+		   tran man, khong chan thi dai xam keo het 1920. */
+		width: 100%;
+		max-width: 1326px;
 		height: 259.25px;
-		max-width: none;
-		margin: 0;
+		margin-inline: auto;
+		margin-block: 0;
 		padding: 20px;
 		box-sizing: border-box;
 		background: var(--nntm-muc-nhat);
 	}
 
 	.home .nntm-footer__inner {
-		width: 1286px;
+		width: 100%;
 		max-width: 1286px;
 		height: auto;
-		margin: 0;
+		margin-inline: auto;
+		margin-block: 0;
 		padding: 0;
 		display: flex;
 		flex-direction: column;
@@ -1266,7 +1405,8 @@
 
 	.home .nntm-footer__rule {
 		flex: 0 0 1225px;
-		width: 1225px;
+		width: 100%;
+		max-width: 1225px;
 		height: 0;
 		margin: 0;
 		border: 0;
@@ -1274,8 +1414,12 @@
 	}
 
 	.home .nntm-footer__row {
-		flex: 0 0 1226px;
-		width: 1226px;
+		/* 0 1: giu 1226 tu 1366 tro len, hep hon thi hang chan trang co lai
+		   thay vi tran ra ngoai (do duoc tran 91px o man 1200 truoc khi sua). */
+		flex: 0 1 1226px;
+		min-width: 0;
+		width: 100%;
+		max-width: 1226px;
 		height: 46.25px;
 		min-height: 46.25px;
 		margin: 0;
@@ -1285,8 +1429,10 @@
 	}
 
 	.home .nntm-footer__left {
-		flex: 0 0 667.5px;
-		width: 667.5px;
+		flex: 0 1 667.5px;
+		min-width: 0;
+		width: 100%;
+		max-width: 667.5px;
 		display: flex;
 		align-items: center;
 		gap: 20px;
@@ -1303,8 +1449,7 @@
 	}
 
 	.home .nntm-footer__logo-line {
-		transform: scaleX(1.29);
-		transform-origin: center;
+        text-align: center;
 	}
 
 	.home .nntm-footer__nav {
@@ -1314,7 +1459,8 @@
 
 	.home .nntm-footer-nav {
 		gap: 10px;
-		flex-wrap: nowrap;
+		/* Duoi 1366 cho phep xuong dong thay vi day hang tran ra ngoai. */
+		flex-wrap: wrap;
 	}
 
 	.home .nntm-footer-nav a,
@@ -1328,7 +1474,7 @@
 }
 
 /* ---------- Responsive safety (Figma has no tablet/mobile source frames) ---------- */
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.home .nntm-engineering-earth--homepage-figma {
 		width: 100%;
 		height: auto;
@@ -1410,7 +1556,7 @@
 	}
 }
 
-@media (min-width: 1366px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 1152px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
 	.home .nntm-card-list__yt-cell,
 	.home .nntm-article-mosaic__lead,
 	.home .nntm-article-mosaic__medium-card,

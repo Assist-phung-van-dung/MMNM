@@ -25,35 +25,50 @@
 		'[tabindex]:not([tabindex="-1"])'
 	].join( ',' );
 
-	/* ---------- Menu di động (hamburger) ---------- */
-	var toggle = header.querySelector( '.nntm-header__menu-toggle' );
-	var nav    = header.querySelector( '.nntm-header__nav' );
+	/* ---------- Menu di động (hamburger + panel trượt) ---------- */
+	/*
+	 * SUA 20/08/2026: bẫy tiêu điểm và nút đóng chuyển từ <nav> sang
+	 * .nntm-header__panel. Panel giờ bọc CẢ menu chính lẫn khu công cụ (tìm
+	 * kiếm / đăng nhập / ngôn ngữ) — xem chú thích trong header.php. Bẫy
+	 * theo <nav> như cũ thì ô tìm kiếm và nút đăng nhập nằm ngay trong
+	 * drawer lại KHÔNG bấm tới được bằng bàn phím.
+	 *
+	 * Điểm ngắt 1151px phải KHỚP với @media trong header.css — khai một
+	 * chỗ ở đây rồi dùng matchMedia, không rải số 1151 ra nhiều nơi.
+	 */
+	var MENU_MQ = '(max-width: 1151px)';
 
-	if ( toggle && nav ) {
+	var toggle = header.querySelector( '.nntm-header__menu-toggle' );
+	var panel  = header.querySelector( '.nntm-header__panel' );
+
+	if ( toggle && panel ) {
 
 		/**
-		 * Mở menu di động: hiện nav, cập nhật aria-expanded, đưa tiêu điểm vào mục đầu tiên.
+		 * Mở menu di động: hiện panel, khoá cuộn trang, đưa tiêu điểm vào mục đầu tiên.
 		 */
 		function openMenu() {
 			header.classList.add( 'nntm-header--menu-open' );
 			toggle.setAttribute( 'aria-expanded', 'true' );
+			/* Khoá cuộn trang phía sau — CSS lo phần overflow, xem header.css. */
+			document.documentElement.classList.add( 'nntm-menu-dang-mo' );
 			document.addEventListener( 'keydown', onMenuKeydown, true );
 			document.addEventListener( 'focus', trapFocus, true );
 
-			var firstFocusable = nav.querySelector( FOCUSABLE_SELECTOR );
+			var firstFocusable = panel.querySelector( FOCUSABLE_SELECTOR );
 			if ( firstFocusable ) {
 				firstFocusable.focus();
 			}
 		}
 
 		/**
-		 * Đóng menu di động: ẩn nav, cập nhật aria-expanded, trả tiêu điểm về nút hamburger.
+		 * Đóng menu di động: ẩn panel, mở lại cuộn trang, trả tiêu điểm về nút hamburger.
 		 *
 		 * @param {boolean} restoreFocus Có đưa tiêu điểm về nút hamburger hay không.
 		 */
 		function closeMenu( restoreFocus ) {
 			header.classList.remove( 'nntm-header--menu-open' );
 			toggle.setAttribute( 'aria-expanded', 'false' );
+			document.documentElement.classList.remove( 'nntm-menu-dang-mo' );
 			document.removeEventListener( 'keydown', onMenuKeydown, true );
 			document.removeEventListener( 'focus', trapFocus, true );
 
@@ -63,17 +78,17 @@
 		}
 
 		/**
-		 * Bẫy tiêu điểm bên trong nav khi menu di động đang mở — tiêu điểm rơi ra
-		 * ngoài nav (kể cả nút hamburger) sẽ bị kéo về mục đầu tiên trong nav.
+		 * Bẫy tiêu điểm bên trong panel khi menu di động đang mở — tiêu điểm rơi
+		 * ra ngoài panel (kể cả nút hamburger) sẽ bị kéo về mục đầu tiên.
 		 *
 		 * @param {FocusEvent} event Sự kiện focus (bắt ở pha capture).
 		 */
 		function trapFocus( event ) {
-			if ( nav.contains( event.target ) ) {
+			if ( panel.contains( event.target ) ) {
 				return;
 			}
 
-			var focusableItems = nav.querySelectorAll( FOCUSABLE_SELECTOR );
+			var focusableItems = panel.querySelectorAll( FOCUSABLE_SELECTOR );
 			if ( focusableItems.length ) {
 				focusableItems[ 0 ].focus();
 			}
@@ -99,18 +114,80 @@
 			}
 		} );
 
+		/*
+		 * Bấm lớp phủ hoặc nút "×" trong panel thì đóng. Cả hai đều mang
+		 * data-nntm-menu-close nên chỉ cần một vòng gắn sự kiện.
+		 */
+		header.querySelectorAll( '[data-nntm-menu-close]' ).forEach( function ( el ) {
+			el.addEventListener( 'click', function () {
+				closeMenu( true );
+			} );
+		} );
+
+		/*
+		 * Bấm một mục menu là điều hướng sang trang khác, nhưng nếu là liên
+		 * kết neo (#...) trên cùng trang thì trang không tải lại — drawer sẽ
+		 * nằm mở che mất chỗ vừa nhảy tới. Đóng luôn cho chắc.
+		 */
+		panel.addEventListener( 'click', function ( event ) {
+			var link = event.target.closest ? event.target.closest( 'a[href]' ) : null;
+			if ( link && ! link.closest( '.nntm-header__account-panel' ) ) {
+				closeMenu( false );
+			}
+		} );
+
+		/*
+		 * Kéo cửa sổ rộng trở lại quá điểm ngắt: panel quay về là menu ngang
+		 * trong dòng chảy, nhưng lớp --menu-open + khoá cuộn + aria-expanded
+		 * vẫn còn treo (trang hoá ra không cuộn được nữa). Dọn khi thoát dải.
+		 */
+		if ( window.matchMedia ) {
+			var menuQuery = window.matchMedia( MENU_MQ );
+			var onQueryChange = function ( event ) {
+				if ( ! event.matches ) {
+					closeMenu( false );
+				}
+			};
+
+			if ( menuQuery.addEventListener ) {
+				menuQuery.addEventListener( 'change', onQueryChange );
+			} else if ( menuQuery.addListener ) {
+				menuQuery.addListener( onQueryChange );
+			}
+		}
+
 		// Enter đã kích hoạt click mặc định trên <button>, không cần xử lý riêng.
 		// Chỉ còn khoảng trắng (Space) cũng là hành vi mặc định của trình duyệt.
 
 		/* ---------- Submenu cấp 2 trên desktop (menu chính depth=2) ---------- */
 		/* Con trỏ chuột: mở khi hover (CSS :hover). Bàn phím: mở khi mục cha nhận
 		   focus, đóng khi Escape hoặc khi tiêu điểm rời khỏi toàn bộ mục cha+con. */
-		var parentItems = nav.querySelectorAll( '.menu-item-has-children' );
+		var parentItems = panel.querySelectorAll( '.menu-item-has-children' );
 
 		parentItems.forEach( function ( item ) {
 			var link = item.querySelector( ':scope > a' );
 			if ( link ) {
 				link.addEventListener( 'focus', function () {
+					item.classList.add( 'nntm-main-nav__item--open' );
+				} );
+
+				/*
+				 * Trong drawer, chạm vào mục cha phải MỞ submenu chứ không
+				 * điều hướng ngay — trên cảm ứng không có `hover`, còn mở bằng
+				 * `focus` thì chạm cũng đã kèm điều hướng nên submenu không
+				 * bao giờ xem được. Lần chạm thứ hai mới đi tới trang cha.
+				 * (Menu hiện tại đang phẳng, không có mục con — luật này để
+				 * ban quản trị thêm mục con về sau vẫn dùng được ngay.)
+				 */
+				link.addEventListener( 'click', function ( event ) {
+					if ( ! window.matchMedia || ! window.matchMedia( MENU_MQ ).matches ) {
+						return;
+					}
+					if ( item.classList.contains( 'nntm-main-nav__item--open' ) ) {
+						return;
+					}
+					event.preventDefault();
+					event.stopPropagation();
 					item.classList.add( 'nntm-main-nav__item--open' );
 				} );
 			}

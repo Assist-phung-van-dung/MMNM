@@ -192,4 +192,23 @@ $link_label = '' !== trim( $linked_title )
 			></a>
 		<?php endif; ?>
 	</div>
+
+	<?php
+	/*
+	 * Nút đóng — THÊM 20/08/2026, CHỈ hiện dưới 1152px (xem style.css).
+	 *
+	 * Trên desktop 1366 thẻ video 388px nằm gọn ở góc, không che gì nên
+	 * Figma không vẽ nút đóng (chú thích đầu style.css: "front-end shows
+	 * media only"). Nhưng đo trên khung 375px thì thẻ rộng 336px = 93% bề
+	 * rộng màn, cao 210px, đứng cố định ở đáy và KHÔNG có cách nào tắt —
+	 * người dùng điện thoại mất hẳn một phần màn hình cho tới khi rời trang.
+	 * Nút này chỉ có mặt ở dải đó; desktop vẫn đúng thiết kế gốc.
+	 */
+	?>
+	<button type="button" class="nntm-floating-video__close" data-nntm-floating-video-close>
+		<span class="nntm-sr-only"><?php esc_html_e( 'Đóng video', 'nntm' ); ?></span>
+		<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false">
+			<path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+		</svg>
+	</button>
 </aside>

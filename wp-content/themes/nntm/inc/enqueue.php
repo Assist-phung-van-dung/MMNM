@@ -96,6 +96,30 @@ function nntm_enqueue_assets(): void {
 	$footer_css_path = NNTM_THEME_DIR . '/assets/css/footer.css';
 	wp_enqueue_style( 'nntm-footer', NNTM_THEME_URI . '/assets/css/footer.css', array( 'nntm-tokens', 'nntm-base', 'nntm-layout' ), nntm_asset_version( $footer_css_path ) );
 
+	/*
+	 * Lớp responsive cho màn hẹp hơn khung thiết kế 1366 (thu nhỏ đồng đều
+	 * cả khung bằng `zoom`). Nạp SAU base/layout/header/footer vì nó chỉnh
+	 * lại `min-height` mà base.css đã khai cho .nntm-site-frame.
+	 */
+	$responsive_css_path = NNTM_THEME_DIR . '/assets/css/responsive.css';
+	wp_enqueue_style( 'nntm-responsive', NNTM_THEME_URI . '/assets/css/responsive.css', array( 'nntm-tokens', 'nntm-base', 'nntm-layout', 'nntm-header', 'nntm-footer' ), nntm_asset_version( $responsive_css_path ) );
+
+	/*
+	 * Màn chờ tải trang. Nạp SỚM (ngay sau tokens) và KHÔNG phụ thuộc
+	 * base/layout: lớp phủ phải vẽ được ngay từ khung hình đầu tiên, càng ít
+	 * file phải chờ càng tốt. Markup và script bốc hiệu ứng ở inc/preloader.php.
+	 *
+	 * Chỉ nạp khi màn chờ đang bật — trang tắt qua filter `nntm_preloader_enabled`
+	 * thì không tải thêm byte nào.
+	 */
+	if ( function_exists( 'nntm_preloader_enabled' ) && nntm_preloader_enabled() ) {
+		$preloader_css_path = NNTM_THEME_DIR . '/assets/css/preloader.css';
+		wp_enqueue_style( 'nntm-preloader', NNTM_THEME_URI . '/assets/css/preloader.css', array( 'nntm-tokens' ), nntm_asset_version( $preloader_css_path ) );
+
+		$preloader_js_path = NNTM_THEME_DIR . '/assets/js/preloader.js';
+		wp_enqueue_script( 'nntm-preloader', NNTM_THEME_URI . '/assets/js/preloader.js', array(), nntm_asset_version( $preloader_js_path ), true );
+	}
+
 	// Menu di động (hamburger), bẫy tiêu điểm, header dính khi cuộn.
 	$header_js_path = NNTM_THEME_DIR . '/assets/js/header.js';
 	wp_enqueue_script( 'nntm-header', NNTM_THEME_URI . '/assets/js/header.js', array(), nntm_asset_version( $header_js_path ), true );
@@ -331,3 +355,29 @@ function nntm_enqueue_nhap_phap_gioi_figma_assets(): void {
 	);
 }
 add_action( 'wp_enqueue_scripts', 'nntm_enqueue_nhap_phap_gioi_figma_assets', 63 );
+
+
+/** Pixel reconciliation for Kim Cương Hành Giả (Figma frame 6376:7066). */
+function nntm_enqueue_kim_cuong_hanh_gia_figma_assets(): void {
+	if ( ! is_page( 'kim-cuong-hanh-gia' ) ) {
+		return;
+	}
+
+	$css_path = NNTM_THEME_DIR . '/assets/css/pages/kim-cuong-hanh-gia-figma.css';
+	wp_enqueue_style(
+		'nntm-kim-cuong-hanh-gia-figma',
+		NNTM_THEME_URI . '/assets/css/pages/kim-cuong-hanh-gia-figma.css',
+		array(
+			'nntm-tokens',
+			'nntm-base',
+			'nntm-layout',
+			'nntm-header',
+			'nntm-footer',
+			'nntm-banner-style',
+			'nntm-card-list-style',
+			'nntm-cong-tu-style',
+		),
+		nntm_asset_version( $css_path )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'nntm_enqueue_kim_cuong_hanh_gia_figma_assets', 64 );

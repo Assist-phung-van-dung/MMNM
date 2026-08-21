@@ -47,7 +47,9 @@
 }
 
 .nntm-tru-xu-list--list .nntm-container {
-	max-width: none;
+	/* SUA 20/08/2026: `none` -> tran 1366 + canh giua (khung site da bo tran). */
+	max-width: var(--nntm-w-rong);
+	margin-inline: auto;
 	padding-inline: var(--nntm-sp-12);
 }
 
@@ -183,7 +185,7 @@
    rất cao (tỉ lệ 280/498) — cuộn ngang trên điện thoại sẽ khiến mỗi thẻ
    chiếm gần hết chiều cao màn hình mà vẫn không thấy được thẻ kế bên. */
 
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
 	.nntm-tru-xu-list__grid { grid-template-columns: repeat(2, 1fr); }
 }
 

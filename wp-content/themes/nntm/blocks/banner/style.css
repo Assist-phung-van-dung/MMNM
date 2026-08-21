@@ -270,10 +270,10 @@
 
 .nntm-banner.nntm-banner--kc-ledan .nntm-banner__btn {
 	margin-top: var(--nntm-sp-5); /* 20 — tu anh giao dien, cach phu de */
-	width: 118px;
+	width: auto;
 	height: 49px;
 	box-sizing: border-box;
-	padding: 0;
+	padding: 0 10px;
 	border-radius: 0; /* goc vuong — khac dang pill mac dinh */
 	background-color: var(--nntm-nen-noi); /* nen sang, khac mau chinh mac dinh */
 	color: var(--nntm-chu); /* chu sam */
@@ -285,7 +285,7 @@
 	background-color: var(--nntm-nen);
 }
 
-@media (max-width: 782px) {
+@media (max-width: 767px) {
 	.nntm-banner.nntm-banner--khu-dau .nntm-banner__stage,
 	.nntm-banner.nntm-banner--kc-ledan .nntm-banner__stage {
 		height: auto;
@@ -360,7 +360,7 @@
 
 /* ---------- Màn hình hẹp ---------- */
 
-@media (max-width: 782px) {
+@media (max-width: 767px) {
 	.nntm-banner {
 		padding-inline: var(--nntm-sp-3);
 		padding-block: var(--nntm-sp-3) 0;

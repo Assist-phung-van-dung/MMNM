@@ -315,26 +315,18 @@
    Dưới điểm ngắt này: xếp dọc, ảnh xuống dưới chữ và có chiều cao cố
    định để không bị bẹp thành một dải mỏng.
    ============================================================= */
-@media (max-width: 1024px) {
+@media (max-width: 1151px) {
+	/*
+	 * TABLET (768-1151): GIU hai cot — luoi co so `617fr 534fr` tu chia ti le
+	 * dung, chi thu dem ngang va khoang cach. Truoc day khoi nay xep doc luon
+	 * nen tren man 1136px khoi noi bat cao 1604px, anh rong 1096px: bo cuc
+	 * cua dien thoai dat tren khung tablet. Xep doc chuyen xuong <=767.
+	 */
 	.nntm-article-feature__inner,
 	.nntm-article-feature--media-left .nntm-article-feature__inner {
-		grid-template-columns: 1fr;
 		width: min(1180px, 100% - 2 * var(--nntm-sp-5));
 		padding-block: var(--nntm-sp-8);
-		gap: var(--nntm-sp-8);
-	}
-
-	/*
-	 * Xếp dọc thì gỡ hết chỉ định hàng/cột của bố cục hai cột — kể cả biến
-	 * thể "ảnh bên trái". Còn sót grid-column: 2 trên lưới một cột là phần
-	 * tử đó tự đẻ ra cột thứ hai và làm trang cuộn ngang.
-	 */
-	.nntm-article-feature__text,
-	.nntm-article-feature__media,
-	.nntm-article-feature--media-left .nntm-article-feature__text,
-	.nntm-article-feature--media-left .nntm-article-feature__media {
-		grid-column: auto;
-		grid-row: auto;
+		gap: var(--nntm-sp-7);
 	}
 
 	/* Dấu ngoặc kép: màn hẹp không còn chỗ thò ra ngoài lề trái nữa. */
@@ -353,5 +345,52 @@
 
 	.nntm-article-feature__title {
 		font-size: var(--nntm-fs-3xl);
+	}
+
+	/*
+	 * SUA 20/08/2026: bo tran 563px cua than bai o man hep.
+	 *
+	 * Tran 563px duoc tinh cho KHUNG FIGMA 657px o bo cuc HAI COT (chu chi
+	 * chiem cot phai ~590px). Khi xep doc mot cot, cung luong chu do tra ve
+	 * nhieu dong hon han nen tran cat mat rat nhieu: do duoc mat 678px noi
+	 * dung o khung 390 va 80px o khung 768 — cat am tham vi overflow:hidden.
+	 *
+	 * Muc dich ban dau cua tran (giu khung kem khong cao vuot 657 cua Figma)
+	 * chi co nghia o bo cuc hai cot desktop. Gioi han so DOAN trong
+	 * nntm_article_feature_get_paragraphs() van con nguyen nen than bai
+	 * khong the dai vo han.
+	 */
+	.nntm-article-feature__body {
+		max-height: none;
+		overflow: visible;
+	}
+}
+
+/* =============================================================
+   DUOI 1024px — xep doc.
+
+   Trước 20/08/2026 phần này nằm trong khối <=1151 nên màn 1136px cũng xếp
+   dọc: đo được khối nổi bật cao 1604px, ảnh rộng 1096px. Dai 1024-1151 giu hai cot (luoi co so `617fr 534fr` tu
+   chia ti le); duoi 1024 cot chu chi con ~317px o khung 768 nen dan hep qua,
+   gop ve mot cot la dung.
+   ============================================================= */
+@media (max-width: 1023px) {
+	.nntm-article-feature__inner,
+	.nntm-article-feature--media-left .nntm-article-feature__inner {
+		grid-template-columns: 1fr;
+		gap: var(--nntm-sp-8);
+	}
+
+	/*
+	 * Xếp dọc thì gỡ hết chỉ định hàng/cột của bố cục hai cột — kể cả biến
+	 * thể "ảnh bên trái". Còn sót grid-column: 2 trên lưới một cột là phần
+	 * tử đó tự đẻ ra cột thứ hai và làm trang cuộn ngang.
+	 */
+	.nntm-article-feature__text,
+	.nntm-article-feature__media,
+	.nntm-article-feature--media-left .nntm-article-feature__text,
+	.nntm-article-feature--media-left .nntm-article-feature__media {
+		grid-column: auto;
+		grid-row: auto;
 	}
 }

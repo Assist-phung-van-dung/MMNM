@@ -399,36 +399,99 @@
 }
 
 /* =============================================================
-   SUY DOAN: chua co Figma mobile — chi co khung desktop 1366px.
-   Duoi diem ngat nay: bo khoa aspect-ratio de anh khong bi bop qua thap,
-   cac khoi chu/cham/lien ket nhanh/the phai xep lai theo chieu doc uoc
-   luong, giu du khong gian khong de chong len nhau.
+   HERO DƯỚI 1152px — dựng lại 20/08/2026, ba bậc rõ ràng.
+
+   SUY DOAN: Figma chỉ có khung desktop 1366px.
+
+   BẢN CŨ SAI Ở ĐÂU (đo bằng trình duyệt thật ở khung 1136px):
+     .__stage        min-height: 760px   -> dải hero cao gần hết màn
+     .__heading      32px                -> tụt thẳng từ 58px, giật một bậc lớn
+     .__content      left/right = 20px   -> chữ trải hết bề rộng 1096px
+     .__sidecard     left/right = 20px   -> thẻ kính mờ dài hết màn
+     .__dots         bottom: 260px       -\ ba con số cứng phải ăn khớp nhau,
+     .__quicklinks   bottom: 170px       -/ sửa một cái là lệch cả ba
+   Tức là bố cục của ĐIỆN THOẠI bị áp cho cả khung tablet.
+
+   BỐ CỤC CƠ SỞ CỦA KHỐI VỐN ĐÃ CO GIÃN ĐƯỢC: .__content dùng `top: 19%`,
+   .__sidecard dùng `right: 1.46% / bottom: 3.78% / width: 28.4%`, .__stage
+   khoá `aspect-ratio: 1366/692`. Nên bậc tablet KHÔNG cần dựng lại gì —
+   chỉ cần thu lề, hạ cỡ chữ một bậc, và chặn một chiều cao tối thiểu để
+   khối chữ (định vị tuyệt đối) không chạm vào dải liên kết nhanh.
+
+   BẬC 768–1151 (tablet): giữ nguyên bố cục desktop, thu lề 93 -> 40.
+   BẬC <= 767 (điện thoại): BỎ định vị tuyệt đối, chuyển sang xếp dọc theo
+   luồng. Nhờ vậy chiều cao do nội dung quyết định — không còn một con số
+   cứng nào (760/820/260/170 đều biến mất), và không thể chồng lấn.
    ============================================================= */
-@media (max-width: 1024px) {
+
+@media (max-width: 1151px) {
 	.nntm-hero-slider__stage {
-		aspect-ratio: auto;
-		min-height: 760px; /* SUY DOAN */
+		/*
+		 * Vẫn giữ tỉ lệ 1366/692 làm chuẩn, chỉ chặn sàn: ở khung 768px tỉ lệ
+		 * cho ra 389px — không đủ cho tiêu đề + chữ + chấm + dải liên kết
+		 * nhanh + thẻ kính mờ (tất cả đều định vị tuyệt đối). 520px là chiều
+		 * cao tối thiểu để năm khối đó không chạm nhau, đo lại khi đổi cỡ chữ.
+		 */
+		min-height: 520px;
 	}
 
 	.nntm-hero-slider__content {
-		left: var(--nntm-sp-5);
-		right: var(--nntm-sp-5);
+		left: var(--nntm-sp-8);
+		/* Chừa 36% bên phải cho thẻ kính mờ (28.4% + lề), không phải 420px cứng. */
+		right: 36%;
 		top: var(--nntm-sp-9);
 		max-width: none;
 	}
 
 	.nntm-hero-slider__heading {
-		font-size: var(--nntm-fs-3xl);
+		/* Một bậc dưới desktop (58) — token này = 40px trong dải <=1151. */
+		font-size: var(--nntm-fs-4xl);
 	}
 
 	.nntm-hero-slider__dots {
-		left: var(--nntm-sp-5);
+		left: var(--nntm-sp-8);
 		top: auto;
-		bottom: 260px; /* SUY DOAN */
+		/*
+		 * Nằm ngay trên dải liên kết nhanh: đáy hero + chiều cao một viên
+		 * liên kết (45) + một nhịp cách. Viết bằng phép tính để đổi đệm là
+		 * chấm tự đi theo, không phải con số 260px rời rạc như trước.
+		 */
+		bottom: calc(var(--nntm-sp-9) + 45px + var(--nntm-sp-5));
+	}
+
+	/*
+	 * Dai lien ket nhanh o bac tablet la MOT HANG CUON NGANG, khong xuong
+	 * dong. Ly do khong chi la tham my: dai chi cham xuong hai/ba hang la no
+	 * dam nguoc len cho dat cua dai cham (do duoc 100px cao o khung 768,
+	 * chong len cham). Mot hang co dinh 45px thi vi tri cham tinh duoc chinh
+	 * xac bang phep cong o duoi.
+	 */
+	.nntm-hero-slider__quicklinks {
+		left: var(--nntm-sp-8);
+		right: 36%;
+		bottom: var(--nntm-sp-9);
+		max-width: none;
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		scrollbar-width: none;
+	}
+
+	.nntm-hero-slider__quicklinks::-webkit-scrollbar {
+		display: none;
+	}
+
+	.nntm-hero-slider__quicklink {
+		flex: none;
+	}
+
+	.nntm-hero-slider__sidecard {
+		right: var(--nntm-sp-5);
+		bottom: var(--nntm-sp-5);
+		width: 32%;
 	}
 
 	.nntm-hero-slider__nav {
-		width: 40px; /* SUY DOAN: thu gon mot chut tren man hep */
+		width: 40px;
 		height: 40px;
 	}
 
@@ -439,38 +502,131 @@
 	.nntm-hero-slider__nav--next {
 		right: var(--nntm-sp-4);
 	}
+}
 
-	.nntm-hero-slider__quicklinks {
-		left: var(--nntm-sp-5);
-		right: var(--nntm-sp-5);
-		bottom: 170px; /* SUY DOAN */
+@media (max-width: 1023px) {
+	/*
+	 * DƯỚI 1024 — xếp dọc theo luồng, chiều cao do nội dung quyết định.
+	 *
+	 * SUA 20/08/2026: truoc day bac nay chi mo tu 767. Nhung o khung 768 dai
+	 * lien ket nhanh bi bo trong 64% be rong (chua cho the kinh mo ben phai)
+	 * nen chi con 442px trong khi bon o can 478px -> o CUOI bi cat mat 36px,
+	 * dung nhu anh Uy bao. Dai 1024-1151 thi du cho (606-687px) nen giu bo
+	 * cuc Figma; tu 1023 tro xuong xep doc, luc do dai lien ket nhanh xuong
+	 * dong tu do, khong the cat.
+	 *
+	 * CẤU TRÚC THẬT của khối là `stage > track > slide > content`: khối chữ
+	 * nằm TRONG từng tấm, mà tấm lại `position: absolute; inset: 0`. Nên chỉ
+	 * đổi `.__content` sang `relative` là chưa đủ — nó vẫn bị neo trong tấm
+	 * và đè lên thẻ kính mờ (đo được chồng 330×48 ở khung 375).
+	 *
+	 * Cách gỡ: cho `.__track` và tấm ĐANG XEM `display: contents`. Hai khối
+	 * đó không sinh hộp nữa nên `.__content` trở thành con flex trực tiếp của
+	 * `.__stage`, còn `.__img`/`.__overlay` (absolute inset 0) lấy chính
+	 * `.__stage` làm khối chứa nên vẫn phủ kín cả khung.
+	 *
+	 * Đánh đổi: hiệu ứng mờ chồng khi đổi tấm mất trên điện thoại (opacity
+	 * không có tác dụng trên hộp `display: contents`) — đổi tấm thành tức
+	 * thì. Chấp nhận được, và bù lại KHÔNG còn một con số cứng nào: bản cũ
+	 * phải khớp tay bốn số min-height 760/820 + bottom 260/170.
+	 *
+	 * Đệm trên chừa chỗ cho thanh header đè lên hero — lấy từ token
+	 * --nntm-header-h.
+	 */
+	.nntm-hero-slider__stage {
+		display: flex;
+		flex-direction: column;
+		gap: var(--nntm-sp-5);
+		aspect-ratio: auto;
+		min-height: 0;
+		padding: calc(var(--nntm-header-h) + var(--nntm-sp-8)) var(--nntm-sp-5) var(--nntm-sp-8);
+	}
+
+	.nntm-hero-slider__track {
+		display: contents;
+	}
+
+	.nntm-hero-slider__slide {
+		display: none;
+	}
+
+	.nntm-hero-slider__slide.is-active {
+		display: contents;
+	}
+
+	.nntm-hero-slider__content,
+	.nntm-hero-slider__dots,
+	.nntm-hero-slider__quicklinks,
+	.nntm-hero-slider__sidecard {
+		position: relative;   /* relative chứ không static: cần z-index để nằm trên ảnh */
+		left: auto;
+		right: auto;
+		top: auto;
+		bottom: auto;
+		width: auto;
 		max-width: none;
 	}
 
-	.nntm-hero-slider__sidecard {
-		left: var(--nntm-sp-5);
-		right: var(--nntm-sp-5);
-		bottom: var(--nntm-sp-5);
-		width: auto;
-	}
-}
-
-@media (max-width: 480px) {
-	.nntm-hero-slider__stage {
-		min-height: 820px; /* SUY DOAN */
+	.nntm-hero-slider__content {
+		gap: var(--nntm-sp-3);
 	}
 
 	.nntm-hero-slider__heading {
-		font-size: var(--nntm-fs-2xl);
+		/* Token này = 32px trong dải <=767. */
+		font-size: var(--nntm-fs-4xl);
 	}
 
+	/*
+	 * Bac 1024-1151 dat `flex-wrap: nowrap; overflow-x: auto` cho dai lien
+	 * ket nhanh (de dai luon dung MOT hang, giu cho dai cham tinh dung vi
+	 * tri bang phep cong). Dieu kien <=1023 la TAP CON cua <=1151 nen hai
+	 * luat do van do xuong day va se cat mat o cuoi.
+	 *
+	 * O bac xep doc khong con can mot hang nua (dai cham gio nam trong luong
+	 * flex, khong tinh theo `bottom`), nen tra ve xuong dong binh thuong va
+	 * bo cuon ngang.
+	 */
 	.nntm-hero-slider__quicklinks {
 		gap: var(--nntm-sp-2);
+		flex-wrap: wrap;
+		overflow-x: visible;
 	}
 
 	.nntm-hero-slider__quicklink {
+		flex: 0 1 auto;
+		min-height: 40px;
 		padding: var(--nntm-sp-1) var(--nntm-sp-4);
 		font-size: var(--nntm-fs-xs);
+	}
+
+	/*
+	 * Nút mũi tên: khung giờ cao theo nội dung nên `top: 50%` rơi vào giữa
+	 * khối chữ. Đưa xuống ngang dải chấm và thu nhỏ.
+	 */
+	.nntm-hero-slider__nav {
+		width: 36px;
+		height: 36px;
+		top: auto;
+		bottom: var(--nntm-sp-5);
+		transform: none;
+	}
+
+	.nntm-hero-slider__nav svg {
+		width: 16px;
+		height: 13px;
+	}
+}
+/*
+ * ĐIỆN THOẠI NHỎ (<= 480px). `min-height: 820px` cũ đã bỏ — khung hero giờ
+ * cao theo nội dung (xem khối <=767) nên không còn phải đoán một con số.
+ */
+@media (max-width: 480px) {
+	.nntm-hero-slider__heading {
+		font-size: var(--nntm-fs-3xl);
+	}
+
+	.nntm-hero-slider__stage {
+		padding-inline: var(--nntm-sp-4);
 	}
 }
 

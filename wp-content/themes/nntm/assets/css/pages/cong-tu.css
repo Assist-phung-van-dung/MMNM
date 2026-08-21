@@ -176,7 +176,7 @@
 
 /* ---------- Mobile ---------- */
 /* SUY DOAN: chưa có Figma mobile cho cả hai màn. */
-@media (max-width: 600px) {
+@media (max-width: 767px) {
 	.nntm-auth-card--cong-tu {
 		width: 100%;
 		padding: 36px 24px;
