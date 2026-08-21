@@ -37,12 +37,20 @@ giải nén ra, chạy trực tiếp, không cần cài đặt kiểu installer.
 
 ```bash
 mysql -u root -e "CREATE DATABASE nntm_dev DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-mysql -u root nntm_dev < nntm_dev.sql
+mysql -u root --init-command="SET SESSION sql_mode=''" nntm_dev < db/nntm_dev.sql
 ```
 
-`nntm_dev.sql` nằm ở thư mục cha của `nntm-toan-bo-site/` (không có trong git, xem
-`.gitignore` — copy tay từ máy đang giữ bản dump, hoặc bỏ qua bước này và dùng
-`tools/bootstrap-demo.php` ở mục 5 để tự sinh dữ liệu demo từ đầu).
+**Bản dump nằm trong repo: `db/nntm_dev.sql`** (21 bảng, ~2,3 MB — kể cả ba bảng
+riêng của dự án `wp_nntm_pdf_pages`, `wp_nntm_image_vectors`, và bảng stopword
+rỗng `nntm_ft_stopword` mà FULLTEXT ở mục 1.3 cần).
+
+`--init-command="SET SESSION sql_mode=''"` là bắt buộc, đừng bỏ: MariaDB mặc
+định bật `NO_ZERO_DATE`, mà WordPress để `comment_date` mặc định là
+`0000-00-00 00:00:00` — không tắt sql_mode thì nhập tới bảng `wp_comments` là
+đứng với lỗi 1067 *Invalid default value*.
+
+Không muốn nhập dump thì bỏ qua bước này và dùng `tools/bootstrap-demo.php` ở
+mục 5 để tự sinh dữ liệu demo từ đầu.
 
 ### 1.3 ⚠️ BẮT BUỘC cho tìm kiếm PDF — cấu hình FULLTEXT tiếng Việt
 

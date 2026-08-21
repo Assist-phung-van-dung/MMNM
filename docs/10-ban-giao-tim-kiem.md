@@ -282,9 +282,10 @@ nạp cả model chữ.
 
 ### Máy khác kéo repo về thì làm gì
 
-Repo **không có dump CSDL** (`.gitignore` cố tình loại), nên máy mới sẽ trắng
-nội dung. Dữ liệu demo vì vậy được **sinh hoàn toàn từ repo**, không phụ thuộc
-máy nào:
+**SỬA 21/08/2026:** repo giờ **có** dump CSDL ở `db/nntm_dev.sql` — cách nhập
+xem `11-chay-local-khong-docker.md` mục 1.2. Đoạn dưới viết từ lúc chưa có dump,
+vẫn đúng và vẫn nên giữ: dữ liệu demo **sinh hoàn toàn từ repo**, không phụ
+thuộc máy nào, nên máy mới có thể dựng site mà không cần dump:
 
 ```
 tools/test-assets/anh/   5 ảnh JPG đã thu nhỏ (288 KB cả bộ), từ khoá đã đo sẵn
