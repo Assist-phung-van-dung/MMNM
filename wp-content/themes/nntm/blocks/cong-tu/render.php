@@ -53,8 +53,23 @@ $nntm_ctb_wrapper_attributes = get_block_wrapper_attributes(
 		'class' => 'nntm-cong-tu nntm-cong-tu--nen-' . $nntm_ctb_background,
 	)
 );
+
+/*
+ * Ba data-* dưới đây là để JS dựng lại ĐÚNG khối này sau khi thành viên ghi
+ * chuỗi trong popup, KHÔNG tải lại trang (yêu cầu chủ dự án 21/08/2026) —
+ * xem nntm_congtu_ajax_html_khoi() trong inc/cong-tu.php và
+ * assets/js/cong-tu-modal.js. Ghi ID chương trình ĐÃ RESOLVE (không phải
+ * attribute thô 0) để lần dựng lại không lỡ rơi sang chương trình khác nếu
+ * đợt đang mở vừa đổi giữa hai lần bấm.
+ */
 ?>
-<section <?php echo $nntm_ctb_wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput -- get_block_wrapper_attributes() da tu esc_attr() tung thuoc tinh. ?>>
+<section
+	<?php echo $nntm_ctb_wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput -- get_block_wrapper_attributes() da tu esc_attr() tung thuoc tinh. ?>
+	data-nntm-congtu-block="1"
+	data-nntm-congtu-program="<?php echo esc_attr( (string) ( $nntm_ctb_program ? $nntm_ctb_program->ID : 0 ) ); ?>"
+	data-nntm-congtu-bxh-heading="<?php echo esc_attr( $nntm_ctb_bxh_heading ); ?>"
+	data-nntm-congtu-bxh-limit="<?php echo esc_attr( (string) $nntm_ctb_bxh_limit ); ?>"
+>
 	<?php if ( ! $nntm_ctb_program ) : ?>
 		<p class="nntm-cong-tu__rong">
 			<?php esc_html_e( 'Hiện không có chương trình trì tụng nào đang mở để hiển thị thống kê.', 'nntm' ); ?>

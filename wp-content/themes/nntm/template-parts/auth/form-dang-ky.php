@@ -178,29 +178,6 @@ $nntm_chinh_sach_url = $nntm_chinh_sach ? get_permalink( $nntm_chinh_sach ) : ho
 				/>
 			</div>
 		</div>
-
-		<div class="nntm-auth-checkbox">
-			<label>
-				<input type="checkbox" name="nntm_dong_y_dieu_khoan" value="1" required />
-				<span>
-					<?php
-					printf(
-						/* translators: %s: link "Điều khoản sử dụng". */
-						esc_html__( 'Tôi đã đọc và đồng ý với %s', 'nntm' ),
-						'<a href="' . esc_url( $nntm_chinh_sach_url ) . '"><strong>' . esc_html__( 'Điều khoản sử dụng', 'nntm' ) . '</strong></a>'
-					);
-					?>
-				</span>
-			</label>
-		</div>
-
-		<div class="nntm-auth-checkbox">
-			<label>
-				<input type="checkbox" name="nntm_nhan_ban_tin" value="1" <?php checked( $values['nntm_nhan_ban_tin'] ); ?> />
-				<span><?php esc_html_e( 'Nhận thông tin của trang', 'nntm' ); ?></span>
-			</label>
-		</div>
-
 		<button type="submit" class="nntm-auth-btn nntm-auth-btn--dac nntm-auth-btn--full">
 			<?php esc_html_e( 'Đăng Ký', 'nntm' ); ?>
 		</button>

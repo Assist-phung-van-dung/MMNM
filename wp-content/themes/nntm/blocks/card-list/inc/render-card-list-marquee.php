@@ -5,8 +5,16 @@
  * danh sách bài, chỉ có `layout=carousel` (khung cuộn tay CÓ nút mũi tên +
  * thanh cuộn) và marquee riêng cho nguồn YouTube
  * (xem inc/render-card-list-youtube.php). Chủ dự án chốt: dải "Nghi Quỹ"
- * trên trang Kim Cương Hành Giả (ID 243) phải là băng tự chạy, KHÔNG nút,
- * KHÔNG thanh cuộn — xem docs/07-ban-giao.md.
+ * trên trang Kim Cương Hành Giả (ID 243) phải là băng tự chạy, KHÔNG thanh
+ * cuộn — xem docs/07-ban-giao.md.
+ *
+ * SỬA 21/08/2026 — CÓ NÚT MŨI TÊN: chủ dự án đổi quyết định "phần Nghi Quỹ
+ * thêm icon nhấn 2 bên để anh có thể click chuyển qua lại các item trên
+ * slider". Băng vẫn TỰ CHẠY như cũ khi chưa ai bấm; bấm mũi tên là người xem
+ * tiếp quản, băng dừng tự chạy và đi từng thẻ theo nút (đúng nguyên tắc đã
+ * dùng ở carousel: "người dùng tự điều khiển thì không giật băng khỏi tay
+ * họ nữa" — xem view.js). Vẫn KHÔNG có thanh cuộn: overflow:hidden giữ
+ * nguyên, hai nút chỉ nằm đè lên hai mép băng.
  *
  * KỸ THUẬT DÙNG LẠI Y HỆT nntm_card_list_render_youtube_marquee() ở
  * inc/render-card-list-youtube.php (ĐỪNG đụng file đó — băng Gót Son/GITA
@@ -35,6 +43,34 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+
+/**
+ * Hai nút mũi tên của MỘT băng tự chạy — dùng chung cho băng danh sách BÀI
+ * (hàm nntm_card_list_render_posts_marquee() dưới đây) và băng nguồn YOUTUBE
+ * (nntm_card_list_render_youtube_marquee() ở inc/render-card-list-youtube.php).
+ *
+ * Thêm 21/08/2026. Một hàm duy nhất để hai băng không bao giờ lệch nhau về
+ * markup/lớp CSS — hình dạng lấy theo mũi tên chuẩn của site, xem khối
+ * "MŨI TÊN DÙNG CHUNG" trong blocks/card-list/style.css.
+ *
+ * Ký tự ← / → do CSS vẽ qua ::before (giống .nntm-an-pham-carousel__nav-icon)
+ * chứ không gõ thẳng vào HTML — nút đã có aria-label riêng, in thêm ký tự
+ * vào DOM chỉ làm trình đọc màn hình đọc dư.
+ *
+ * @return string HTML đã escape.
+ */
+function nntm_card_list_render_marquee_nav(): string {
+	ob_start();
+	?>
+	<button type="button" class="nntm-card-list__marquee-nav nntm-card-list__marquee-nav--prev" aria-label="<?php esc_attr_e( 'Xem thẻ trước', 'nntm' ); ?>">
+		<span class="nntm-card-list__marquee-nav-icon" aria-hidden="true"></span>
+	</button>
+	<button type="button" class="nntm-card-list__marquee-nav nntm-card-list__marquee-nav--next" aria-label="<?php esc_attr_e( 'Xem thẻ tiếp theo', 'nntm' ); ?>">
+		<span class="nntm-card-list__marquee-nav-icon" aria-hidden="true"></span>
+	</button>
+	<?php
+	return trim( (string) ob_get_clean() );
+}
 
 /**
  * Lặp lại danh sách ID bài (giữ thứ tự) cho tới khi tổng bề rộng ước lượng
@@ -189,6 +225,35 @@ function nntm_card_list_render_posts_marquee( array $post_ids, string $variant, 
 				?>
 			<?php endforeach; ?>
 		</div>
+
+		<?php
+		/*
+		 * Hai nút mũi tên (21/08/2026) — hình dạng theo ĐÚNG mũi tên chuẩn của
+		 * site (ô vuông trắng 58×58, ký tự ← / →) mà chủ dự án chỉ định làm mẫu
+		 * qua .nntm-an-pham-carousel__nav; xem khối CSS "MŨI TÊN DÙNG CHUNG"
+		 * trong blocks/card-list/style.css. Dùng CHUNG lớp
+		 * .nntm-card-list__marquee-nav với băng nguồn YouTube (Gót Son / GITA
+		 * CENTER) để cả site chỉ có MỘT bộ số đo cho mũi tên băng tự chạy.
+		 *
+		 * Nằm TRONG .nntm-card-list__marquee (không phải trong track đang bị
+		 * animation dịch chuyển) và đè lên hai mép băng bằng position:absolute —
+		 * cách này không thêm thẻ bọc nào, nên KHÔNG phá các quy tắc CSS đang
+		 * nhắm thẳng vào .nntm-card-list__marquee như flex "order: 2" của dải
+		 * Nghi Quỹ.
+		 *
+		 * <button type="button"> thật (không phải <a>): đây là hành động CUỘN
+		 * băng, không điều hướng. Băng chạy vòng vô hạn nên hai nút không bao
+		 * giờ bị vô hiệu hoá. Tắt JS thì băng vẫn tự chạy như trước và hai nút
+		 * không làm gì — nên chỉ in ra khi dải thật sự có nhiều hơn một thẻ.
+		 *
+		 * Đếm trên danh sách ĐÃ LẤP ĐẦY, không phải số bài duy nhất: dải chạy
+		 * vòng qua chính các bản lặp, nên chỉ cần dải dài hơn một thẻ là hai
+		 * nút đã có việc để làm.
+		 */
+		if ( count( $filled_ids ) > 1 ) :
+			echo nntm_card_list_render_marquee_nav(); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong.
+		endif;
+		?>
 	</div>
 	<?php
 	return trim( (string) ob_get_clean() );

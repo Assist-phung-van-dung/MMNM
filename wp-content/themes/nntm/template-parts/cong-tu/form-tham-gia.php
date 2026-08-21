@@ -63,70 +63,38 @@ $nntm_ct_user_id = get_current_user_id();
 			</span>
 		</div>
 
-		<?php if ( $nntm_ct_da_tham_gia ) : ?>
-			<p class="nntm-cong-tu__hien-trang">
-				<?php
-				printf(
-					/* translators: 1: số chuỗi đã cam kết, 2: số chuỗi đã thực hiện */
-					esc_html__( 'Bạn đã cam kết %1$s chuỗi, đã thực hiện %2$s chuỗi.', 'nntm' ),
-					esc_html( nntm_congtu_dinh_dang_so( (int) $nntm_ct_tong['cam_ket'] ) ),
-					esc_html( nntm_congtu_dinh_dang_so( (int) $nntm_ct_tong['thuc_hien'] ) )
-				);
-				?>
-			</p>
-		<?php endif; ?>
+		<?php
+		/*
+		 * Dòng trạng thái LUÔN in ra (rỗng khi chưa tham gia) — AJAX sau khi
+		 * cam kết xong sẽ điền chữ vào đúng thẻ này mà không phải tải lại
+		 * trang, nên thẻ phải tồn tại sẵn trong DOM. Thẻ rỗng bị CSS ẩn
+		 * (:empty trong cong-tu.css) nên lần đầu vẫn không chiếm chỗ — VÌ VẬY
+		 * mở/đóng thẻ phải nằm SÁT nhau, không xuống dòng: :empty không khớp
+		 * phần tử có dù chỉ một khoảng trắng bên trong.
+		 */
+		?>
+		<p class="nntm-cong-tu__hien-trang"><?php echo $nntm_ct_da_tham_gia ? esc_html( nntm_congtu_cau_da_cam_ket( (int) $nntm_ct_tong['cam_ket'], (int) $nntm_ct_tong['thuc_hien'] ) ) : ''; ?></p>
 
-		<?php if ( $nntm_ct_errors ) : ?>
-			<div class="nntm-auth-alert nntm-auth-alert--loi" role="alert">
-				<?php foreach ( $nntm_ct_errors->get_error_messages() as $nntm_ct_message ) : ?>
-					<p><?php echo esc_html( wp_strip_all_tags( $nntm_ct_message ) ); ?></p>
-				<?php endforeach; ?>
-			</div>
-		<?php elseif ( $nntm_ct_ok ) : ?>
-			<div class="nntm-auth-alert nntm-auth-alert--ok" role="status">
-				<p><?php esc_html_e( 'Đã ghi nhận, cảm ơn bạn đã phát tâm.', 'nntm' ); ?></p>
-			</div>
-		<?php endif; ?>
-
-		<form class="nntm-auth-form" method="post">
-			<?php wp_nonce_field( 'nntm_congtu_cam_ket', 'nntm_congtu_nonce' ); ?>
-			<input type="hidden" name="nntm_congtu_action" value="cam-ket" />
-
-			<div class="nntm-auth-field">
-				<label for="nntm-congtu-so-chuoi"><?php echo esc_html( $nntm_ct_nhan ); ?></label>
-				<div class="nntm-auth-field__control">
-					<input
-						type="number"
-						min="1"
-						step="1"
-						inputmode="numeric"
-						id="nntm-congtu-so-chuoi"
-						name="so_chuoi"
-						placeholder="<?php esc_attr_e( 'Vui lòng nhập số', 'nntm' ); ?>"
-						required
-					/>
+		<?php
+		// Ô thông báo dùng chung cho POST thường và AJAX — xem form-khai-bao.php.
+		?>
+		<div class="nntm-cong-tu__thong-bao" data-nntm-congtu-thong-bao>
+			<?php if ( $nntm_ct_errors ) : ?>
+				<div class="nntm-auth-alert nntm-auth-alert--loi" role="alert">
+					<?php foreach ( $nntm_ct_errors->get_error_messages() as $nntm_ct_message ) : ?>
+						<p><?php echo esc_html( wp_strip_all_tags( $nntm_ct_message ) ); ?></p>
+					<?php endforeach; ?>
 				</div>
-			</div>
-
-			<?php if ( ! $nntm_ct_da_tham_gia ) : ?>
-				<div class="nntm-auth-checkbox">
-					<label>
-						<input type="checkbox" name="nntm_congtu_dong_y" value="1" required />
-						<span>
-							<?php esc_html_e( 'Tôi đã đọc và đồng ý với', 'nntm' ); ?>
-							<a href="<?php echo esc_url( home_url( '/chinh-sach/' ) ); ?>"><strong><?php esc_html_e( 'Điều khoản sử dụng', 'nntm' ); ?></strong></a>
-						</span>
-					</label>
+			<?php elseif ( $nntm_ct_ok ) : ?>
+				<div class="nntm-auth-alert nntm-auth-alert--ok" role="status">
+					<p><?php esc_html_e( 'Đã ghi nhận, cảm ơn bạn đã phát tâm.', 'nntm' ); ?></p>
 				</div>
 			<?php endif; ?>
+		</div>
 
-			<div class="nntm-auth-checkbox">
-				<label>
-					<input type="checkbox" name="nntm_congtu_ban_tin" value="1" />
-					<span><?php esc_html_e( 'Nhận thông tin của trang', 'nntm' ); ?></span>
-				</label>
-			</div>
-
+		<form class="nntm-auth-form" method="post" data-nntm-congtu-ajax="cam-ket">
+			<?php wp_nonce_field( 'nntm_congtu_cam_ket', 'nntm_congtu_nonce' ); ?>
+			<input type="hidden" name="nntm_congtu_action" value="cam-ket" />
 			<button type="submit" class="nntm-auth-btn nntm-auth-btn--dac nntm-cong-tu__submit">
 				<?php echo esc_html( $nntm_ct_nut ); ?>
 			</button>

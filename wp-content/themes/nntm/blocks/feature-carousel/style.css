@@ -11,6 +11,30 @@
 	--fc-inner-y: 42px;
 	--fc-outer-y: 71px;
 	--fc-stage-height: 438px;
+
+	/*
+	 * HIỆU ỨNG CHUYỂN ẢNH (21/08/2026) — yêu cầu chủ dự án: "muốn có 1 hiệu
+	 * ứng chuyển ảnh mượt mà mà nhẹ nhàng kiểu tâm linh".
+	 *
+	 * KHÔNG có số đo Figma nào cho chuyển động (thiết kế chỉ có hình tĩnh),
+	 * nên bốn số dưới đây là LỰA CHỌN THẨM MỸ của lượt này, gom về một chỗ
+	 * để chỉnh cảm giác chỉ bằng cách sửa số ở đây:
+	 *
+	 *   --fc-dur   Thời lượng một lần chuyển. 1250ms — chậm hơn hẳn 720ms
+	 *              trước đây; ảnh "trôi" tới chỗ chứ không "nhảy" tới.
+	 *   --fc-ease  Đường cong CHẬM ĐẦU - LẮNG DÀI: gần như không có cú giật
+	 *              khi bắt đầu, rồi hạ dần và đậu xuống rất mềm. Đây là chỗ
+	 *              tạo ra cảm giác "nhẹ nhàng" chứ không phải thời lượng.
+	 *              (ease/ease-out mặc định vọt nhanh ở đầu — đọc ra là gấp
+	 *              gáp, đúng cái đang bị.)
+	 *   --fc-blur-*  Độ mờ của các ảnh ở lớp trong/lớp ngoài. Ảnh càng xa
+	 *              tâm càng mờ, ảnh vào giữa thì nét dần — chuyển ảnh vì vậy
+	 *              đọc ra là "lắng vào tiêu điểm", không chỉ là trượt ngang.
+	 */
+	--fc-dur: 1250ms;
+	--fc-ease: cubic-bezier(0.34, 0.03, 0.18, 1);
+	--fc-blur-trong: 1px;
+	--fc-blur-ngoai: 2.5px;
 	width: 100%;
 	min-height: 738px;
 	padding: 36px 0 94px;
@@ -84,6 +108,26 @@
 	touch-action: pan-y;
 }
 
+/*
+ * VỊ TRÍ DỌC ĐI BẰNG translateY, KHÔNG BẰNG `top` (sửa 21/08/2026).
+ *
+ * Đây là nguyên nhân THẬT làm chuyển động trước đây không mượt, không phải
+ * tại thời lượng: `top` là thuộc tính dàn trang — mỗi khung hình trình duyệt
+ * phải tính lại bố cục rồi vẽ lại, không đưa được cho GPU. `transform` thì
+ * chạy thẳng ở tầng hợp ảnh (compositor). Trước đây `top` và `transform`
+ * chuyển song song nên cả dải bị kéo về tốc độ của cái chậm hơn.
+ *
+ * Gộp vào transform vẫn ra ĐÚNG vị trí cũ: translateX(-50%) tính theo bề
+ * rộng thật của thẻ (chưa scale), translateY cũng theo đơn vị chưa scale, và
+ * transform-origin vẫn là `center top` — nên "translateY(Y) + scale(S)" đặt
+ * thẻ y hệt "top: Y rồi scale(S)". Các biến --fc-*-y giữ nguyên tên nên mọi
+ * breakpoint bên dưới không phải sửa gì.
+ *
+ * Ba thuộc tính còn chuyển (transform / opacity / filter) dùng CÙNG thời
+ * lượng và CÙNG đường cong. Bản cũ để opacity+filter 420ms trong khi
+ * transform 720ms: ảnh hiện rõ xong rồi mới trôi tiếp một quãng nữa — mắt
+ * đọc ra thành hai nhịp rời nhau, đó là cái cảm giác "khựng".
+ */
 .nntm-feature-carousel__slide {
 	position: absolute;
 	left: 50%;
@@ -93,45 +137,107 @@
 	pointer-events: none;
 	transform-origin: center top;
 	transform: translateX(-50%) scale(.58);
-	transition: top 720ms var(--nntm-ease), transform 720ms var(--nntm-ease), opacity 420ms var(--nntm-ease), filter 420ms var(--nntm-ease);
-	filter: saturate(.82) brightness(.94);
+	filter: saturate(.78) brightness(.9) blur(var(--fc-blur-ngoai));
 	z-index: 1;
+}
+
+/*
+ * Transition CHỈ bật sau khi view.js đã xếp chỗ lần đầu (nó gắn .is-ready ở
+ * khung hình kế tiếp). Nếu bật ngay từ đầu thì lúc tải trang cả năm ảnh sẽ
+ * bay từ giữa ra chỗ của mình — một hiệu ứng vào trang không ai đặt, và càng
+ * rõ khi chuyển động chậm lại.
+ */
+.nntm-feature-carousel.is-ready .nntm-feature-carousel__slide {
+	transition:
+		transform var(--fc-dur) var(--fc-ease),
+		opacity var(--fc-dur) var(--fc-ease),
+		filter var(--fc-dur) var(--fc-ease);
 }
 
 .nntm-feature-carousel__slide[data-position="-2"] {
 	opacity: 1;
-	top: var(--fc-outer-y);
-	transform: translateX(calc(-50% - var(--fc-outer-offset))) scale(.60);
+	transform: translateX(calc(-50% - var(--fc-outer-offset))) translateY(var(--fc-outer-y)) scale(.60);
+	filter: saturate(.78) brightness(.9) blur(var(--fc-blur-ngoai));
 	z-index: 2;
 }
 
 .nntm-feature-carousel__slide[data-position="2"] {
 	opacity: 1;
-	top: var(--fc-outer-y);
-	transform: translateX(calc(-50% + var(--fc-outer-offset))) scale(.60);
+	transform: translateX(calc(-50% + var(--fc-outer-offset))) translateY(var(--fc-outer-y)) scale(.60);
+	filter: saturate(.78) brightness(.9) blur(var(--fc-blur-ngoai));
 	z-index: 2;
+}
+
+/*
+ * BỜ SÂN KHẤU (data-position ±3) — thêm 21/08/2026.
+ *
+ * view.js chặn data-position trong khoảng -3..3 (xem paint()), nên ±3 là
+ * trạng thái "vừa ra khỏi sân khấu / sắp bước vào". Trước đây không có quy
+ * tắc nào cho ±3 nên chúng rơi về trạng thái gốc — nằm GIỮA sân khấu, mờ
+ * hẳn. Hệ quả: ảnh mới hiện ra từ chính giữa rồi bay ngang ra khe ngoài,
+ * ngược hướng người xem chờ đợi. Chuyển động cũ nhanh nên khó thấy; chậm lại
+ * 1250ms là lộ ngay.
+ *
+ * Đặt chúng ra NGOÀI khe ngoài cùng (×1.5) và nhỏ hơn một chút: ảnh vào thì
+ * từ ngoài trôi vào, ảnh ra thì trôi tiếp ra ngoài rồi tan — đúng một dòng
+ * chảy, không có cú "nở ra từ giữa".
+ */
+.nntm-feature-carousel__slide[data-position="-3"] {
+	opacity: 0;
+	transform: translateX(calc(-50% - var(--fc-outer-offset) * 1.5)) translateY(var(--fc-outer-y)) scale(.5);
+	z-index: 1;
+}
+
+.nntm-feature-carousel__slide[data-position="3"] {
+	opacity: 0;
+	transform: translateX(calc(-50% + var(--fc-outer-offset) * 1.5)) translateY(var(--fc-outer-y)) scale(.5);
+	z-index: 1;
 }
 
 .nntm-feature-carousel__slide[data-position="-1"] {
 	opacity: 1;
-	top: var(--fc-inner-y);
-	transform: translateX(calc(-50% - var(--fc-inner-offset))) scale(.76);
+	transform: translateX(calc(-50% - var(--fc-inner-offset))) translateY(var(--fc-inner-y)) scale(.76);
+	filter: saturate(.9) brightness(.96) blur(var(--fc-blur-trong));
 	z-index: 3;
 }
 
 .nntm-feature-carousel__slide[data-position="1"] {
 	opacity: 1;
-	top: var(--fc-inner-y);
-	transform: translateX(calc(-50% + var(--fc-inner-offset))) scale(.76);
+	transform: translateX(calc(-50% + var(--fc-inner-offset))) translateY(var(--fc-inner-y)) scale(.76);
+	filter: saturate(.9) brightness(.96) blur(var(--fc-blur-trong));
 	z-index: 3;
 }
 
+/*
+ * Ảnh vào giữa: nét hẳn, sáng hẳn. Khai đủ ba giá trị trong filter (thay vì
+ * `none`) để trình duyệt nội suy TỪNG giá trị một cách liên tục — `none`
+ * không phải là danh sách filter tương thích nên nhiều trình duyệt nhảy
+ * thẳng thay vì chuyển dần, làm mất đúng phần "nét dần" của hiệu ứng.
+ */
 .nntm-feature-carousel__slide[data-position="0"] {
 	opacity: 1;
 	pointer-events: auto;
-	transform: translateX(-50%) scale(1);
-	filter: none;
+	transform: translateX(-50%) translateY(0) scale(1);
+	filter: saturate(1) brightness(1) blur(0);
 	z-index: 5;
+}
+
+/*
+ * Ảnh đang VÒNG QUA BÌA: nhấc sang khe đối diện tức thì, không bay ngang qua
+ * sân khấu — xem chú thích dài trong paint() ở view.js. view.js bỏ lớp này ở
+ * khung hình sau, khi đó opacity mới chuyển từ 0 lên 1 tại chỗ mới.
+ *
+ * Chọn selector dài (kèm .is-ready) là CỐ Ý, không phải viết dư: quy tắc bật
+ * transition ở trên là ".nntm-feature-carousel.is-ready .nntm-feature-carousel__slide"
+ * — ba lớp. Viết ngắn ".nntm-feature-carousel__slide.is-teleport" (hai lớp) thì
+ * "transition: none" ở đây THUA và ảnh vẫn bay ngang qua sân khấu, đúng cái
+ * đang muốn chặn.
+ *
+ * Vẫn đặt SAU mọi quy tắc [data-position] để phần "opacity: 0" thắng chắc.
+ */
+.nntm-feature-carousel.is-ready .nntm-feature-carousel__slide.is-teleport {
+	transition: none;
+	opacity: 0;
 }
 
 .nntm-feature-carousel__media {
@@ -157,9 +263,15 @@
 	color: var(--nntm-chu);
 }
 
+/*
+ * Chữ hiện SAU khi ảnh đã đi được một đoạn (trễ 260ms) rồi mới tụ lại trong
+ * 820ms — chữ và ảnh chạy cùng lúc thì hai chuyển động tranh nhau, đọc ra là
+ * ồn. Để lệch nhịp một chút thì thành một mạch: ảnh lắng vào chỗ, chữ mới
+ * hiện lên. `both` giữ chữ ở trạng thái đầu (mờ hẳn) trong lúc còn trễ.
+ */
 .nntm-feature-carousel__slide[data-position="0"] .nntm-feature-carousel__copy {
 	display: block;
-	animation: nntm-feature-carousel-copy 420ms var(--nntm-ease) both;
+	animation: nntm-feature-carousel-copy 820ms var(--fc-ease) 260ms both;
 }
 
 .nntm-feature-carousel__copy h3 {
@@ -214,9 +326,11 @@
 .nntm-feature-carousel__arrow--prev { left: 126px; }
 .nntm-feature-carousel__arrow--next { right: 126px; }
 
+/* Chữ "tụ lại" chứ không "trượt lên": nhoè nhẹ + dâng 6px, cùng đường cong
+   với ảnh nên hai chuyển động nghe như một. */
 @keyframes nntm-feature-carousel-copy {
-	from { opacity: 0; transform: translateY(8px); }
-	to { opacity: 1; transform: none; }
+	from { opacity: 0; transform: translateY(6px); filter: blur(3px); }
+	to { opacity: 1; transform: none; filter: blur(0); }
 }
 
 @media (max-width: 1151px) {
@@ -284,6 +398,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.nntm-feature-carousel__slide { transition: none; }
+	/* Phải khai đủ ".is-ready" cho đủ độ đặc hiệu, nếu không quy tắc bật
+	   transition ở trên (hai class) vẫn thắng dòng này. Riêng độ mờ/độ sáng
+	   theo lớp thì GIỮ — đó là chiều sâu tĩnh, không phải chuyển động. */
+	.nntm-feature-carousel__slide,
+	.nntm-feature-carousel.is-ready .nntm-feature-carousel__slide { transition: none; }
 	.nntm-feature-carousel__slide[data-position="0"] .nntm-feature-carousel__copy { animation: none; }
 }

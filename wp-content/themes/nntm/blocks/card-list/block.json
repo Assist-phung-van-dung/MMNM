@@ -144,7 +144,7 @@
 		}
 	},
 	"editorScript": "file:./editor.js",
-	"viewScript": "file:./view.js",
+	"viewScript": [ "file:./view.js", "file:./view-paging.js", "file:./view-marquee-nav.js" ],
 	"style": [ "file:./style.css", "file:../card/style.css" ],
 	"render": "file:./render.php"
 }

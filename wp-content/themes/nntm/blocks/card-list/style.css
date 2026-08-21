@@ -1432,9 +1432,8 @@ a.nntm-card-list__paging-so:focus-visible {
    phía trên, quy tắc padding-block).
    ============================================================= */
 .nntm-card-list__yt-marquee {
+	position: relative; /* moc cho hai nut mui ten (21/08/2026) */
 	overflow: hidden;
-	/* Không có nút bấm nào của marquee — rê chuột dừng cả dải, nên không
-	   cần padding chừa chỗ nút như carousel nguồn bài viết. */
 	padding-inline-start: 93px; /* tu Figma (Got Son): the dau bat dau o x=93 */
 }
 
@@ -1463,6 +1462,26 @@ a.nntm-card-list__paging-so:focus-visible {
 .nntm-card-list__yt-marquee:hover .nntm-card-list__yt-track,
 .nntm-card-list__yt-marquee:focus-within .nntm-card-list__yt-track {
 	animation-play-state: paused;
+}
+
+/* Người xem đã bấm mũi tên: view-marquee-nav.js gắn lớp này, tắt tự chạy và
+   chuyển sang dịch từng thẻ (giống hệt băng danh sách bài ở khối dưới).
+
+   `animation: none` ở đây là lớp phòng thủ THỨ HAI, KHÔNG phải lớp chính:
+   quy tắc này chỉ có một class nên bị mọi bản ghi đè cụ thể hơn đè mất —
+   trang chủ khai lại animation riêng bằng ".home .nntm-card-list--nen-toi
+   .nntm-card-list__yt-track" (homepage-figma.css). Việc tắt tự chạy thật sự
+   do JS đặt bằng style NỘI TUYẾN; đừng gỡ dòng đó khi dọn CSS, và cũng
+   đừng trông chờ dòng dưới đây thắng ở mọi trang. */
+.nntm-card-list__yt-track--tay {
+	animation: none;
+	transition: transform 0.45s var(--nntm-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-card-list__yt-track--tay {
+		transition: none;
+	}
 }
 
 @keyframes nntm-yt-marquee {
@@ -1617,6 +1636,15 @@ a.nntm-card-list__paging-so:focus-visible {
 	width: 100%;
 	height: 100%;
 	border: 0;
+	/*
+	 * BẮT BUỘC (21/08/2026): iframe xem-thu khi re chuot la TRANG TRI — noi
+	 * cham chuot phai di xuyen qua no xuong the ben duoi, vi tu nay bam vao
+	 * the se mo popup toan man hinh (view-yt-lightbox.js). Khong co dong nay
+	 * thi sau 350ms hover, cu bam roi vao trinh phat YouTube nhung trong
+	 * iframe va popup khong bao gio mo. Cung ky thuat da dung o
+	 * blocks/engineering-earth/style.css (.__video-embed iframe).
+	 */
+	pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1656,16 +1684,19 @@ a.nntm-card-list__paging-so:focus-visible {
      - overflow: hidden (KHÔNG phải overflow-x: auto) — không có thanh cuộn
        nào hiện ra, kể cả khi trình duyệt thường tự vẽ thanh cuộn cho nội
        dung tràn.
-     - Không có <button> mũi tên nào trong markup (xem render.php + inc/
-       render-card-list-marquee.php) — không có gì để ẩn/hiện bằng CSS.
      - KHÔNG scroll-snap — lặp lại đúng bài học cũ đã ghi ở khối carousel
        phía trên (scroll-snap từng làm băng tự nhảy 110px lúc tải trang).
      - Thẻ cuối CỐ Ý ló ra mép phải: track rộng hơn khung nhìn (nhiều thẻ
        hơn mức vừa khít) và khung ngoài overflow:hidden — không có logic
        "chừa lề"/"làm tròn số thẻ" nào ở đây, phần thừa tự nhiên bị cắt bởi
        overflow:hidden, đúng dáng "băng chạy" chứ không phải "lưới vừa khít".
+
+   SỬA 21/08/2026: băng NAY CÓ hai nút mũi tên (chủ dự án đổi quyết định —
+   xem inc/render-card-list-marquee.php). Vẫn không có thanh cuộn; hai nút
+   chỉ đè lên hai mép băng, không đổi hộp của băng.
    ============================================================= */
 .nntm-card-list__marquee {
+	position: relative; /* moc cho hai nut mui ten dat tuyet doi hai ben */
 	overflow: hidden;
 }
 
@@ -1706,9 +1737,126 @@ a.nntm-card-list__paging-so:focus-visible {
 	height: 100%;
 }
 
+/* =============================================================
+   MŨI TÊN DÙNG CHUNG cho MỌI băng tự chạy — thêm 21/08/2026.
+
+   Dùng ở CẢ HAI loại băng: danh sách bài (dải "Nghi Quỹ") và nguồn
+   YouTube (dải "Xuyên Vạn Kiếp" + "GITA CENTER" trang chủ). Markup do
+   nntm_card_list_render_marquee_nav() in ra, một chỗ duy nhất.
+
+   HÌNH DẠNG theo ĐÚNG mũi tên chuẩn của site mà chủ dự án chỉ định làm
+   mẫu: .nntm-an-pham-carousel__nav (assets/css/pages/an-pham.css) — ô
+   vuông 58×58, nền trắng, KHÔNG viền, KHÔNG bo góc, ký tự ← / → Arial
+   24px màu đen.
+
+   VÌ SAO KHÔNG DÙNG THẲNG CLASS CỦA AN-PHAM: an-pham.css chỉ được nạp ở
+   trang ấn phẩm (xem inc/an-pham.php), nên class đó không có kiểu dáng ở
+   trang chủ / trang Kim Cương; và bộ số đo bên đó neo theo bố cục riêng
+   của trang ấy (top:220px, left:-75px). Ở đây chỉ lặp lại HÌNH DẠNG,
+   còn vị trí neo theo băng.
+
+   Đè lên hai mép băng. z-index cần thiết vì các thẻ trong track là anh
+   em đứng sau trong luồng — không có z-index thì thẻ phủ lên nút.
+   ============================================================= */
+.nntm-card-list__marquee-nav {
+	appearance: none;
+	position: absolute;
+	top: 50%;
+	z-index: 5;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 58px;
+	height: 58px;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background-color: var(--nntm-trang);
+	color: var(--nntm-den);
+	cursor: pointer;
+	transform: translateY(-50%);
+	box-shadow: none;
+}
+
+.nntm-card-list__marquee-nav--prev {
+	left: 0;
+}
+
+.nntm-card-list__marquee-nav--next {
+	right: 0;
+}
+
+/* Giữ nguyên nền trắng/chữ đen khi rê chuột — đúng như mũi tên mẫu ở
+   an-pham.css (nút mẫu KHÔNG đổi màu khi hover). */
+.nntm-card-list__marquee-nav:hover,
+.nntm-card-list__marquee-nav:focus-visible {
+	background-color: var(--nntm-trang);
+	color: var(--nntm-den);
+}
+
+.nntm-card-list__marquee-nav:focus-visible {
+	outline: 2px solid var(--nntm-reu);
+	outline-offset: 2px;
+}
+
+.nntm-card-list__marquee-nav-icon {
+	display: inline-grid;
+	place-items: center;
+	width: 28px;
+	height: 28px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 24px;
+	font-weight: 400;
+	font-style: normal;
+	line-height: 1;
+}
+
+.nntm-card-list__marquee-nav-icon::before {
+	display: block;
+	transform: translateY(-1px);
+}
+
+.nntm-card-list__marquee-nav--prev .nntm-card-list__marquee-nav-icon::before {
+	content: '←';
+}
+
+.nntm-card-list__marquee-nav--next .nntm-card-list__marquee-nav-icon::before {
+	content: '→';
+}
+
+/* Màn hẹp: thu nút lại cho vừa, cùng tỉ lệ an-pham.css dùng ở breakpoint nhỏ. */
+@media (max-width: 767px) {
+	.nntm-card-list__marquee-nav {
+		width: 44px;
+		height: 44px;
+	}
+
+	.nntm-card-list__marquee-nav-icon {
+		width: 22px;
+		height: 22px;
+		font-size: 20px;
+	}
+}
+
+/* Người xem đã bấm mũi tên: view-marquee-nav.js gắn lớp này, tắt animation
+   tự chạy và chuyển sang dịch từng thẻ bằng transition. Việc tắt tự chạy
+   thật sự do JS đặt bằng style nội tuyến (xem tiepQuan() trong
+   view-marquee-nav.js) — dòng `animation: none` dưới đây chỉ là lớp phòng
+   thủ thứ hai, sẽ thua nếu có trang nào khai animation cụ thể hơn. */
+.nntm-card-list__marquee-track--tay {
+	animation: none;
+	transition: transform 0.45s var(--nntm-ease);
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.nntm-card-list__marquee-track {
 		animation: none;
+	}
+
+	/* Không tự chạy VÀ không hoạt hình khi bấm nút — nhưng hai nút vẫn dùng
+	   được, đây là cách duy nhất để xem hết băng ở chế độ này. */
+	.nntm-card-list__marquee-track--tay {
+		transition: none;
 	}
 }
 
@@ -1950,4 +2098,24 @@ a.nntm-card-list__paging-so:focus-visible {
 	.nntm-kc-nghi-quy .nntm-card-list__marquee-item {
 		flex: 0 0 min(80vw, 300px);
 	}
+}
+
+/* =============================================================
+   Đổi trang KHÔNG tải lại trang (view-paging.js, yêu cầu chủ dự
+   án 21/08/2026). Trong lúc chờ máy chủ trả danh sách mới, làm
+   mờ nhẹ và chặn bấm thêm — người dùng thấy rõ là đang tải mà
+   giao diện không nhảy chỗ (không đổi chiều cao, không thay nội
+   dung bằng khung xương giả).
+   ============================================================= */
+.nntm-card-list--dang-tai {
+	opacity: 0.55;
+	pointer-events: none;
+	transition: opacity var(--nntm-dur) var(--nntm-ease);
+}
+
+/* Khối vừa đổi trang nhận tiêu điểm bàn phím — không vẽ viền quanh
+   cả lưới, vì đây là tiêu điểm do lập trình đặt, không phải người
+   dùng Tab tới (:focus-visible vẫn hoạt động bình thường). */
+.nntm-card-list .nntm-grid:focus {
+	outline: none;
 }

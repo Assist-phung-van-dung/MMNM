@@ -132,6 +132,21 @@
 	transition: width var(--nntm-dur) var(--nntm-ease);
 }
 
+/*
+ * VƯỢT CAM KẾT (>100%) — thêm 21/08/2026 cùng lúc bỏ chặn trần con số
+ * (yêu cầu chủ dự án: "tiến trình có thể cho phép vượt 100%").
+ *
+ * Con số chữ hiện đúng tỉ lệ thật (vd 200%), nhưng THANH thì vẫn đầy 100%
+ * và không thể hơn — một thanh dài hơn máng chứa nó là vô nghĩa về thị
+ * giác. Để người xem vẫn phân biệt được "vừa đủ 100%" với "vượt xa", thanh
+ * đầy được đánh dấu bằng đường viền mảnh cùng màu chữ: KHÔNG đổi màu nền
+ * thanh sang màu khác vì bảng màu thương hiệu chỉ có một màu nhấn cho tiến
+ * trình (--nntm-do-tham), thêm màu mới ở đây là tự bịa ra màu ngoài bộ.
+ */
+.nntm-cong-tu__thanh--vuot {
+	box-shadow: inset 0 0 0 1px var(--nntm-do-tham);
+}
+
 /* ---------- Bảng xếp hạng ---------- */
 .nntm-cong-tu__bxh {
 	max-width: var(--nntm-w-noi-dung);

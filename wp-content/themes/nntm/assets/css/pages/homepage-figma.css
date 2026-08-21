@@ -1042,6 +1042,36 @@
 		object-fit: cover;
 	}
 
+	/*
+	 * Thẻ nhỏ nay là VIDEO THẬT, không còn ảnh tĩnh (21/08/2026 — yêu cầu
+	 * chủ dự án, nguồn là thuộc tính bgVideoUrl của block; xem
+	 * blocks/engineering-earth/render.php).
+	 *
+	 * Khe video lấp đúng ô nội dung của thẻ (388 − 2×20 = 348 rộng), chiều
+	 * cao suy ra từ TỈ LỆ 348/203 của thiết kế thay vì khai số px — nhờ vậy ở
+	 * breakpoint hẹp (nơi thẻ chuyển sang height:auto và ảnh cũ dùng
+	 * height:auto để tự cao theo tỉ lệ) khe vẫn cao đúng, KHÔNG phải khai lại
+	 * số đo ở từng breakpoint. Không có tỉ lệ này thì khe cao 0 vì poster bên
+	 * trong là position:absolute.
+	 */
+	.home .nntm-engineering-earth__figma-pip .nntm-engineering-earth__video-slot {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 348 / 203;
+		border-radius: 0; /* thiết kế thẻ nhỏ là góc vuông, khác --nntm-r-md mặc định của khe */
+		background-color: transparent; /* nền xám mặc định của khe sẽ lộ ra trên lớp kính mờ đen */
+	}
+
+	/*
+	 * Đè quy tắc ".figma-pip img" phía trên (348×203 cố định, và 100%/auto ở
+	 * breakpoint hẹp): poster của khe phải phủ kín khe theo inset:0 của
+	 * blocks/engineering-earth/style.css, không tự giữ số px riêng.
+	 */
+	.home .nntm-engineering-earth__figma-pip .nntm-engineering-earth__video-slot img.nntm-engineering-earth__video-poster {
+		width: 100%;
+		height: 100%;
+	}
+
 	.home .nntm-engineering-earth__figma-main:focus-visible,
 	.home .nntm-engineering-earth__figma-pip:focus-visible {
 		outline: 2px solid var(--nntm-kem);

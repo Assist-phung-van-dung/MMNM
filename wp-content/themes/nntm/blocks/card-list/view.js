@@ -588,8 +588,15 @@
 		updateButtonsState();
 	}
 
-	function nntmInitAllCardListCarousels() {
-		var carousels = document.querySelectorAll( '.nntm-card-list__carousel' );
+	/**
+	 * @param {Element|Document} [root] Chỉ khởi tạo trong phạm vi này (mặc
+	 *        định cả trang). Cần thiết khi một khối vừa được thay bằng HTML
+	 *        mới (đổi trang không tải lại trang, xem view-paging.js): gọi
+	 *        lại trên cả trang sẽ gắn TRÙNG sự kiện cho những băng cuộn cũ
+	 *        vẫn đang nằm đó.
+	 */
+	function nntmInitAllCardListCarousels( root ) {
+		var carousels = ( root || document ).querySelectorAll( '.nntm-card-list__carousel' );
 
 		for ( var i = 0; i < carousels.length; i++ ) {
 			nntmInitCardListCarousel( carousels[ i ] );
@@ -718,21 +725,37 @@
 		item.addEventListener( 'blur', removeEmbed );
 	}
 
-	function nntmInitAllYoutubeMarquees() {
-		var items = document.querySelectorAll( '.nntm-card-list__yt-item' );
+	/**
+	 * @param {Element|Document} [root] Xem chú thích ở nntmInitAllCardListCarousels().
+	 */
+	function nntmInitAllYoutubeMarquees( root ) {
+		var items = ( root || document ).querySelectorAll( '.nntm-card-list__yt-item' );
 
 		for ( var i = 0; i < items.length; i++ ) {
 			nntmInitYoutubeItem( items[ i ] );
 		}
 	}
 
-	function nntmInitCardListView() {
-		nntmInitAllCardListCarousels();
-		nntmInitAllYoutubeMarquees();
+	/**
+	 * @param {Element|Document} [root] Xem chú thích ở nntmInitAllCardListCarousels().
+	 */
+	function nntmInitCardListView( root ) {
+		nntmInitAllCardListCarousels( root );
+		nntmInitAllYoutubeMarquees( root );
 	}
 
+	/*
+	 * view-paging.js phát sự kiện này sau khi thay HTML một khối (đổi trang
+	 * không tải lại trang) — chỉ khởi tạo lại TRONG phần vừa thay.
+	 */
+	document.addEventListener( 'nntm-card-list-refresh', function ( event ) {
+		nntmInitCardListView( ( event.detail && event.detail.root ) || document );
+	} );
+
 	if ( 'loading' === document.readyState ) {
-		document.addEventListener( 'DOMContentLoaded', nntmInitCardListView );
+		document.addEventListener( 'DOMContentLoaded', function () {
+			nntmInitCardListView();
+		} );
 	} else {
 		nntmInitCardListView();
 	}

@@ -135,15 +135,48 @@ $main_video_id    = nntm_engineering_earth_extract_youtube_id( $main_video_url )
 			<p class="nntm-engineering-earth__caption"><?php echo wp_kses_post( $caption ); ?></p>
 		<?php endif; ?>
 
-		<?php if ( '' !== $video_post_url ) : ?>
-			<a class="nntm-engineering-earth__figma-pip" href="<?php echo esc_url( $video_post_url ); ?>" aria-label="<?php echo esc_attr__( 'Xem video Engineering Earth', 'nntm' ); ?>">
-				<img src="<?php echo esc_url( $figma_pip_image ); ?>" alt="">
-			</a>
-		<?php else : ?>
-			<div class="nntm-engineering-earth__figma-pip" aria-hidden="true">
-				<img src="<?php echo esc_url( $figma_pip_image ); ?>" alt="">
+		<?php
+		/*
+		 * THẺ NHỎ TRÀN MÉP — SỬA 21/08/2026 theo yêu cầu chủ dự án: "block
+		 * ENGINEERING EARTH chỗ nntm-engineering-earth__figma-pip đang là hình
+		 * nhưng không phải, chỗ này phải là video và link đã có trong block
+		 * rồi." Link đó là thuộc tính bgVideoUrl ("Video nền (thẻ nhỏ tràn
+		 * mép)") — trước đây bản homepage bỏ qua nó và in ảnh tĩnh
+		 * assets/images/homepage/engineering-pip.png.
+		 *
+		 * Dựng bằng ĐÚNG khuôn "khe video" mà khung lớn đang dùng (poster +
+		 * <div> rỗng cho JS chèn iframe) — view.js tự nhận ra mọi
+		 * .__video-slot có data-video-id và chèn iframe tự phát/câm/lặp/không
+		 * thanh điều khiển, đúng ý "video nền" đã ghi ở đầu file này. Không
+		 * có luật phát video thứ hai viết riêng cho thẻ nhỏ.
+		 *
+		 * Chưa dán bgVideoUrl thì $bg_video_id rỗng -> khe tự hiện ảnh tĩnh dự
+		 * phòng cũ, bố cục không đổi.
+		 */
+		$bg_video_id = nntm_engineering_earth_extract_youtube_id( $bg_video_url );
+		?>
+		<div class="nntm-engineering-earth__figma-pip">
+			<div
+				class="nntm-engineering-earth__video-slot nntm-engineering-earth__figma-pip-slot"
+				data-role="bg"
+				data-video-id="<?php echo esc_attr( $bg_video_id ); ?>"
+				aria-label="<?php echo esc_attr__( 'Video Engineering Earth', 'nntm' ); ?>"
+			>
+				<?php if ( '' !== $bg_video_id ) : ?>
+					<img class="nntm-engineering-earth__video-poster" src="<?php echo esc_url( 'https://img.youtube.com/vi/' . $bg_video_id . '/hqdefault.jpg' ); ?>" alt="" loading="lazy" decoding="async" />
+				<?php else : ?>
+					<img class="nntm-engineering-earth__video-poster" src="<?php echo esc_url( $figma_pip_image ); ?>" alt="" loading="lazy" decoding="async" />
+				<?php endif; ?>
+
+				<div class="nntm-engineering-earth__video-embed" aria-hidden="true"></div>
+
+				<?php if ( '' !== $video_post_url ) : ?>
+					<a class="nntm-engineering-earth__video-link" href="<?php echo esc_url( $video_post_url ); ?>">
+						<span class="nntm-sr-only"><?php esc_html_e( 'Xem bài viết video', 'nntm' ); ?></span>
+					</a>
+				<?php endif; ?>
 			</div>
-		<?php endif; ?>
+		</div>
 	<?php else : ?>
 		<?php /* Generic block rendering for non-homepage usage keeps the interactive video stage. */ ?>
 		<div class="nntm-engineering-earth__band">
