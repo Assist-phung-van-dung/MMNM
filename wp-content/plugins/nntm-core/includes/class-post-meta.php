@@ -50,6 +50,10 @@ class Post_Meta {
 	public function hooks(): void {
 		add_action( 'init', array( $this, 'register_meta' ) );
 		add_action( 'wp_ajax_nntm_track_listen', array( $this, 'record_track_listen' ) );
+
+		add_action( 'add_meta_boxes_nntm_publication', array( $this, 'add_publication_meta_box' ) );
+		add_action( 'save_post_nntm_publication', array( $this, 'save_publication_meta_box' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_publication_admin_assets' ) );
 	}
 
 	/** Ghi nhận một lượt nghe từ thành viên đã đăng nhập. */
@@ -213,6 +217,148 @@ class Post_Meta {
 				},
 				'description'       => __( 'Mục tiêu chung của đạo tràng cho chương trình, 0 = không đặt.', 'nntm' ),
 			)
+		);
+
+		/*
+		 * Thư Viện PDF — ấn phẩm (nntm_publication).
+		 * Hai trường này có ô điều khiển riêng trong meta box "Tệp PDF & Khoá xem"
+		 * (xem add_publication_meta_box() / save_publication_meta_box() dưới), không
+		 * dùng panel Custom Fields mặc định của WordPress.
+		 */
+
+		register_post_meta(
+			'nntm_publication',
+			'_nntm_pdf_file',
+			array(
+				'type'              => 'integer',
+				'single'            => true,
+				'default'           => 0,
+				'show_in_rest'      => true,
+				'sanitize_callback' => 'absint',
+				'auth_callback'     => function () {
+					return current_user_can( 'edit_posts' );
+				},
+				'description'       => __( 'ID tệp đính kèm PDF của ấn phẩm.', 'nntm' ),
+			)
+		);
+
+		register_post_meta(
+			'nntm_publication',
+			'_nntm_pub_khoa',
+			array(
+				'type'              => 'boolean',
+				'single'            => true,
+				'default'           => false,
+				'show_in_rest'      => true,
+				'sanitize_callback' => 'rest_sanitize_boolean',
+				'auth_callback'     => function () {
+					return current_user_can( 'edit_posts' );
+				},
+				'description'       => __( 'Ấn phẩm bị khoá, yêu cầu thanh toán mới xem được. Mặc định false (mở).', 'nntm' ),
+			)
+		);
+	}
+
+	/**
+	 * Thêm meta box "Tệp PDF & Khoá xem" vào màn sửa ấn phẩm.
+	 * Dùng meta box PHP cổ điển (không phải panel sidebar của block editor) vì
+	 * đây là dữ liệu quản trị nội bộ, không phải nội dung khách kéo thả trên trang.
+	 */
+	public function add_publication_meta_box(): void {
+		add_meta_box(
+			'nntm_an_pham_pdf_khoa',
+			__( 'Tệp PDF & Khoá xem', 'nntm' ),
+			array( $this, 'render_publication_meta_box' ),
+			'nntm_publication',
+			'side',
+			'high'
+		);
+	}
+
+	/**
+	 * Vẽ meta box: chọn tệp PDF từ Thư viện Media + công tắc khoá xem.
+	 *
+	 * @param WP_Post $post Ấn phẩm đang sửa.
+	 */
+	public function render_publication_meta_box( $post ): void {
+		wp_nonce_field( 'nntm_an_pham_pdf_khoa', 'nntm_an_pham_pdf_khoa_nonce' );
+
+		$att_id = absint( get_post_meta( $post->ID, '_nntm_pdf_file', true ) );
+		$khoa   = (bool) get_post_meta( $post->ID, '_nntm_pub_khoa', true );
+		$ten    = $att_id ? get_the_title( $att_id ) : '';
+		?>
+		<p>
+			<label for="nntm_pdf_file_input"><strong><?php esc_html_e( 'Tệp PDF', 'nntm' ); ?></strong></label><br />
+			<input type="hidden" id="nntm_pdf_file_input" name="nntm_pdf_file" value="<?php echo esc_attr( (string) $att_id ); ?>" />
+			<span id="nntm-pdf-file-ten"><?php echo $ten ? esc_html( $ten ) : esc_html__( 'Chưa chọn tệp.', 'nntm' ); ?></span>
+		</p>
+		<p>
+			<button type="button" class="button" id="nntm-pdf-file-chon"><?php esc_html_e( 'Chọn tệp PDF', 'nntm' ); ?></button>
+			<button type="button" class="button" id="nntm-pdf-file-xoa" <?php echo $att_id ? '' : 'style="display:none"'; ?>><?php esc_html_e( 'Bỏ chọn', 'nntm' ); ?></button>
+		</p>
+		<hr />
+		<p>
+			<label for="nntm_pub_khoa_input">
+				<input type="checkbox" id="nntm_pub_khoa_input" name="nntm_pub_khoa" value="1" <?php checked( $khoa ); ?> />
+				<?php esc_html_e( 'Khoá — yêu cầu thanh toán mới xem được', 'nntm' ); ?>
+			</label><br />
+			<span class="description"><?php esc_html_e( 'Mặc định không tick (mở, ai cũng xem được).', 'nntm' ); ?></span>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Lưu tệp PDF + trạng thái khoá khi lưu ấn phẩm.
+	 *
+	 * @param int $post_id ID ấn phẩm.
+	 */
+	public function save_publication_meta_box( int $post_id ): void {
+		if ( ! isset( $_POST['nntm_an_pham_pdf_khoa_nonce'] )
+			|| ! wp_verify_nonce( wp_unslash( $_POST['nntm_an_pham_pdf_khoa_nonce'] ), 'nntm_an_pham_pdf_khoa' )
+		) {
+			return;
+		}
+
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		if ( isset( $_POST['nntm_pdf_file'] ) ) {
+			update_post_meta( $post_id, '_nntm_pdf_file', absint( wp_unslash( $_POST['nntm_pdf_file'] ) ) );
+		}
+
+		update_post_meta( $post_id, '_nntm_pub_khoa', isset( $_POST['nntm_pub_khoa'] ) );
+	}
+
+	/**
+	 * Nạp JS chọn tệp PDF (wp.media) chỉ trên màn sửa ấn phẩm.
+	 *
+	 * @param string $hook Slug màn quản trị hiện tại.
+	 */
+	public function enqueue_publication_admin_assets( string $hook ): void {
+		if ( ! in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) {
+			return;
+		}
+
+		$screen = get_current_screen();
+
+		if ( ! $screen || 'nntm_publication' !== $screen->post_type ) {
+			return;
+		}
+
+		wp_enqueue_media();
+
+		$js_path = NNTM_CORE_DIR . 'assets/js/an-pham-meta-box.js';
+		wp_enqueue_script(
+			'nntm-an-pham-meta-box',
+			NNTM_CORE_URL . 'assets/js/an-pham-meta-box.js',
+			array(),
+			file_exists( $js_path ) ? (string) filemtime( $js_path ) : NNTM_CORE_VERSION,
+			true
 		);
 	}
 }

@@ -1,0 +1,47 @@
+{
+  "nguon": "https://waka.vn/author/thich-long-vien-Yae0",
+  "lay_ngay": "2026-08-21",
+  "ghi_chu": "Ảnh bìa + tên sách lấy từ waka.vn theo yêu cầu chủ dự án (ảnh chat 21/08/2026) để nhập vào CPT nntm_publication cho Thư Viện PDF.",
+  "an_pham": [
+    {
+      "tieu_de": "Chánh Pháp Hành Nguyên Thủy Phật Giáo - Tập 1",
+      "anh_bia": "chanh-phap-hanh-nguyen-thuy-phat-giao-tap-1.jpg",
+      "nguon_url": "https://waka.vn/ebook/chanh-phap-hanh-nguyen-thuy-phat-giao-tap-1-thich-long-vien-bx74pW.html"
+    },
+    {
+      "tieu_de": "Đại Thừa Nhãn Tạng Chánh Yếu - Tập 1",
+      "anh_bia": "dai-thua-nhan-tang-chanh-yeu-tap-1.jpg",
+      "nguon_url": "https://waka.vn/ebook/dai-thua-nhan-tang-chanh-yeu-tap-1-thich-long-vien-bz718W.html"
+    },
+    {
+      "tieu_de": "Mật Thừa Môn Thành Phật Pháp Yếu - Tập 1",
+      "anh_bia": "mat-thua-mon-thanh-phat-phap-yeu-tap-1.jpg",
+      "nguon_url": "https://waka.vn/ebook/mat-thua-mon-thanh-phat-phap-yeu-tap-1-thich-long-vien-b02VZW.html"
+    },
+    {
+      "tieu_de": "Nhặt Ánh Từ Vân - Tập 1",
+      "anh_bia": "nhat-anh-tu-van-tap-1.jpg",
+      "nguon_url": "https://waka.vn/ebook/nhat-anh-tu-van-tap-1-thich-long-vien-bMqL5W.html"
+    },
+    {
+      "tieu_de": "Tịnh Độ Pháp Yếu Lục - Tập 1",
+      "anh_bia": "tinh-do-phap-yeu-luc-tap-1.jpg",
+      "nguon_url": "https://waka.vn/ebook/tinh-do-phap-yeu-luc-tap-1-thich-long-vien-bOd8RW.html"
+    },
+    {
+      "tieu_de": "Tịnh Độ Pháp Yếu Lục - Tập 2",
+      "anh_bia": "tinh-do-phap-yeu-luc-tap-2.jpg",
+      "nguon_url": "https://waka.vn/ebook/tinh-do-phap-yeu-luc-tap-2-thich-long-vien-byewLW.html"
+    },
+    {
+      "tieu_de": "Lệ Cháy Phật Quang Đài - Tập 1",
+      "anh_bia": "le-chay-phat-quang-dai-tap-1.jpg",
+      "nguon_url": "https://waka.vn/ebook/le-chay-phat-quang-dai-tap-1-thich-long-vien-bYMz7W.html"
+    },
+    {
+      "tieu_de": "Lệ Cháy Phật Quang Đài - Tập 2",
+      "anh_bia": "le-chay-phat-quang-dai-tap-2.jpg",
+      "nguon_url": "https://waka.vn/ebook/le-chay-phat-quang-dai-tap-2-thich-long-vien-bNjoyW.html"
+    }
+  ]
+}

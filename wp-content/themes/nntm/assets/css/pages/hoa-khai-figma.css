@@ -4,6 +4,70 @@
 .nntm-main--full .nntm-page,
 .nntm-main--full .nntm-page__content { margin:0; padding:0; }
 
+/* Nghiêng 3D "coverflow" của bìa Ấn Phẩm — đặt NGOÀI @media (min-width:1152px)
+ * để chạy ở mọi kích thước màn (dưới 1152px biến rỗng nếu để trong đó, transform
+ * bị coi invalid, rơi về "none"). rotateY() (quay quanh trục dọc) — không dùng
+ * rotate() thuần (trục Z, làm thẻ méo hình bình hành). --nntm-tilt-scale nhân
+ * chung để giảm góc ở màn nhỏ. Perspective dùng chung ở khung nhìn (.marquee,
+ * không di chuyển) + preserve-3d bắc cầu qua track/item, để mọi thẻ tính trong
+ * CÙNG một không gian 3D (không phải mỗi thẻ một tâm chiếu riêng). */
+.nntm-hk-publications .nntm-card-list__marquee {
+  perspective:800px;
+  perspective-origin:50% 50%;
+}
+.nntm-hk-publications .nntm-card-list__marquee-track,
+.nntm-hk-publications .nntm-card-list__marquee-item {
+  transform-style:preserve-3d;
+}
+
+.nntm-hk-publications { --nntm-tilt-scale:1; }
+
+.nntm-hk-publications .nntm-card-list__marquee-item:nth-child(odd) .nntm-card--books {
+  --nntm-tilt-y:-15deg;
+  box-shadow:-8px 8px 18px rgba(0,0,0,.35);
+  border-radius:4px 6px 6px 4px;
+}
+.nntm-hk-publications .nntm-card-list__marquee-item:nth-child(even) .nntm-card--books {
+  --nntm-tilt-y:-15deg;
+  box-shadow:8px 8px 18px rgba(0,0,0,.35);
+  border-radius:6px 4px 4px 6px;
+}
+
+/* Rê chuột/focus vào MỘT thẻ: thẻ đó đứng thẳng lại để đọc rõ bìa, thẻ khác
+ * giữ nguyên nghiêng. */
+.nntm-hk-publications .nntm-card-list__marquee-item:hover .nntm-card--books,
+.nntm-hk-publications .nntm-card-list__marquee-item:focus-within .nntm-card--books {
+  transform:rotateY(0deg) rotateX(0deg);
+}
+
+/* Trình bày thẻ (bìa trần, ẩn chữ, nghiêng 3D) — ĐẶT NGOÀI @media
+ * (min-width:1152px) để áp dụng ở MỌI kích thước màn, không riêng desktop.
+ * Số đo px cứng (230px, margin-right…) của .marquee-item vẫn ở trong @media
+ * vì CÓ override riêng theo breakpoint bên dưới; còn khối .card--books này
+ * KHÔNG có override nào khác nên phải chạy mọi nơi ngay từ đây. */
+.nntm-hk-publications .nntm-card--books {
+  display:block; box-sizing:border-box; width:100%; height:auto; padding:0;
+  border:0; background:none; backdrop-filter:none;
+  --nntm-tilt-y:0deg;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  transform:rotateY(calc(var(--nntm-tilt-y) * var(--nntm-tilt-scale))) rotateX(calc(1deg * var(--nntm-tilt-scale)));
+  transition:transform 400ms cubic-bezier(.25,.8,.25,1), box-shadow 400ms;
+}
+/* height:auto + aspect-ratio ở đây là mặc định cho MỌI màn (co theo width
+ * clamp() của .marquee-item ở tablet/mobile bên dưới) — desktop override
+ * sang height cứng 420px trong @media (min-width:1152px), tránh bìa bị kéo
+ * dài biến dạng khi width co nhỏ trên điện thoại. */
+.nntm-hk-publications .nntm-card--books .nntm-card__img {
+  width:100%; height:auto; aspect-ratio:3/4; box-shadow:none; overflow:hidden; background-color:transparent;
+}
+.nntm-hk-publications .nntm-card--books .nntm-card__img-el { width:100%; height:100%; object-fit:cover; border-radius:5px; }
+
+/* Chỉ hiện bìa — ẩn tiêu đề/CTA (ảnh mẫu không có chữ). Tên sách vẫn còn
+ * trong alt của <img> nên liên kết không mất tên khi đọc bằng trình đọc
+ * màn hình, chỉ ẩn đi phần chữ trực quan. */
+.nntm-hk-publications .nntm-card--books .nntm-card__body { display:none; }
+
 @media (min-width:1152px) {
   /* Frame stack: header 76 + news 811 + dharma 954 + publications 650 + footer 147 = 2638. */
   .nntm-hk-news { height:811px; min-height:811px; background:#fff; overflow:hidden; }
@@ -59,99 +123,60 @@
   .nntm-hk-dharma .nntm-article-mosaic__viewall-wrap { margin-top:auto; }
 
   /* Publications — exact desktop geometry from Figma export 6376:6603.
-   * Infinite-loop behaviour is handled by blocks/card-list/view.js only for
-   * .nntm-hk-publications; this CSS keeps layout stable while the track moves. */
+   * SỬA 21/08/2026: đổi carousel (nút + JS clone-loop hay giật lúc chạm mép
+   * loop) sang layout=marquee — chạy liên tục bằng CSS thuần (@keyframes
+   * nntm-card-list-marquee ở blocks/card-list/style.css + PHP nhân đôi danh
+   * sách ở inc/render-card-list-marquee.php), không nút, không JS. Số đo
+   * thẻ/băng/màu GIỮ NGUYÊN đúng Figma cũ, chỉ đổi cơ chế chạy. */
   .nntm-hk-publications > .nntm-card-list__band { height:650px; min-height:650px; padding:30px 0; background:#000; overflow:hidden; }
-  .nntm-hk-publications > .nntm-card-list__band > .nntm-container { height:590px; max-width:none; padding:0; }
+  .nntm-hk-publications > .nntm-card-list__band > .nntm-container { height:590px; max-width:1366px; margin-inline:auto; padding:0; }
   .nntm-hk-publications .nntm-card-list__header-row { height:60px; justify-content:center; margin:0 0 30px; padding:0; }
   .nntm-hk-publications .nntm-card-list__heading { margin:0; font-size:52px; font-weight:600; line-height:60px; color:#f7f1de; }
 
-  .nntm-hk-publications .nntm-card-list__carousel {
-    --nntm-carousel-gutter:110px;
-    position:relative; display:block; height:500px; overflow:visible;
-  }
-  .nntm-hk-publications .nntm-card-list__track {
-    box-sizing:border-box; height:500px; gap:20px; padding:0 110px;
-    overflow-x:auto; overflow-y:hidden; scroll-snap-type:none; scroll-behavior:auto;
-    scrollbar-width:none; -ms-overflow-style:none; overscroll-behavior-x:contain;
-    -webkit-overflow-scrolling:touch;
-  }
-  .nntm-hk-publications .nntm-card-list__track::-webkit-scrollbar { display:none; width:0; height:0; }
-  .nntm-hk-publications .nntm-card-list__track-item,
-  .nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card-list__track-item {
-    flex:0 0 388px; width:388px; height:500px; margin:0; scroll-snap-align:none; transform:none;
-    transition:none;
-  }
-  .nntm-hk-publications .nntm-card-list__track-item:first-child,
-  .nntm-hk-publications .nntm-card-list__track-item:last-child { margin-inline:0; }
-  .nntm-hk-publications .nntm-card-list__track-item--clone { pointer-events:none; }
+  .nntm-hk-publications .nntm-card-list__marquee { height:500px; }
 
-  .nntm-hk-publications .nntm-card--books,
-  .nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card--books {
-    box-sizing:border-box; height:500px; min-height:500px; padding:20px; gap:15px;
-    border:1px solid #4f4f4f; background:#000; box-shadow:none; backdrop-filter:none;
-    transform:none; transition:border-color 320ms cubic-bezier(.22,1,.36,1), box-shadow 320ms cubic-bezier(.22,1,.36,1), background-color 320ms cubic-bezier(.22,1,.36,1);
-  }
-  .nntm-hk-publications .nntm-card--books .nntm-card__img,
-  .nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card__img {
-    width:348px; height:348px; aspect-ratio:auto; box-shadow:none; overflow:hidden;
-  }
-  .nntm-hk-publications .nntm-card--books .nntm-card__img-el {
-    width:100%; height:100%; object-fit:cover;
-    transition:transform 520ms cubic-bezier(.22,1,.36,1), filter 420ms cubic-bezier(.22,1,.36,1);
-  }
-  .nntm-hk-publications .nntm-card--books .nntm-card__body,
-  .nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card__body { display:flex; gap:8px; }
-  .nntm-hk-publications .nntm-card__title { font-size:18px; line-height:30px; font-weight:700; color:#fff; transition:color 260ms ease; }
-  .nntm-hk-publications .nntm-card__cta {
-    padding:0; font-size:13px; line-height:23px; font-weight:700; color:#fff; text-decoration:underline;
-    text-underline-offset:3px; transition:color 260ms ease, transform 320ms cubic-bezier(.22,1,.36,1), opacity 260ms ease;
+  /* Mờ hai mép trong khung nội dung 1366px (SỬA: trước tràn viền toàn màn,
+   * giới hạn lại 1366px cho khớp quy ước site + giảm số thẻ chồng nhau cùng
+   * lúc ở màn rất rộng — chỗ hover z-index bị "cào" lên trông rối).
+   * Trình duyệt không hiểu mask-image thì bỏ qua hai dòng dưới, băng vẫn
+   * hiện đúng, chỉ mất hiệu ứng mờ mép. */
+  .nntm-hk-publications .nntm-card-list__marquee {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 80px, #000 calc(100% - 80px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 80px, #000 calc(100% - 80px), transparent 100%);
   }
 
-  .nntm-hk-publications .nntm-card-list__nav {
-    top:250px; width:58px; height:58px; border:0; border-radius:0; background:#fff; color:#000;
-    transform:translateY(-50%); box-shadow:0 8px 24px rgba(0,0,0,.18);
-    transition:transform 280ms cubic-bezier(.22,1,.36,1), background-color 220ms ease, box-shadow 280ms ease;
-  }
-  .nntm-hk-publications .nntm-card-list__nav--prev { left:34px; }
-  .nntm-hk-publications .nntm-card-list__nav--next { right:12px; }
+  .nntm-hk-publications .nntm-card-list__marquee-track { height:500px; align-items:center; }
 
-  /* Arrow direction fix: card-list/style.css defines a generic rotation on the
-   * whole icon after the Hoa Khai arrow is built from a horizontal shaft +
-   * ::after head. Neutralize that second rotation so prev is <- and next is ->. */
-  .nntm-hk-publications .nntm-card-list__nav--prev .nntm-card-list__nav-icon,
-  .nntm-hk-publications .nntm-card-list__nav--next .nntm-card-list__nav-icon {
-    margin:0;
-    transform:none;
-  }
-  .nntm-hk-publications .nntm-card-list__nav--prev .nntm-card-list__nav-icon::after {
-    left:0; right:auto;
-    transform:translateY(-50%) rotate(-135deg);
-  }
-  .nntm-hk-publications .nntm-card-list__nav--next .nntm-card-list__nav-icon::after {
-    left:auto; right:0;
-    transform:translateY(-50%) rotate(45deg);
-  }
-  .nntm-hk-publications .nntm-card-list__nav:hover,
-  .nntm-hk-publications .nntm-card-list__nav:focus-visible {
-    background:#f7f1de; transform:translateY(-50%) scale(1.055); box-shadow:0 12px 30px rgba(0,0,0,.28);
-  }
-  .nntm-hk-publications .nntm-card-list__nav:active { transform:translateY(-50%) scale(.96); }
+  /* SỬA 21/08/2026 (ảnh chủ dự án gửi): bìa chồng mép, không còn khung nền
+   * đen/viền/tiêu đề của thiết kế Figma cũ (bản "xoè quạt" nghiêng+so le đã
+   * bỏ theo yêu cầu sau đó — chỉ còn chồng mép thẳng hàng). */
+  /* Height cứng CHỈ ở desktop — "cho dễ nhìn" theo yêu cầu, không áp cho
+   * tablet/mobile (bên dưới) để tránh bìa kéo dài biến dạng khi width co nhỏ. */
+  .nntm-hk-publications .nntm-card--books { height:420px; }
+  .nntm-hk-publications .nntm-card--books .nntm-card__img { height:100%; aspect-ratio:auto; }
 
-  /* Remove the old shelf/fan reflow effect. Figma keeps every card 388x500;
-   * hover polishes the card but never changes neighbouring card geometry. */
-  .nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) { align-items:stretch; padding-block:0; }
-  .nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card-list__track-item:hover { z-index:auto; transform:none; }
-  .nntm-hk-publications .nntm-card:not(.nntm-card--empty):hover,
-  .nntm-hk-publications .nntm-card:not(.nntm-card--empty):focus-visible {
-    border-color:#747766; box-shadow:inset 0 0 0 1px rgba(247,241,222,.16);
+  .nntm-hk-publications .nntm-card-list__marquee-item {
+    position:relative;
+    flex:0 0 270px;
+    width:270px;
+    height:auto;
+    /* -50px không đủ che khe hở khi bìa nghiêng rotateY co hẹp lại theo
+     * chiều ngang — tăng chồng mép lên để luôn thừa, không vừa khít. */
+    margin-right:-90px;
+    transition:transform 320ms cubic-bezier(.22,1,.36,1);
   }
-  .nntm-hk-publications .nntm-card:not(.nntm-card--empty):hover .nntm-card__img-el,
-  .nntm-hk-publications .nntm-card:not(.nntm-card--empty):focus-visible .nntm-card__img-el { transform:scale(1.035); filter:brightness(1.045) contrast(1.015); }
-  .nntm-hk-publications .nntm-card:not(.nntm-card--empty):hover .nntm-card__title,
-  .nntm-hk-publications .nntm-card:not(.nntm-card--empty):focus-visible .nntm-card__title { color:#f7f1de; }
-  .nntm-hk-publications .nntm-card:not(.nntm-card--empty):hover .nntm-card__cta,
-  .nntm-hk-publications .nntm-card:not(.nntm-card--empty):focus-visible .nntm-card__cta { color:#f7f1de; transform:translateX(4px); }
+
+  /* Rê chuột/focus: thẻ nổi lên trên các thẻ lân cận (chồng mép), nhích lên
+   * và phóng to nhẹ. SỬA: .marquee-track/.marquee-item có transform-style:
+   * preserve-3d (cho nghiêng 3D của bìa) — trong không gian 3D chung đó,
+   * thứ tự vẽ giữa các thẻ anh em do ĐỘ SÂU 3D thật (translateZ) quyết định,
+   * z-index không còn tác dụng như bình thường. Đẩy thẻ ra phía trước bằng
+   * translateZ thay vì chỉ dựa z-index. */
+  .nntm-hk-publications .nntm-card-list__marquee-item:hover,
+  .nntm-hk-publications .nntm-card-list__marquee-item:focus-within {
+    z-index:5;
+    transform:translateZ(80px) translateY(0px) scale(1.06);
+  }
 
   /* Compact inner footer in this frame: 147px = 20 + 107 + 20. */
   .nntm-footer--inner { height:147px; min-height:147px; padding:20px; }
@@ -184,15 +209,18 @@
   .nntm-hk-news .nntm-article-mosaic__lead,
   .nntm-hk-dharma .nntm-article-mosaic__lead { width:100%; max-width:none; }
   .nntm-hk-publications > .nntm-card-list__band { padding:40px 0; }
-  .nntm-hk-publications .nntm-card-list__carousel { height:auto; }
-  .nntm-hk-publications .nntm-card-list__track { height:auto; padding:0 20px; gap:16px; }
-  .nntm-hk-publications .nntm-card-list__track-item,
-  .nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card-list__track-item { flex:0 0 min(82vw,388px); width:min(82vw,388px); height:auto; }
-  .nntm-hk-publications .nntm-card--books,
-  .nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card--books { height:auto; min-height:0; }
-  .nntm-hk-publications .nntm-card--books .nntm-card__img,
-  .nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card__img { width:100%; height:auto; aspect-ratio:1/1; }
+  .nntm-hk-publications { --nntm-tilt-scale:0.6; }
+  .nntm-hk-publications .nntm-card-list__marquee { height:auto; }
+  .nntm-hk-publications .nntm-card-list__marquee-track { height:auto; padding-block:20px; }
+  .nntm-hk-publications .nntm-card-list__marquee-item { flex:0 0 clamp(120px,34vw,190px); width:clamp(120px,34vw,190px); height:auto; margin-right:clamp(-70px,-16vw,-40px); }
   .nntm-footer--inner .nntm-footer__bar { height:auto; min-height:107px; }
+}
+
+/* Màn nhỏ (≤767): bỏ nghiêng hẳn (bìa hẹp mà nghiêng 3D sâu dễ trông rối),
+ * chồng mép cũng bớt lại. */
+@media (max-width:767px) {
+  .nntm-hk-publications { --nntm-tilt-scale:0; }
+  .nntm-hk-publications .nntm-card-list__marquee-item { margin-right:clamp(-36px,-9vw,-22px); }
 }
 
 @media (prefers-reduced-motion:reduce) {

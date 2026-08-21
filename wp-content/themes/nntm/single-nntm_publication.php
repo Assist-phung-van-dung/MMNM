@@ -40,7 +40,10 @@ while ( have_posts() ) :
 		);
 	}
 
-	$related = new WP_Query( $related_args );
+	$related  = new WP_Query( $related_args );
+	$pdf_url  = nntm_an_pham_pdf_url( $post_id );
+	$bi_khoa  = nntm_an_pham_bi_khoa( $post_id );
+	$duoc_xem = nntm_an_pham_can_access( $post_id );
 	?>
 
 	<main id="nntm-noi-dung-chinh" class="nntm-an-pham-detail">
@@ -98,6 +101,16 @@ while ( have_posts() ) :
 								</svg>
 								<span><?php esc_html_e( 'Yêu thích', 'nntm' ); ?></span>
 							</button>
+						<?php endif; ?>
+
+						<?php if ( '' !== $pdf_url && $duoc_xem ) : ?>
+							<button type="button" class="nntm-an-pham__doc-nut" data-nntm-an-pham-doc>
+								<?php esc_html_e( 'Đọc ấn phẩm', 'nntm' ); ?>
+							</button>
+						<?php elseif ( $bi_khoa ) : ?>
+							<p class="nntm-an-pham__khoa">
+								<?php esc_html_e( 'Ấn phẩm này yêu cầu thanh toán mới xem được nội dung đầy đủ.', 'nntm' ); ?>
+							</p>
 						<?php endif; ?>
 					</div>
 				</div>

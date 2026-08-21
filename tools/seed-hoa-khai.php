@@ -71,7 +71,7 @@ $content = <<<HTML
 
 <!-- wp:nntm/article-mosaic {"heading":"Hoằng Pháp","postType":"post","taxonomy":"category","termId":{$hoang},"pinnedPostId":{$hoang_lead},"leadMedia":"tall","orderBy":"newest","showDate":false,"showCategory":false,"showExcerpt":false,"cardCtaLabel":"Xem thêm","viewAllLabel":"Xem Tất cả","viewAllUrl":"/category/hoang-phap/","className":"nntm-hk-dharma"} /-->
 
-<!-- wp:nntm/card-list {"heading":"Ấn Phẩm","postType":"nntm_publication","variant":"books","layout":"carousel","postsPerPage":6,"orderBy":"newest","showDate":false,"showCategory":false,"autoplay":true,"autoplayInterval":6,"className":"nntm-hk-publications"} /-->
+<!-- wp:nntm/card-list {"heading":"Ấn Phẩm","postType":"nntm_publication","variant":"books","layout":"marquee","postsPerPage":10,"orderBy":"newest","showDate":false,"showCategory":false,"className":"nntm-hk-publications"} /-->
 HTML;
 $page = get_page_by_path( 'hoa-khai' );
 $args = array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Hoa Khai', 'post_name' => 'hoa-khai', 'post_content' => $content );

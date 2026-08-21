@@ -268,169 +268,6 @@
 	height: 0;
 }
 
-/* =============================================================
-   Hoa Khai — dải Ấn Phẩm nền đen và trạng thái hover dạng kệ sách xòe.
-   ============================================================= */
-.nntm-hk-publications > .nntm-card-list__band {
-	padding-block: var(--nntm-sp-8) var(--nntm-sp-10);
-	background-color: var(--nntm-den);
-	overflow: hidden;
-}
-
-.nntm-hk-publications > .nntm-card-list__band > .nntm-container {
-	/* SUA 20/08/2026: `none` -> tran 1366 + canh giua (khung site da bo tran). */
-	max-width: var(--nntm-w-rong);
-	margin-inline: auto;
-	padding-inline: 0;
-}
-
-.nntm-hk-publications .nntm-card-list__header-row {
-	justify-content: center;
-	padding-inline: var(--nntm-sp-9);
-}
-
-.nntm-hk-publications .nntm-card-list__heading {
-	margin: 0 0 var(--nntm-sp-7);
-	font-size: var(--nntm-fs-4xl);
-	line-height: var(--nntm-lh-chat);
-	color: var(--nntm-kem);
-}
-
-.nntm-hk-publications .nntm-card-list__carousel {
-	--nntm-carousel-gutter: 90px;
-	position: relative;
-	gap: 0;
-}
-
-.nntm-hk-publications .nntm-card-list__track {
-	gap: var(--nntm-sp-5);
-	padding-bottom: 0;
-	scroll-snap-type: none;
-	scrollbar-width: none;
-	-ms-overflow-style: none;
-}
-
-.nntm-hk-publications .nntm-card-list__track::-webkit-scrollbar {
-	display: none;
-	width: 0;
-	height: 0;
-}
-
-.nntm-hk-publications .nntm-card-list__track-item {
-	flex: 0 0 350px;
-	scroll-snap-align: none;
-	transition: flex-basis 450ms var(--nntm-ease), margin 450ms var(--nntm-ease), transform 450ms var(--nntm-ease);
-}
-
-.nntm-hk-publications .nntm-card--books {
-	min-height: 475px;
-	border-color: var(--nntm-xam-chu);
-	background-color: var(--nntm-nhac-toi);
-	box-shadow: none;
-	backdrop-filter: none;
-}
-
-.nntm-hk-publications .nntm-card--books .nntm-card__img {
-	aspect-ratio: 310 / 300;
-}
-
-.nntm-hk-publications .nntm-card--books .nntm-card__img-el {
-	object-fit: cover;
-}
-
-.nntm-hk-publications .nntm-card__date,
-.nntm-hk-publications .nntm-card__cat,
-.nntm-hk-publications .nntm-card__excerpt {
-	display: none;
-}
-
-.nntm-hk-publications .nntm-card__title,
-.nntm-hk-publications .nntm-card__cta {
-	color: var(--nntm-trang);
-}
-
-.nntm-hk-publications .nntm-card-list__nav {
-	position: absolute;
-	top: 50%;
-	z-index: 5;
-	width: 48px;
-	height: 48px;
-	border: 0;
-	border-radius: 0;
-	background-color: var(--nntm-trang);
-	color: var(--nntm-den);
-	transform: translateY(-50%);
-}
-
-.nntm-hk-publications .nntm-card-list__nav--prev { left: var(--nntm-sp-8); }
-.nntm-hk-publications .nntm-card-list__nav--next { right: var(--nntm-sp-8); }
-
-.nntm-hk-publications .nntm-card-list__nav-icon {
-	position: relative;
-	width: 20px;
-	height: 2px;
-	margin: 0;
-	border: 0;
-	background-color: currentColor;
-	transform: none;
-}
-
-.nntm-hk-publications .nntm-card-list__nav-icon::after {
-	content: '';
-	position: absolute;
-	top: 50%; right: 0;
-	width: 8px; height: 8px;
-	border-style: solid;
-	border-width: 2px 2px 0 0;
-	border-color: currentColor;
-	transform: translateY(-50%) rotate(45deg);
-}
-
-.nntm-hk-publications .nntm-card-list__nav--prev .nntm-card-list__nav-icon::after {
-	left: 0; right: auto;
-	transform: translateY(-50%) rotate(-135deg);
-}
-
-/* Hover theo ảnh mẫu: cả dãy bìa thu lại, xếp chồng và xòe như kệ sách. */
-@media (hover: hover) and (min-width: 1152px) {
-	.nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) {
-		align-items: center;
-		padding-block: var(--nntm-sp-6);
-	}
-
-	.nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card-list__track-item {
-		flex-basis: 205px;
-		margin-right: -76px;
-		transform: perspective(900px) rotateY(-7deg);
-	}
-
-	.nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card-list__track-item:hover {
-		z-index: 3;
-		transform: translateY(-12px) scale(1.08);
-	}
-
-	.nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card--books {
-		min-height: 300px;
-		padding: 0;
-		border: 0;
-		background-color: transparent;
-	}
-
-	.nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card__body {
-		display: none;
-	}
-
-	.nntm-hk-publications .nntm-card-list__track:has(.nntm-card:hover) .nntm-card__img {
-		aspect-ratio: 3 / 4;
-		box-shadow: var(--nntm-sh-card);
-	}
-}
-
-@media (max-width: 1151px) {
-	.nntm-hk-publications .nntm-card-list__track-item { flex-basis: min(78vw, 320px); }
-	.nntm-hk-publications .nntm-card-list__carousel { --nntm-carousel-gutter: var(--nntm-sp-5); }
-}
-
 @media (max-width: 1151px) {
 	.nntm-lien-dan-khoa .nntm-card-list__header-row {
 		position: static;
@@ -1689,12 +1526,14 @@ a.nntm-card-list__paging-so:focus-visible {
 
 @keyframes nntm-card-list-marquee {
 	from {
-		transform: translateX(0);
+		transform: translate3d(0, 0, 0);
 	}
 	to {
 		/* Danh sach da duoc NHAN DOI o render.php -> dich dung mot nua la
-		   het dung mot vong, noi tiep vao chinh no, khong khoang trong. */
-		transform: translateX(-50%);
+		   het dung mot vong, noi tiep vao chinh no, khong khoang trong.
+		   translate3d (thay translateX) ep trinh duyet dung layer GPU rieng —
+		   cung gia tri hien thi, chi doi don vi de toi uu compositor. */
+		transform: translate3d(-50%, 0, 0);
 	}
 }
 
@@ -1717,13 +1556,15 @@ a.nntm-card-list__paging-so:focus-visible {
 
    Class riêng do chính khối card-list lưu qua "Additional CSS class"
    (customClassName), không phụ thuộc ID trang — cùng kỹ thuật đã dùng cho
-   .nntm-hk-publications / .nntm-lien-dan-khoa ở trên.
+   .nntm-lien-dan-khoa ở trên (dải "Ấn Phẩm" trang Hoa Khai giờ dùng
+   layout=marquee, style riêng nằm ở assets/css/pages/hoa-khai-figma.css,
+   không còn ở file này).
 
    Ảnh thiết kế chủ dự án gửi: nền kem toàn dải, tiêu đề serif canh giữa
    (h2 mặc định đã là serif 38px — dùng nguyên, không cần đổi cỡ chữ),
    lưới 3 cột × 3 hàng, thẻ NỀN TRẮNG bọc bìa sách DỌC (~3:4) — khác hẳn
-   biến thể "books" mặc định (nền tối, ảnh vuông 1:1, dùng ở dải "Ấn Phẩm"
-   trang Hoa Khai) — tên sách đậm căn giữa dưới ảnh, "Xem thêm" nhỏ căn
+   biến thể "books" mặc định (nền tối, ảnh vuông 1:1) — tên sách đậm căn
+   giữa dưới ảnh, "Xem thêm" nhỏ căn
    giữa dưới cùng. Phân trang căn giữa: nút mũi tên vuông nền đen hai đầu
    (dùng lại đúng kiểu 59×59 đã chốt cho nền navy/vàng nghệ ở trên), dãy
    số ở giữa.

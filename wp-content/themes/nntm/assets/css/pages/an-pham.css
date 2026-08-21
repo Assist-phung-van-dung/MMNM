@@ -390,6 +390,152 @@
 	}
 }
 
+/* ---------- Đọc ấn phẩm / khoá xem ---------- */
+.nntm-an-pham__doc-nut {
+	appearance: none;
+	display: inline-flex;
+	align-items: center;
+	gap: var(--nntm-sp-2);
+	margin: 0 0 0 var(--nntm-sp-7);
+	padding: var(--nntm-sp-3) var(--nntm-sp-5);
+	border: 0;
+	background-color: var(--nntm-do-tham);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-xs);
+	font-weight: 700;
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-trang);
+	cursor: pointer;
+	transition: opacity var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-an-pham__doc-nut:hover,
+.nntm-an-pham__doc-nut:focus-visible {
+	opacity: 0.85;
+}
+
+.nntm-an-pham__khoa {
+	display: flex;
+	align-items: center;
+	gap: var(--nntm-sp-3);
+	margin: 0 0 0 var(--nntm-sp-7);
+	padding: var(--nntm-sp-3) var(--nntm-sp-5);
+	background-color: var(--nntm-nga);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-xs);
+	font-weight: 600;
+	color: var(--nntm-reu);
+}
+
+/* ---------- Modal trình đọc 3D flip book (an-pham-flipbook.js) ---------- */
+body.nntm-flipbook-modal-mo {
+	overflow: hidden;
+}
+
+.nntm-flipbook-modal {
+	position: fixed;
+	inset: 0;
+	z-index: 9999;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	padding: var(--nntm-sp-5);
+	background-color: rgba(0, 0, 0, 0.72);
+}
+
+.nntm-flipbook-modal--mo {
+	display: flex;
+}
+
+.nntm-flipbook-modal__khung {
+	position: relative;
+	width: 100%;
+	max-width: 1100px;
+	height: min(90vh, 820px);
+	display: flex;
+	flex-direction: column;
+	background-color: var(--nntm-muc);
+}
+
+.nntm-flipbook-modal__thanh {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex: 0 0 auto;
+	padding: var(--nntm-sp-3) var(--nntm-sp-5);
+}
+
+.nntm-flipbook-modal__ten {
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+	font-weight: 700;
+	color: var(--nntm-trang);
+}
+
+.nntm-flipbook-modal__dong {
+	appearance: none;
+	border: 0;
+	background: transparent;
+	font-size: 28px;
+	line-height: 1;
+	color: var(--nntm-trang);
+	cursor: pointer;
+}
+
+.nntm-flipbook-modal__than {
+	position: relative;
+	flex: 1 1 auto;
+	min-height: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+}
+
+.nntm-flipbook-modal__trang-thai {
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+	color: var(--nntm-trang);
+}
+
+.nntm-flipbook-modal__sach {
+	width: 100%;
+	height: 100%;
+}
+
+.nntm-flipbook-modal__dieu-huong {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex: 0 0 auto;
+	padding: var(--nntm-sp-3) var(--nntm-sp-5);
+}
+
+.nntm-flipbook-modal__lui,
+.nntm-flipbook-modal__toi {
+	appearance: none;
+	width: 40px;
+	height: 40px;
+	border: 0;
+	background-color: rgba(255, 255, 255, 0.12);
+	font-size: 22px;
+	line-height: 1;
+	color: var(--nntm-trang);
+	cursor: pointer;
+}
+
+.nntm-flipbook-modal__lui:hover,
+.nntm-flipbook-modal__toi:hover {
+	background-color: rgba(255, 255, 255, 0.22);
+}
+
+@media (max-width: 767px) {
+	.nntm-an-pham__doc-nut,
+	.nntm-an-pham__khoa {
+		margin-left: var(--nntm-sp-3);
+	}
+}
+
 @media (max-width: 767px) {
 	.nntm-an-pham__khung {
 		width: min(1184px, calc(100% - 30px));
