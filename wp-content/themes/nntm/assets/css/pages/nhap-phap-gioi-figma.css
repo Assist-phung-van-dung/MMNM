@@ -465,49 +465,10 @@
 		height: 47px;
 	}
 
-	/* ---------- Compact footer: y=2206, h=146 ---------- */
-	.nntm-footer.nntm-footer--inner {
-		height: 146px;
-		min-height: 146px;
-		padding: 20px;
-		box-sizing: border-box;
-		background: var(--nntm-den);
-	}
-
-	.nntm-footer--inner .nntm-footer__bar {
-		height: 106px;
-		min-height: 106px;
-		padding: 20px;
-		box-sizing: border-box;
-		background: var(--nntm-muc-nhat);
-		display: flex;
-		align-items: center;
-	}
-
-	.nntm-footer--inner .nntm-footer__inner {
-		width: 100%;
-		max-width: 1286px;
-		padding-inline: 10px;
-		box-sizing: border-box;
-	}
-
-	.nntm-footer--inner .nntm-footer__row {
-		height: 46px;
-		min-height: 46px;
-		gap: 20px;
-	}
-
-	.nntm-footer--inner .nntm-footer__logo {
-		min-height: 46px;
-		font-size: 20px;
-		line-height: 1.15;
-	}
-
-	.nntm-footer--inner .nntm-footer-nav a,
-	.nntm-footer--inner .nntm-footer__copyright {
-		font-size: 16px;
-		line-height: 22px;
-	}
+	/*
+	 * BỎ 22/08/2026 — khối "Compact footer" từng ở đây lặp lại số đo Figma của
+	 * chân trang các trang trong. Xem assets/css/footer.css, ".nntm-footer--inner".
+	 */
 }
 
 /* Exact duplicated-half movement: include half the 20px seam gap so the
@@ -625,11 +586,6 @@
 	.nntm-card-list--nen-cam .nntm-card-list__heading,
 	.nntm-card-list--nen-cam .nntm-card-list__subheading { padding-inline: 24px; }
 
-	.nntm-footer.nntm-footer--inner,
-	.nntm-footer--inner .nntm-footer__bar {
-		height: auto;
-		min-height: 0;
-	}
 }
 
 @media (max-width: 767px) {

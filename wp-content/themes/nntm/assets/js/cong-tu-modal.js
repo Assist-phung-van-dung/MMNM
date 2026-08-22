@@ -268,15 +268,28 @@
 				}
 
 				/*
-				 * Thông báo gồm HAI dòng (yêu cầu chủ dự án 21/08/2026: "khi
-				 * nhấp ghi nhận thì hãy hiện thông báo ví dụ Tổng cam kết 25 ·
-				 * đã thực hiện 50 · tiến trình 200%"): lời cảm ơn + đúng dòng
-				 * số tổng kết đó.
+				 * ĐỔI 22/08/2026 (chủ dự án): ghi xong thì ĐÓNG popup luôn và
+				 * chỉ để lại MỘT dòng chữ ngay dưới nút "Cập nhật chuỗi trì".
+				 *
+				 * Bản trước hiện hai dòng (lời cảm ơn + dòng số) BÊN TRONG
+				 * popup rồi giữ popup mở — người dùng phải tự bấm đóng, mà lời
+				 * cảm ơn với dòng số nói cùng một việc. Giờ bỏ lời cảm ơn, giữ
+				 * dòng số, và đưa ra ngoài popup để đọc được ngay chỗ vừa bấm.
+				 *
+				 * Vẫn gọi hoanTatForm() trước khi đóng: nó cập nhật dòng hiện
+				 * trạng và cất form, nên lần mở popup sau đã ở trạng thái đúng.
+				 * Thứ tự này cũng để closeModal() chạy SAU — nó trả tiêu điểm
+				 * về đúng nút vừa bấm, ngay trên dòng thông báo mới.
 				 */
-				hienThongBao( form, [ duLieuTraVe.thong_bao, duLieuTraVe.tong_ket ], true );
 				hoanTatForm( form, duLieuTraVe );
+				baoDuoiNutBanner( duLieuTraVe.tong_ket );
 				capNhatKhoiThongKe( khoi, duLieuTraVe );
 				doiNutBanner( duLieuTraVe.nhan_nut_banner );
+
+				var modalDangMo = form.closest( '.nntm-auth-modal' );
+				if ( modalDangMo ) {
+					closeModal( modalDangMo );
+				}
 			} )
 			.catch( function () {
 				hienThongBao( form, [ CAU_HINH.errorText ], false );
@@ -447,6 +460,43 @@
 	 *
 	 * @param {string|undefined} nhanMoi
 	 */
+	/**
+	 * Đặt MỘT dòng chữ ngay dưới nút "Cập nhật chuỗi trì" / "Tham gia" trên
+	 * banner. Dòng này do JS dựng ra chứ không có sẵn trong HTML: nó chỉ có
+	 * nghĩa NGAY SAU khi vừa ghi, tải lại trang là hết — in sẵn trong markup
+	 * thì thành một dòng số nằm đó vĩnh viễn, không ai hiểu vì sao.
+	 *
+	 * Chèn làm em kế tiếp của chính cái nút, nên nó luôn nằm đúng dưới nút bất
+	 * kể banner nào, không phải đi tìm chỗ neo riêng cho từng trang.
+	 *
+	 * role="status" để trình đọc màn hình đọc lên khi chữ đổi — closeModal()
+	 * vừa trả tiêu điểm về đúng cái nút ngay phía trên nó.
+	 *
+	 * @param {string|undefined} chu
+	 */
+	function baoDuoiNutBanner( chu ) {
+		if ( ! chu ) {
+			return;
+		}
+
+		var nut = document.querySelector( '[data-nntm-chuoi-tri]' );
+		if ( ! nut || ! nut.parentNode ) {
+			return;
+		}
+
+		var o = document.querySelector( '[data-nntm-congtu-bao-nut]' );
+
+		if ( ! o ) {
+			o = document.createElement( 'p' );
+			o.className = 'nntm-cong-tu__tong-ket nntm-cong-tu__tong-ket--duoi-nut';
+			o.setAttribute( 'data-nntm-congtu-bao-nut', '' );
+			o.setAttribute( 'role', 'status' );
+			nut.parentNode.insertBefore( o, nut.nextSibling );
+		}
+
+		o.textContent = chu;
+	}
+
 	function doiNutBanner( nhanMoi ) {
 		if ( ! nhanMoi ) {
 			return;

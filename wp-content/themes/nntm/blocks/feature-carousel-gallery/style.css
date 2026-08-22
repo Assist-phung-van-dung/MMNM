@@ -28,6 +28,39 @@
 .nntm-feature-gallery-carousel__slide[data-position="1"] { opacity: .92; top: var(--fgc-inner-y); transform: translateX(calc(-50% + var(--fgc-inner-offset))) scale(.78); z-index: 3; }
 .nntm-feature-gallery-carousel__slide[data-position="0"] { opacity: 1; pointer-events: auto; transform: translateX(-50%) scale(1); filter: none; z-index: 5; }
 .nntm-feature-gallery-carousel__media { width: 100%; height: var(--fgc-active-height); overflow: hidden; background: var(--nntm-xam); }
+
+/* =============================================================
+   LẬT TRANG SÁCH — thêm 22/08/2026, cùng một ý với blocks/feature-carousel
+   (xem chú thích dài ở style.css của khối đó): mỗi ảnh là một trang có BẢN LỀ
+   ở mép phía TRONG (mép hướng vào giữa, như gáy sách), mép ngoài nhấc về phía
+   người xem; về giữa thì trang phẳng hẳn.
+
+   Quay ở `.__media` chứ không ở `.__slide`: transform của slide đang gánh vị
+   trí (translateX + scale) với transform-origin `center top`, còn bản lề thì
+   cần đặt ở mép ĐỨNG riêng theo từng lớp.
+
+   view.js chặn data-position trong -3..3 nên khai đủ cả ±3, kể cả khi bố cục
+   hiện tại chỉ vẽ tới ±2 — thiếu thì lớp ngoài cùng đứng thẳng lạc ra giữa dải.
+
+   Dùng ĐÚNG thời lượng/đường cong của slide (650ms) để góc quay đổi cùng nhịp
+   với lúc ảnh trôi — lệch nhịp là đọc ra thành hai chuyển động rời nhau.
+   ============================================================= */
+.nntm-feature-gallery-carousel { --fgc-lat-perspective: 1200px; --fgc-lat-1: 20deg; --fgc-lat-2: 30deg; --fgc-lat-3: 36deg; }
+.nntm-feature-gallery-carousel__slide { perspective: var(--fgc-lat-perspective); }
+.nntm-feature-gallery-carousel__media { transform-origin: center center; backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: transform 650ms cubic-bezier(.22,.61,.36,1); }
+.nntm-feature-gallery-carousel__slide[data-position="0"] .nntm-feature-gallery-carousel__media { transform: rotateY(0deg); }
+.nntm-feature-gallery-carousel__slide[data-position="-1"] .nntm-feature-gallery-carousel__media,
+.nntm-feature-gallery-carousel__slide[data-position="-2"] .nntm-feature-gallery-carousel__media,
+.nntm-feature-gallery-carousel__slide[data-position="-3"] .nntm-feature-gallery-carousel__media { transform-origin: right center; }
+.nntm-feature-gallery-carousel__slide[data-position="-1"] .nntm-feature-gallery-carousel__media { transform: rotateY(var(--fgc-lat-1)); }
+.nntm-feature-gallery-carousel__slide[data-position="-2"] .nntm-feature-gallery-carousel__media { transform: rotateY(var(--fgc-lat-2)); }
+.nntm-feature-gallery-carousel__slide[data-position="-3"] .nntm-feature-gallery-carousel__media { transform: rotateY(var(--fgc-lat-3)); }
+.nntm-feature-gallery-carousel__slide[data-position="1"] .nntm-feature-gallery-carousel__media,
+.nntm-feature-gallery-carousel__slide[data-position="2"] .nntm-feature-gallery-carousel__media,
+.nntm-feature-gallery-carousel__slide[data-position="3"] .nntm-feature-gallery-carousel__media { transform-origin: left center; }
+.nntm-feature-gallery-carousel__slide[data-position="1"] .nntm-feature-gallery-carousel__media { transform: rotateY(calc(var(--fgc-lat-1) * -1)); }
+.nntm-feature-gallery-carousel__slide[data-position="2"] .nntm-feature-gallery-carousel__media { transform: rotateY(calc(var(--fgc-lat-2) * -1)); }
+.nntm-feature-gallery-carousel__slide[data-position="3"] .nntm-feature-gallery-carousel__media { transform: rotateY(calc(var(--fgc-lat-3) * -1)); }
 .nntm-feature-gallery-carousel__image { display: block; width: 100%; height: 100%; max-width: none; object-fit: cover; transform: scale(1.001); transition: transform 620ms cubic-bezier(.22,.61,.36,1), filter 360ms ease; }
 .nntm-feature-gallery-carousel__slide[data-position="0"] .nntm-feature-gallery-carousel__media:hover .nntm-feature-gallery-carousel__image { transform: scale(1.018); }
 .nntm-feature-gallery-carousel__copy { display: none; width: min(760px,100%); margin: 0 auto; padding-top: 14px; text-align: center; }
@@ -127,5 +160,5 @@ html.nntm-fgc-modal-open,body.nntm-fgc-modal-open { overflow: hidden; }
 	.nntm-feature-gallery-modal__counter { display: none; }
 }
 @media (prefers-reduced-motion:reduce) {
-	.nntm-feature-gallery-carousel__slide,.nntm-feature-gallery-carousel__image,.nntm-feature-gallery-carousel__arrow,.nntm-feature-gallery-carousel__detail,.nntm-feature-gallery-modal,.nntm-feature-gallery-modal__panel,.nntm-feature-gallery-modal__close,.nntm-feature-gallery-modal__slide,.nntm-feature-gallery-modal__arrow,.nntm-feature-gallery-modal__dot { transition:none; animation:none; }
+	.nntm-feature-gallery-carousel__slide,.nntm-feature-gallery-carousel__media,.nntm-feature-gallery-carousel__image,.nntm-feature-gallery-carousel__arrow,.nntm-feature-gallery-carousel__detail,.nntm-feature-gallery-modal,.nntm-feature-gallery-modal__panel,.nntm-feature-gallery-modal__close,.nntm-feature-gallery-modal__slide,.nntm-feature-gallery-modal__arrow,.nntm-feature-gallery-modal__dot { transition:none; animation:none; }
 }

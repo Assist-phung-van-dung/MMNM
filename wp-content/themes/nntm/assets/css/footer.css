@@ -82,19 +82,48 @@
 	padding: 0;
 }
 
-/* Các trang trong: viền ngoài đen, không có đường kẻ ngang theo Figma. */
+/* =============================================================
+   CHÂN TRANG CÁC TRANG TRONG (.nntm-footer--inner) — MỘT ĐỊNH NGHĨA DUY NHẤT
+
+   Viền ngoài đen, không có đường kẻ ngang theo Figma. Khổ Figma:
+   147 = 20 (đệm ngoài) + 107 (thanh xám) + 20.
+
+   CHỐT 22/08/2026 — TRƯỚC ĐÂY MỖI TRANG MỘT KIỂU. Năm file
+   assets/css/pages/*-figma.css đều tự vẽ lại chân trang này, mỗi file một số
+   đo, và `dieu-thuong-figma.css` còn đổi hẳn `.__row` thành lưới 3 cột rồi
+   CANH GIỮA ở màn hẹp — nên /dieu-thuong/ có chân trang canh giữa còn mọi
+   trang khác canh trái. Đã bỏ hết những khối đó; số đo Figma dồn về đây.
+
+   THÊM MỚI THÌ SỬA Ở ĐÂY, đừng vẽ lại trong file của từng trang — đó chính là
+   cách nó lệch nhau lần trước.
+
+   Chân trang TRANG CHỦ (.nntm-footer--home) là bố cục khác hẳn (có hàng "Hãy
+   chia sẻ ý kiến", đường kẻ, logo+menu gom cột trái) — KHÔNG áp luật ở khối
+   này lên nó.
+   ============================================================= */
 .nntm-footer--inner {
 	background-color: var(--nntm-den);
 	padding: var(--nntm-sp-5);
+	box-sizing: border-box;
 }
 
 .nntm-footer--inner .nntm-footer__bar {
-	min-height: 127px;
+	min-height: 107px; /* tu Figma: thanh xam 107 trong khung 147 */
 	display: flex;
 	align-items: center;
+	box-sizing: border-box;
 }
 
 .nntm-footer--inner .nntm-footer__inner { width: 100%; }
+
+/*
+ * 16/22 là số đo Figma của chân trang các trang trong. Chỉ khoanh cho
+ * `--inner`: chân trang trang chủ dùng giãn dòng 1.6 của luật chung.
+ */
+.nntm-footer--inner .nntm-footer-nav a,
+.nntm-footer--inner .nntm-footer__copyright {
+	line-height: 22px;
+}
 
 /* Chỉ trang chủ có lời mời góp ý; các trang còn lại giữ chân trang gọn. */
 .nntm-footer__share {

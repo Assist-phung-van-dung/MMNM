@@ -346,45 +346,11 @@
 	box-shadow: none;
 }
 
-/* -------------------- COMPACT FOOTER: y=1660, h=147 -------------------- */
-.nntm-footer.nntm-footer--inner {
-	height: 147px;
-	min-height: 147px;
-	padding: 20px;
-	background: var(--nntm-den);
-}
-
-.nntm-footer--inner .nntm-footer__bar {
-	height: 107px;
-	min-height: 107px;
-	padding: 20px;
-	background: var(--nntm-muc-nhat);
-	display: flex;
-	align-items: center;
-}
-
-.nntm-footer--inner .nntm-footer__inner {
-	width: 100%;
-	max-width: 1286px;
-}
-
-.nntm-footer--inner .nntm-footer__row {
-	height: 46px;
-	min-height: 46px;
-	gap: 20px;
-}
-
-.nntm-footer--inner .nntm-footer__logo {
-	min-height: 46px;
-	font-size: 20px;
-	line-height: 1.15;
-}
-
-.nntm-footer--inner .nntm-footer-nav a,
-.nntm-footer--inner .nntm-footer__copyright {
-	font-size: 16px;
-	line-height: 22px;
-}
+/*
+ * BỎ 22/08/2026 — khối "COMPACT FOOTER" từng ở đây chỉ lặp lại số đo Figma của
+ * chân trang các trang trong. Giữ mỗi trang một bản là cách nó lệch nhau; giờ
+ * chỉ định nghĩa ở assets/css/footer.css, khối ".nntm-footer--inner".
+ */
 
 /* -------------------- MOTION / HOVER POLISH -------------------- */
 .nntm-lien-dan-khoa .nntm-card--khoa-tu,
@@ -431,9 +397,7 @@
 	.nntm-lien-dan-khoa > .nntm-card-list__band,
 	.nntm-lien-dan-lich > .nntm-card-list__band,
 	.nntm-thien-duong,
-	.nntm-thien-duong__inner,
-	.nntm-footer.nntm-footer--inner,
-	.nntm-footer--inner .nntm-footer__bar {
+	.nntm-thien-duong__inner {
 		height: auto;
 		min-height: 0;
 	}
@@ -530,35 +494,12 @@
 		height: auto;
 	}
 
-	.nntm-footer.nntm-footer--inner {
-		padding: var(--nntm-sp-3);
-	}
-
 	/*
-	 * SUA 20/08/2026 (anh Uy bao chan trang Lien Dan chua dung).
-	 *
-	 * HAI LOI, cung mot goc: khoi COMPACT FOOTER o giua file nay nam NGOAI
-	 * moi @media nen `height` cung cua no do xuong ca man hep, ma khoi
-	 * "responsive safety" nay truoc day chi go cho .nntm-footer--inner va
-	 * .__bar, BO SOT .__row.
-	 *
-	 * 1. `.__row { height: 46px }` con nguyen o moi co man. Tu 1023px tro
-	 *    xuong footer.css xep hang do thanh COT, noi dung can 194px trong khi
-	 *    hang van cao 46px -> dai menu chan trang do ra NGOAI dai den, do duoc
-	 *    tran 81px o khung 375. Doi chieu /hoa-khai/ (cung dung .--inner nhung
-	 *    khong nap file nay) thi hang tu cao 198px, khong tran.
-	 * 2. Thanh trong cao 76px o dai 1024-1151 trong khi /hoa-khai/ giu dung 107
-	 *    cua Figma. Giu lai san 107 cho khop, chi cho phep cao THEM khi noi
-	 *    dung can.
+	 * BỎ 22/08/2026 — ba luật chân trang từng ở đây là bản CHỮA CHÁY cho chiều
+	 * cao cứng của khối COMPACT FOOTER phía trên (cũng đã bỏ). Không còn chiều
+	 * cao cứng thì không còn gì phải chữa: assets/css/footer.css để chân trang
+	 * tự cao theo nội dung từ 1023px trở xuống.
 	 */
-	.nntm-footer--inner .nntm-footer__row {
-		height: auto;
-	}
-
-	.nntm-footer--inner .nntm-footer__bar {
-		min-height: 107px;
-		padding: var(--nntm-sp-4);
-	}
 }
 
 /* =============================================================

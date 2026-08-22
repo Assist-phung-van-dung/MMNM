@@ -131,6 +131,25 @@
 	text-align: center;
 }
 
+/* ---------- Dòng thông báo dưới nút banner (JS dựng sau khi ghi xong) ----------
+   Nút "Cập nhật chuỗi trì" nằm trên ẢNH banner — không biết trước nền sáng hay
+   tối, nên dòng này tự mang nền đen mờ + chữ kem để đọc được trên mọi tấm.
+   Xem baoDuoiNutBanner() trong assets/js/cong-tu-modal.js. */
+.nntm-cong-tu__tong-ket--duoi-nut {
+	display: inline-block;
+	max-width: 100%;
+	margin-top: var(--nntm-sp-3);
+	padding: var(--nntm-sp-2) var(--nntm-sp-4);
+	border-radius: var(--nntm-r-pill);
+	background-color: var(--nntm-phu-den-50);
+	backdrop-filter: blur(2px);
+	-webkit-backdrop-filter: blur(2px);
+	font-size: var(--nntm-fs-sm);
+	line-height: 1.4;
+	color: var(--nntm-kem);
+	text-align: center;
+}
+
 .nntm-cong-tu__submit {
 	margin-top: var(--nntm-sp-2);
 }

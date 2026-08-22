@@ -901,7 +901,7 @@ function nntm_congtu_cau_da_cam_ket( int $cam_ket, int $thuc_hien ): string {
 }
 
 /**
- * "Tổng cam kết A · đã thực hiện B · tiến trình C%" — chân form Khai Báo và
+ * "Tổng cam kết: A · Đã trì: B · Tiến trình: C%" — chân form Khai Báo và
  * thông báo sau khi Ghi Nhận.
  *
  * ĐỔI 21/08/2026 theo yêu cầu chủ dự án: tiến trình KHÔNG còn chặn ở 100% —
@@ -915,9 +915,14 @@ function nntm_congtu_cau_da_cam_ket( int $cam_ket, int $thuc_hien ): string {
 function nntm_congtu_cau_tong_ket( array $tong ): string {
 	$tien_trinh = isset( $tong['tien_trinh'] ) ? (float) $tong['tien_trinh'] : 0.0;
 
+	/*
+	 * ĐỔI 22/08/2026 theo mẫu chủ dự án đưa: "Tổng cam kết: 50 · Đã trì: 16 ·
+	 * Tiến trình: 32%" — có dấu hai chấm sau mỗi nhãn, và "đã thực hiện" gọi
+	 * đúng tên nghiệp vụ là "Đã trì".
+	 */
 	return sprintf(
-		/* translators: 1: cam kết, 2: thực hiện, 3: tiến trình phần trăm */
-		__( 'Tổng cam kết %1$s · đã thực hiện %2$s · tiến trình %3$s%%', 'nntm' ),
+		/* translators: 1: cam kết, 2: đã trì, 3: tiến trình phần trăm */
+		__( 'Tổng cam kết: %1$s · Đã trì: %2$s · Tiến trình: %3$s%%', 'nntm' ),
 		nntm_congtu_dinh_dang_so( isset( $tong['cam_ket'] ) ? (int) $tong['cam_ket'] : 0 ),
 		nntm_congtu_dinh_dang_so( isset( $tong['thuc_hien'] ) ? (int) $tong['thuc_hien'] : 0 ),
 		(string) max( 0, (int) round( $tien_trinh * 100 ) )

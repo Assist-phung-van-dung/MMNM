@@ -403,6 +403,71 @@
 	.nntm-cong-tu__bxh-bang tbody td:nth-child(3) {
 		display: none; /* an cot "Vung mien" tren man hep, giu cot chinh */
 	}
+
+	/* ---------------------------------------------------------------
+	 * SỬA 22/08/2026 — bảng xếp hạng trên điện thoại.
+	 *
+	 * ĐO THẬT ở 375px trước khi sửa: bảng rộng 382 trong khung 335 (tràn 47px,
+	 * phải kéo ngang mới thấy cột cuối), và bốn cột còn lại chia ĐỀU
+	 * 55/93/93/93 — cột tên người chỉ được 93px cho avatar 32px cộng pháp danh.
+	 *
+	 * Nguyên nhân chính KHÔNG phải đệm mà là `table-layout: fixed` của biến thể
+	 * nền vàng: fixed + không khai bề rộng cột = mọi cột bằng nhau, cắt bao
+	 * nhiêu đệm cũng không cứu được cột tên. Nên phải trả về `auto` rồi ép ba
+	 * cột số co về đúng nội dung (mẹo `width: 1%` + nowrap), cho cột tên ăn hết
+	 * phần dôi.
+	 *
+	 * Luật của biến thể nền vàng có ba lớp (0,3,0) nên phải lặp lại đúng mức đó
+	 * mới ghi đè được — media query không cộng thêm độ ưu tiên.
+	 * --------------------------------------------------------------- */
+
+	.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-bang {
+		table-layout: auto;
+	}
+
+	.nntm-cong-tu__bxh-bang thead th,
+	.nntm-cong-tu__bxh-bang tbody td,
+	.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-bang thead th,
+	.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-bang tbody td {
+		padding: var(--nntm-sp-2) var(--nntm-sp-3);
+	}
+
+	/* Ba cột số co về đúng nội dung; cột tên nhận phần dôi. */
+	.nntm-cong-tu__bxh-hang,
+	.nntm-cong-tu__bxh-so,
+	.nntm-cong-tu__bxh-tien-trinh {
+		width: 1%;
+		white-space: nowrap;
+	}
+
+	/* Ô tên là flex — thiếu min-width:0 thì pháp danh dài không chịu co, đẩy
+	   bảng rộng ra thay vì xuống dòng. */
+	.nntm-cong-tu__bxh-nguoi {
+		min-width: 0;
+	}
+
+	.nntm-cong-tu__bxh-phap-danh {
+		min-width: 0;
+		overflow-wrap: anywhere;
+	}
+
+	.nntm-cong-tu__bxh-avatar {
+		width: 24px;
+		height: 24px;
+	}
+
+	/*
+	 * Thanh tiến trình vẽ trong vài chục pixel thì không đọc ra gì — bỏ phần
+	 * hình, giữ con số phần trăm ngay cạnh vì nó nói đúng cùng một thông tin.
+	 * Vẫn giữ role="progressbar" ở DOM cho trình đọc màn hình: chỉ ẩn bằng CSS.
+	 */
+	.nntm-cong-tu__bxh-tien-trinh .nntm-cong-tu__thanh {
+		display: none;
+	}
+
+	.nntm-cong-tu__bxh-phan-tram {
+		margin-left: 0;
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {

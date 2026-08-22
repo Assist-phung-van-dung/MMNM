@@ -657,6 +657,23 @@
 	.nntm-article-mosaic--phai-grid .nntm-article-mosaic__secondary {
 		padding-inline: 0;
 	}
+
+	/*
+	 * SỬA 22/08/2026 — hai bên bị cắt quá nhiều trên điện thoại.
+	 *
+	 * Luật đệm mobile chung ở trên là `.nntm-article-mosaic__inner` (một lớp).
+	 * Hai luật desktop của biến thể này lại là `.nntm-article-mosaic--phai-grid
+	 * .nntm-article-mosaic__inner` (HAI lớp) và nằm SAU trong file — media query
+	 * không cộng thêm độ ưu tiên nào, nên trên màn 375px khối vẫn giữ nguyên
+	 * padding ngang 80px của Figma desktop và padding dọc 114px. Đo thật:
+	 * ruột chỉ còn 195px trong 375px — mất 160px cho đệm, đúng như phản hồi.
+	 *
+	 * Nên phải lặp lại đủ HAI lớp và đặt SAU hai luật đó. Dùng `padding` dạng
+	 * gộp để xoá luôn `padding-block: 114px`.
+	 */
+	.nntm-article-mosaic--phai-grid .nntm-article-mosaic__inner {
+		padding: var(--nntm-sp-8) var(--nntm-sp-5);
+	}
 }
 
 @media (max-width: 767px) {

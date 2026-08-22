@@ -1071,14 +1071,60 @@ body.nntm-dau-trang-de-len .nntm-header {
 		padding: var(--nntm-sp-5);
 	}
 
+	/*
+	 * SỬA 22/08/2026 — ô tìm kiếm trong panel menu là một khối VUÔNG 263×263.
+	 *
+	 * Hai giá trị của bản desktop không được gỡ khi bố cục đổi sang cột:
+	 *
+	 *   flex: 0 1 263px   trong flex COLUMN, flex-basis đo theo TRỤC DỌC — nên
+	 *                     263px thành CHIỀU CAO, không phải bề rộng. `height:
+	 *                     48px` bên dưới bị chính flex-basis này lấn.
+	 *   max-width: 263px  chặn bề rộng, nên ô không thẳng mép với nút "Đăng
+	 *                     nhập" (335px) ngay dưới. Đo thật ở 375px: ô 263×263.
+	 *
+	 * Nên phải trả `flex: none` và `max-width: none`, chứ đặt thêm width/height
+	 * không cứu được.
+	 */
 	.nntm-header__search-form {
 		display: flex;
+		flex: none;
 		width: 100%;
+		max-width: none;
 		height: 48px;
+		gap: var(--nntm-sp-3);
+		padding-inline: var(--nntm-sp-4);
 	}
 
 	.nntm-header__search-field {
 		min-width: 0;
+		/*
+		 * 16px, không phải 14px như desktop: Safari trên iOS TỰ PHÓNG cả trang
+		 * khi con trỏ vào một input có cỡ chữ dưới 16px, phóng rồi không trả về
+		 * — panel menu lệch hẳn sau một lần gõ tìm kiếm.
+		 */
+		font-size: var(--nntm-fs-base);
+		line-height: 1.2;
+	}
+
+	/* Vùng chạm của hai nút trong ô: 24px hình, nhưng nới vùng bấm cho ngón tay. */
+	.nntm-header__search-submit {
+		flex: none;
+		width: 24px;
+		height: 24px;
+	}
+
+	.nntm-header__search-camera {
+		flex: none;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		padding: 0;
+		border: 0;
+		background: none;
+		color: var(--nntm-muc-nhat);
+		cursor: pointer;
 	}
 
 	/* "Đăng nhập" từ liên kết chữ thành nút đủ rộng, dễ chạm. */

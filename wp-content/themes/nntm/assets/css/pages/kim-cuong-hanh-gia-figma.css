@@ -345,22 +345,7 @@
 		height: 52px;
 	}
 
-	/* Compact inner-page footer. */
-	.nntm-footer.nntm-footer--inner {
-		height: 146px;
-		min-height: 146px;
-		padding: 20px;
-		box-sizing: border-box;
-	}
-
-	.nntm-footer--inner .nntm-footer__bar {
-		height: 106px;
-		min-height: 106px;
-		padding: 20px;
-		box-sizing: border-box;
-		display: flex;
-		align-items: center;
-	}
+	/* Chân trang: xem assets/css/footer.css, ".nntm-footer--inner". */
 }
 
 @media (min-width: 1152px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
@@ -400,9 +385,7 @@
 	.nntm-kchg-hero,
 	.nntm-kchg-hero .nntm-banner__stage,
 	.nntm-kchg-le-dan,
-	.nntm-kchg-le-dan .nntm-banner__stage,
-	.nntm-footer.nntm-footer--inner,
-	.nntm-footer--inner .nntm-footer__bar {
+	.nntm-kchg-le-dan .nntm-banner__stage {
 		height: auto;
 		min-height: 0;
 		max-height: none;

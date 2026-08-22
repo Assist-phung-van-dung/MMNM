@@ -254,6 +254,111 @@
 	object-fit: cover;
 }
 
+/* =============================================================
+   LẬT TRANG SÁCH — thêm 22/08/2026 theo yêu cầu chủ dự án: lúc băng chuyển,
+   ảnh phải có cảm giác như đang lật một trang sách.
+
+   Ý: mỗi ảnh là một trang có BẢN LỀ ở mép phía TRONG (mép hướng vào giữa sân
+   khấu, như gáy sách), mép ngoài nhấc về phía người xem. Ảnh càng xa giữa thì
+   trang càng mở rộng; về giữa thì trang phẳng hẳn ra. Vì góc nghiêng đổi CÙNG
+   nhịp với lúc ảnh trôi (dùng chung --fc-dur / --fc-ease), mắt đọc ra thành
+   MỘT động tác lật, không phải hai chuyển động rời.
+
+   QUAY Ở `.__media`, KHÔNG QUAY Ở `.__slide`. Hai lý do:
+     1. transform của `.__slide` đang gánh cả vị trí (translateX/Y + scale) và
+        chú thích ở trên giải thích phép tính đó phụ thuộc `transform-origin:
+        center top`. Thêm rotateY vào đó là phải sửa lại cả phép tính, còn đổi
+        transform-origin thì ảnh xê dịch.
+     2. Bản lề cần đặt ở MÉP ĐỨNG (left/right center) — riêng cho từng lớp.
+        `.__media` không mang vị trí nên đổi origin thoải mái.
+
+   `.__copy` chỉ hiện ở lớp giữa (đã display:none ở các lớp khác), mà lớp giữa
+   thì góc quay bằng 0 — nên chữ không bao giờ bị nghiêng theo.
+   ============================================================= */
+
+.nntm-feature-carousel {
+	/* Khoảng cách điểm nhìn: càng nhỏ càng "sâu". 1200px là mức thấy rõ độ
+	   dày của trang mà chưa méo hình. */
+	--fc-lat-perspective: 1200px;
+	--fc-lat-1: 20deg;
+	--fc-lat-2: 30deg;
+	--fc-lat-3: 36deg;
+}
+
+/*
+ * perspective đặt ở `.__slide` (cha của `.__media`) — perspective chỉ có tác
+ * dụng lên CON, không lên chính nó. Đặt ở đây thì mỗi trang có điểm nhìn riêng
+ * đúng tâm của nó, hợp với việc mỗi ảnh là một trang rời.
+ */
+.nntm-feature-carousel__slide {
+	perspective: var(--fc-lat-perspective);
+}
+
+.nntm-feature-carousel__media {
+	transform-origin: center center;
+	/* Mặt sau không cần vẽ; bật lên là bỏ được vệt nhòe ở góc lúc đang quay. */
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+}
+
+/* Cùng thời lượng và đường cong với `.__slide`, và cũng chỉ bật SAU .is-ready —
+   nếu không thì lúc tải trang cả dải trang tự lật một lượt. */
+.nntm-feature-carousel.is-ready .nntm-feature-carousel__media {
+	transition: transform var(--fc-dur) var(--fc-ease);
+}
+
+/* Lớp giữa: trang phẳng. */
+.nntm-feature-carousel__slide[data-position="0"] .nntm-feature-carousel__media {
+	transform: rotateY(0deg);
+}
+
+/* Bên TRÁI giữa — bản lề ở mép phải (mép hướng vào giữa), mép trái nhấc lên. */
+.nntm-feature-carousel__slide[data-position="-1"] .nntm-feature-carousel__media,
+.nntm-feature-carousel__slide[data-position="-2"] .nntm-feature-carousel__media,
+.nntm-feature-carousel__slide[data-position="-3"] .nntm-feature-carousel__media {
+	transform-origin: right center;
+}
+
+.nntm-feature-carousel__slide[data-position="-1"] .nntm-feature-carousel__media {
+	transform: rotateY(var(--fc-lat-1));
+}
+
+.nntm-feature-carousel__slide[data-position="-2"] .nntm-feature-carousel__media {
+	transform: rotateY(var(--fc-lat-2));
+}
+
+.nntm-feature-carousel__slide[data-position="-3"] .nntm-feature-carousel__media {
+	transform: rotateY(var(--fc-lat-3));
+}
+
+/* Bên PHẢI giữa — soi gương lại: bản lề ở mép trái. */
+.nntm-feature-carousel__slide[data-position="1"] .nntm-feature-carousel__media,
+.nntm-feature-carousel__slide[data-position="2"] .nntm-feature-carousel__media,
+.nntm-feature-carousel__slide[data-position="3"] .nntm-feature-carousel__media {
+	transform-origin: left center;
+}
+
+.nntm-feature-carousel__slide[data-position="1"] .nntm-feature-carousel__media {
+	transform: rotateY(calc(var(--fc-lat-1) * -1));
+}
+
+.nntm-feature-carousel__slide[data-position="2"] .nntm-feature-carousel__media {
+	transform: rotateY(calc(var(--fc-lat-2) * -1));
+}
+
+.nntm-feature-carousel__slide[data-position="3"] .nntm-feature-carousel__media {
+	transform: rotateY(calc(var(--fc-lat-3) * -1));
+}
+
+/*
+ * Ảnh "vòng qua bìa" bị nhấc đi tức thì (xem .is-teleport ở dưới) — trang của
+ * nó cũng phải tắt transition, không thì nó vừa biến mất ở mép này đã kèm một
+ * cú lật bay ngang sân khấu. Cần đủ bốn lớp mới thắng quy tắc .is-ready ở trên.
+ */
+.nntm-feature-carousel.is-ready .nntm-feature-carousel__slide.is-teleport .nntm-feature-carousel__media {
+	transition: none;
+}
+
 .nntm-feature-carousel__copy {
 	display: none;
 	max-width: 760px;
@@ -404,4 +509,7 @@
 	.nntm-feature-carousel__slide,
 	.nntm-feature-carousel.is-ready .nntm-feature-carousel__slide { transition: none; }
 	.nntm-feature-carousel__slide[data-position="0"] .nntm-feature-carousel__copy { animation: none; }
+	/* Trang vẫn nghiêng (chiều sâu tĩnh, giữ như độ mờ/độ sáng) nhưng KHÔNG lật. */
+	.nntm-feature-carousel__media,
+	.nntm-feature-carousel.is-ready .nntm-feature-carousel__media { transition: none; }
 }

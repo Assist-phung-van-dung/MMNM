@@ -1597,85 +1597,92 @@ a.nntm-card-list__paging-so:focus-visible {
    Đè lên hai mép băng. z-index cần thiết vì các thẻ trong track là anh
    em đứng sau trong luồng — không có z-index thì thẻ phủ lên nút.
    ============================================================= */
+/*
+ * SỬA 22/08/2026 — DÙNG ĐÚNG NÚT CỦA MỌI SLIDER KHÁC.
+ *
+ * Trước đây băng này mượn mẫu nút của .nntm-an-pham-carousel: ô VUÔNG 58px nền
+ * trắng đặc, dán sát mép, và mũi tên là KÝ TỰ CHỮ “←/→” Arial 24px. Còn mọi
+ * slider còn lại của site (mọi card-list layout="carousel") dùng
+ * .nntm-card-list__nav: viên thuốc TRÒN 47px có viền, và mũi tên vẽ bằng GÓC
+ * VUÔNG XOAY — chú thích ở khối đó ghi thẳng "khong dung ky tu chu ‹ ›". Hai
+ * kiểu khác nhau trên cùng một trang là lệch, nên gom về kiểu chung.
+ *
+ * Chỉ giữ lại phần RIÊNG của băng chạy: đặt tuyệt đối, đè lên hai mép băng
+ * (băng có overflow:hidden nên nút phải nằm trong, không thể xuống dưới).
+ */
 .nntm-card-list__marquee-nav {
 	appearance: none;
 	position: absolute;
 	top: 50%;
 	z-index: 5;
+	transform: translateY(-50%);
+
+	/* Từ đây xuống: khớp đúng .nntm-card-list__nav (slider chung). */
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	width: 58px;
-	height: 58px;
+	width: 47px;
+	height: 47px;
 	padding: 0;
-	border: 0;
-	border-radius: 0;
-	background-color: var(--nntm-trang);
-	color: var(--nntm-den);
+	border: 1px solid var(--nntm-duong-vien);
+	border-radius: var(--nntm-r-pill);
+	background-color: var(--nntm-nen-noi);
+	color: var(--nntm-chu);
 	cursor: pointer;
-	transform: translateY(-50%);
 	box-shadow: none;
+	transition: color var(--nntm-dur) var(--nntm-ease), background-color var(--nntm-dur) var(--nntm-ease), border-color var(--nntm-dur) var(--nntm-ease);
 }
 
 .nntm-card-list__marquee-nav--prev {
-	left: 0;
+	left: var(--nntm-sp-3);
 }
 
 .nntm-card-list__marquee-nav--next {
-	right: 0;
+	right: var(--nntm-sp-3);
 }
 
-/* Giữ nguyên nền trắng/chữ đen khi rê chuột — đúng như mũi tên mẫu ở
-   an-pham.css (nút mẫu KHÔNG đổi màu khi hover). */
+/* Hover cũng theo slider chung: nền đổi sang màu chủ đạo, chữ trắng. */
 .nntm-card-list__marquee-nav:hover,
 .nntm-card-list__marquee-nav:focus-visible {
-	background-color: var(--nntm-trang);
-	color: var(--nntm-den);
+	background-color: var(--nntm-chinh);
+	border-color: var(--nntm-chinh);
+	color: var(--nntm-trang);
 }
 
 .nntm-card-list__marquee-nav:focus-visible {
-	outline: 2px solid var(--nntm-reu);
+	outline: 2px solid var(--nntm-chinh);
 	outline-offset: 2px;
 }
 
+/*
+ * Mũi tên vẽ bằng GÓC VUÔNG XOAY, y hệt .nntm-card-list__nav-icon của slider
+ * chung — không dùng ký tự chữ ←/→ nữa (ký tự lệ thuộc font, mỗi hệ vẽ một
+ * dáng, và không đúng mẫu chung của site).
+ */
 .nntm-card-list__marquee-nav-icon {
-	display: inline-grid;
-	place-items: center;
-	width: 28px;
-	height: 28px;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 24px;
-	font-weight: 400;
-	font-style: normal;
-	line-height: 1;
+	width: 10px;
+	height: 10px;
+	border-style: solid;
+	border-width: 2px 2px 0 0;
+	border-color: currentColor;
 }
 
-.nntm-card-list__marquee-nav-icon::before {
-	display: block;
-	transform: translateY(-1px);
+.nntm-card-list__marquee-nav--prev .nntm-card-list__marquee-nav-icon {
+	margin-left: 3px;
+	transform: rotate(-135deg);
 }
 
-.nntm-card-list__marquee-nav--prev .nntm-card-list__marquee-nav-icon::before {
-	content: '←';
+.nntm-card-list__marquee-nav--next .nntm-card-list__marquee-nav-icon {
+	margin-right: 3px;
+	transform: rotate(45deg);
 }
 
-.nntm-card-list__marquee-nav--next .nntm-card-list__marquee-nav-icon::before {
-	content: '→';
-}
-
-/* Màn hẹp: thu nút lại cho vừa, cùng tỉ lệ an-pham.css dùng ở breakpoint nhỏ. */
-@media (max-width: 767px) {
-	.nntm-card-list__marquee-nav {
-		width: 44px;
-		height: 44px;
-	}
-
-	.nntm-card-list__marquee-nav-icon {
-		width: 22px;
-		height: 22px;
-		font-size: 20px;
-	}
-}
+/*
+ * KHÔNG còn bản riêng cho màn hẹp: nút chung đã là 47px — trên ngưỡng chạm 44px
+ * — nên mọi cỡ màn dùng đúng một nút, đúng một mũi tên. Bản riêng trước đây
+ * (ô vuông 44px, rồi bo tròn nền ngà mờ) chính là chỗ làm băng này khác mọi
+ * slider khác.
+ */
 
 /* Người xem đã bấm mũi tên: view-marquee-nav.js gắn lớp này, tắt animation
    tự chạy và chuyển sang dịch từng thẻ bằng transition. Việc tắt tự chạy
