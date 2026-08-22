@@ -264,6 +264,19 @@ function nntm_congtu_enqueue_assets(): void {
 			nntm_asset_version( $modal_js_path ),
 			true
 		);
+
+		// Gửi form ngay trong popup, KHÔNG tải lại trang (yêu cầu chủ dự án
+		// 21/08/2026) — xem nntm_congtu_ajax_gui_form() ở mục 5c. Không có
+		// biến này (vd JS bị chặn) thì form tự POST như cũ.
+		wp_localize_script(
+			'nntm-cong-tu-modal',
+			'nntmCongTu',
+			array(
+				'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
+				'action'    => 'nntm_congtu_gui_form',
+				'errorText' => __( 'Không gửi được lúc này. Vui lòng thử lại.', 'nntm' ),
+			)
+		);
 	}
 }
 add_action( 'wp_enqueue_scripts', 'nntm_congtu_enqueue_assets' );
@@ -511,32 +524,111 @@ function nntm_congtu_dat_loi( string $modal, WP_Error $error ): void {
 	$GLOBALS['nntm_congtu_modal_loi'] = $modal;
 }
 
-/**
- * Chương trình đang mở hiện tại, hoặc null kèm thông báo thân thiện lưu vào
- * $GLOBALS['nntm_congtu_errors'] — KHÔNG BAO GIỜ lỗi trắng trang.
+/* -------------------------------------------------------------------------
+ * 5a. NGHIỆP VỤ THUẦN — không đụng $GLOBALS, không chuyển hướng, không in
+ * gì cả. Trả về ID chương trình đã ghi hoặc WP_Error.
  *
- * @param string $modal 'tham-gia' hoặc 'cap-nhat' — popup nào đang gọi hàm
- *                      này, để nntm_congtu_dat_loi() nhớ đúng chỗ mở lại.
+ * Tách ra 21/08/2026 (yêu cầu chủ dự án: "nhập xong không
+ * muốn load lại page") để MỘT bộ luật dùng cho CẢ HAI đường vào:
+ *   - POST thường (template_redirect) — vẫn giữ nguyên cho trường hợp tắt JS.
+ *   - AJAX (admin-ajax.php) — xem mục 5c.
+ * Không có bản sao thứ hai của luật nghiệp vụ nào ở đây.
+ * ------------------------------------------------------------------------- */
+
+/**
+ * Ghi CAM KẾT ("Tham gia" lần đầu / "Cam kết thêm").
+ *
+ * @param mixed $so_chuoi_raw Giá trị thô người dùng gõ.
+ * @param bool  $dong_y       Đã tích "đồng ý Điều khoản" hay chưa.
+ * @param bool  $ban_tin      Có nhận bản tin hay không.
+ * @return int|WP_Error ID chương trình đã ghi, hoặc lỗi để nơi gọi tự hiện.
  */
-function nntm_congtu_lay_chuong_trinh_hoac_bao_loi( string $modal ): ?WP_Post {
+function nntm_congtu_ghi_cam_ket( $so_chuoi_raw, bool $dong_y, bool $ban_tin ) {
 	$program = function_exists( 'nntm_program_hien_tai' ) ? nntm_program_hien_tai() : null;
 
 	if ( ! $program ) {
-		nntm_congtu_dat_loi(
-			$modal,
-			new WP_Error(
-				'chua_co_chuong_trinh',
-				__( 'Hiện không có chương trình trì tụng nào đang mở. Mời quay lại sau.', 'nntm' )
-			)
+		return new WP_Error(
+			'chua_co_chuong_trinh',
+			__( 'Hiện không có chương trình trì tụng nào đang mở. Mời quay lại sau.', 'nntm' )
 		);
 	}
 
-	return $program;
+	if ( ! function_exists( 'nntm_kpi_da_tham_gia' ) || ! function_exists( 'nntm_kpi_cam_ket' ) ) {
+		return new WP_Error( 'thieu_ham', __( 'Chức năng Cộng Tu tạm thời không khả dụng.', 'nntm' ) );
+	}
+
+	$user_id = get_current_user_id();
+
+	// Điều khoản sử dụng CHỈ bắt buộc ở lần tham gia đầu tiên.
+	if ( ! nntm_kpi_da_tham_gia( $program->ID, $user_id ) && ! $dong_y ) {
+		return new WP_Error( 'dieu_khoan', __( 'Vui lòng đồng ý với Điều khoản sử dụng.', 'nntm' ) );
+	}
+
+	$so_chuoi = nntm_congtu_so_nguyen_duong( $so_chuoi_raw );
+
+	if ( false === $so_chuoi ) {
+		return new WP_Error( 'so_khong_hop_le', __( 'Vui lòng nhập một số chuỗi lớn hơn 0.', 'nntm' ) );
+	}
+
+	$ket_qua = nntm_kpi_cam_ket( $program->ID, $user_id, $so_chuoi );
+
+	if ( is_wp_error( $ket_qua ) ) {
+		return $ket_qua;
+	}
+
+	// Ghi log đã thành công: aggregate/cache chỉ là dữ liệu dẫn xuất, phải
+	// đồng bộ ngay để trang Kim Cương không giữ BXH rỗng tới 24 giờ.
+	nntm_congtu_dong_bo_kpi_sau_ghi( $program->ID );
+
+	// "Nhận thông tin của trang" — không bắt buộc, chỉ lưu lại lựa chọn.
+	update_user_meta( $user_id, 'nntm_nhan_ban_tin', $ban_tin ? '1' : '0' );
+
+	return (int) $program->ID;
 }
 
 /**
- * Xử lý "Tham gia" (lần đầu) / "Cam kết thêm" (đã tham gia) — dùng CHUNG
- * nntm_kpi_cam_ket(), đúng chốt nghiệp vụ 14/08/2026.
+ * Ghi THỰC HIỆN ("Ghi Nhận" / "Cập Nhật Chuỗi Trì").
+ *
+ * nntm_kpi_ghi_nhan() luôn ghi vào NGÀY HIỆN TẠI, không nhận tham số ngày
+ * (không thể khai lùi ngày — chốt nghiệp vụ 14/08/2026).
+ *
+ * @param mixed $so_chuoi_raw Giá trị thô người dùng gõ.
+ * @return int|WP_Error ID chương trình đã ghi, hoặc lỗi để nơi gọi tự hiện.
+ */
+function nntm_congtu_ghi_thuc_hien( $so_chuoi_raw ) {
+	$program = function_exists( 'nntm_program_hien_tai' ) ? nntm_program_hien_tai() : null;
+
+	if ( ! $program ) {
+		return new WP_Error(
+			'chua_co_chuong_trinh',
+			__( 'Hiện không có chương trình trì tụng nào đang mở. Mời quay lại sau.', 'nntm' )
+		);
+	}
+
+	if ( ! function_exists( 'nntm_kpi_ghi_nhan' ) ) {
+		return new WP_Error( 'thieu_ham', __( 'Chức năng Cộng Tu tạm thời không khả dụng.', 'nntm' ) );
+	}
+
+	$so_chuoi = nntm_congtu_so_nguyen_duong( $so_chuoi_raw );
+
+	if ( false === $so_chuoi ) {
+		return new WP_Error( 'so_khong_hop_le', __( 'Vui lòng nhập một số chuỗi lớn hơn 0.', 'nntm' ) );
+	}
+
+	$ket_qua = nntm_kpi_ghi_nhan( $program->ID, get_current_user_id(), $so_chuoi );
+
+	if ( is_wp_error( $ket_qua ) ) {
+		return $ket_qua;
+	}
+
+	// Ghi thực tế thành công phải làm BXH thấy dữ liệu ngay ở request kế tiếp.
+	nntm_congtu_dong_bo_kpi_sau_ghi( $program->ID );
+
+	return (int) $program->ID;
+}
+
+/**
+ * Xử lý "Tham gia" (lần đầu) / "Cam kết thêm" — POST thường (tắt JS).
  *
  * Form có thể POST từ popup ở BẤT KỲ trang nào (không chỉ trang
  * /tham-gia-chuoi-tri/) — thành công thì quay lại ĐÚNG trang đang đứng,
@@ -550,52 +642,16 @@ function nntm_congtu_xu_ly_cam_ket(): void {
 		return;
 	}
 
-	$program = nntm_congtu_lay_chuong_trinh_hoac_bao_loi( 'tham-gia' );
-	if ( ! $program ) {
-		return;
-	}
-
-	$user_id = get_current_user_id();
-
-	if ( ! function_exists( 'nntm_kpi_da_tham_gia' ) || ! function_exists( 'nntm_kpi_cam_ket' ) ) {
-		nntm_congtu_dat_loi( 'tham-gia', new WP_Error( 'thieu_ham', __( 'Chức năng Cộng Tu tạm thời không khả dụng.', 'nntm' ) ) );
-		return;
-	}
-
-	$da_tham_gia = nntm_kpi_da_tham_gia( $program->ID, $user_id );
-
-	// Điều khoản sử dụng CHỈ bắt buộc ở lần tham gia đầu tiên.
-	if ( ! $da_tham_gia && empty( $_POST['nntm_congtu_dong_y'] ) ) {
-		nntm_congtu_dat_loi(
-			'tham-gia',
-			new WP_Error( 'dieu_khoan', __( 'Vui lòng đồng ý với Điều khoản sử dụng.', 'nntm' ) )
-		);
-		return;
-	}
-
-	$so_chuoi = nntm_congtu_so_nguyen_duong( $_POST['so_chuoi'] ?? '' );
-
-	if ( false === $so_chuoi ) {
-		nntm_congtu_dat_loi(
-			'tham-gia',
-			new WP_Error( 'so_khong_hop_le', __( 'Vui lòng nhập một số chuỗi lớn hơn 0.', 'nntm' ) )
-		);
-		return;
-	}
-
-	$ket_qua = nntm_kpi_cam_ket( $program->ID, $user_id, $so_chuoi );
+	$ket_qua = nntm_congtu_ghi_cam_ket(
+		$_POST['so_chuoi'] ?? '',
+		! empty( $_POST['nntm_congtu_dong_y'] ),
+		! empty( $_POST['nntm_congtu_ban_tin'] )
+	);
 
 	if ( is_wp_error( $ket_qua ) ) {
 		nntm_congtu_dat_loi( 'tham-gia', $ket_qua );
 		return;
 	}
-
-	// Ghi log đã thành công: aggregate/cache chỉ là dữ liệu dẫn xuất, phải
-	// đồng bộ ngay để trang Kim Cương không giữ BXH rỗng tới 24 giờ.
-	nntm_congtu_dong_bo_kpi_sau_ghi( $program->ID );
-
-	// "Nhận thông tin của trang" — không bắt buộc, chỉ lưu lại lựa chọn.
-	update_user_meta( $user_id, 'nntm_nhan_ban_tin', empty( $_POST['nntm_congtu_ban_tin'] ) ? '0' : '1' );
 
 	$url = add_query_arg( 'nntm_congtu_ok', 'cam-ket', nntm_congtu_url_hien_tai() );
 	wp_safe_redirect( $url ? $url : home_url( '/' ) );
@@ -603,8 +659,7 @@ function nntm_congtu_xu_ly_cam_ket(): void {
 }
 
 /**
- * Xử lý "Ghi Nhận" (khai báo hằng ngày) — nntm_kpi_ghi_nhan() luôn ghi vào
- * NGÀY HIỆN TẠI, không nhận tham số ngày từ đây (không thể khai lùi ngày).
+ * Xử lý "Ghi Nhận" (khai báo hằng ngày) — POST thường (tắt JS).
  *
  * Form có thể POST từ popup "Cập Nhật Chuỗi Trì" ở BẤT KỲ trang nào —
  * thành công thì quay lại ĐÚNG trang đang đứng, kèm tham số để JS tự mở lại
@@ -618,41 +673,161 @@ function nntm_congtu_xu_ly_ghi_nhan(): void {
 		return;
 	}
 
-	$program = nntm_congtu_lay_chuong_trinh_hoac_bao_loi( 'cap-nhat' );
-	if ( ! $program ) {
-		return;
-	}
-
-	if ( ! function_exists( 'nntm_kpi_ghi_nhan' ) ) {
-		nntm_congtu_dat_loi( 'cap-nhat', new WP_Error( 'thieu_ham', __( 'Chức năng Cộng Tu tạm thời không khả dụng.', 'nntm' ) ) );
-		return;
-	}
-
-	$so_chuoi = nntm_congtu_so_nguyen_duong( $_POST['so_chuoi'] ?? '' );
-
-	if ( false === $so_chuoi ) {
-		nntm_congtu_dat_loi(
-			'cap-nhat',
-			new WP_Error( 'so_khong_hop_le', __( 'Vui lòng nhập một số chuỗi lớn hơn 0.', 'nntm' ) )
-		);
-		return;
-	}
-
-	$user_id = get_current_user_id();
-	$ket_qua = nntm_kpi_ghi_nhan( $program->ID, $user_id, $so_chuoi );
+	$ket_qua = nntm_congtu_ghi_thuc_hien( $_POST['so_chuoi'] ?? '' );
 
 	if ( is_wp_error( $ket_qua ) ) {
 		nntm_congtu_dat_loi( 'cap-nhat', $ket_qua );
 		return;
 	}
 
-	// Ghi thực tế thành công phải làm BXH thấy dữ liệu ngay ở request kế tiếp.
-	nntm_congtu_dong_bo_kpi_sau_ghi( $program->ID );
-
 	$url = add_query_arg( 'nntm_congtu_ok', 'ghi-nhan', nntm_congtu_url_hien_tai() );
 	wp_safe_redirect( $url ? $url : home_url( '/' ) );
 	exit;
 }
+
+/* =========================================================================
+ * 5c. GỬI FORM BẰNG AJAX — không tải lại trang.
+ *
+ * Yêu cầu chủ dự án 21/08/2026 (trang Kim Cương Hành Giả): "khi nhấn Cập
+ * nhật chuỗi trì sẽ có form nhập, sau khi nhập xong anh không muốn load lại
+ * page mà muốn cập nhật luôn và có 1 thông báo, và load lại bảng xếp hạng và
+ * Thống Kê Của Đạo Tràng luôn."
+ *
+ * Endpoint này KHÔNG có luật nghiệp vụ riêng — chỉ kiểm nonce rồi gọi đúng
+ * hai hàm ở mục 5a mà POST thường đang dùng, nên hai đường vào không thể
+ * lệch luật nhau. Tắt JS thì form vẫn POST như cũ (method="post" giữ nguyên
+ * trong template).
+ * ========================================================================= */
+
+/**
+ * Dựng lại HTML hai khối "Thống Kê Của Đạo Tràng" + "Bảng Xếp Hạng Cá Nhân"
+ * để trả về cho JS thay tại chỗ.
+ *
+ * Dùng ĐÚNG hai hàm render của block nntm/cong-tu (không chép lại markup),
+ * nên số liệu/hình dạng luôn khớp với lần tải trang đầy đủ. Chỉ trả về phần
+ * RUỘT (thẻ .nntm-cong-tu__thong-ke và .nntm-cong-tu__bxh) — thẻ <section>
+ * bọc ngoài giữ nguyên trong DOM vì nó mang các class do
+ * inc/kim-cuong-hanh-gia.php gắn theo trang (render_block_data chỉ chạy khi
+ * is_page('kim-cuong-hanh-gia'), không có trong request admin-ajax).
+ *
+ * Tiêu đề "Thống Kê Của Đạo Tràng" nằm NGOÀI thẻ .nntm-cong-tu__thong-ke
+ * (xem chú thích trong blocks/cong-tu/inc/render-cong-tu.php) nên truyền
+ * heading rỗng ở đây là đúng; còn tiêu đề BXH nằm TRONG .nntm-cong-tu__bxh
+ * nên phải truyền lại.
+ *
+ * @param int    $program_id_khoi ID chương trình khối đang hiển thị (0 = chương trình đang mở).
+ * @param string $bxh_heading     Tiêu đề bảng xếp hạng đang hiện trên trang.
+ * @param int    $bxh_limit       Số dòng bảng xếp hạng của khối.
+ * @return array{thong_ke_html?:string,bxh_html?:string}
+ */
+function nntm_congtu_ajax_html_khoi( int $program_id_khoi, string $bxh_heading, int $bxh_limit ): array {
+	$render_file = get_template_directory() . '/blocks/cong-tu/inc/render-cong-tu.php';
+
+	if ( ! file_exists( $render_file ) ) {
+		return array();
+	}
+
+	require_once $render_file;
+
+	$program = nntm_congtu_block_resolve_program( $program_id_khoi );
+
+	if ( ! $program ) {
+		return array();
+	}
+
+	$bxh_limit = ( $bxh_limit > 0 ) ? min( 500, $bxh_limit ) : 50;
+	$du_lieu   = nntm_congtu_block_lay_du_lieu_nhat_quan( $program, $bxh_limit );
+
+	return array(
+		'thong_ke_html' => nntm_congtu_block_render_thong_ke( $program, '', $du_lieu['tong'] ),
+		'bxh_html'      => nntm_congtu_block_render_bxh( $program, $bxh_heading, $bxh_limit, $du_lieu['bxh'] ),
+	);
+}
+
+/**
+ * Endpoint AJAX cho cả hai form trong popup Cộng Tu.
+ *
+ * Dùng lại ĐÚNG nonce mà form đã in ra sẵn (nntm_congtu_cam_ket /
+ * nntm_congtu_ghi_nhan) — JS chỉ gửi nguyên FormData của form, không cần
+ * nonce thứ hai.
+ */
+function nntm_congtu_ajax_gui_form(): void {
+	if ( ! is_user_logged_in() ) {
+		wp_send_json_error( array( 'message' => __( 'Vui lòng đăng nhập để tiếp tục.', 'nntm' ) ), 401 );
+	}
+
+	$viec = isset( $_POST['nntm_congtu_action'] ) ? sanitize_key( wp_unslash( $_POST['nntm_congtu_action'] ) ) : '';
+
+	if ( ! in_array( $viec, array( 'cam-ket', 'ghi-nhan' ), true ) ) {
+		wp_send_json_error( array( 'message' => __( 'Yêu cầu không hợp lệ.', 'nntm' ) ), 400 );
+	}
+
+	$nonce = isset( $_POST['nntm_congtu_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nntm_congtu_nonce'] ) ) : '';
+
+	if ( ! wp_verify_nonce( $nonce, 'nntm_congtu_' . str_replace( '-', '_', $viec ) ) ) {
+		wp_send_json_error(
+			array(
+				'message' => __( 'Phiên làm việc đã hết hạn, vui lòng tải lại trang.', 'nntm' ),
+				'het_han' => true,
+			)
+		);
+	}
+
+	if ( 'cam-ket' === $viec ) {
+		$ket_qua = nntm_congtu_ghi_cam_ket(
+			$_POST['so_chuoi'] ?? '',
+			! empty( $_POST['nntm_congtu_dong_y'] ),
+			! empty( $_POST['nntm_congtu_ban_tin'] )
+		);
+	} else {
+		$ket_qua = nntm_congtu_ghi_thuc_hien( $_POST['so_chuoi'] ?? '' );
+	}
+
+	if ( is_wp_error( $ket_qua ) ) {
+		wp_send_json_error( array( 'message' => wp_strip_all_tags( $ket_qua->get_error_message() ) ) );
+	}
+
+	$program_id = (int) $ket_qua;
+	$user_id    = get_current_user_id();
+	$tong       = function_exists( 'nntm_kpi_tong_cua_nguoi' )
+		? (array) nntm_kpi_tong_cua_nguoi( $program_id, $user_id )
+		: array(
+			'cam_ket'    => 0,
+			'thuc_hien'  => 0,
+			'tien_trinh' => 0.0,
+		);
+
+	$du_lieu = array(
+		'thong_bao' => __( 'Đã ghi nhận, cảm ơn bạn đã phát tâm.', 'nntm' ),
+		'tong_ket'  => nntm_congtu_cau_tong_ket( $tong ),
+	);
+
+	if ( 'ghi-nhan' === $viec ) {
+		$hom_nay = function_exists( 'nntm_kpi_ghi_hom_nay' ) ? (int) nntm_kpi_ghi_hom_nay( $program_id, $user_id ) : 0;
+
+		$du_lieu['hien_trang'] = nntm_congtu_cau_hom_nay( $hom_nay );
+	} else {
+		$du_lieu['hien_trang'] = nntm_congtu_cau_da_cam_ket( (int) $tong['cam_ket'], (int) $tong['thuc_hien'] );
+
+		// Đã cam kết xong thì nút trên banner phải thành "Cập nhật chuỗi trì"
+		// ngay, không đợi lần tải trang sau (xem nntm_congtu_banner_btn_label()).
+		$du_lieu['nhan_nut_banner'] = __( 'Cập nhật chuỗi trì', 'nntm' );
+	}
+
+	if ( ! empty( $_POST['lam_moi_khoi'] ) ) {
+		$du_lieu = array_merge(
+			$du_lieu,
+			nntm_congtu_ajax_html_khoi(
+				isset( $_POST['khoi_program_id'] ) ? absint( wp_unslash( $_POST['khoi_program_id'] ) ) : 0,
+				isset( $_POST['khoi_bxh_heading'] ) ? sanitize_text_field( wp_unslash( $_POST['khoi_bxh_heading'] ) ) : '',
+				isset( $_POST['khoi_bxh_limit'] ) ? absint( wp_unslash( $_POST['khoi_bxh_limit'] ) ) : 50
+			)
+		);
+	}
+
+	wp_send_json_success( $du_lieu );
+}
+add_action( 'wp_ajax_nntm_congtu_gui_form', 'nntm_congtu_ajax_gui_form' );
 
 /* =========================================================================
  * 6. Tiện ích hiển thị dùng chung cho template + block.
@@ -686,4 +861,65 @@ function nntm_congtu_phap_danh( int $user_id ): string {
  */
 function nntm_congtu_dinh_dang_so( int $n ): string {
 	return number_format( $n, 0, ',', '.' );
+}
+
+/*
+ * Ba câu trạng thái dưới đây được in ở template LẦN ĐẦU và gửi lại qua AJAX
+ * sau mỗi lần ghi (mục 5c) — đặt ở MỘT chỗ để hai đường không bao giờ lệch
+ * chữ nhau. Trả về CHỮ THUẦN (chưa escape): template tự esc_html(), JS tự
+ * gán bằng textContent.
+ */
+
+/**
+ * "Hôm nay bạn đã ghi N chuỗi." — form Khai Báo / popup Cập Nhật Chuỗi Trì.
+ *
+ * @param int $so_hom_nay Số chuỗi đã ghi trong ngày.
+ * @return string
+ */
+function nntm_congtu_cau_hom_nay( int $so_hom_nay ): string {
+	return sprintf(
+		/* translators: %s: số chuỗi đã ghi hôm nay */
+		__( 'Hôm nay bạn đã ghi %s chuỗi.', 'nntm' ),
+		nntm_congtu_dinh_dang_so( $so_hom_nay )
+	);
+}
+
+/**
+ * "Bạn đã cam kết A chuỗi, đã thực hiện B chuỗi." — form Tham Gia/Cam Kết Thêm.
+ *
+ * @param int $cam_ket   Tổng cam kết.
+ * @param int $thuc_hien Tổng đã thực hiện.
+ * @return string
+ */
+function nntm_congtu_cau_da_cam_ket( int $cam_ket, int $thuc_hien ): string {
+	return sprintf(
+		/* translators: 1: số chuỗi đã cam kết, 2: số chuỗi đã thực hiện */
+		__( 'Bạn đã cam kết %1$s chuỗi, đã thực hiện %2$s chuỗi.', 'nntm' ),
+		nntm_congtu_dinh_dang_so( $cam_ket ),
+		nntm_congtu_dinh_dang_so( $thuc_hien )
+	);
+}
+
+/**
+ * "Tổng cam kết A · đã thực hiện B · tiến trình C%" — chân form Khai Báo và
+ * thông báo sau khi Ghi Nhận.
+ *
+ * ĐỔI 21/08/2026 theo yêu cầu chủ dự án: tiến trình KHÔNG còn chặn ở 100% —
+ * trì 50/25 chuỗi thì hiện đúng "200%". Chỉ ĐỘ RỘNG thanh tiến trình mới bị
+ * chặn (xem nntm_congtu_block_be_rong_thanh() trong
+ * blocks/cong-tu/inc/render-cong-tu.php).
+ *
+ * @param array $tong Mảng trả về từ nntm_kpi_tong_cua_nguoi().
+ * @return string
+ */
+function nntm_congtu_cau_tong_ket( array $tong ): string {
+	$tien_trinh = isset( $tong['tien_trinh'] ) ? (float) $tong['tien_trinh'] : 0.0;
+
+	return sprintf(
+		/* translators: 1: cam kết, 2: thực hiện, 3: tiến trình phần trăm */
+		__( 'Tổng cam kết %1$s · đã thực hiện %2$s · tiến trình %3$s%%', 'nntm' ),
+		nntm_congtu_dinh_dang_so( isset( $tong['cam_ket'] ) ? (int) $tong['cam_ket'] : 0 ),
+		nntm_congtu_dinh_dang_so( isset( $tong['thuc_hien'] ) ? (int) $tong['thuc_hien'] : 0 ),
+		(string) max( 0, (int) round( $tien_trinh * 100 ) )
+	);
 }

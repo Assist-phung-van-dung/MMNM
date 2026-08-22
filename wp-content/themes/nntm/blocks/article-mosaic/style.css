@@ -704,7 +704,7 @@
 .nntm-article-mosaic__viewall:focus-visible {
 	background-color: var(--nntm-chinh);
 	border-color: var(--nntm-chinh);
-	color: var(--nntm-trang);
+	color: var(--nntm-trang) !important;
 }
 
 /* =============================================================

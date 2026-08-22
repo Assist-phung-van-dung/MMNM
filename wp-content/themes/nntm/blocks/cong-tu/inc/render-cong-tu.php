@@ -50,16 +50,38 @@ if ( ! function_exists( 'nntm_congtu_block_dinh_dang_so' ) ) {
 
 if ( ! function_exists( 'nntm_congtu_block_phan_tram_hien_thi' ) ) {
 	/**
-	 * Phần trăm hiển thị (làm tròn, CHẶN Ở 100) — dùng cho cả số hiển thị lẫn
-	 * độ rộng thanh tiến trình. Số THẬT (cam_ket/thuc_hien) không hề bị đụng
-	 * tới ở đây, chỉ mỗi tỉ lệ hiển thị này bị chặn — đúng chốt nghiệp vụ
-	 * "vượt cam kết thì số thật giữ nguyên, chỉ thanh tiến trình chặn ở 100%".
+	 * Phần trăm hiển thị (làm tròn) — KHÔNG chặn trần.
+	 *
+	 * ĐỔI 21/08/2026 theo yêu cầu chủ dự án: "tiến trình có thể cho phép vượt
+	 * 100%, hiện tại anh thấy quá nhưng vẫn không thấy tính hơn 100%". Trước
+	 * đây con số bị chặn ở 100 nên trì 50/25 chuỗi vẫn chỉ hiện "100%" —
+	 * người trì vượt cam kết không thấy được công của mình. Nay số hiện đúng
+	 * tỉ lệ thật (vd 200%).
+	 *
+	 * Chỉ ĐỘ RỘNG thanh vẫn phải chặn ở 100 — xem
+	 * nntm_congtu_block_be_rong_thanh(): một thanh không thể dài hơn cái máng
+	 * chứa nó.
 	 *
 	 * @param float $tien_trinh Tỉ lệ thô (0..N), N có thể > 1 khi vượt cam kết.
-	 * @return int 0..100.
+	 * @return int Phần trăm đã làm tròn, tối thiểu 0, KHÔNG có trần.
 	 */
 	function nntm_congtu_block_phan_tram_hien_thi( float $tien_trinh ): int {
-		$phan_tram = (int) round( $tien_trinh * 100 );
+		return max( 0, (int) round( $tien_trinh * 100 ) );
+	}
+}
+
+if ( ! function_exists( 'nntm_congtu_block_be_rong_thanh' ) ) {
+	/**
+	 * Bề rộng (%) của thanh tiến trình — CHẶN Ở 100.
+	 *
+	 * Tách khỏi nntm_congtu_block_phan_tram_hien_thi() từ 21/08/2026: con số
+	 * chữ được phép vượt 100%, còn thanh thì không (vẽ width:200% sẽ tràn ra
+	 * khỏi máng và phá cả bảng).
+	 *
+	 * @param int $phan_tram Phần trăm thật (có thể > 100).
+	 * @return int 0..100.
+	 */
+	function nntm_congtu_block_be_rong_thanh( int $phan_tram ): int {
 		return max( 0, min( 100, $phan_tram ) );
 	}
 }
@@ -321,8 +343,17 @@ if ( ! function_exists( 'nntm_congtu_block_render_thong_ke' ) ) {
 					 */
 					?>
 					<div class="nntm-cong-tu__o-hang">
-						<div class="nntm-cong-tu__thanh nntm-cong-tu__thanh--nho" role="progressbar" aria-valuenow="<?php echo esc_attr( (string) $phan_tram ); ?>" aria-valuemin="0" aria-valuemax="100">
-							<div class="nntm-cong-tu__thanh-fill" style="width:<?php echo esc_attr( (string) $phan_tram ); ?>%"></div>
+						<?php
+						/*
+						 * aria-valuemax nới theo giá trị thật khi vượt cam kết
+						 * (21/08/2026) — khai valuenow="200" mà valuemax="100"
+						 * là mâu thuẫn, trình đọc màn hình sẽ tự kẹp về 100 và
+						 * người dùng bàn phím lại nghe sai đúng con số mà chủ
+						 * dự án muốn thấy.
+						 */
+						?>
+						<div class="nntm-cong-tu__thanh nntm-cong-tu__thanh--nho<?php echo $phan_tram > 100 ? ' nntm-cong-tu__thanh--vuot' : ''; ?>" role="progressbar" aria-valuenow="<?php echo esc_attr( (string) $phan_tram ); ?>" aria-valuemin="0" aria-valuemax="<?php echo esc_attr( (string) max( 100, $phan_tram ) ); ?>">
+							<div class="nntm-cong-tu__thanh-fill" style="width:<?php echo esc_attr( (string) nntm_congtu_block_be_rong_thanh( $phan_tram ) ); ?>%"></div>
 						</div>
 						<p class="nntm-cong-tu__o-so"><?php echo esc_html( (string) $phan_tram ); ?>%</p>
 					</div>
@@ -358,8 +389,8 @@ if ( ! function_exists( 'nntm_congtu_block_render_hang' ) ) {
 			<td class="nntm-cong-tu__bxh-vung-mien"><?php echo esc_html( (string) ( $dong['vung_mien'] ?? '' ) ); ?></td>
 			<td class="nntm-cong-tu__bxh-so"><?php echo esc_html( nntm_congtu_block_dinh_dang_so( (int) ( $dong['thuc_hien'] ?? 0 ) ) ); ?></td>
 			<td class="nntm-cong-tu__bxh-tien-trinh">
-				<div class="nntm-cong-tu__thanh nntm-cong-tu__thanh--nho" role="progressbar" aria-valuenow="<?php echo esc_attr( (string) $phan_tram ); ?>" aria-valuemin="0" aria-valuemax="100">
-					<div class="nntm-cong-tu__thanh-fill" style="width:<?php echo esc_attr( (string) $phan_tram ); ?>%"></div>
+				<div class="nntm-cong-tu__thanh nntm-cong-tu__thanh--nho<?php echo $phan_tram > 100 ? ' nntm-cong-tu__thanh--vuot' : ''; ?>" role="progressbar" aria-valuenow="<?php echo esc_attr( (string) $phan_tram ); ?>" aria-valuemin="0" aria-valuemax="<?php echo esc_attr( (string) max( 100, $phan_tram ) ); ?>">
+					<div class="nntm-cong-tu__thanh-fill" style="width:<?php echo esc_attr( (string) nntm_congtu_block_be_rong_thanh( $phan_tram ) ); ?>%"></div>
 				</div>
 				<span class="nntm-cong-tu__bxh-phan-tram"><?php echo esc_html( (string) $phan_tram ); ?>%</span>
 			</td>

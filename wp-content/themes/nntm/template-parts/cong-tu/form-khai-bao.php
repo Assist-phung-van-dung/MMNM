@@ -72,29 +72,30 @@ $nntm_ct_user_id = get_current_user_id();
 			</span>
 		</div>
 
-		<p class="nntm-cong-tu__hien-trang">
-			<?php
-			printf(
-				/* translators: %s: số chuỗi đã ghi hôm nay */
-				esc_html__( 'Hôm nay bạn đã ghi %s chuỗi.', 'nntm' ),
-				esc_html( nntm_congtu_dinh_dang_so( $nntm_ct_hom_nay ) )
-			);
-			?>
-		</p>
+		<p class="nntm-cong-tu__hien-trang"><?php echo esc_html( nntm_congtu_cau_hom_nay( (int) $nntm_ct_hom_nay ) ); ?></p>
 
-		<?php if ( $nntm_ct_errors ) : ?>
-			<div class="nntm-auth-alert nntm-auth-alert--loi" role="alert">
-				<?php foreach ( $nntm_ct_errors->get_error_messages() as $nntm_ct_message ) : ?>
-					<p><?php echo esc_html( wp_strip_all_tags( $nntm_ct_message ) ); ?></p>
-				<?php endforeach; ?>
-			</div>
-		<?php elseif ( $nntm_ct_ok ) : ?>
-			<div class="nntm-auth-alert nntm-auth-alert--ok" role="status">
-				<p><?php esc_html_e( 'Đã ghi nhận, cảm ơn bạn đã phát tâm.', 'nntm' ); ?></p>
-			</div>
-		<?php endif; ?>
+		<?php
+		/*
+		 * Ô thông báo — JS thay RUỘT của thẻ này sau mỗi lần gửi bằng AJAX
+		 * (assets/js/cong-tu-modal.js), nên không bao giờ có hai thông báo
+		 * cùng lúc. Tắt JS thì đây vẫn là chỗ in thông báo của POST thường.
+		 */
+		?>
+		<div class="nntm-cong-tu__thong-bao" data-nntm-congtu-thong-bao>
+			<?php if ( $nntm_ct_errors ) : ?>
+				<div class="nntm-auth-alert nntm-auth-alert--loi" role="alert">
+					<?php foreach ( $nntm_ct_errors->get_error_messages() as $nntm_ct_message ) : ?>
+						<p><?php echo esc_html( wp_strip_all_tags( $nntm_ct_message ) ); ?></p>
+					<?php endforeach; ?>
+				</div>
+			<?php elseif ( $nntm_ct_ok ) : ?>
+				<div class="nntm-auth-alert nntm-auth-alert--ok" role="status">
+					<p><?php esc_html_e( 'Đã ghi nhận, cảm ơn bạn đã phát tâm.', 'nntm' ); ?></p>
+				</div>
+			<?php endif; ?>
+		</div>
 
-		<form class="nntm-auth-form" method="post">
+		<form class="nntm-auth-form" method="post" data-nntm-congtu-ajax="ghi-nhan">
 			<?php wp_nonce_field( 'nntm_congtu_ghi_nhan', 'nntm_congtu_nonce' ); ?>
 			<input type="hidden" name="nntm_congtu_action" value="ghi-nhan" />
 
@@ -113,34 +114,12 @@ $nntm_ct_user_id = get_current_user_id();
 					/>
 				</div>
 			</div>
-
-			<div class="nntm-cong-tu__nhanh" role="group" aria-label="<?php esc_attr_e( 'Chọn nhanh số chuỗi', 'nntm' ); ?>">
-				<?php foreach ( array( 10, 20, 50 ) as $nntm_ct_muc ) : ?>
-					<button
-						type="button"
-						class="nntm-cong-tu__nhanh-btn"
-						data-nntm-congtu-quick="<?php echo esc_attr( (string) $nntm_ct_muc ); ?>"
-						data-nntm-congtu-target="nntm-congtu-so-vua-tri"
-					><?php echo esc_html( (string) $nntm_ct_muc ); ?></button>
-				<?php endforeach; ?>
-			</div>
-
 			<button type="submit" class="nntm-auth-btn nntm-auth-btn--dac nntm-cong-tu__submit">
 				<?php esc_html_e( 'Ghi Nhận', 'nntm' ); ?>
 			</button>
 		</form>
 
-		<p class="nntm-cong-tu__tong-ket">
-			<?php
-			printf(
-				/* translators: 1: cam kết, 2: thực hiện, 3: tiến trình phần trăm */
-				esc_html__( 'Tổng cam kết %1$s · đã thực hiện %2$s · tiến trình %3$s%%', 'nntm' ),
-				esc_html( nntm_congtu_dinh_dang_so( (int) $nntm_ct_tong['cam_ket'] ) ),
-				esc_html( nntm_congtu_dinh_dang_so( (int) $nntm_ct_tong['thuc_hien'] ) ),
-				esc_html( (string) min( 100, (int) round( ( (float) $nntm_ct_tong['tien_trinh'] ) * 100 ) ) )
-			);
-			?>
-		</p>
+		<p class="nntm-cong-tu__tong-ket"><?php echo esc_html( nntm_congtu_cau_tong_ket( $nntm_ct_tong ) ); ?></p>
 
 	<?php endif; ?>
 

@@ -366,7 +366,28 @@ function nntm_card_list_render_youtube_marquee( array $items, bool $framed = fal
 				<?php echo nntm_card_list_render_youtube_item( $item['id'], $titles_by_id[ $item['id'] ], true, $framed ); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong, ban nhan doi chi de marquee lien mach. ?>
 			<?php endforeach; ?>
 		</div>
+
+		<?php
+		/*
+		 * Hai nút mũi tên (21/08/2026, yêu cầu chủ dự án: "chỉnh luôn Xuyên
+		 * Vạn Kiếp và GITA CENTER x NẴNG NHÂN TỊCH MẶC ở home page anh cũng
+		 * muốn có 2 icon cho slider"). Dùng CHUNG hàm với băng danh sách bài
+		 * — xem nntm_card_list_render_marquee_nav() ở inc/render-card-list-marquee.php.
+		 */
+		if ( count( $filled_items ) > 1 && function_exists( 'nntm_card_list_render_marquee_nav' ) ) {
+			echo nntm_card_list_render_marquee_nav(); // phpcs:ignore WordPress.Security.EscapeOutput -- da escape ben trong.
+		}
+		?>
 	</div>
 	<?php
+	/*
+	 * Bấm vào một thẻ mở POPUP TOÀN MÀN HÌNH (yêu cầu chủ dự án 21/08/2026).
+	 * Khung popup + CSS + JS là thành phần dùng chung của theme, nằm ở
+	 * inc/video-lightbox.php — nó tự nhận ra trang có băng YouTube (quét
+	 * videoSource của khối) nên ở đây KHÔNG phải đăng ký gì. Việc duy nhất
+	 * markup cần làm là mang data-video-id, vốn đã có sẵn từ trước.
+	 */
+
 	return trim( (string) ob_get_clean() );
 }
+

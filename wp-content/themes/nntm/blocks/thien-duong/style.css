@@ -148,7 +148,9 @@
 	font-family: var(--nntm-font-sans);
 	font-size: var(--nntm-fs-xs);
 }
-
+.nntm-thien-duong__spotify-list{
+	padding: 0px 22px !important;
+}
 .nntm-thien-duong__spotify-toolbar {
 	display: flex;
 	align-items: center;

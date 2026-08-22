@@ -4,20 +4,21 @@
  * viện ngoài, không bước build — khai qua "viewScript": "file:./view.js"
  * trong block.json.
  *
- * Việc của file này, cho MỖI sân khấu ".nntm-engineering-earth__video-stage"
+ * Việc của file này, cho MỖI khe video ".nntm-engineering-earth__video-slot"
  * tìm thấy trên trang:
  *  - Chèn <iframe> YouTube phát tự động, câm tiếng, lặp, không thanh điều
- *    khiển vào CẢ HAI khe (video lớn + video nền) ngay khi tải — kiểu
- *    "video nền awwwards.com" nêu trong yêu cầu, khác với G1 (card-list)
- *    vốn CHỈ phát khi rê chuột. Ở đây cả hai video đều chạy liên tục vì đó
- *    chính là hiệu ứng "video nền".
+ *    khiển ngay khi tải — kiểu "video nền awwwards.com" nêu trong yêu cầu,
+ *    khác với G1 (card-list) vốn CHỈ phát khi rê chuột. Ở đây mọi video đều
+ *    chạy liên tục vì đó chính là hiệu ứng "video nền".
  *  - Không xử lý hover hoặc đổi vai trò video. Liên kết phủ ở PHP dẫn người
  *    đọc tới bài viết video tương ứng khi nhấp vào mỗi khung.
  *  - prefers-reduced-motion: reduce -> KHÔNG chèn iframe (không tự phát gì
  *    cả), chỉ giữ ảnh giữ chỗ tĩnh.
  *
- * Một trang có thể có nhiều khối engineering-earth — hàm khởi tạo chạy
- * độc lập cho từng sân khấu tìm thấy.
+ * Quét theo KHE, không theo "sân khấu" (đổi 21/08/2026): thẻ nhỏ tràn mép của
+ * bản trang chủ nằm ngoài sân khấu — xem chú thích ở nntmInitAllVideoSlots().
+ * Một trang có thể có nhiều khối engineering-earth; mọi khe đều được xử lý,
+ * và việc chèn iframe là idempotent nên không sợ trùng.
  */
 ( function () {
 	'use strict';
@@ -33,58 +34,57 @@
 	}
 
 	/**
-	 * @param {Element} stage Phần tử ".nntm-engineering-earth__video-stage".
+	 * Chèn iframe MỘT LẦN cho một khe có video. Idempotent — gọi lại không tạo
+	 * iframe thứ hai (chặn bằng embedHost.firstChild).
+	 *
+	 * @param {Element} slot Phần tử ".nntm-engineering-earth__video-slot".
 	 */
-	function nntmInitVideoStage( stage ) {
-		var slots = stage.querySelectorAll( '.nntm-engineering-earth__video-slot' );
+	function nntmInsertEmbed( slot ) {
+		var videoId = slot.getAttribute( 'data-video-id' );
+		var embedHost = slot.querySelector( '.nntm-engineering-earth__video-embed' );
 
-		if ( ! slots.length ) {
+		if ( ! videoId || ! embedHost || embedHost.firstChild ) {
 			return;
 		}
 
-		// Chèn iframe MỘT LẦN cho mỗi khe có video — cả hai chạy liên tục
-		// làm nền, không tháo ra khi đổi vai trò (chỉ đổi class hiển thị).
-		if ( ! nntmPrefersReducedMotion() ) {
-			for ( var i = 0; i < slots.length; i++ ) {
-				nntmInsertEmbed( slots[ i ] );
-			}
-		}
-
-		function nntmInsertEmbed( slot ) {
-			var videoId = slot.getAttribute( 'data-video-id' );
-			var embedHost = slot.querySelector( '.nntm-engineering-earth__video-embed' );
-
-			if ( ! videoId || ! embedHost || embedHost.firstChild ) {
-				return;
-			}
-
-			var iframe = document.createElement( 'iframe' );
-			iframe.src = nntmYoutubeBgEmbedUrl( videoId );
-			iframe.setAttribute( 'title', slot.getAttribute( 'aria-label' ) || '' );
-			iframe.setAttribute( 'frameborder', '0' );
-			iframe.setAttribute( 'allow', 'autoplay; encrypted-media' );
-			iframe.setAttribute( 'tabindex', '-1' );
-			iframe.addEventListener( 'load', function () {
-				window.setTimeout( function () {
-					slot.classList.add( 'is-loaded' );
-				}, 900 );
-			} );
-			embedHost.appendChild( iframe );
-		}
-
+		var iframe = document.createElement( 'iframe' );
+		iframe.src = nntmYoutubeBgEmbedUrl( videoId );
+		iframe.setAttribute( 'title', slot.getAttribute( 'aria-label' ) || '' );
+		iframe.setAttribute( 'frameborder', '0' );
+		iframe.setAttribute( 'allow', 'autoplay; encrypted-media' );
+		iframe.setAttribute( 'tabindex', '-1' );
+		iframe.addEventListener( 'load', function () {
+			window.setTimeout( function () {
+				slot.classList.add( 'is-loaded' );
+			}, 900 );
+		} );
+		embedHost.appendChild( iframe );
 	}
 
-	function nntmInitAllVideoStages() {
-		var stages = document.querySelectorAll( '.nntm-engineering-earth__video-stage' );
+	/*
+	 * SỬA 21/08/2026: quét THẲNG mọi ".__video-slot" trên trang, không đi qua
+	 * ".__video-stage" nữa. Lý do: thẻ nhỏ tràn mép của bản trang chủ
+	 * (".__figma-pip") nằm NGOÀI sân khấu — nó là em ruột của cả dải đen, chứ
+	 * không nằm trong grid của sân khấu (xem render.php). Trước đây thẻ đó là
+	 * ảnh tĩnh nên không cần; nay nó là video thật (bgVideoUrl) và phải được
+	 * chèn iframe như mọi khe khác. Lớp bọc sân khấu không mang thông tin gì
+	 * cho việc chèn iframe, nên bỏ hẳn một tầng lặp.
+	 */
+	function nntmInitAllVideoSlots() {
+		if ( nntmPrefersReducedMotion() ) {
+			return; // Không tự phát gì cả, chỉ giữ ảnh giữ chỗ tĩnh.
+		}
 
-		for ( var i = 0; i < stages.length; i++ ) {
-			nntmInitVideoStage( stages[ i ] );
+		var slots = document.querySelectorAll( '.nntm-engineering-earth__video-slot' );
+
+		for ( var i = 0; i < slots.length; i++ ) {
+			nntmInsertEmbed( slots[ i ] );
 		}
 	}
 
 	if ( 'loading' === document.readyState ) {
-		document.addEventListener( 'DOMContentLoaded', nntmInitAllVideoStages );
+		document.addEventListener( 'DOMContentLoaded', nntmInitAllVideoSlots );
 	} else {
-		nntmInitAllVideoStages();
+		nntmInitAllVideoSlots();
 	}
 } )();

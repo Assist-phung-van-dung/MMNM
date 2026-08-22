@@ -117,6 +117,41 @@
 	background-color: var(--nntm-xam); /* mau nen placeholder khi chua co anh */
 }
 
+/* ---------- Ảnh có link (21/08/2026) ---------- */
+/*
+ * Từ 21/08/2026 thẻ bọc ảnh là <a> khi thẻ có nơi để đi (yêu cầu chủ dự án:
+ * "nhấn vào ảnh cũng có link như mời vào") — xem
+ * nntm_rank_card_lien_ket() trong inc/render-rank-card.php. Khi KHÔNG có nơi
+ * để đi (chưa nhập trang đích, hoặc thẻ đang khoá vì chưa đủ cấp) thì nó vẫn
+ * là <div> và không có gì trong khối này áp vào.
+ *
+ * Ảnh bấm được thì phải TRÔNG như bấm được: không có tín hiệu nào thì người
+ * xem không biết mà bấm. Dùng đúng cỡ phóng 1.035 mà trang chủ đã dùng cho
+ * ảnh thẻ (assets/css/pages/homepage-figma.css), không tự đặt số mới.
+ */
+a.nntm-rank-card__card-media {
+	overflow: hidden; /* cat phan anh phong to ra ngoai khung 304x226 */
+}
+
+a.nntm-rank-card__card-media .nntm-rank-card__card-img {
+	transition: transform var(--nntm-dur) var(--nntm-ease), filter var(--nntm-dur) var(--nntm-ease);
+}
+
+a.nntm-rank-card__card-media:hover .nntm-rank-card__card-img {
+	transform: scale(1.035);
+	filter: saturate(1.025) contrast(1.015);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	a.nntm-rank-card__card-media .nntm-rank-card__card-img {
+		transition: none;
+	}
+
+	a.nntm-rank-card__card-media:hover .nntm-rank-card__card-img {
+		transform: none;
+	}
+}
+
 .nntm-rank-card__card-title {
 	margin: 0;
 	/* tu ban thiet ke: tieu de the cach anh 20px */

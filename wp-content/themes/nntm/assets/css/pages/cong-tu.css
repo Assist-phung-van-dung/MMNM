@@ -79,6 +79,23 @@
 	color: var(--nntm-muc-nhat);
 }
 
+/*
+ * Hai thẻ dưới đây LUÔN có trong DOM để JS điền chữ vào sau khi gửi form
+ * bằng AJAX (không tải lại trang, yêu cầu chủ dự án 21/08/2026 — xem
+ * assets/js/cong-tu-modal.js). Khi chưa có gì thì rỗng, và thẻ rỗng phải
+ * KHÔNG chiếm chỗ, nếu không thẻ sẽ tự dôi ra một khoảng trắng vô nghĩa.
+ */
+.nntm-cong-tu__hien-trang:empty,
+.nntm-cong-tu__thong-bao:empty {
+	display: none;
+}
+
+/* ---------- Trạng thái đang gửi form (AJAX) ---------- */
+.nntm-cong-tu__submit[disabled] {
+	opacity: 0.6;
+	cursor: progress;
+}
+
 /* ---------- Ba nút bấm nhanh 10/20/50 (SUY DOAN — chỉ ở màn Khai Báo) ---------- */
 .nntm-cong-tu__nhanh {
 	display: flex;
