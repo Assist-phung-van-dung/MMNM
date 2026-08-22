@@ -34,10 +34,13 @@
 }
 
 /* Rê chuột/focus vào MỘT thẻ: thẻ đó đứng thẳng lại để đọc rõ bìa, thẻ khác
- * giữ nguyên nghiêng. */
+ * giữ nguyên nghiêng. Đổ bóng đậm/lan rộng hơn khi hover (thẻ box-shadow đã có
+ * transition:box-shadow 400ms sẵn) để mô phỏng thẻ nổi lên — cùng specificity
+ * với box-shadow tĩnh ở nth-child(odd/even) nhưng khai SAU nên thắng khi hover. */
 .nntm-hk-publications .nntm-card-list__marquee-item:hover .nntm-card--books,
 .nntm-hk-publications .nntm-card-list__marquee-item:focus-within .nntm-card--books {
   transform:rotateY(0deg) rotateX(0deg);
+  box-shadow:0 24px 40px rgba(0,0,0,.45);
 }
 
 /* Trình bày thẻ (bìa trần, ẩn chữ, nghiêng 3D) — ĐẶT NGOÀI @media
@@ -201,6 +204,10 @@
   .nntm-hk-dharma .nntm-article-mosaic__inner { height:auto; padding:40px 20px; }
   .nntm-hk-news .nntm-article-mosaic__heading,
   .nntm-hk-dharma .nntm-article-mosaic__heading { height:auto; font-size:clamp(38px,7vw,var(--nntm-fs-4xl)); line-height:1.15; }
+  /* SỬA: color:#f7f1de trước đây chỉ khai trong @media (min-width:1152px)
+   * — dưới 1151px chữ "Ấn Phẩm" rơi về màu chữ tối mặc định, gần như
+   * không đọc được trên nền đen của băng. */
+  .nntm-hk-publications .nntm-card-list__heading { color:#f7f1de; }
   /* TABLET (1024-1151): giu hai cot, chi bo be rong 1180px cung cua desktop.
      Gop mot cot chuyen xuong khoi <=1023 o cuoi file — o khung 1136px danh
      sach mot cot lam the dan dau rong 1076px, la bo cuc cua dien thoai. */
@@ -208,7 +215,9 @@
   .nntm-hk-dharma .nntm-article-mosaic__list { width:100%; }
   .nntm-hk-news .nntm-article-mosaic__lead,
   .nntm-hk-dharma .nntm-article-mosaic__lead { width:100%; max-width:none; }
-  .nntm-hk-publications > .nntm-card-list__band { padding:40px 0; }
+  /* SỬA: background:#000 trước đây chỉ khai trong @media (min-width:1152px)
+   * — dưới 1151px băng không có nền đen nào, lộ nền trắng/kem của trang. */
+  .nntm-hk-publications > .nntm-card-list__band { padding:40px 0; background:#000; overflow:hidden; }
   .nntm-hk-publications { --nntm-tilt-scale:0.6; }
   .nntm-hk-publications .nntm-card-list__marquee { height:auto; }
   .nntm-hk-publications .nntm-card-list__marquee-track { height:auto; padding-block:20px; }

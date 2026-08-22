@@ -17,6 +17,9 @@
 	max-width: var(--nntm-w-rong);
 	margin-inline: auto;
 	background-color: var(--nntm-trang);
+	/* Chiều rộng cột đọc (ảnh bìa + nội dung) — hẹp hơn khung 1184px để tạo
+	   tiêu điểm kiểu trang reader, không đổi token bố cục dùng chung toàn site. */
+	--nntm-an-pham-w-doc: 760px;
 }
 
 .nntm-an-pham__than {
@@ -70,11 +73,16 @@
 	color: var(--nntm-reu);
 }
 
-/* Ảnh chính dùng cùng tỷ lệ 3:2 với chi tiết bài viết thường. */
+/*
+ * Ảnh chính dùng cùng tỷ lệ 3:2 với chi tiết bài viết thường, nhưng giới hạn
+ * chiều rộng và căn giữa trong khung 1184px — giữ cảm giác "bìa sách" được
+ * đóng khung như trang reader, thay vì banner tràn hết khung nội dung.
+ */
 .nntm-an-pham__anh-bia {
 	width: 100%;
+	max-width: var(--nntm-an-pham-w-doc);
 	aspect-ratio: 3 / 2;
-	margin: var(--nntm-sp-5) 0 0;
+	margin: var(--nntm-sp-5) auto 0;
 	overflow: hidden;
 	background-color: var(--nntm-xam-nhat);
 }
@@ -89,7 +97,8 @@
 }
 
 .nntm-an-pham__noi-dung {
-	margin-top: var(--nntm-sp-5);
+	max-width: var(--nntm-an-pham-w-doc);
+	margin: var(--nntm-sp-5) auto 0;
 	font-family: var(--nntm-font-serif);
 	font-size: var(--nntm-fs-base);
 	line-height: 1.65;
@@ -405,6 +414,7 @@
 	font-weight: 700;
 	line-height: var(--nntm-lh-vua);
 	color: var(--nntm-trang);
+	text-decoration: none;
 	cursor: pointer;
 	transition: opacity var(--nntm-dur) var(--nntm-ease);
 }
@@ -425,108 +435,6 @@
 	font-size: var(--nntm-fs-xs);
 	font-weight: 600;
 	color: var(--nntm-reu);
-}
-
-/* ---------- Modal trình đọc 3D flip book (an-pham-flipbook.js) ---------- */
-body.nntm-flipbook-modal-mo {
-	overflow: hidden;
-}
-
-.nntm-flipbook-modal {
-	position: fixed;
-	inset: 0;
-	z-index: 9999;
-	display: none;
-	align-items: center;
-	justify-content: center;
-	padding: var(--nntm-sp-5);
-	background-color: rgba(0, 0, 0, 0.72);
-}
-
-.nntm-flipbook-modal--mo {
-	display: flex;
-}
-
-.nntm-flipbook-modal__khung {
-	position: relative;
-	width: 100%;
-	max-width: 1100px;
-	height: min(90vh, 820px);
-	display: flex;
-	flex-direction: column;
-	background-color: var(--nntm-muc);
-}
-
-.nntm-flipbook-modal__thanh {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	flex: 0 0 auto;
-	padding: var(--nntm-sp-3) var(--nntm-sp-5);
-}
-
-.nntm-flipbook-modal__ten {
-	font-family: var(--nntm-font-sans);
-	font-size: var(--nntm-fs-sm);
-	font-weight: 700;
-	color: var(--nntm-trang);
-}
-
-.nntm-flipbook-modal__dong {
-	appearance: none;
-	border: 0;
-	background: transparent;
-	font-size: 28px;
-	line-height: 1;
-	color: var(--nntm-trang);
-	cursor: pointer;
-}
-
-.nntm-flipbook-modal__than {
-	position: relative;
-	flex: 1 1 auto;
-	min-height: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	overflow: hidden;
-}
-
-.nntm-flipbook-modal__trang-thai {
-	font-family: var(--nntm-font-sans);
-	font-size: var(--nntm-fs-sm);
-	color: var(--nntm-trang);
-}
-
-.nntm-flipbook-modal__sach {
-	width: 100%;
-	height: 100%;
-}
-
-.nntm-flipbook-modal__dieu-huong {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	flex: 0 0 auto;
-	padding: var(--nntm-sp-3) var(--nntm-sp-5);
-}
-
-.nntm-flipbook-modal__lui,
-.nntm-flipbook-modal__toi {
-	appearance: none;
-	width: 40px;
-	height: 40px;
-	border: 0;
-	background-color: rgba(255, 255, 255, 0.12);
-	font-size: 22px;
-	line-height: 1;
-	color: var(--nntm-trang);
-	cursor: pointer;
-}
-
-.nntm-flipbook-modal__lui:hover,
-.nntm-flipbook-modal__toi:hover {
-	background-color: rgba(255, 255, 255, 0.22);
 }
 
 @media (max-width: 767px) {

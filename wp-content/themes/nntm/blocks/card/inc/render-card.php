@@ -103,6 +103,20 @@ function nntm_render_card_markup( int $post_id, string $variant, bool $show_date
 	$has_excerpt = $show_excerpt && ! $is_dai_si && in_array( $variant, array( 'article', 'khoa-tu', 'books', 'kim-cuong' ), true );
 
 	$permalink = get_permalink( $post );
+
+	/*
+	 * variant "books" là bìa sách để đọc, không phải bài viết để đọc mô tả —
+	 * nếu ấn phẩm có tệp PDF gắn kèm và người xem được phép đọc, bấm bìa vào
+	 * THẲNG trang đọc /doc/, bỏ qua trang chi tiết. Ấn phẩm chưa gắn tệp hoặc
+	 * đang khoá vẫn về trang chi tiết như cũ (nơi có nút mời thanh toán).
+	 */
+	if ( 'books' === $variant ) {
+		$duong_doc = nntm_doc_url( $post );
+		if ( '' !== $duong_doc && nntm_an_pham_can_access( $post ) ) {
+			$permalink = $duong_doc;
+		}
+	}
+
 	$title     = get_the_title( $post );
 	$thumbnail = get_the_post_thumbnail(
 		$post,

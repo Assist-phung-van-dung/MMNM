@@ -104,9 +104,9 @@ while ( have_posts() ) :
 						<?php endif; ?>
 
 						<?php if ( '' !== $pdf_url && $duoc_xem ) : ?>
-							<button type="button" class="nntm-an-pham__doc-nut" data-nntm-an-pham-doc>
+							<a href="<?php echo esc_url( nntm_doc_url( $post_id ) ); ?>" class="nntm-an-pham__doc-nut">
 								<?php esc_html_e( 'Đọc ấn phẩm', 'nntm' ); ?>
-							</button>
+							</a>
 						<?php elseif ( $bi_khoa ) : ?>
 							<p class="nntm-an-pham__khoa">
 								<?php esc_html_e( 'Ấn phẩm này yêu cầu thanh toán mới xem được nội dung đầy đủ.', 'nntm' ); ?>
