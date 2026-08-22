@@ -53,7 +53,7 @@ $wrapper = get_block_wrapper_attributes(
 	)
 );
 ?>
-<section <?php echo $wrapper; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+<section <?php echo $wrapper;  ?>>
 	<?php if ( $heading ) : ?>
 		<header class="nntm-feature-gallery-carousel__header">
 			<h2 class="nntm-feature-gallery-carousel__heading"><span><?php echo esc_html( $heading ); ?></span></h2>

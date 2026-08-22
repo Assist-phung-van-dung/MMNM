@@ -1,7 +1,4 @@
-/**
- * Gutenberg editor for nntm/floating-video.
- * Plain JavaScript, no build step, following the existing NNTM blocks.
- */
+ 
 ( function ( wp ) {
 	'use strict';
 

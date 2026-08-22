@@ -1,34 +1,15 @@
-/* =============================================================
-   nntm/hero-slider — CSS cho block "Băng chuyền đầu trang chủ"
-   Nguồn số đo: ảnh thiết kế trang chủ xuất tỉ lệ 1:1 (1366x648), Figma API
-   bị chặn tốc độ nên không gọi lại được — số đo dưới đây đo trực tiếp
-   trên ảnh, sai số ước lượng ~1px, đánh dấu "do tu anh".
 
-   CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
-   assets/css/tokens.css. Không có token màu-trắng-trong-suốt nào sẵn có
-   cho chấm/lớp phủ nhạt hơn, nên dùng thuộc tính CSS "opacity" trên nền
-   var(--nntm-trang) đặc — không viết rgba()/#hex trực tiếp.
-
-   Block tự mang đệm ngoài, tràn hết chiều rộng (docs/04-kien-truc.md
-   mục 11) — template KHÔNG canh lề hộ, KHÔNG bó trong khung 1220.
-   ============================================================= */
 
 .nntm-hero-slider {
 	display: block;
 }
 
-/* ---------- Khung băng chuyền ---------- */
 .nntm-hero-slider__stage {
 	position: relative;
 	width: 100%;
 	overflow: hidden;
-	background-color: var(--nntm-xam); /* nen placeholder khi anh chua nap xong */
-	/*
-	 * Spec do lai tu anh thiet ke ngay 12/08/2026 (dai "hero": y 76 -> 767,
-	 * cao 692), do truc tiep tren 6376-6322@1x.png — chinh xac hon so voi
-	 * 768 doc tu node BANNER truoc day (sai lech ~68-76px khi do thuc te
-	 * tren trang). Doi tu 1366/768 sang 1366/692.
-	 */
+	background-color: var(--nntm-xam);  
+
 	aspect-ratio: 1366 / 692;
 }
 
@@ -37,15 +18,12 @@
 	inset: 0;
 }
 
-/* ---------- Từng tấm — chuyển bằng làm mờ chồng (fade), không trượt ngang ---------- */
 .nntm-hero-slider__slide {
 	position: absolute;
 	inset: 0;
 	opacity: 0;
 	visibility: hidden;
-	/* Fade cham hon token goc (220ms) mot chut de doi tam de chiu hon voi
-	   chu ky tu chay ~6s — van xuat phat tu bien --nntm-dur, khong tu bay
-	   so cung. */
+
 	transition: opacity calc( var(--nntm-dur) * 3 ) var(--nntm-ease);
 }
 
@@ -69,13 +47,6 @@
 	object-position: center;
 }
 
-/*
- * Lớp phủ chuyển sắc — BẮT BUỘC để chữ đọc được kể cả khi ảnh nền sáng
- * (yêu cầu nhiệm vụ). Đậm hơn ở nửa trái (nơi có chữ), nhạt dần sang phải;
- * thêm dải tối ở đáy để dải liên kết nhanh + chấm cũng đủ tương phản.
- * Dùng hai token phủ đen có sẵn (--nntm-phu-den-50 / --nntm-phu-den-30),
- * không tự pha màu mới.
- */
 .nntm-hero-slider__overlay {
 	position: absolute;
 	inset: 0;
@@ -86,15 +57,14 @@
 		linear-gradient( 90deg, var(--nntm-phu-den-50) 0%, var(--nntm-phu-den-30) 45%, transparent 75% );
 }
 
-/* ---------- Chữ đè lên ảnh, góc trái ---------- */
 .nntm-hero-slider__content {
 	position: absolute;
 	z-index: 2;
-	/* tu anh: le trai ~93 */
-	left: 93px; /* do tu anh */
-	right: 420px; /* do tu anh: nhuong cho the mo goc phai, tranh chu de len the */
-	/* tu anh: dong dau tieu de ~127/648 chieu cao */
-	top: 19%; /* do tu anh */
+
+	left: 93px;  
+	right: 420px;  
+
+	top: 19%;  
 	display: flex;
 	flex-direction: column;
 	gap: var(--nntm-sp-4);
@@ -103,17 +73,17 @@
 
 .nntm-hero-slider__heading {
 	margin: 0;
-	/* tu anh: EB Garamond ~48px trang, 2 dong */
+
 	font-family: var(--nntm-font-display);
 	font-weight: 600;
-	font-size: var(--nntm-fs-4xl); /* 52 — gan nhat voi ~48px do tu anh */
+	font-size: var(--nntm-fs-4xl);  
 	line-height: var(--nntm-lh-chat);
 	color: var(--nntm-trang);
 }
 
 .nntm-hero-slider__text {
 	margin: 0;
-	/* tu anh: ~18px trang */
+
 	font-family: var(--nntm-font-serif);
 	font-size: var(--nntm-fs-md);
 	line-height: var(--nntm-lh-vua);
@@ -123,7 +93,7 @@
 
 .nntm-hero-slider__cta {
 	width: fit-content;
-	/* tu anh: ~15px, dam, trang */
+
 	font-family: var(--nntm-font-sans);
 	font-size: var(--nntm-fs-15);
 	font-weight: 700;
@@ -138,21 +108,13 @@
 	text-decoration: underline;
 }
 
-/* ---------- Nút mũi tên trái/phải ---------- */
-/*
- * Thiết kế Figma của hero (6376-6322) không vẽ mũi tên, chỉ có chấm — nút
- * này tự dựng theo đúng ngôn ngữ "nút tròn nổi" đã dùng ở nơi khác trong
- * site (assets/css/pages/r1.css .nntm-r1-tong-chi__nut): nền trắng, đổ
- * bóng --nntm-sh-nut, bo tròn hoàn toàn --nntm-r-pill, mũi tên SVG contour
- * bằng currentColor. Absolute đè lên ảnh — không chen vào luồng, không đổi
- * chiều cao khối hero (aspect-ratio ở .nntm-hero-slider__stage giữ nguyên).
- */
+
 .nntm-hero-slider__nav {
 	position: absolute;
 	top: 50%;
 	transform: translateY(-50%);
 	z-index: 2;
-	width: 48px; /* SUY DOAN: Figma khong ve nut nay, chon co gan voi cham .nntm-r1-tong-chi__nut (58px) nhung nho hon mot chut cho vua ty le hero */
+	width: 48px;  
 	height: 48px;
 	display: inline-flex;
 	align-items: center;
@@ -174,7 +136,7 @@
 }
 
 .nntm-hero-slider__nav--prev {
-	left: var(--nntm-sp-6); /* dong cot voi kieu do cua .nntm-r1-tong-chi__nut--truoc */
+	left: var(--nntm-sp-6);  
 }
 
 .nntm-hero-slider__nav--next {
@@ -192,13 +154,12 @@
 	outline-offset: 3px;
 }
 
-/* ---------- Chấm chuyển tấm ---------- */
 .nntm-hero-slider__dots {
 	position: absolute;
 	z-index: 2;
-	left: 93px; /* do tu anh: cung cot voi khoi chu */
-	/* tu anh: cham o khoang 411/648 chieu cao */
-	top: 63%; /* do tu anh */
+	left: 93px;  
+
+	top: 63%;  
 	display: flex;
 	align-items: center;
 	gap: var(--nntm-sp-2);
@@ -206,13 +167,13 @@
 
 .nntm-hero-slider__dot {
 	flex: none;
-	width: 8px; /* do tu anh: cham thuong nho hon cham dang xem */
+	width: 8px;  
 	height: 8px;
 	padding: 0;
 	border: none;
 	border-radius: 50%;
 	background-color: var(--nntm-trang);
-	/* "nho hon va mo" o cham thuong = giam opacity, KHONG pha mau rgba moi */
+
 	opacity: 0.45;
 	transform: scale(1);
 	cursor: pointer;
@@ -224,7 +185,7 @@
 }
 
 .nntm-hero-slider__dot.is-active {
-	/* "to va dac" — do tu anh: duong kinh ~12 = 8px * 1.5 */
+
 	opacity: 1;
 	transform: scale(1.5);
 }
@@ -234,36 +195,25 @@
 	outline-offset: 3px;
 }
 
-/* ---------- Dải liên kết nhanh, đáy trái ---------- */
 .nntm-hero-slider__quicklinks {
 	position: absolute;
 	z-index: 2;
-	left: 93px; /* do tu anh */
-	bottom: var(--nntm-sp-9); /* 50 — do tu anh: uoc luong tu day anh */
+	left: 93px;  
+	bottom: var(--nntm-sp-9);  
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--nntm-sp-3);
-	max-width: calc( 100% - 186px ); /* do tu anh: doi xung le trai 93 hai ben */
+	max-width: calc( 100% - 186px );  
 }
 
 .nntm-hero-slider__quicklink {
 	display: inline-flex;
 	align-items: center;
-	/* Do tu Figma R4, node 6376:6351 ("Nguyen Thuy"), bang tools/png-do.mjs
-	   ngay 10/08/2026 — endpoint doc node dang bi chan toc do 429:
-	     cao   45
-	     vien  1px #B4B7A7  (= --nntm-reu-nhat)
-	     chu      #F7F1DE  (= --nntm-kem)
-	     nen   trong suot
-	     bo goc rat nhe, KHONG phai vien thuoc
-	   Truoc day dung --nntm-r-pill (bo tron han hai dau) va mau trang nen
-	   lech han so voi thiet ke. */
+
 	min-height: 45px;
 	padding: var(--nntm-sp-2) var(--nntm-sp-5);
 	border: 1px solid var(--nntm-reu-nhat);
-	/* Bo border-radius theo yeu cau anh Uy 10/08/2026 — vien vuong goc.
-	   Truoc do da bo tu --nntm-r-pill (vien thuoc) ve --nntm-r-sm (5px)
-	   theo do tu Figma, gio bo han ve 0. */
+
 	border-radius: 0;
 	background-color: transparent;
 	color: var(--nntm-kem);
@@ -286,37 +236,19 @@
 	outline-offset: 3px;
 }
 
-/* ---------- Thẻ mờ góc phải dưới ---------- */
-/*
- * Figma R4, khung "CARD" trong hero — CSS xuat tu Figma:
- *   display: flex; flex-direction: column; align-items: flex-start;
- *   padding: 20px; gap: 11px;
- *   position: absolute; width: 388px; height: 162px;
- *   left: 958px; top: 577px;
- *   background: rgba(247, 241, 222, 0.2);
- *   backdrop-filter: blur(5px);            <- Figma dat ten lop la "GLASS"
- *
- * Suy ra vi tri trong khung hero 1366x768:
- *   phai  = 1366 - 958 - 388 = 20   -> 20/1366 = 1.46%
- *   duoi  =  768 - 577 - 162 = 29   -> 29/768  = 3.78%
- * Dung phan tram thay vi px de the giu dung vi tri khi hero co gian
- * (hero khoa bang aspect-ratio nen no doi kich thuoc theo be rong).
- *
- * Truoc day: nen den 50% dac, bo goc 20, le phai/duoi 50px — deu la
- * "uoc luong tu anh" chu khong phai so tu thiet ke.
- */
+
 .nntm-hero-slider__sidecard {
 	position: absolute;
 	z-index: 2;
 	right: 1.46%;
 	bottom: 3.78%;
-	/* Figma 388 trong khung 1366 -> 28.4%, khong phai 32% nhu uoc luong cu */
+
 	width: 28.4%;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	gap: var(--nntm-sp-3); /* Figma 11 — sai 1px so voi thang token, khong dang de le */
-	padding: var(--nntm-sp-5); /* Figma 20 deu bon phia */
+	gap: var(--nntm-sp-3);  
+	padding: var(--nntm-sp-5);  
 	border-radius: 0;
 	background-color: var(--nntm-phu-kem-20);
 	backdrop-filter: blur(5px);
@@ -326,21 +258,14 @@
 
 .nntm-hero-slider__sidecard-heading {
 	margin: 0;
-	/* tu anh: ~17px dam, trang, 2 dong */
+
 	font-family: var(--nntm-font-sans);
 	font-weight: 700;
-	font-size: var(--nntm-fs-md); /* 18 — gan nhat voi ~17px do tu anh */
+	font-size: var(--nntm-fs-md);  
 	line-height: var(--nntm-lh-vua);
 	color: var(--nntm-trang);
 }
 
-/*
- * Tieu de gio la LIEN KET sang bai (yeu cau anh Uy 12/08/2026, muc H2 —
- * truoc day chi la chu tinh, khong co lien ket). color: inherit +
- * text-decoration: none de khong bi doi mau/gach chan boi luat "a" chung
- * o base.css. .nntm-cat-2-dong (base.css) cat toi da 2 dong — tieu de bai
- * thuc te co the dai hon chu tinh truoc day.
- */
 .nntm-hero-slider__sidecard-heading a {
 	color: inherit;
 	text-decoration: none;
@@ -353,7 +278,7 @@
 
 .nntm-hero-slider__sidecard-text {
 	margin: 0;
-	/* tu anh: mot dong chu nghieng */
+
 	font-family: var(--nntm-font-serif);
 	font-style: italic;
 	font-size: var(--nntm-fs-sm);
@@ -382,7 +307,6 @@
 	outline-offset: 3px;
 }
 
-/* ---------- Chưa có tấm nào (chỉ hiện trong trình soạn thảo) ---------- */
 .nntm-hero-slider--empty {
 	display: block;
 }
@@ -398,74 +322,32 @@
 	text-align: center;
 }
 
-/* =============================================================
-   HERO DƯỚI 1152px — dựng lại 20/08/2026, ba bậc rõ ràng.
-
-   SUY DOAN: Figma chỉ có khung desktop 1366px.
-
-   BẢN CŨ SAI Ở ĐÂU (đo bằng trình duyệt thật ở khung 1136px):
-     .__stage        min-height: 760px   -> dải hero cao gần hết màn
-     .__heading      32px                -> tụt thẳng từ 58px, giật một bậc lớn
-     .__content      left/right = 20px   -> chữ trải hết bề rộng 1096px
-     .__sidecard     left/right = 20px   -> thẻ kính mờ dài hết màn
-     .__dots         bottom: 260px       -\ ba con số cứng phải ăn khớp nhau,
-     .__quicklinks   bottom: 170px       -/ sửa một cái là lệch cả ba
-   Tức là bố cục của ĐIỆN THOẠI bị áp cho cả khung tablet.
-
-   BỐ CỤC CƠ SỞ CỦA KHỐI VỐN ĐÃ CO GIÃN ĐƯỢC: .__content dùng `top: 19%`,
-   .__sidecard dùng `right: 1.46% / bottom: 3.78% / width: 28.4%`, .__stage
-   khoá `aspect-ratio: 1366/692`. Nên bậc tablet KHÔNG cần dựng lại gì —
-   chỉ cần thu lề, hạ cỡ chữ một bậc, và chặn một chiều cao tối thiểu để
-   khối chữ (định vị tuyệt đối) không chạm vào dải liên kết nhanh.
-
-   BẬC 768–1151 (tablet): giữ nguyên bố cục desktop, thu lề 93 -> 40.
-   BẬC <= 767 (điện thoại): BỎ định vị tuyệt đối, chuyển sang xếp dọc theo
-   luồng. Nhờ vậy chiều cao do nội dung quyết định — không còn một con số
-   cứng nào (760/820/260/170 đều biến mất), và không thể chồng lấn.
-   ============================================================= */
-
 @media (max-width: 1151px) {
 	.nntm-hero-slider__stage {
-		/*
-		 * Vẫn giữ tỉ lệ 1366/692 làm chuẩn, chỉ chặn sàn: ở khung 768px tỉ lệ
-		 * cho ra 389px — không đủ cho tiêu đề + chữ + chấm + dải liên kết
-		 * nhanh + thẻ kính mờ (tất cả đều định vị tuyệt đối). 520px là chiều
-		 * cao tối thiểu để năm khối đó không chạm nhau, đo lại khi đổi cỡ chữ.
-		 */
+
 		min-height: 520px;
 	}
 
 	.nntm-hero-slider__content {
 		left: var(--nntm-sp-8);
-		/* Chừa 36% bên phải cho thẻ kính mờ (28.4% + lề), không phải 420px cứng. */
+
 		right: 36%;
 		top: var(--nntm-sp-9);
 		max-width: none;
 	}
 
 	.nntm-hero-slider__heading {
-		/* Một bậc dưới desktop (58) — token này = 40px trong dải <=1151. */
+
 		font-size: var(--nntm-fs-4xl);
 	}
 
 	.nntm-hero-slider__dots {
 		left: var(--nntm-sp-8);
 		top: auto;
-		/*
-		 * Nằm ngay trên dải liên kết nhanh: đáy hero + chiều cao một viên
-		 * liên kết (45) + một nhịp cách. Viết bằng phép tính để đổi đệm là
-		 * chấm tự đi theo, không phải con số 260px rời rạc như trước.
-		 */
+
 		bottom: calc(var(--nntm-sp-9) + 45px + var(--nntm-sp-5));
 	}
 
-	/*
-	 * Dai lien ket nhanh o bac tablet la MOT HANG CUON NGANG, khong xuong
-	 * dong. Ly do khong chi la tham my: dai chi cham xuong hai/ba hang la no
-	 * dam nguoc len cho dat cua dai cham (do duoc 100px cao o khung 768,
-	 * chong len cham). Mot hang co dinh 45px thi vi tri cham tinh duoc chinh
-	 * xac bang phep cong o duoi.
-	 */
 	.nntm-hero-slider__quicklinks {
 		left: var(--nntm-sp-8);
 		right: 36%;
@@ -505,34 +387,7 @@
 }
 
 @media (max-width: 1023px) {
-	/*
-	 * DƯỚI 1024 — xếp dọc theo luồng, chiều cao do nội dung quyết định.
-	 *
-	 * SUA 20/08/2026: truoc day bac nay chi mo tu 767. Nhung o khung 768 dai
-	 * lien ket nhanh bi bo trong 64% be rong (chua cho the kinh mo ben phai)
-	 * nen chi con 442px trong khi bon o can 478px -> o CUOI bi cat mat 36px,
-	 * dung nhu anh Uy bao. Dai 1024-1151 thi du cho (606-687px) nen giu bo
-	 * cuc Figma; tu 1023 tro xuong xep doc, luc do dai lien ket nhanh xuong
-	 * dong tu do, khong the cat.
-	 *
-	 * CẤU TRÚC THẬT của khối là `stage > track > slide > content`: khối chữ
-	 * nằm TRONG từng tấm, mà tấm lại `position: absolute; inset: 0`. Nên chỉ
-	 * đổi `.__content` sang `relative` là chưa đủ — nó vẫn bị neo trong tấm
-	 * và đè lên thẻ kính mờ (đo được chồng 330×48 ở khung 375).
-	 *
-	 * Cách gỡ: cho `.__track` và tấm ĐANG XEM `display: contents`. Hai khối
-	 * đó không sinh hộp nữa nên `.__content` trở thành con flex trực tiếp của
-	 * `.__stage`, còn `.__img`/`.__overlay` (absolute inset 0) lấy chính
-	 * `.__stage` làm khối chứa nên vẫn phủ kín cả khung.
-	 *
-	 * Đánh đổi: hiệu ứng mờ chồng khi đổi tấm mất trên điện thoại (opacity
-	 * không có tác dụng trên hộp `display: contents`) — đổi tấm thành tức
-	 * thì. Chấp nhận được, và bù lại KHÔNG còn một con số cứng nào: bản cũ
-	 * phải khớp tay bốn số min-height 760/820 + bottom 260/170.
-	 *
-	 * Đệm trên chừa chỗ cho thanh header đè lên hero — lấy từ token
-	 * --nntm-header-h.
-	 */
+
 	.nntm-hero-slider__stage {
 		display: flex;
 		flex-direction: column;
@@ -558,7 +413,7 @@
 	.nntm-hero-slider__dots,
 	.nntm-hero-slider__quicklinks,
 	.nntm-hero-slider__sidecard {
-		position: relative;   /* relative chứ không static: cần z-index để nằm trên ảnh */
+		position: relative;    
 		left: auto;
 		right: auto;
 		top: auto;
@@ -572,20 +427,10 @@
 	}
 
 	.nntm-hero-slider__heading {
-		/* Token này = 32px trong dải <=767. */
+
 		font-size: var(--nntm-fs-4xl);
 	}
 
-	/*
-	 * Bac 1024-1151 dat `flex-wrap: nowrap; overflow-x: auto` cho dai lien
-	 * ket nhanh (de dai luon dung MOT hang, giu cho dai cham tinh dung vi
-	 * tri bang phep cong). Dieu kien <=1023 la TAP CON cua <=1151 nen hai
-	 * luat do van do xuong day va se cat mat o cuoi.
-	 *
-	 * O bac xep doc khong con can mot hang nua (dai cham gio nam trong luong
-	 * flex, khong tinh theo `bottom`), nen tra ve xuong dong binh thuong va
-	 * bo cuon ngang.
-	 */
 	.nntm-hero-slider__quicklinks {
 		gap: var(--nntm-sp-2);
 		flex-wrap: wrap;
@@ -599,10 +444,6 @@
 		font-size: var(--nntm-fs-xs);
 	}
 
-	/*
-	 * Nút mũi tên: khung giờ cao theo nội dung nên `top: 50%` rơi vào giữa
-	 * khối chữ. Đưa xuống ngang dải chấm và thu nhỏ.
-	 */
 	.nntm-hero-slider__nav {
 		width: 36px;
 		height: 36px;
@@ -616,10 +457,7 @@
 		height: 13px;
 	}
 }
-/*
- * ĐIỆN THOẠI NHỎ (<= 480px). `min-height: 820px` cũ đã bỏ — khung hero giờ
- * cao theo nội dung (xem khối <=767) nên không còn phải đoán một con số.
- */
+
 @media (max-width: 480px) {
 	.nntm-hero-slider__heading {
 		font-size: var(--nntm-fs-3xl);

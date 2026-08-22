@@ -1,24 +1,4 @@
 <?php
-/**
- * Form "Khai Báo Chuỗi Trì" — SUY DOAN, KHÔNG có thiết kế Figma/ảnh cho màn
- * này (docs/07-ban-giao.md giao tự dựng theo đúng phong cách màn "Tham Gia
- * Chuỗi Trì"). Mọi số đo ở đây là ước lượng theo cùng ngôn ngữ thiết kế
- * (thẻ kính mờ auth.css), KHÔNG có số đo Figma thật để đối chiếu.
- *
- * Ba nút bấm nhanh 10/20/50 theo đúng ba mức chủ dự án vẽ trong sơ đồ
- * (docs/07-ban-giao.md) — JS thuần (assets/js/cong-tu.js), tắt JS vẫn gõ
- * tay được vào ô số bình thường.
- *
- * Tham số nhận qua $args (giống khuôn template-parts/auth/form-dang-nhap.php):
- *   tieu_de  (string) Ghi đè tiêu đề — dùng ở popup "Cập Nhật Chuỗi Trì"
- *            (yêu cầu chủ dự án 14/08/2026, xem template-parts/cong-tu/modal-chuoi-tri.php).
- *            Rỗng/không truyền thì giữ nguyên "Khai Báo Chuỗi Trì" như cũ.
- *   them_lop (string) Thêm class vào thẻ ngoài cùng — dùng gắn số đo riêng
- *            của popup (.nntm-auth-card--cap-nhat trong cong-tu.css).
- *
- * @package NNTM
- * @var array $args
- */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -30,7 +10,7 @@ $nntm_ct_them_lop = isset( $nntm_ct_args['them_lop'] ) ? sanitize_html_class( (s
 
 $nntm_ct_program = function_exists( 'nntm_program_hien_tai' ) ? nntm_program_hien_tai() : null;
 $nntm_ct_errors  = isset( $GLOBALS['nntm_congtu_errors'] ) && is_wp_error( $GLOBALS['nntm_congtu_errors'] ) ? $GLOBALS['nntm_congtu_errors'] : null;
-$nntm_ct_ok      = isset( $_GET['nntm_congtu_ok'] ) && 'ghi-nhan' === $_GET['nntm_congtu_ok']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- chi doc co dua hien thong bao, khong tao doi.
+$nntm_ct_ok      = isset( $_GET['nntm_congtu_ok'] ) && 'ghi-nhan' === $_GET['nntm_congtu_ok'];  
 
 $nntm_ct_user_id = get_current_user_id();
 ?>
@@ -65,7 +45,7 @@ $nntm_ct_user_id = get_current_user_id();
 		?>
 
 		<div class="nntm-cong-tu__chao">
-			<?php echo get_avatar( $nntm_ct_user_id, 40, '', '', array( 'class' => 'nntm-cong-tu__avatar' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_avatar() da tu esc. ?>
+			<?php echo get_avatar( $nntm_ct_user_id, 40, '', '', array( 'class' => 'nntm-cong-tu__avatar' ) );  ?>
 			<span class="nntm-cong-tu__chao-text">
 				<em><?php esc_html_e( 'Xin chào', 'nntm' ); ?></em>
 				<strong><?php echo esc_html( $nntm_ct_phap_danh ); ?></strong>
@@ -75,11 +55,7 @@ $nntm_ct_user_id = get_current_user_id();
 		<p class="nntm-cong-tu__hien-trang"><?php echo esc_html( nntm_congtu_cau_hom_nay( (int) $nntm_ct_hom_nay ) ); ?></p>
 
 		<?php
-		/*
-		 * Ô thông báo — JS thay RUỘT của thẻ này sau mỗi lần gửi bằng AJAX
-		 * (assets/js/cong-tu-modal.js), nên không bao giờ có hai thông báo
-		 * cùng lúc. Tắt JS thì đây vẫn là chỗ in thông báo của POST thường.
-		 */
+		 
 		?>
 		<div class="nntm-cong-tu__thong-bao" data-nntm-congtu-thong-bao>
 			<?php if ( $nntm_ct_errors ) : ?>

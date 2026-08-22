@@ -1,49 +1,26 @@
-/* =============================================================
-   nntm/article-mosaic — CSS cho block "Bố cục tạp chí"
-   Nguồn số đo: Figma "05. HOA KHAI", SECTION 1 "Hoằng Pháp"
-   (1366x831) và SECTION 4 "Tin tức" — số đo đã bóc sẵn, xem mô tả
-   nhiệm vụ, không gọi lại Figma API.
-
-   CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
-   assets/css/tokens.css. Số đo hình học Figma chưa có biến tương
-   ứng thì dùng px kèm chú thích "tu Figma".
-   ============================================================= */
+ 
 
 .nntm-article-mosaic {
 	display: block;
-	/*
-	 * Figma R4 SECTION 1: background #F7F1DE ("CLOUD DANCER").
-	 *
-	 * Truoc day khoi khong tu dat nen — trang van hien mau kem vi <body>
-	 * dang lay --nntm-nen: var(--nntm-kem). Nhin dung nhung ngam: doi nen
-	 * trang cua body la khoi nay mat mau ngay. Khai ro theo thiet ke.
-	 */
+	 
 	background-color: var(--nntm-kem);
 }
 
 .nntm-article-mosaic__inner {
-	/* tu Figma: SECTION rong 1366 = khop dung --nntm-w-rong (khung desktop) */
+	 
 	max-width: var(--nntm-w-rong);
 	margin-inline: auto;
 	background-color: var(--nntm-kem);
-	/*
-	 * tu Figma (node): SECTION padding 50/70/50/70. Spec do TRUC TIEP tren
-	 * anh xuat 12/08/2026 cho thay khoi nay (SECTION 1 "Hoang Phap") thuc
-	 * te cao 834. Da thu sp-5 (20) tren/duoi -> 830 (dung), nhung sau do
-	 * BO nut "Xem thêm" (anh Uy yeu cau lan 2 — Figma khong co chu nay) thi
-	 * cot trai/phai ngan lai ~54px, khoi tut xuong con 776 — DUOI nguong
-	 * 814. Doi lai ve sp-9 (50, dung so voi Figma node) de bu lai, do bang
-	 * trinh duyet that ra ~836, dung nguong 814–854.
-	 */
+	 
 	padding: var(--nntm-sp-9) var(--nntm-sp-11);
 	display: flex;
 	flex-direction: column;
-	/* tu Figma: SECTION gap=20 giua TIEU DE va CONTENT, khop dung sp-5 */
+	 
 	gap: var(--nntm-sp-5);
 }
 
 .nntm-article-mosaic__heading {
-	/* tu Figma: TIEU DE — EB Garamond 600 52px, khop dung fs-4xl (52px) */
+	 
 	font-family: var(--nntm-font-display);
 	font-size: var(--nntm-fs-4xl);
 	font-weight: 600;
@@ -52,7 +29,7 @@
 }
 
 .nntm-article-mosaic__content {
-	/* tu Figma: CONTENT padding=10 ca 4 canh, khop dung sp-3 */
+	 
 	padding: var(--nntm-sp-3);
 }
 
@@ -63,52 +40,30 @@
 	margin: 0;
 }
 
-/* ---------- LIST: khung 2 cột — trái bài nổi bật, phải lưới ---------- */
-/*
- * Tỉ lệ cột lấy đúng theo Figma: MAIN ARTICLE 349 / Frame139 811 trên
- * tổng 1180 (LIST), dùng "fr" để co giãn theo khung chứa thay vì khóa
- * cứng px, đúng yêu cầu "bố cục co giãn: dùng tỉ lệ".
- */
+ 
 .nntm-article-mosaic__list {
 	display: grid;
 	grid-template-columns: 349fr 811fr;
 	align-items: stretch;
-	/* tu Figma: LIST gap=20, khop dung sp-5 */
+	 
 	gap: var(--nntm-sp-5);
 }
 
-/*
- * CHỈ CÓ 1 BÀI (không có cột phải) — SỬA 12/08/2026 sau khi phát hiện lỗi
- * thật trên trang chủ: nguồn Hoa Khai (nntm_section) mới chỉ có 1 bài,
- * khối rơi vào layout "solo" và TRƯỚC ĐÂY cho cột trái giãn hết chiều
- * rộng (max-width: none) — vì ảnh cột trái dùng `aspect-ratio` (cao phụ
- * thuộc chiều rộng), giãn full-width kéo ảnh cao tới hơn 1700px, tổng
- * khối phình lên 2062px, gấp 2,5 lần Figma (834px). Bố cục "chịu được dữ
- * liệu mỏng" nghĩa là chiều cao khối phải ổn định BẤT KỂ có 1 hay 6 bài.
- *
- * Cách sửa — CHẶN chiều rộng cột trái ở mức hợp lý (không giãn full-width
- * nữa) NHƯNG quan trọng hơn: khoá luôn chiều CAO ảnh bằng px cố định ở
- * .nntm-article-mosaic__list--solo .nntm-article-mosaic__lead-img--*
- * (xem hai luật ngay dưới mục "Ảnh dùng chung") — nhờ đó chiều cao ảnh
- * không còn phụ thuộc chiều rộng cột trái nữa, khối luôn cao quanh 834
- * (tall) / giữ đúng tỉ lệ Figma (short) dù chỉ có 1 bài.
- */
 .nntm-article-mosaic__list--solo {
 	grid-template-columns: 1fr;
 }
 
 .nntm-article-mosaic__list--solo .nntm-article-mosaic__lead {
-	max-width: 480px; /* chan khong cho giãn full-width khi chi co 1 bai */
+	max-width: 480px;  
 }
 
-/* ---------- Ảnh dùng chung (bài nổi bật / thẻ vừa / thẻ nhỏ) ---------- */
 .nntm-article-mosaic__lead-img,
 .nntm-article-mosaic__medium-img,
 .nntm-article-mosaic__small-img {
 	display: block;
 	position: relative;
 	overflow: hidden;
-	background-color: var(--nntm-xam); /* nen placeholder khi chua co anh */
+	background-color: var(--nntm-xam);  
 }
 
 .nntm-article-mosaic__img-el {
@@ -124,73 +79,53 @@
 	height: 100%;
 }
 
-/* ---------- Dòng ngày cập nhật — bắt chước đúng nntm-card__date ---------- */
 .nntm-article-mosaic__date {
 	display: flex;
 	align-items: center;
-	gap: var(--nntm-sp-1); /* tu Figma: DATE itemSpacing=5 */
-	padding-inline: var(--nntm-sp-1); /* tu Figma: DATE paddingLeft/Right=5 */
-	font-family: var(--nntm-font-sans); /* Battambang -> Be Vietnam Pro */
-	font-size: var(--nntm-fs-xs); /* tu Figma: 13px */
+	gap: var(--nntm-sp-1);  
+	padding-inline: var(--nntm-sp-1);  
+	font-family: var(--nntm-font-sans);  
+	font-size: var(--nntm-fs-xs);  
 	line-height: var(--nntm-lh-rong);
 	color: var(--nntm-reu-nhat);
 }
 
 .nntm-article-mosaic__date-icon {
-	width: 12px; /* tu Figma: icon 12x12 trong DATE */
+	width: 12px;  
 	height: 12px;
 	border-radius: var(--nntm-r-sm);
 	background-color: var(--nntm-reu-nhat);
 	flex: none;
 }
 
-/* ---------- Nhãn chuyên mục — bắt chước đúng nntm-card__cat ---------- */
-/* viet lai voi tien to rieng cho block nay, dung chung 3 kich co
-   (lead/medium/small) vi Figma dung cung mot ngon ngu thi giac ARTICLE
-   CAT 133x34 cho ca ba. */
+ 
 .nntm-article-mosaic__cat {
 	display: inline-flex;
 	align-self: flex-start;
-	padding: var(--nntm-sp-2) var(--nntm-sp-4); /* tu Figma: top/bottom=8, left/right=15 */
-	border-radius: var(--nntm-r-md); /* tu Figma: cornerRadius=10 */
+	padding: var(--nntm-sp-2) var(--nntm-sp-4);  
+	border-radius: var(--nntm-r-md);  
 	background-color: var(--nntm-dat-hong);
 	color: var(--nntm-trang);
-	font-family: var(--nntm-font-ui); /* Google Sans Flex -> Inter */
-	font-size: var(--nntm-fs-sm); /* tu Figma: 14px */
+	font-family: var(--nntm-font-ui);  
+	font-size: var(--nntm-fs-sm);  
 	font-weight: 500;
 }
 
-/* =============================================================
-   CỘT TRÁI — MAIN ARTICLE 349x565, bo góc 20 (r-lg)
-   ============================================================= */
 .nntm-article-mosaic__lead {
 	display: flex;
 	flex-direction: column;
-	border-radius: 0; /* Bo bo goc anh theo yeu cau anh Uy 10/08/2026 (truoc: r-lg = 20) */
+	border-radius: 0;  
 	overflow: hidden;
 }
 
-/* Hai biến thể ảnh bài nổi bật — tall dùng cho Hoằng Pháp, short cho
-   Tin tức (xem thuộc tính leadMedia). */
 .nntm-article-mosaic__lead-img--tall {
-	aspect-ratio: 349 / 531; /* tu Figma: IMG bien the "tall" (SECTION 1 Hoang Phap) */
+	aspect-ratio: 349 / 531;  
 }
 
 .nntm-article-mosaic__lead-img--short {
-	aspect-ratio: 349 / 234; /* tu Figma: IMG bien the "short" (SECTION 4 Tin tuc) */
+	aspect-ratio: 349 / 234;  
 }
 
-/*
- * BỐ CỤC "SOLO" (chỉ 1 bài, xem chú thích ở .nntm-article-mosaic__list--solo
- * phía trên) — KHOÁ CHIỀU CAO ẢNH BẰNG PX CỐ ĐỊNH, bỏ hẳn aspect-ratio.
- * aspect-ratio làm chiều cao PHỤ THUỘC chiều rộng; ở solo, cột trái không
- * còn cột phải ép chiều rộng nên chiều cao sẽ trồi theo bất kỳ chiều rộng
- * nào của viewport — đúng nguyên nhân khối phình lên 2062px trên trang
- * thật khi Hoa Khai chỉ có 1 bài. Đặt height cố định = đúng chiều cao ảnh
- * khi CÓ ĐỦ bài (531 / 234, số đo Figma) thì tổng khối luôn ổn định quanh
- * 834px dù có 1 hay 6 bài. object-fit: cover (đã có ở .__img-el) tự crop
- * theo chiều rộng thật của cột trái (480px, xem max-width phía trên).
- */
 .nntm-article-mosaic__list--solo .nntm-article-mosaic__lead-img--tall {
 	aspect-ratio: auto;
 	height: 531px;
@@ -205,9 +140,9 @@
 	display: flex;
 	flex-direction: column;
 	flex: 1 1 auto;
-	/* tu Figma: Frame 140 gap=10, khop dung sp-3 */
+	 
 	gap: var(--nntm-sp-3);
-	/* tu Figma: Frame 140 padding-top=10, khop dung sp-3 */
+	 
 	padding-top: var(--nntm-sp-3);
 }
 
@@ -215,15 +150,15 @@
 	display: flex;
 	flex-direction: column;
 	flex: 1 1 auto;
-	/* tu Figma: TEXT gap=15, khop dung sp-4 */
+	 
 	gap: var(--nntm-sp-4);
-	/* tu Figma: TEXT padding-bottom=10, khop dung sp-3 */
+	 
 	padding-bottom: var(--nntm-sp-3);
 }
 
 .nntm-article-mosaic__lead-title {
 	margin: 0;
-	/* tu Figma: Tieu de — EB Garamond 600 38px, khop dung fs-3xl */
+	 
 	font-family: var(--nntm-font-display);
 	font-size: var(--nntm-fs-3xl);
 	font-weight: 600;
@@ -231,13 +166,6 @@
 	color: var(--nntm-chu);
 }
 
-/*
- * Doi 10/08/2026: da GO gioi han dong ("canh cho du cac text noi dung").
- * Doi lai 12/08/2026 (yeu cau anh Uy, muc D/M1.4): "moi o co chu tren/duoi
- * anh" phai cat toi da 2 dong bang "…" — ap dung class tien ich chung
- * .nntm-cat-2-dong (assets/css/base.css) len chinh <h3> nay trong markup
- * (blocks/article-mosaic/inc/render-article-mosaic.php va render.php).
- */
 .nntm-article-mosaic__lead-title a {
 	color: inherit;
 	text-decoration: none;
@@ -252,10 +180,10 @@
 .nntm-article-mosaic__lead-excerpt {
 	margin: 0;
 	font-family: var(--nntm-font-serif);
-	font-size: var(--nntm-fs-md); /* tu Figma: 18 */
+	font-size: var(--nntm-fs-md);  
 	font-weight: 400;
 	line-height: 26px;
-	color: var(--nntm-chinh); /* tu Figma: #747766 */
+	color: var(--nntm-chinh);  
 }
 
 .nntm-article-mosaic__card-cta {
@@ -275,69 +203,27 @@
 	color: var(--nntm-chinh-hover);
 }
 
-/* =============================================================
-   CỘT PHẢI — Frame 139: hàng thẻ vừa (trên) + hàng thẻ nhỏ (dưới)
-   Chiều cao hai hàng cộng đúng bằng Frame139 (366+265=631) nên KHÔNG
-   có khoảng cách (gap) giữa hai hàng — số liệu suy ra bằng phép trừ
-   trực tiếp từ số đo Figma, không phải suy đoán.
-   ============================================================= */
 .nntm-article-mosaic__secondary {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
-	/* tu Figma: Frame 139 padding ngang=20, khop dung sp-5 */
+	 
 	padding-inline: var(--nntm-sp-5);
-	/*
-	 * Xep sat tu tren xuong, KHONG dung space-between.
-	 *
-	 * space-between keo hang anh nho xuong tan day cot phai (vi cot phai
-	 * cao bang ca cot trai, ke ca phan tieu de duoi anh), tao mot khoang
-	 * trong lon giua chu thich hang tren va anh hang duoi.
-	 */
+	 
 	justify-content: flex-start;
 	gap: var(--nntm-sp-5);
 }
 
-/*
- * CANH DEU HAI COT — chi ap cho bien the anh cot trai CAO (SECTION 1
- * "Hoang Phap"). Yeu cau anh Uy 10/08/2026 theo anh mau: day anh hang
- * the nho phai trung day anh cot trai, de hai khoi chu ben duoi bat dau
- * cung mot vach.
- *
- * Suy tu so do do that trong trinh duyet o khung 1366:
- *   anh cot trai cao          536   (aspect 349/531 tren cot rong 352)
- *   anh the vua cao           267   (aspect 370/266 tren the rong 372)
- *   khoang cach anh<->chu      12   (gap cua .__medium-card)
- *   khoi chu the vua           60   (2 dong giu cho, xem .__medium-title)
- *   anh the nho cao           155   (aspect 227/163 tren the rong 216)
- *   => gap = 536 - 267 - 12 - 60 - 155 = 42
- *
- * Con so nay chi dung khi hai khoi chu deu GIU CHO co dinh — do la ly do
- * min-height o .__medium-title / .__small-title la bat buoc, khong phai
- * trang tri. Bo min-height di la hai cot lech lai ngay.
- *
- * KHONG ap cho bien the "short" (SECTION 4 "Tin tuc"): o do anh cot trai
- * chi cao 236 nen cot phai von da dai hon cot trai, khong the trung day —
- * ep 42 vao chi lam khoi cao them vo co.
- */
 .nntm-article-mosaic--lead-tall .nntm-article-mosaic__secondary {
 	gap: 42px;
 }
 
-/* ---------- Hàng thẻ vừa (Frame 160, NGANG, gap 35) ---------- */
-/*
- * 2 thẻ chia deu bang flex (khong ep grid-template-columns cung) de khi
- * chi co 1 bai (thieu bai) thẻ do tu gian het hang, khong de lai khoang
- * trong — dung ho xu ly "it hon 6 bai" theo yeu cau nhiem vu.
- */
+ 
 .nntm-article-mosaic__medium-row {
 	display: flex;
-	/* stretch chu khong phai flex-start: khi khong con cat chu, mot tieu de
-	   dai hon se lam the do cao hon — de stretch thi ca hai the trong hang
-	   cao bang nhau, day hang van thang, khong so le. */
+	 
 	align-items: stretch;
-	/* tu Figma: Frame 160 gap=35 — khong khop bien --nntm-sp-* nao (gan
-	   nhat sp-7=30 / sp-8=40), giu nguyen so px that de bam sat thiet ke. */
+	 
 	gap: 35px;
 }
 
@@ -346,26 +232,15 @@
 	flex-direction: column;
 	flex: 1 1 0;
 	min-width: 0;
-	/* tu Figma: CARD gap=12 — khong khop bien --nntm-sp-* nao (gan nhat
-	   sp-2=8 / sp-3=10), giong cach blocks/card/style.css .nntm-card da
-	   xu ly cung mot con so nay. */
+	 
 	gap: 12px;
 }
 
 .nntm-article-mosaic__medium-img {
-	border-radius: 0; /* Bo bo goc anh theo yeu cau anh Uy 10/08/2026 (truoc: r-md = 10) */
-	aspect-ratio: 370 / 266; /* tu Figma: IMG 370x266, ca hai the vua */
+	border-radius: 0;  
+	aspect-ratio: 370 / 266;  
 }
 
-/*
- * SỬA 12/08/2026 — đối chiếu lại ảnh Figma thật (fig-mosaic1.png), số đo
- * chính xác hơn cho hàng thẻ vừa của bố cục "mosaic" (SECTION 1 Hoằng
- * Pháp): 369×258 (trước đo 370×266). Khoanh vùng riêng cho biến thể
- * "mosaic" (`--phai-mosaic`, xem $secondary_layout ở render.php) — bố cục
- * "grid" (SECTION 4 Hoạt động - Sự kiện, `--phai-grid`) dùng chung class
- * ảnh nhưng có số đo Figma riêng (CARD XS 227×282 cả khối), không đụng
- * tới ở đây.
- */
 .nntm-article-mosaic--phai-mosaic .nntm-article-mosaic__medium-img {
 	aspect-ratio: 369 / 258;
 }
@@ -373,35 +248,19 @@
 .nntm-article-mosaic__medium-body {
 	display: flex;
 	flex-direction: column;
-	gap: var(--nntm-sp-2); /* dong bo voi Frame 125 cua nntm-card (itemSpacing=8) */
+	gap: var(--nntm-sp-2);  
 }
 
 .nntm-article-mosaic__medium-title {
 	margin: 0;
-	/*
-	 * SỬA 12/08/2026 sau khi đối chiếu ảnh Figma thật (fig-mosaic1.png):
-	 * chữ dưới ảnh ô vừa/nhỏ là SERIF, chữ THƯỜNG (không đậm), màu nâu-xám
-	 * nhạt — không phải sans in đậm màu tối như trước. Dùng lại đúng biến
-	 * màu --nntm-chinh đã dùng cho .__lead-excerpt (cùng file, cùng tông
-	 * #747766 lấy từ Figma) — không bịa mã màu mới.
-	 *
-	 * Tiêu đề lại làm liên kết (boc <a>, xem inc/render-article-mosaic.php)
-	 * vì đã bỏ nút "Xem thêm" riêng — thẻ cần đúng MỘT liên kết để bấm vào
-	 * bài. Luật màu/gạch chân đặt ở ".../-title a" ngay dưới.
-	 */
-	font-family: var(--nntm-font-serif); /* Baskerville -> Lora */
-	font-size: var(--nntm-fs-md); /* tu Figma: tieu de 18px */
+	 
+	font-family: var(--nntm-font-serif);  
+	font-size: var(--nntm-fs-md);  
 	font-weight: 400;
-	line-height: 1.67; /* tu Figma: 30/18 ≈ 1.667, khong co bien lh khop dung */
+	line-height: 1.67;  
 	color: var(--nntm-chinh);
-	/*
-	 * min-height GIU CHO du 2 dong ke ca khi tieu de ngan hon: co giu
-	 * cho thi day cac the trong cung mot hang moi bang nhau, va khoang
-	 * cach xuong hang the nho ben duoi moi co dinh. Cat qua 2 dong bang
-	 * "…" qua class .nntm-cat-2-dong (assets/css/base.css), gan tren
-	 * chinh <h3> nay.
-	 */
-	min-height: calc(2 * 1.67em); /* 2 dong x 30px = 60 */
+	 
+	min-height: calc(2 * 1.67em);  
 }
 
 .nntm-article-mosaic__medium-title a {
@@ -415,26 +274,11 @@
 	text-decoration: underline;
 }
 
-/* ---------- Hàng thẻ nhỏ (Frame 161, NGANG, "dàn đều hai bên") ---------- */
-/*
- * Figma khong cho so gap rieng cho hang nay (chi ghi "dan deu hai ben").
- * 3 the bang nhau qua flex:1 + gap co dinh cho ra dung hieu ung "dan deu"
- * khi du 3 the, va TU DONG chia deu khi chi con 1-2 the (thieu bai) —
- * giai phap nay xu ly ca hai yeu cau cung luc thay vi dung justify-
- * content:space-between (se keo dan qua rong khi thieu the).
- */
+ 
 .nntm-article-mosaic__small-row {
 	display: flex;
-	align-items: stretch; /* cung ly do nhu hang the vua */
-	/*
-	 * Suy tu so do Figma thay vi muon gap=20 cua LIST:
-	 *   cot phai rong 811, ba anh nho moi cai 227
-	 *   -> 811 = 227*3 + 2*gap  =>  gap = (811 - 681) / 2 = 65
-	 *
-	 * De gap=20 thi ba anh phinh len 250 (do duoc), keo ca khoi cao them.
-	 * Cung cach suy nhu hang vua: 811 = 370*2 + gap => gap = 71, nhung
-	 * Frame 160 khai thang gap=35 nen giu 35 cho hang vua.
-	 */
+	align-items: stretch;  
+	 
 	gap: 65px;
 }
 
@@ -443,19 +287,14 @@
 	flex-direction: column;
 	flex: 1 1 0;
 	min-width: 0;
-	gap: 12px; /* tu Figma: CARD gap=12 */
+	gap: 12px;  
 }
 
 .nntm-article-mosaic__small-img {
-	border-radius: 0; /* Bo bo goc anh theo yeu cau anh Uy 10/08/2026 (truoc: r-md = 10) */
-	aspect-ratio: 227 / 163; /* tu Figma: IMG 227x163 */
+	border-radius: 0;  
+	aspect-ratio: 227 / 163;  
 }
 
-/*
- * SỬA 12/08/2026 — cùng lý do như .__medium-img ở trên: số đo Figma chính
- * xác hơn cho hàng thẻ nhỏ của bố cục "mosaic" là 227×160 (trước đo
- * 227×163, sai số nhỏ). Chỉ áp cho biến thể "mosaic", không đụng "grid".
- */
 .nntm-article-mosaic--phai-mosaic .nntm-article-mosaic__small-img {
 	aspect-ratio: 227 / 160;
 }
@@ -468,28 +307,14 @@
 
 .nntm-article-mosaic__small-title {
 	margin: 0;
-	/*
-	 * SỬA 12/08/2026 sau khi đối chiếu ảnh Figma thật (fig-mosaic1.png):
-	 * chữ dưới ảnh là SERIF, chữ thường, màu --nntm-chinh — cùng lý do đã
-	 * ghi ở .__medium-title ngay trên. Tiêu đề lại làm liên kết (bỏ nút
-	 * "Xem thêm" riêng).
-	 */
+	 
 	font-family: var(--nntm-font-serif);
-	font-size: var(--nntm-fs-md); /* tu Figma: tieu de 18px */
+	font-size: var(--nntm-fs-md);  
 	font-weight: 400;
 	line-height: 1.67;
 	color: var(--nntm-chinh);
-	/*
-	 * Doi 12/08/2026 (yeu cau anh Uy, muc D/M1.4): moi tieu de toi da 2
-	 * dong, cat bang "…" (.nntm-cat-2-dong o base.css, gan len chinh <h3>
-	 * nay trong inc/render-article-mosaic.php). Truoc day giu cho 3 dong
-	 * (90px, khop khoi chu Figma 227x90) va KHONG cat chu — nay giam ve 2
-	 * dong cho dong bo voi gioi han cat chung; khoi chu thap hon Figma
-	 * 30px nhung khong anh huong canh deu hai cot (xem chu thich o
-	 * .nntm-article-mosaic__secondary — phep tinh gap=42 khong tinh
-	 * chieu cao khoi tieu de the nho).
-	 */
-	min-height: calc(2 * 1.67em); /* 2 dong x 30px = 60 */
+	 
+	min-height: calc(2 * 1.67em);  
 }
 
 .nntm-article-mosaic__small-title a {
@@ -503,8 +328,6 @@
 	text-decoration: underline;
 }
 
-/* Ảnh và tiêu đề cùng dẫn vào bài viết. Ảnh chỉ chuyển động nhẹ khi chính
-   nó được rê/focus, không làm xáo trộn nhịp cố định của lưới Figma. */
 .nntm-article-mosaic__media-link {
 	display: block;
 	color: inherit;
@@ -520,12 +343,6 @@
 	transform: scale(1.04);
 }
 
-/* =============================================================
-   SUY DOAN: chua co Figma mobile — Figma chi co khung desktop 1366px.
-   Duoi diem ngat nay: xep doc toan bo (cot trai tren, cot phai duoi),
-   hang the vua/nho tu dong xuong dong khi khong du cho thay vi tran ra
-   ngoai man hinh.
-   ============================================================= */
 @media (max-width: 1151px) {
 	.nntm-article-mosaic__inner {
 		padding: var(--nntm-sp-8) var(--nntm-sp-5);
@@ -533,8 +350,7 @@
 
 	.nntm-article-mosaic__secondary {
 		padding-inline: 0;
-		/* tu Figma khong co man hinh nay — gap giua hai hang khi xep doc
-		   tren man hep, dung sp-7 cho de tho hon giua cac khoi. */
+		 
 		gap: var(--nntm-sp-7);
 	}
 
@@ -549,13 +365,6 @@
 	}
 }
 
-/*
- * DUOI 1024: gop hai cot ve mot. Truoc day luat nay nam o
- * khoi <=1151 nen tren man 1136px danh sach cung xep mot cot, the dan dau
- * rong 1076px — bo cuc cua dien thoai dat tren khung tablet. Luoi co so
- * cua khoi da la `349fr 811fr` nen dai 768-1151 tu chia ti le dung ma
- * khong can luat nao.
- */
 @media (max-width: 1023px) {
 	.nntm-article-mosaic__list,
 	.nntm-article-mosaic__list--solo {
@@ -575,64 +384,36 @@
 	}
 }
 
-/* =============================================================
-   BỐ CỤC CỘT PHẢI DẠNG LƯỚI — Figma SECTION 4 `6376:6425`
-
-     SECTION 4    1366x866  padding 60/80  gap 20
-       TIEU. DE   x=93 y=60  1180x68   EB Garamond 600 58/68  #747766
-       CONTENT    x=83 y=148 1200x585  gap 30  padding 10
-         LIST     x=93 y=158 1180x565  flex-row gap 20
-           MAIN ARTICLE  349x565   (anh 349x234 = bien the "short")
-           Frame 139     811x564   flex-row gap 40  padding 0 20
-             6 CARD 227x282  ->  x=487/754/1021, y=158/440
-                             ->  luoi 3 cot, cach ngang 40, cach doc 0
-       CTA        x=626 y=753  114x53  radius 60  "Xem Tat ca"
-
-   KHAC voi bo cuc mosaic: cot phai la SAU THE BANG NHAU chu khong phai
-   "2 the vua + 3 the nho", va khoi can BAY bai chu khong phai sau.
-   ============================================================= */
 .nntm-article-mosaic__grid {
 	display: grid;
-	grid-template-columns: repeat(3, 1fr); /* tu Figma: 3 cot */
-	column-gap: var(--nntm-sp-8);          /* tu Figma: cach ngang 40 */
-	row-gap: 0;                            /* tu Figma: y=158 va y=440, cach nhau dung 282 = chieu cao the */
+	grid-template-columns: repeat(3, 1fr);  
+	column-gap: var(--nntm-sp-8);           
+	row-gap: 0;                             
 }
 
-/* Khoi dung luoi thi cot phai khong con xep doc hai hang vua/nho nua. */
 .nntm-article-mosaic--phai-grid .nntm-article-mosaic__secondary {
 	display: block;
-	padding-inline: var(--nntm-sp-5); /* tu Figma: Frame 139 padding ngang 20 */
+	padding-inline: var(--nntm-sp-5);  
 }
 
 .nntm-article-mosaic--phai-grid .nntm-article-mosaic__lead-body {
-	padding-top: var(--nntm-sp-7); /* tu Figma SECTION 4: 30 */
+	padding-top: var(--nntm-sp-7);  
 }
 
 .nntm-article-mosaic--phai-grid .nntm-article-mosaic__small-card {
-	min-height: 282px; /* tu Figma: CARD XS 227x282; van cho phep no neu tieu de dai */
+	min-height: 282px;  
 }
 
 .nntm-article-mosaic--phai-grid .nntm-article-mosaic__small-title {
 	min-height: calc(2 * 1.67em);
 }
 
-/*
- * Đệm và cỡ tiêu đề của SECTION 4 khác SECTION 1: 60/80 thay vì 50/70,
- * tiêu đề 58 thay vì 52. Khoanh theo biến thể lưới để SECTION 1 không đổi.
- */
 .nntm-article-mosaic--phai-grid .nntm-article-mosaic__inner {
-	padding: var(--nntm-sp-10) var(--nntm-sp-12); /* tu Figma: 60 / 80 */
-	gap: var(--nntm-sp-5);                        /* tu Figma: SECTION 4 gap 20 */
+	padding: var(--nntm-sp-10) var(--nntm-sp-12);  
+	gap: var(--nntm-sp-5);                         
 	background-color: white;
 }
 
-/*
- * Spec do lai truc tiep tren anh xuat ngay 12/08/2026: khoi "Hoat dong -
- * Su kien" thuc te cao 986, ban dung padding-block 60 (sp-10) tren/duoi
- * cho ra 879 — lech +107. Tang rieng dem tren/duoi len 114px (khong dung
- * duoc mot bien --nntm-sp-* nao khop dung con so nay) de khop so do moi,
- * khong dong den dem ngang (sp-12=80) da dung voi node Figma.
- */
 .nntm-article-mosaic--phai-grid .nntm-article-mosaic__inner {
 	padding-block: 114px;
 }
@@ -642,12 +423,11 @@
 }
 
 .nntm-article-mosaic--phai-grid .nntm-article-mosaic__heading {
-	font-size: var(--nntm-fs-5xl);    /* tu Figma: 58 */
-	line-height: var(--nntm-lh-chat); /* tu Figma: 68/58 */
-	color: var(--nntm-chinh);         /* tu Figma: #747766 */
+	font-size: var(--nntm-fs-5xl);     
+	line-height: var(--nntm-lh-chat);  
+	color: var(--nntm-chinh);          
 }
 
-/* SUY DOAN: chua co Figma mobile — luoi 3 cot thu ve 2 roi 1. */
 @media (max-width: 1151px) {
 	.nntm-article-mosaic__grid {
 		grid-template-columns: repeat(2, 1fr);
@@ -658,19 +438,6 @@
 		padding-inline: 0;
 	}
 
-	/*
-	 * SỬA 22/08/2026 — hai bên bị cắt quá nhiều trên điện thoại.
-	 *
-	 * Luật đệm mobile chung ở trên là `.nntm-article-mosaic__inner` (một lớp).
-	 * Hai luật desktop của biến thể này lại là `.nntm-article-mosaic--phai-grid
-	 * .nntm-article-mosaic__inner` (HAI lớp) và nằm SAU trong file — media query
-	 * không cộng thêm độ ưu tiên nào, nên trên màn 375px khối vẫn giữ nguyên
-	 * padding ngang 80px của Figma desktop và padding dọc 114px. Đo thật:
-	 * ruột chỉ còn 195px trong 375px — mất 160px cho đệm, đúng như phản hồi.
-	 *
-	 * Nên phải lặp lại đủ HAI lớp và đặt SAU hai luật đó. Dùng `padding` dạng
-	 * gộp để xoá luôn `padding-block: 114px`.
-	 */
 	.nntm-article-mosaic--phai-grid .nntm-article-mosaic__inner {
 		padding: var(--nntm-sp-8) var(--nntm-sp-5);
 	}
@@ -682,22 +449,10 @@
 	}
 }
 
-/* =============================================================
-   Nút "Xem Tất cả" — Figma R4 SECTION 1, canh giữa dưới cùng khối.
-
-   Figma vẽ nút dạng khung chữ nhật viền mảnh, nền trong suốt, chữ nhỏ.
-   Chỉ hiện khi khách nhập nhãn + đường dẫn trong bảng điều khiển, nên
-   các khối không cần nút sẽ không mọc ra một nút trống.
-   ============================================================= */
-
 .nntm-article-mosaic__viewall-wrap {
 	display: flex;
 	justify-content: center;
-	/*
-	 * KHONG dat margin-top / padding-top o day (yeu cau anh Uy 10/08/2026).
-	 * Khoang cach tu day luoi xuong nut da do gap cua .__inner lo (sp-5 =
-	 * 20); them 30 nua thanh chong len nhau, khoi cao vuot Figma.
-	 */
+	 
 }
 
 .nntm-article-mosaic__viewall {
@@ -724,10 +479,6 @@
 	color: var(--nntm-trang) !important;
 }
 
-/* =============================================================
-   Hoa Khai — khoanh theo class block để không ảnh hưởng homepage.
-   Ảnh thiết kế 1366: Tin tức nền trắng, Hoằng Pháp nền kem.
-   ============================================================= */
 .nntm-hk-news,
 .nntm-hk-news .nntm-article-mosaic__inner {
 	background-color: var(--nntm-trang);

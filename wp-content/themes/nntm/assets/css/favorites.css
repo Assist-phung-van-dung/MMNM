@@ -1,4 +1,4 @@
-/* Nút Yêu thích dùng chung. Icon tim luôn dùng màu đỏ thương hiệu. */
+ 
 .nntm-favorite-button {
 	appearance: none;
 	display: inline-flex;
@@ -24,7 +24,7 @@
 	flex: 0 0 20px;
 	color: var(--nntm-do-tham);
 	position: relative;
-	top: -1px; /* căn quang học đầu tim với baseline chữ */
+	top: -1px;  
 }
 
 .nntm-favorite-button__label {

@@ -1,13 +1,6 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-/**
- * Render an image from a Gutenberg repeater item.
- *
- * @param array  $item  Image data.
- * @param string $class CSS class.
- * @return string
- */
 $render_image = static function ( array $item, string $class ): string {
 	$id  = isset( $item['imageId'] ) ? absint( $item['imageId'] ) : 0;
 	$url = isset( $item['imageUrl'] ) ? esc_url_raw( (string) $item['imageUrl'] ) : '';
@@ -70,7 +63,7 @@ $wrapper = get_block_wrapper_attributes(
 	)
 );
 ?>
-<section <?php echo $wrapper; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+<section <?php echo $wrapper;  ?>>
 	<div class="nntm-feature-carousel__header">
 		<?php if ( $heading ) : ?>
 			<h2 class="nntm-feature-carousel__heading"><span><?php echo esc_html( $heading ); ?></span></h2>

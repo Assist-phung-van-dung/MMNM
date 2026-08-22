@@ -1,7 +1,4 @@
 <?php
-/**
- * Template mặc định — dùng khi không có template chuyên biệt nào khớp.
- */
 
 defined( 'ABSPATH' ) || exit;
 

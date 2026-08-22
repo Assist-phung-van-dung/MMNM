@@ -1,10 +1,4 @@
-/**
- * Editor script cho block nntm/card-list — JavaScript thuần, không build.
- * Dùng biến toàn cục wp.* theo đúng quy ước dự án. Đây là block quan
- * trọng nhất của site (docs/04-kien-truc.md mục 2): 6 trang phân mục
- * đều ghép từ block này, nên bảng điều khiển bên phải phải dùng nhãn
- * tiếng Việt dễ hiểu cho người không rành kỹ thuật (khảo sát câu 37).
- */
+ 
 ( function ( wp ) {
 	'use strict';
 
@@ -61,23 +55,18 @@
 		{ label: __( '4 cột', 'nntm' ), value: 4 },
 	];
 
-	// layout mặc định PHẢI là "grid" — khớp default trong block.json để mọi
-	// khối card-list đang có trên site (chưa từng lưu attribute này) giữ
-	// nguyên hình dạng lưới cũ.
-	// "marquee" thêm 14/08/2026: băng TỰ CHẠY liên tục, KHÔNG nút mũi tên,
-	// KHÔNG thanh cuộn — khác "carousel" (khung cuộn CÓ nút + thanh cuộn).
-	// Dự án trước đây CHƯA có lựa chọn này cho danh sách bài, chỉ có marquee
-	// riêng cho nguồn YouTube (xem videoSource ở panel "Lấy nội dung từ đâu").
+
+
+
+
 	var LAYOUT_OPTIONS = [
 		{ label: __( 'Lưới (Grid)', 'nntm' ), value: 'grid' },
 		{ label: __( 'Băng cuộn ngang (Carousel)', 'nntm' ), value: 'carousel' },
 		{ label: __( 'Băng tự chạy (không nút bấm)', 'nntm' ), value: 'marquee' },
 	];
 
-	// Màu nền khối. Danh sách đóng — khách chỉ chọn được màu thương hiệu,
-	// không nhập được mã màu tự do (docs/04-kien-truc.md mục 2).
-	// "none" PHẢI là mặc định để mọi khối card-list đang có trên site giữ
-	// nguyên hình dạng cũ.
+
+
 	var BACKGROUND_OPTIONS = [
 		{ label: __( 'Không nền (mặc định)', 'nntm' ), value: 'none' },
 		{ label: __( 'Nền kem', 'nntm' ), value: 'kem' },
@@ -87,7 +76,6 @@
 		{ label: __( 'Nền vàng nghệ (Kim Cương Hành Giả)', 'nntm' ), value: 'vang' },
 	];
 
-	// Nhãn tiếng Việt cho taxonomy — khớp với class-taxonomies.php.
 	var TAXONOMY_LABELS = {
 		nntm_section: __( 'Phân mục', 'nntm' ),
 		nntm_topic: __( 'Chủ đề', 'nntm' ),
@@ -96,7 +84,6 @@
 		post_tag: __( 'Thẻ', 'nntm' ),
 	};
 
-	// Taxonomy lõi của WordPress có rest_base khác tên taxonomy.
 	var REST_BASE_OVERRIDES = {
 		category: 'categories',
 		post_tag: 'tags',
@@ -110,10 +97,8 @@
 		return TAXONOMY_LABELS[ taxonomy ] || taxonomy;
 	}
 
-	// Nguồn video cho biến thể "băng Netflix" (G1 — dải "Gót Son"). Anh Úy
-	// chốt 12/08/2026: dán link YouTube trực tiếp, KHÔNG dùng YouTube Data
-	// API. "posts" là mặc định nên mọi khối card-list đang có trên site
-	// (chưa từng lưu attribute này) giữ nguyên hành vi cũ.
+
+
 	var VIDEO_SOURCE_OPTIONS = [
 		{ label: __( 'Bài viết trong CSDL (mặc định)', 'nntm' ), value: 'posts' },
 		{ label: __( 'Dán link YouTube', 'nntm' ), value: 'youtube' },
@@ -125,15 +110,14 @@
 			var setAttributes = props.setAttributes;
 			var blockProps = useBlockProps();
 
-			var taxonomyState = useState( [] ); // danh sách taxonomy hợp lệ cho postType hiện tại
+			var taxonomyState = useState( [] ); 
 			var availableTaxonomies = taxonomyState[ 0 ];
 			var setAvailableTaxonomies = taxonomyState[ 1 ];
 
-			var termState = useState( [] ); // danh sách term của taxonomy đang chọn
+			var termState = useState( [] ); 
 			var availableTerms = termState[ 0 ];
 			var setAvailableTerms = termState[ 1 ];
 
-			// Khi đổi loại nội dung: hỏi REST xem loại đó gắn được taxonomy nào.
 			useEffect(
 				function () {
 					var isCurrent = true;
@@ -163,7 +147,6 @@
 				[ attributes.postType ]
 			);
 
-			// Khi đổi taxonomy (hoặc loại nội dung làm mất taxonomy cũ): tải danh sách term.
 			useEffect(
 				function () {
 					var isCurrent = true;
@@ -206,7 +189,7 @@
 				} )
 			);
 
-			var previewAttributes = Object.assign( {}, attributes, { heading: '', subheading: '' } ); // tranh hien tieu de/mo ta phu 2 lan (RichText da hien o duoi)
+			var previewAttributes = Object.assign( {}, attributes, { heading: '', subheading: '' } ); 
 
 			return el(
 				'div',
@@ -309,9 +292,8 @@
 								setAttributes( { background: value } );
 							},
 						} ),
-						// Hang bieu tuong nghe nhac o duoi cung khoi (Figma SECTION 5).
-						// De trong ca hai o thi khong hien hang nay — cac khoi
-						// card-list o trang phan muc khong bi moc them gi.
+
+
 						'youtube' === attributes.videoSource
 							? null
 							: el( ToggleControl, {
@@ -330,8 +312,7 @@
 										setAttributes( { showCategory: value } );
 									},
 							  } ),
-						// Dong "Xem them" trong tung the — kieu the "Dai Si" (trang Dai Si
-						// Hanh Gia) tu ep hien dong nay du bat/tat o day (xem render-card.php).
+
 						'youtube' === attributes.videoSource
 							? null
 							: el( ToggleControl, {
@@ -351,9 +332,8 @@
 										setAttributes( { cardCtaLabel: value } );
 									},
 							  } ),
-						// Tieu de so le va doan chu duoi dai — tu Figma SECTION 3
-						// (bang video "Got Son"). De trong thi khoi hien binh
-						// thuong nhu cu, khong doi gi.
+
+
 						el( TextControl, {
 							label: __( 'Nhãn liên kết xem tất cả', 'nntm' ),
 							help: __( 'Để trống nếu không cần hiện liên kết.', 'nntm' ),
@@ -410,10 +390,9 @@
 								setAttributes( { youtubeUrl: value } );
 							},
 						} ),
-						// Hai o dieu khien duoi day CHI co tac dung khi dang chon
-						// kieu bang cuon (carousel) — an di o kieu luoi, giong cach
-						// "So cot moi hang" / "Hien nut chuyen trang" da an/hien theo
-						// attributes.layout ben duoi.
+
+
+
 						'carousel' === attributes.layout
 							? el( ToggleControl, {
 									label: __( 'Tự động chạy băng cuộn', 'nntm' ),
@@ -435,8 +414,7 @@
 									max: 20,
 							  } )
 							: null,
-						// So cot chi co y nghia o kieu Luoi — Carousel va Marquee
-						// deu la MOT hang duy nhat, khong chia cot.
+
 						'grid' === ( attributes.layout || 'grid' )
 							? el( SelectControl, {
 									label: __( 'Số cột mỗi hàng', 'nntm' ),
@@ -483,8 +461,7 @@
 								setAttributes( { excludePostId: parseInt( value, 10 ) || 0 } );
 							},
 						} ),
-						// Phan trang cung chi co y nghia o kieu Luoi — Carousel/Marquee
-						// khong phan trang (xem render.php: $is_carousel_like).
+
 						'grid' === ( attributes.layout || 'grid' )
 							? el( ToggleControl, {
 									label: __( 'Hiện nút chuyển trang (BACK / NEXT)', 'nntm' ),
@@ -521,7 +498,7 @@
 			);
 		},
 		save: function () {
-			// Block động: PHP (render.php) tự chạy lại WP_Query mỗi lần tải trang.
+
 			return null;
 		},
 	} );

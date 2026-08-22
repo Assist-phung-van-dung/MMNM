@@ -1,12 +1,4 @@
 <?php
-/**
- * Template Name: NNTM — Đăng ký thành viên
- *
- * Trang toàn màn hình, KHÔNG có đầu trang/chân trang của site — xem
- * page-dang-nhap.php để biết lý do (cùng khuôn mẫu).
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -26,7 +18,7 @@ $nntm_bg_style     = $nntm_bg_url ? sprintf( ' style="--nntm-auth-bg: url(%s)"',
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<?php wp_head(); ?>
 </head>
-<body <?php body_class( 'nntm-auth-page' ); ?><?php echo $nntm_bg_style; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- đã esc_url() ở trên */ ?>>
+<body <?php body_class( 'nntm-auth-page' ); ?><?php echo $nntm_bg_style;   ?>>
 <?php wp_body_open(); ?>
 
 <a class="nntm-auth-page__home" href="<?php echo esc_url( home_url( '/' ) ); ?>">

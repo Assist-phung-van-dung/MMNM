@@ -1,42 +1,11 @@
 <?php
-/**
- * Hàm dựng HTML cho MỘT thẻ nội dung (card).
- *
- * Tách riêng thành hàm dùng chung để block `nntm/card` (đứng một mình)
- * và block `nntm/card-list` (lặp nhiều thẻ) đều gọi cùng một chỗ —
- * đúng nguyên tắc "sửa một variant thì sửa đúng một chỗ" ở
- * docs/04-kien-truc.md mục 2.
- *
- * File này được require_once từ render.php của cả hai block, nên
- * không cần bọc function_exists(): require_once tự đảm bảo hàm chỉ
- * khai báo một lần dù render.php của block bị WordPress require()
- * lại nhiều lần trong một lượt tải trang.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * Danh sách biến thể hợp lệ — PHẢI trùng tên với variant trong Figma
- * (component set CARD, node 6134:2530).
- *
- * @return string[]
- */
 function nntm_card_allowed_variants(): array {
 	return array( 'article', 'small', 'xs', 'dai-si', 'kim-cuong', 'article-hover', 'video', 'khoa-tu', 'books' );
 }
 
-/**
- * Lấy taxonomy term "chính" của một bài để hiển thị nhãn phân mục trên thẻ.
- * Duyệt theo thứ tự ưu tiên vì mỗi CPT gắn taxonomy khác nhau
- * (xem class-taxonomies.php): nntm_section chỉ có ở nntm_article,
- * nntm_topic có ở article/publication/talk, nntm_series ở talk/video,
- * category là taxonomy có sẵn của post type `post`.
- *
- * @param int $post_id ID bài viết.
- * @return WP_Term|null
- */
 function nntm_card_get_primary_term( int $post_id ): ?WP_Term {
 	$priority = array( 'nntm_section', 'nntm_topic', 'nntm_series', 'category' );
 
@@ -55,24 +24,6 @@ function nntm_card_get_primary_term( int $post_id ): ?WP_Term {
 	return null;
 }
 
-/**
- * Dựng HTML cho một thẻ nội dung.
- *
- * Block động: hàm này chạy lại mỗi lần trang được tải, không có gì
- * lưu cứng vào nội dung bài — đổi thiết kế variant sau này chỉ sửa
- * ở đây và ở style.css, bài cũ tự cập nhật theo.
- *
- * @param int    $post_id       ID bài viết cần hiển thị.
- * @param string $variant       Biến thể Figma, xem nntm_card_allowed_variants().
- * @param bool   $show_date     Có hiện ngày cập nhật không.
- * @param bool   $show_excerpt  Có hiện đoạn mô tả ngắn không (chỉ áp dụng cho variant có ô mô tả).
- * @param bool   $show_category Có hiện nhãn phân mục không.
- * @param bool   $show_cta      Ép hiện dòng "Xem thêm" cho các variant KHÔNG tự có sẵn CTA
- *                               (dai-si, video). Các variant còn lại vốn đã luôn hiện CTA nên
- *                               tham số này không tắt được CTA của chúng — chỉ dùng để BẬT thêm.
- * @param string $cta_label     Nhãn dòng "Xem thêm", khách tự đổi được ở card-list/card.
- * @return string HTML đã escape, sẵn sàng echo.
- */
 function nntm_render_card_markup( int $post_id, string $variant, bool $show_date = true, bool $show_excerpt = true, bool $show_category = true, bool $show_cta = false, string $cta_label = 'Xem thêm' ): string {
 	if ( ! in_array( $variant, nntm_card_allowed_variants(), true ) ) {
 		$variant = 'article';
@@ -84,36 +35,15 @@ function nntm_render_card_markup( int $post_id, string $variant, bool $show_date
 		return '<p class="nntm-card nntm-card--empty">' . esc_html__( 'Chưa chọn bài viết để hiển thị.', 'nntm' ) . '</p>';
 	}
 
-	// dai-si chỉ hiện ảnh + tên chủ đề + dòng "Xem thêm", không có ngày/nhãn/mô tả — theo Figma trang Đại Sĩ Hành Giả.
 	$is_dai_si = ( 'dai-si' === $variant );
-	/*
-	 * kim-cuong (trang "Kim Cương Hành Giả", chốt 14/08/2026): khác dai-si ở
-	 * chỗ CÓ đoạn trích — thẻ nền TRẮNG (không phải ô navy), vẫn không có
-	 * ngày/nhãn (khối gọi block-list tự tắt showDate/showCategory).
-	 */
+	 
 	$is_kim_cuong = ( 'kim-cuong' === $variant );
-	/*
-	 * video không có nút "Xem thêm" theo mặc định: cả thẻ bấm vào là phát video,
-	 * có icon play đè lên ảnh thay cho nút. Các variant khác vốn LUÔN có CTA.
-	 * $show_cta chỉ dùng để BẬT THÊM CTA cho variant không có sẵn (video) — không
-	 * tắt được CTA của các variant đã có sẵn. dai-si/kim-cuong LUÔN hiện CTA bất kể
-	 * $show_cta (yêu cầu chốt cho trang Đại Sĩ / Kim Cương Hành Giả).
-	 */
+	 
 	$has_cta     = $is_dai_si || $is_kim_cuong || ( 'video' !== $variant ) || $show_cta;
 	$has_excerpt = $show_excerpt && ! $is_dai_si && in_array( $variant, array( 'article', 'khoa-tu', 'books', 'kim-cuong' ), true );
 
 	$permalink = get_permalink( $post );
 
-	/*
-	 * variant "books" là bìa sách để đọc, không phải bài viết để đọc mô tả —
-	 * người xem được phép đọc thì bấm bìa vào THẲNG trang đọc /doc/, bỏ qua
-	 * trang chi tiết. Ấn phẩm đang khoá vẫn về trang chi tiết như cũ (nơi có nút
-	 * mời thanh toán).
-	 *
-	 * KHÔNG xét "đã gắn tệp hay chưa": chưa gắn thì trang đọc vẫn mở, khung sách
-	 * để trống. Xét ở đây thì cùng một dải bìa sách lại có hai đích đến khác
-	 * nhau, người xem không đoán được bấm vào sẽ đi đâu.
-	 */
 	if ( 'books' === $variant ) {
 		$duong_doc = nntm_doc_url( $post );
 
@@ -158,7 +88,7 @@ function nntm_render_card_markup( int $post_id, string $variant, bool $show_date
 					<?php
 					echo esc_html(
 						sprintf(
-							/* translators: %s: ngày cập nhật bài viết, định dạng d. m. Y giống Figma */
+							 
 							__( 'Cập nhật %s', 'nntm' ),
 							get_the_modified_date( 'd. m. Y', $post )
 						)

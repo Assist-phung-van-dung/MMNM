@@ -1,7 +1,4 @@
 <?php
-/**
- * Form tìm kiếm dùng chung — có nhãn cho trình đọc màn hình.
- */
 
 defined( 'ABSPATH' ) || exit;
 

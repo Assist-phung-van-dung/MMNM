@@ -1,11 +1,10 @@
-/* Diệu Thượng — giữ nguyên block slug nntm/dieu-thuong, chỉ còn phần story. */
+
 .nntm-dt {
 	width: 100%;
 	overflow: hidden;
 	background: var(--nntm-trang);
 }
 
-/* Banner 1366: cao 500px. Không có arrow/dot/icon; JS chỉ fade ảnh. */
 .nntm-dt__banner {
 	position: relative;
 	width: 100%;

@@ -1,13 +1,4 @@
 <?php
-/**
- * Chi tiết CPT nntm_article.
- *
- * - Bài thường: layout chung theo ảnh "BAI CHI TIET" (1366 / 1184).
- * - Đại Sĩ / Kim Cương / Nhập Pháp Giới hạn chế: giữ layout Hành Giả riêng.
- * - Nghi Quỹ dùng nntm_publication nên không đi qua template này.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -24,7 +15,6 @@ if ( null === $nntm_cap_hanh_gia ) {
 		$nntm_post_id = get_the_ID();
 		$nntm_excerpt = trim( get_the_excerpt() );
 
-		// Term nntm_section cụ thể nhất để bài liên quan không lẫn phân mục cha.
 		$nntm_term_id_hien_tai = 0;
 		$nntm_terms_hien_tai   = get_the_terms( $nntm_post_id, 'nntm_section' );
 		if ( is_array( $nntm_terms_hien_tai ) && ! empty( $nntm_terms_hien_tai ) ) {
@@ -48,7 +38,7 @@ if ( null === $nntm_cap_hanh_gia ) {
 						<span class="nntm-article-detail__meta-dot" aria-hidden="true"></span>
 						<?php
 						printf(
-							/* translators: %s: ngày cập nhật bài viết. */
+							 
 							esc_html__( 'Cập nhật %s', 'nntm' ),
 							esc_html( get_the_modified_date( 'd. m. Y' ) )
 						);
@@ -72,7 +62,7 @@ if ( null === $nntm_cap_hanh_gia ) {
 					<div class="nntm-article-detail__favorite">
 						<?php
 						if ( function_exists( 'nntm_section_render_favorite_button' ) ) {
-							echo nntm_section_render_favorite_button( $nntm_post_id, 'nntm-article-detail__favorite-button' ); // phpcs:ignore WordPress.Security.EscapeOutput -- helper tự escape.
+							echo nntm_section_render_favorite_button( $nntm_post_id, 'nntm-article-detail__favorite-button' );  
 						}
 						?>
 					</div>
@@ -104,7 +94,7 @@ if ( null === $nntm_cap_hanh_gia ) {
 							'innerHTML'    => '',
 							'innerContent' => array(),
 						)
-					); // phpcs:ignore WordPress.Security.EscapeOutput -- block tự escape đầu ra.
+					);  
 					?>
 				</div>
 			</article>
@@ -141,7 +131,7 @@ if ( null === $nntm_cap_hanh_gia ) {
 						<span class="nntm-bai-hanh-gia__cham" aria-hidden="true"></span>
 						<?php
 						printf(
-							/* translators: %s: ngày cập nhật bài viết. */
+							 
 							esc_html__( 'Cập nhật %s', 'nntm' ),
 							esc_html( $nntm_ngay_cap_nhat )
 						);
@@ -157,7 +147,7 @@ if ( null === $nntm_cap_hanh_gia ) {
 							type="button"
 							class="nntm-bai-hanh-gia__yeu-thich"
 							data-nntm-favorite="<?php echo esc_attr( (string) get_the_ID() ); ?>"
-							<?php echo is_user_logged_in() ? '' : 'data-nntm-auth-modal="dang-nhap"'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- thuộc tính cố định. ?>
+							<?php echo is_user_logged_in() ? '' : 'data-nntm-auth-modal="dang-nhap"';  ?>
 						>
 							<svg class="nntm-bai-hanh-gia__tim" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
 								<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
@@ -198,7 +188,7 @@ if ( null === $nntm_cap_hanh_gia ) {
 						'innerHTML'    => '',
 						'innerContent' => array(),
 					)
-				); // phpcs:ignore WordPress.Security.EscapeOutput -- block tự escape đầu ra.
+				);  
 				?>
 			</div>
 		</main>

@@ -1,8 +1,4 @@
-/* =============================================================
-   NNTM — Chi tiết nntm_article THƯỜNG
-   Áp dụng cho bài ngoài Đại Sĩ / Kim Cương / Nghi Quỹ.
-   Desktop source-of-truth: frame 1366px, content 1184px.
-   ============================================================= */
+
 
 .single-nntm_article:not(.is-bai-hanh-gia) .nntm-article-detail {
 	width: 100%;
@@ -78,7 +74,6 @@
 	color: var(--nntm-chinh);
 }
 
-/* base.css gán màu trực tiếp lên p/li nên ghi đè đúng trong vùng bài. */
 .nntm-article-detail__content :where(p, li, blockquote, figcaption, h2, h3, h4, h5, h6) {
 	color: var(--nntm-chinh);
 }
@@ -96,7 +91,6 @@
 	margin-top: 30px;
 }
 
-/* ---------- Bài Viết Liên Quan: dùng cùng card-list carousel với Hành Giả ---------- */
 .nntm-article-detail__related {
 	width: 100%;
 	max-width: var(--nntm-w-rong);
@@ -194,7 +188,6 @@
 		text-underline-offset: 0.18em;
 	}
 
-	/* Nút 58x58 nằm ngoài content 1184 nhưng vẫn trong frame 1366. */
 	.nntm-article-detail__related .nntm-card-list__nav {
 		position: absolute;
 		top: 116px;
@@ -225,7 +218,6 @@
 		color: var(--nntm-den);
 	}
 
-	/* Mũi tên ngang thật để icon luôn thẳng, không lệch do border xoay. */
 	.nntm-article-detail__related .nntm-card-list__nav-icon {
 		display: inline-grid;
 		place-items: center;

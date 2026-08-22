@@ -1,98 +1,28 @@
-/* =============================================================
-   nntm/article-feature — "Bài nổi bật toàn văn"
-   Nguồn: Figma R4, khung 01_HOMEPAGE 6376:6322, khối y=1602 cao 1097.
 
-   CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
-   assets/css/tokens.css.
-
-   SỐ ĐO ĐÃ LẤY ĐƯỢC TỪ FIGMA ngày 10/08/2026 (node NEWS 6376:6466 ->
-   SECTION 2 6376:6467). Không còn phải đo trên ảnh xuất nữa: endpoint
-   /v1/files/:key/nodes bị chặn 429 tới 4,3 ngày, nhưng
-   /v1/files/:key?ids= trả CÙNG dữ liệu và không bị chặn.
-
-   Cây thật:
-     SECTION 2  1366x1005  padding 60/70  radius 20  fill #FFFFFF
-       CONTENT  1180x945   flex-row  gap 30
-         Frame 150  618x821  flex-column gap 20  (canh giua doc)
-           TITLE  618x142  gap 10
-           TEXT   618x659  padding 30  fill #F7F1DE
-         Frame 97   532x945
-           IMG      532x819
-       "  VECTOR  x=23 y=47  69x51  fill #3F3B3B
-
-   Lớp "TIEU. DE" (chữ "Lời Phật dạy", EB Garamond 600 58/68, #747766)
-   có trong file nhưng visible=false — designer đã TẮT, nên khối KHÔNG
-   có tiêu đề. Đừng thấy tên lớp mà thêm vào.
-
-   Chữ (đọc node 6376:6468 ngày 10/08/2026, đã quy đổi font theo
-   docs/05-font-thay-the.md):
-     tieu de       EB Garamond 600  38/44   #3F3B3B
-     trich nguon   Baskerville 400  15/22   #747766  italic
-     than bai      Baskerville 400  18/26   #3F3B3B
-     nut Xem tiep  Battambang  700  13/23   #FCFDFE  <- xem ghi chu o duoi
-   Ba lop DATE / ARTICLE CAT / TIEU. DE deu visible=false trong Figma
-   nen khoi KHONG co ngay, khong co nhan chuyen muc, khong co tieu de
-   khoi. Dung thay ten lop ma them vao.
-   ============================================================= */
 
 .nntm-article-feature {
 	display: block;
-	/* tu Figma: SECTION 2 fill #FFFFFF. Nền trang là kem nên khối trắng
-	   này tự tách khỏi khối mosaic phía trên. */
+
 	background-color: var(--nntm-nen-noi);
-	border-radius: var(--nntm-r-lg); /* tu Figma: cornerRadius 20 */
+	border-radius: var(--nntm-r-lg);  
 }
 
 .nntm-article-feature__inner {
-	position: relative; /* mốc cho dấu ngoặc kép đặt tuyệt đối */
-	/*
-	 * tu Figma: CONTENT rộng 1180 nằm giữa SECTION rộng 1366, và SECTION
-	 * có đệm ngang tối thiểu 70. Viết bằng min() để vừa chặn trần 1180,
-	 * vừa giữ đúng 70 đệm khi màn hẹp hơn 1320 — không cần media query.
-	 */
+	position: relative;  
+
 	width: min(1180px, 100% - 2 * var(--nntm-sp-11));
 	margin-inline: auto;
-	/*
-	 * SỬA 12/08/2026 lần 3 — đối chiếu ảnh Figma thật (fig-feature.png vs
-	 * web-feature.png) cho thấy cột chữ đang bị CĂN GIỮA THEO CHIỀU DỌC
-	 * (align-items: center cũ) nên tiêu đề rơi xuống giữa khối, phía trên
-	 * trống hoác — sai hẳn thiết kế: Figma căn TRÊN, dấu ngoặc kép y 75,
-	 * tiêu đề y 160 (đo từ đầu khối). Đổi align-items: center -> start.
-	 *
-	 * padding-top/bottom KHÔNG còn bằng nhau nữa — tách riêng để tiêu đề
-	 * (item đầu tiên trong dòng chảy của cột chữ, ngay sau padding-top)
-	 * rơi đúng khoảng y 150–170 như spec, mà TỔNG chiều cao khối vẫn giữ
-	 * nguyên ~1097 (công thức đã xác nhận bằng trình duyệt ở lần sửa
-	 * trước: tổng cao = anh cao nhất cột (~812) + padding-top + padding-bottom).
-	 * padding-top=160 (khớp mốc tiêu đề y160), padding-bottom=118 để tổng
-	 * vẫn ~1097 — ĐÃ ĐO LẠI BẰNG TRÌNH DUYỆT THẬT sau khi sửa, xem báo cáo.
-	 */
+
 	padding-top: 160px;
 	padding-bottom: 118px;
 	display: grid;
-	/*
-	 * tu Figma (do lai 12/08/2026 lan 3, so chinh xac hon): hai cot 617 va
-	 * 534, cach nhau 30 (tong 1181 ~ 1180). Dung fr de co gian theo khung
-	 * chua thay vi khoa px cung.
-	 */
+
 	grid-template-columns: 617fr 534fr;
-	/*
-	 * align-items: start — SỬA 12/08/2026 (xem chú thích padding ở trên).
-	 * Trước đây "center" theo đúng CSS Figma xuất ra (Frame 150
-	 * justify=CENTER), nhưng so ảnh thật cho thấy phải căn TRÊN mới đúng
-	 * vị trí tiêu đề/dấu ngoặc kép — có thể node Figma đó đã lỗi thời so
-	 * với ảnh xuất mới nhất. Ưu tiên khớp ảnh thật theo yêu cầu anh Úy.
-	 */
+
 	align-items: start;
-	gap: var(--nntm-sp-7); /* tu Figma: gap 30 */
+	gap: var(--nntm-sp-7);  
 }
 
-/*
- * tu Figma: dấu ngoặc kép là VECTOR 69x51. SỬA 12/08/2026: so ảnh thật cho
- * thấy dấu nháy bị đẩy sát mép trên, cắt cụt — đổi top: 47px -> 75px để
- * khớp đúng mốc y 75→135 theo spec đo lại (đo từ đầu khối, không đổi theo
- * padding vì phần tử position:absolute lấy mốc padding-box của .inner).
- */
 .nntm-article-feature__quote {
 	position: absolute;
 	left: -70px;
@@ -101,10 +31,6 @@
 	height: 51px;
 }
 
-/* Ảnh bên trái thì đổi CỘT bằng CSS, KHÔNG đảo thứ tự trong HTML — để
-   người dùng bàn phím và trình đọc màn hình luôn gặp chữ trước, ảnh sau
-   ở mọi biến thể. Cùng nguyên tắc đã chốt cho nntm/article-rows
-   (docs/04-kien-truc.md mục 10). */
 .nntm-article-feature--media-left .nntm-article-feature__inner {
 	grid-template-columns: 534fr 617fr;
 }
@@ -119,8 +45,6 @@
 	grid-row: 1;
 }
 
-/* Bài không có ảnh đại diện: bỏ hẳn cột ảnh, cột chữ giãn hết chiều
-   rộng — không để lại ô xám trống. */
 .nntm-article-feature--khong-anh .nntm-article-feature__inner,
 .nntm-article-feature--khong-anh.nntm-article-feature--media-left .nntm-article-feature__inner {
 	grid-template-columns: 1fr;
@@ -137,43 +61,31 @@
 	margin: 0;
 }
 
-/* ---------- Cột chữ ---------- */
 .nntm-article-feature__text {
 	display: flex;
 	flex-direction: column;
 	min-width: 0;
 }
 
-/*
- * Kích thước hộp 69x51 và màu #3F3B3B là SỐ THẬT từ Figma. Riêng
- * font-size thì không có số tương ứng: Figma vẽ dấu ngoặc kép bằng
- * VECTOR chứ không phải bằng chữ, nên phải chọn cỡ chữ sao cho nét mực
- * lấp vừa hộp 69x51 — chỉnh bằng mắt, đã đo lại trong trình duyệt.
- */
 .nntm-article-feature__quote-glyph {
 	display: block;
 	font-family: var(--nntm-font-display);
 	font-weight: 700;
 	font-size: 116px;
 	line-height: 0.62;
-	color: var(--nntm-chu); /* tu Figma: #3F3B3B */
+	color: var(--nntm-chu);  
 }
 
 .nntm-article-feature__title {
 	margin: 0;
-	font-family: var(--nntm-font-display); /* EB Garamond — giữ nguyên theo bảng font thay thế */
-	font-size: var(--nntm-fs-3xl);         /* tu Figma: 38 */
+	font-family: var(--nntm-font-display);  
+	font-size: var(--nntm-fs-3xl);          
 	font-weight: 600;
 	font-style: normal;
-	line-height: 44px;                     /* tu Figma: 44/38 */
+	line-height: 44px;                      
 	letter-spacing: 0;
 	color: var(--nntm-chu);
-	/*
-	 * KHÔNG dùng text-transform: capitalize dù ảnh thiết kế viết hoa đầu
-	 * mỗi chữ. Tiếng Việt có từ ghép gạch nối ("ba-la-mật") và capitalize
-	 * sẽ viết hoa cả sau dấu gạch ("Ba-La-Mật") — sai chính tả. Ban quản
-	 * trị gõ tiêu đề thế nào thì hiện đúng thế ấy.
-	 */
+
 }
 
 .nntm-article-feature__title a {
@@ -188,52 +100,36 @@
 }
 
 .nntm-article-feature__attribution {
-	margin: var(--nntm-sp-3) 0 0; /* tu Figma: TITLE gap 10 */
-	font-family: var(--nntm-font-serif); /* tu Figma: Baskerville -> Lora, theo docs/05-font-thay-the.md */
-	font-size: var(--nntm-fs-15);        /* tu Figma: 15 */
+	margin: var(--nntm-sp-3) 0 0;  
+	font-family: var(--nntm-font-serif);  
+	font-size: var(--nntm-fs-15);         
 	font-weight: 400;
-	font-style: italic;                  /* tu Figma: italic */
-	line-height: 22px;                    /* tu Figma: 22/15 */
+	font-style: italic;                   
+	line-height: 22px;                     
 	letter-spacing: 0;
-	color: var(--nntm-chinh);            /* tu Figma: #747766 */
+	color: var(--nntm-chinh);             
 }
 
-/* ---------- Khung nền kem chứa thân bài ---------- */
 .nntm-article-feature__box {
 	display: flex;
 	flex-direction: column;
-	margin-top: var(--nntm-sp-5); /* tu Figma: Frame 150 gap 20 */
-	padding: var(--nntm-sp-7);    /* tu Figma: TEXT padding 30 */
-	background-color: var(--nntm-kem); /* tu Figma: fill #F7F1DE */
-	/*
-	 * tu Figma (do lai 12/08/2026 lan 3): khung TEXT cao 657 (y 318->975).
-	 * Dat min-height thay vi height co dinh de bai that DAI hon van giai
-	 * het duoc, khong bi cat noi dung — chi bai QUA NGAN moi can san nay
-	 * de khong bi hut ngan hon thiet ke. Bai mau hien tai (seed Hoa Khai)
-	 * da duoc noi dai them o tools/seed-hoa-khai-bai-viet.php de khung
-	 * thuc su day nhu Figma, khong chi dua vao min-height trong rong.
-	 */
+	margin-top: var(--nntm-sp-5);  
+	padding: var(--nntm-sp-7);     
+	background-color: var(--nntm-kem);  
+
 	min-height: 657px;
 }
 
 .nntm-article-feature__body {
 	flex: 1 1 auto;
-	font-family: var(--nntm-font-serif); /* tu Figma: Baskerville -> Lora */
-	font-size: var(--nntm-fs-md);        /* tu Figma: 18 */
+	font-family: var(--nntm-font-serif);  
+	font-size: var(--nntm-fs-md);         
 	font-weight: 400;
 	font-style: normal;
-	line-height: 26px;                    /* tu Figma: 26/18 */
+	line-height: 26px;                     
 	letter-spacing: 0;
-	color: var(--nntm-chu);              /* tu Figma: #3F3B3B */
-	/*
-	 * "CẮT THEO SỐ DÒNG NẾU BÀI QUÁ DÀI" (yêu cầu anh Úy 12/08/2026, mục
-	 * B4) — nntm_article_feature_get_paragraphs() đã giới hạn theo SỐ ĐOẠN
-	 * (maxParagraphs), nhưng bài có đoạn dài vẫn có thể đẩy khung kem cao
-	 * vượt xa 657px của Figma (đã đo bằng trình duyệt thật: có bài đẩy
-	 * khối lên 1214px). Khoá thêm một trần bằng PX + overflow:hidden ở đây
-	 * làm lưới an toàn cuối: 657 (khung) - 60 (padding 2×30) - 10 (margin
-	 * trên nút) - 24 (dòng nút "Xem tiếp") = 563.
-	 */
+	color: var(--nntm-chu);               
+
 	max-height: 563px;
 	overflow: hidden;
 }
@@ -244,30 +140,17 @@
 	color: inherit;
 }
 
-/*
- * tu Figma: Frame 141 gap 25. Trong Figma cả thân bài là MỘT khối chữ
- * ngăn nhau bằng dòng trống, không phải nhiều đoạn riêng — bên mình tách
- * <p> thật (đúng ngữ nghĩa HTML hơn) nên phải tự bù khoảng cách đó.
- */
 .nntm-article-feature__body > p + p {
-	margin-top: var(--nntm-sp-6); /* 25 */
+	margin-top: var(--nntm-sp-6);  
 }
 
 .nntm-article-feature__cta {
 	align-self: flex-start;
-	margin-top: var(--nntm-sp-3); /* tu Figma: TEXT gap 10 */
-	font-family: var(--nntm-font-sans); /* tu Figma: Battambang -> Be Vietnam Pro */
-	font-size: var(--nntm-fs-xs);       /* tu Figma: 13 */
-	font-weight: 700;                   /* tu Figma: 700 */
-	/*
-	 * ⚠️ CỐ Ý KHÁC FIGMA — CẦN ANH ÚY CHỐT.
-	 * Figma khai màu chữ "Xem tiếp" là #FCFDFE (gần như trắng) đặt trên
-	 * nền kem #F7F1DE — đã đọc số thật từ node, không phải đoán. Độ
-	 * tương phản của cặp đó khoảng 1.05:1, dưới xa mức 4.5:1 của WCAG
-	 * AA; người mắt bình thường cũng gần như không đọc ra chữ.
-	 * Ở đây dùng màu chủ đạo cho đọc được. Muốn đúng Figma tuyệt đối thì
-	 * đổi sang var(--nntm-trang-lanh) — nhưng nên báo khách trước.
-	 */
+	margin-top: var(--nntm-sp-3);  
+	font-family: var(--nntm-font-sans);  
+	font-size: var(--nntm-fs-xs);        
+	font-weight: 700;                    
+
 	color: var(--nntm-chinh);
 	text-decoration: none;
 	transition: color var(--nntm-dur) var(--nntm-ease);
@@ -279,16 +162,13 @@
 	text-decoration: underline;
 }
 
-/* ---------- Cột ảnh ---------- */
 .nntm-article-feature__media {
 	position: relative;
 	overflow: hidden;
 	min-height: 0;
-	/* tu Figma (do lai 12/08/2026 lan 3, chinh xac hon): IMG 534x812 trong
-	   cot 534 — khoa ti le thay vi chieu cao px de cot co gian theo khung
-	   chua ma anh khong meo. */
+
 	aspect-ratio: 534 / 812;
-	background-color: var(--nntm-xam); /* nền giữ chỗ khi ảnh chưa tải */
+	background-color: var(--nntm-xam);  
 }
 
 .nntm-article-feature__media-link {
@@ -310,18 +190,8 @@
 	transform: scale(1.04);
 }
 
-/* =============================================================
-   SUY DOAN: chưa có Figma mobile — Figma chỉ có khung desktop 1366px.
-   Dưới điểm ngắt này: xếp dọc, ảnh xuống dưới chữ và có chiều cao cố
-   định để không bị bẹp thành một dải mỏng.
-   ============================================================= */
 @media (max-width: 1151px) {
-	/*
-	 * TABLET (768-1151): GIU hai cot — luoi co so `617fr 534fr` tu chia ti le
-	 * dung, chi thu dem ngang va khoang cach. Truoc day khoi nay xep doc luon
-	 * nen tren man 1136px khoi noi bat cao 1604px, anh rong 1096px: bo cuc
-	 * cua dien thoai dat tren khung tablet. Xep doc chuyen xuong <=767.
-	 */
+	 
 	.nntm-article-feature__inner,
 	.nntm-article-feature--media-left .nntm-article-feature__inner {
 		width: min(1180px, 100% - 2 * var(--nntm-sp-5));
@@ -329,7 +199,6 @@
 		gap: var(--nntm-sp-7);
 	}
 
-	/* Dấu ngoặc kép: màn hẹp không còn chỗ thò ra ngoài lề trái nữa. */
 	.nntm-article-feature__quote {
 		left: 0;
 		top: var(--nntm-sp-3);
@@ -347,33 +216,12 @@
 		font-size: var(--nntm-fs-3xl);
 	}
 
-	/*
-	 * SUA 20/08/2026: bo tran 563px cua than bai o man hep.
-	 *
-	 * Tran 563px duoc tinh cho KHUNG FIGMA 657px o bo cuc HAI COT (chu chi
-	 * chiem cot phai ~590px). Khi xep doc mot cot, cung luong chu do tra ve
-	 * nhieu dong hon han nen tran cat mat rat nhieu: do duoc mat 678px noi
-	 * dung o khung 390 va 80px o khung 768 — cat am tham vi overflow:hidden.
-	 *
-	 * Muc dich ban dau cua tran (giu khung kem khong cao vuot 657 cua Figma)
-	 * chi co nghia o bo cuc hai cot desktop. Gioi han so DOAN trong
-	 * nntm_article_feature_get_paragraphs() van con nguyen nen than bai
-	 * khong the dai vo han.
-	 */
 	.nntm-article-feature__body {
 		max-height: none;
 		overflow: visible;
 	}
 }
 
-/* =============================================================
-   DUOI 1024px — xep doc.
-
-   Trước 20/08/2026 phần này nằm trong khối <=1151 nên màn 1136px cũng xếp
-   dọc: đo được khối nổi bật cao 1604px, ảnh rộng 1096px. Dai 1024-1151 giu hai cot (luoi co so `617fr 534fr` tu
-   chia ti le); duoi 1024 cot chu chi con ~317px o khung 768 nen dan hep qua,
-   gop ve mot cot la dung.
-   ============================================================= */
 @media (max-width: 1023px) {
 	.nntm-article-feature__inner,
 	.nntm-article-feature--media-left .nntm-article-feature__inner {
@@ -381,11 +229,6 @@
 		gap: var(--nntm-sp-8);
 	}
 
-	/*
-	 * Xếp dọc thì gỡ hết chỉ định hàng/cột của bố cục hai cột — kể cả biến
-	 * thể "ảnh bên trái". Còn sót grid-column: 2 trên lưới một cột là phần
-	 * tử đó tự đẻ ra cột thứ hai và làm trang cuộn ngang.
-	 */
 	.nntm-article-feature__text,
 	.nntm-article-feature__media,
 	.nntm-article-feature--media-left .nntm-article-feature__text,

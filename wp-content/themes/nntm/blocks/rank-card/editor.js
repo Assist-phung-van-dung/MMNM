@@ -1,12 +1,4 @@
-/**
- * Editor script cho block nntm/rank-card — JavaScript thuần, không build.
- * Dùng biến toàn cục wp.* theo đúng quy ước dự án. "cards" là một mảng nên
- * bảng điều khiển bên phải phải tự vẽ phần thêm/xoá từng thẻ (repeater),
- * bắt chước đúng phong cách blocks/hero-slider/editor.js (mảng "slides").
- *
- * Khung soạn thảo hiển thị gần giống trang thật: ảnh nền + heading RichText
- * (sửa ngay trên khối) + hàng thẻ cấp bậc (xem trước, sửa trong Inspector).
- */
+
 ( function ( wp ) {
 	'use strict';
 
@@ -25,9 +17,8 @@
 	var SelectControl = wp.components.SelectControl;
 	var RangeControl = wp.components.RangeControl;
 
-	// Bốn mức quyền — khớp enum "requiredAccess" trong block.json và logic
-	// $can_access trong render.php. Nhãn tiếng Việt dễ hiểu cho người không
-	// rành kỹ thuật (docs/04-kien-truc.md mục 2).
+
+
 	var ACCESS_OPTIONS = [
 		{ label: __( 'Ai cũng xem được', 'nntm' ), value: 'public' },
 		{ label: __( 'Cần đăng nhập', 'nntm' ), value: 'login' },
@@ -35,9 +26,6 @@
 		{ label: __( 'Cần cấp Kim Cương', 'nntm' ), value: 'kim_cuong' },
 	];
 
-	/**
-	 * Một thẻ trống — dùng khi bấm "Thêm thẻ".
-	 */
 	function emptyCard() {
 		return {
 			imageId: 0,
@@ -330,17 +318,11 @@
 			);
 		},
 		save: function () {
-			// Block động: PHP (render.php) tự vẽ lại nội dung mỗi lần tải trang.
+
 			return null;
 		},
 	} );
 
-	/**
-	 * Tiêu đề panel mặc định khi thẻ chưa đặt tên, tránh panel trống trơn.
-	 *
-	 * @param {number} index Chỉ số thẻ (0-based).
-	 * @return {string}
-	 */
 	function sprintfCardTitle( index ) {
 		return __( 'Thẻ', 'nntm' ) + ' ' + ( index + 1 );
 	}

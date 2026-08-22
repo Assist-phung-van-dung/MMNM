@@ -1,42 +1,6 @@
-/* =============================================================
-   NNTM — MÀN CHỜ TẢI TRANG (preloader)
 
-   Ghép 20/08/2026 từ bản anh Úy chọn:
-   C:\AI4\mmtn\spiritual-preloader-all-effects-mouse.html
 
-   Bốn hiệu ứng: Hào Quang (halo) · Mandala · Ánh Trăng (moon) ·
-   Mặt Trời (sun). Mỗi lần tải trang bốc random một cái, KHÔNG lặp lại
-   hiệu ứng của lần tải trước — xem assets/js/preloader.js.
 
-   BA ĐIỂM KHÁC BẢN LAB, cố ý:
-
-   1. Hiệu ứng nào hiện là do `data-effect` trên <html> quyết định (không
-      phải trên lớp phủ). Script inline ở <head> gán thuộc tính này TRƯỚC
-      khi trang vẽ khung đầu tiên, nên không bao giờ nhá hiệu ứng mặc định
-      rồi mới đổi sang hiệu ứng random.
-
-   2. Bốn khối chữ được in ra ĐỦ CẢ BỐN trong HTML, CSS chỉ hiện khối khớp
-      hiệu ứng. Nhờ vậy chữ đi qua hàm dịch của WordPress được, không phải
-      nhồi chuỗi tiếng Việt vào JavaScript.
-
-   3. Khi mở trang, chỉ làm mờ .nntm-site-frame bằ`opacity` — KHÔNG dùng
-      transform/filter như bản lab. Lý do: transform/filter làm phần tử trở
-      thành KHỐI CHỨA của mọi con `position: fixed`, tức là đầu trang dính,
-      panel menu và thẻ video nổi sẽ nhảy chỗ suốt 0,9s của hoạt ảnh mở.
-      Đây đúng là lỗi đã gặp với `transform` của .nntm-header (xem chú thích
-      khối MENU THU GỌN trong header.css). `opacity` KHÔNG tạo khối chứa nên
-      an toàn.
-
-   CẤM mã màu trực tiếp — bảng màu riêng của màn chờ khai ở tokens.css
-   (nhóm `--nntm-tai-*`), biến thể trong suốt pha bằng color-mix() tại chỗ.
-   ============================================================= */
-
-/* ---------- Khoá cuộn khi đang tải ---------- */
-/*
- * scrollbar-gutter: stable giữ chỗ thanh cuộn trong lúc khoá, nhờ vậy khi
- * mở khoá nội dung KHÔNG giật ngang 15px (thanh cuộn thật nhận lại đúng
- * chỗ đã chừa). Chỉ bật trong lúc tải nên không đụng gì tới bố cục thường.
- */
 html.is-loading {
 	overflow: hidden;
 	scrollbar-gutter: stable;
@@ -46,14 +10,10 @@ html.is-loading body {
 	overflow: hidden;
 }
 
-/* ---------- Lớp phủ ---------- */
 .nntm-tai {
 	position: fixed;
 	inset: 0;
-	/*
-	 * Trên mọi lớp khác của theme: đầu trang 100, panel menu 200, modal
-	 * đăng nhập 1000, modal thư viện ảnh 100050.
-	 */
+
 	z-index: 100200;
 
 	display: grid;
@@ -77,7 +37,6 @@ html.is-loading .nntm-tai {
 	pointer-events: auto;
 }
 
-/* ---------- Khối chữ ---------- */
 .nntm-tai__copy {
 	position: absolute;
 	top: calc(50% + 120px);
@@ -140,7 +99,6 @@ html[data-effect="sun"] .nntm-tai__copy--sun {
 	animation: nntm-tai-vach 1.8s ease-in-out infinite;
 }
 
-/* ---------- Chọn hiệu ứng ---------- */
 .nntm-tai__hieu-ung {
 	display: none;
 	position: absolute;
@@ -155,9 +113,6 @@ html[data-effect="sun"] .nntm-tai__hieu-ung--sun {
 	display: grid;
 }
 
-/* =============================================================
-   01 — HÀO QUANG
-   ============================================================= */
 .nntm-tai__hieu-ung--halo {
 	background-image:
 		radial-gradient(
@@ -271,9 +226,6 @@ html.is-revealing[data-effect="halo"] .nntm-tai__halo-vong {
 		transform 0.45s var(--nntm-ease);
 }
 
-/* =============================================================
-   02 — MANDALA
-   ============================================================= */
 .nntm-tai__hieu-ung--mandala {
 	background-image:
 		radial-gradient(
@@ -383,9 +335,6 @@ html.is-revealing[data-effect="mandala"] .nntm-tai__mandala {
 	filter: blur(7px);
 }
 
-/* =============================================================
-   03 — ÁNH TRĂNG
-   ============================================================= */
 .nntm-tai__hieu-ung--moon {
 	background-image:
 		radial-gradient(
@@ -483,9 +432,6 @@ html.is-revealing[data-effect="moon"] .nntm-tai__song {
 	opacity: 0;
 }
 
-/* =============================================================
-   04 — MẶT TRỜI
-   ============================================================= */
 .nntm-tai__hieu-ung--sun {
 	background-image:
 		radial-gradient(
@@ -638,20 +584,7 @@ html.is-revealing[data-effect="sun"] .nntm-tai__nhat-vong {
 		transform 0.5s var(--nntm-ease);
 }
 
-/* =============================================================
-   MỞ TRANG
 
-   CHỈ opacity — xem điểm 3 ở đầu file: transform/filter trên khung site
-   sẽ làm đầu trang dính, panel menu và thẻ video nổi (đều position: fixed)
-   nhảy chỗ suốt hoạt ảnh mở.
-   ============================================================= */
-/*
- * Nhắm vào MỌI con trực tiếp của <body> trừ chính lớp phủ, chứ không nhắm
- * riêng .nntm-site-frame: ba trang tự dựng template (đăng nhập, đăng ký,
- * quên mật khẩu) và trang R1 KHÔNG có khung đó — nội dung của chúng là mấy
- * phần tử rời nằm thẳng trong <body>. Nhắm riêng khung thì mấy trang ấy mất
- * hiệu ứng hiện dần, nội dung bật ra đột ngột khi lớp phủ tan.
- */
 body > *:not(.nntm-tai) {
 	transition: opacity 0.9s var(--nntm-ease);
 }
@@ -672,9 +605,6 @@ html.is-revealing .nntm-tai__copy {
 		transform 0.42s var(--nntm-ease);
 }
 
-/* =============================================================
-   KEYFRAMES
-   ============================================================= */
 @keyframes nntm-tai-vach {
 	0% {
 		transform: translateX(-130%);
@@ -825,21 +755,12 @@ html.is-revealing .nntm-tai__copy {
 	}
 }
 
-/* =============================================================
-   MÀN HẸP
-   ============================================================= */
 @media (max-width: 480px) {
 	.nntm-tai__copy {
 		top: calc(50% + 112px);
 	}
 }
 
-/*
- * Người dùng bật "giảm chuyển động": tokens.css đã đưa --nntm-dur về 0ms,
- * nhưng các animation ở đây khai thời lượng bằng số cứng (đúng bản gốc) nên
- * phải tắt riêng. preloader.js cũng tự rút thời gian chờ xuống — xem hằng
- * `reduceMotion` trong đó.
- */
 @media (prefers-reduced-motion: reduce) {
 	.nntm-tai *,
 	.nntm-tai *::before,

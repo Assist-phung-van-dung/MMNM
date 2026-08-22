@@ -1,20 +1,4 @@
 <?php
-/**
- * Template Name: NNTM — Tham gia chuỗi trì
- *
- * Trang toàn màn hình, KHÔNG có đầu/chân trang site — đúng
- * docs/04-kien-truc.md mục 2 (dashboard Cộng Tu là PHP template, không phải
- * block). Cổng quyền (chưa đăng nhập → /dang-nhap/) đã chặn ở
- * inc/cong-tu.php (template_redirect ưu tiên 5), file này chỉ còn việc dựng
- * giao diện.
- *
- * Nền núi + thẻ kính mờ TÁI SỬ DỤNG nguyên lớp CSS auth.css
- * (.nntm-auth-page/.nntm-auth-card…) — đúng yêu cầu "dùng lại lớp CSS của
- * auth.css thay vì chép lại". WordPress tự chọn file này cho Page slug
- * `tham-gia-chuoi-tri` theo quy tắc page-{slug}.php.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -28,7 +12,7 @@ $nntm_ct_bg_style = $nntm_ct_bg_url ? sprintf( ' style="--nntm-auth-bg: url(%s)"
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<?php wp_head(); ?>
 </head>
-<body <?php body_class( 'nntm-auth-page nntm-cong-tu-page' ); ?><?php echo $nntm_ct_bg_style; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- da esc_url() o tren */ ?>>
+<body <?php body_class( 'nntm-auth-page nntm-cong-tu-page' ); ?><?php echo $nntm_ct_bg_style;   ?>>
 <?php wp_body_open(); ?>
 
 <a class="nntm-auth-page__home" href="<?php echo esc_url( home_url( '/' ) ); ?>">

@@ -1,25 +1,7 @@
-/**
- * View script cho block nntm/thien-duong — trình phát nhạc thiền, JavaScript
- * thuần, không thư viện ngoài, không bước build. Khai qua
- * "viewScript": "file:./view.js" trong block.json, chỉ tải khi trang có
- * khối này (và chỉ thực sự chạy nếu người dùng đã đăng nhập, vì render.php
- * chỉ in ra .nntm-thien-duong__player-inner khi is_user_logged_in()).
- *
- * KHÔNG TỰ PHÁT KHI TẢI TRANG: script này không gọi audio.play() ở bước
- * khởi tạo — chỉ phát khi người dùng tự bấm (chọn bài / nút phát), đúng
- * yêu cầu và đúng giới hạn autoplay của trình duyệt.
- *
- * Realtime Soketi được tách sang plugin NNTM Zen Track Manager. File này
- * chỉ phát custom event khi đổi bài / play / pause để plugin presence bám
- * đúng trạng thái audio mà không trộn transport WebSocket vào player.
- */
+ 
 ( function () {
 	'use strict';
 
-	/**
-	 * @param {number} seconds Số giây (có thể là NaN/Infinity trước khi audio nạp xong metadata).
-	 * @return {string} Định dạng "phút:giây", ví dụ "3:05".
-	 */
 	function formatTime( seconds ) {
 		if ( ! isFinite( seconds ) || seconds < 0 ) {
 			return '0:00';
@@ -36,11 +18,6 @@
 		return !! ( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches );
 	}
 
-	/**
-	 * Khởi tạo một khối trình phát Thiền Đường.
-	 *
-	 * @param {Element} root Phần tử ".nntm-thien-duong__player-inner".
-	 */
 	function nntmInitThienDuongPlayer( root ) {
 		var audio = root.querySelector( '.nntm-thien-duong__audio' );
 		var playBtn = root.querySelector( '.nntm-thien-duong__btn--play' );
@@ -63,8 +40,8 @@
 			return;
 		}
 
-		var currentIndex = -1; // chua chon bai nao.
-		var isScrubbing = false; // dang keo thanh tien do bang tay, tam ngung dong bo tu timeupdate.
+		var currentIndex = -1; 
+		var isScrubbing = false; 
 		var listenDelayMs = 5000;
 		var listenTimer = null;
 		var listenSessionToken = 0;
@@ -72,7 +49,6 @@
 		var listenRecorded = false;
 		var listenRequestInFlight = false;
 
-		// Am luong khoi tao theo gia tri co san cua thanh truot (mac dinh 80%).
 		var lastVolume = 0.8;
 		if ( volumeRange ) {
 			audio.volume = ( parseFloat( volumeRange.value ) || 80 ) / 100;
@@ -167,7 +143,7 @@
 					if ( countEl ) { countEl.textContent = String( result.data.count ); }
 				}
 			} ).catch( function () {
-				// Giữ listenRecorded=false để có thể thử lại nếu người dùng resume.
+
 			} ).then( function () {
 				if ( token === listenSessionToken ) {
 					listenRequestInFlight = false;
@@ -211,10 +187,6 @@
 			} ) );
 		}
 
-		/**
-		 * Danh dau bai hien tai va bai dang phat. UI chi dung nen/vach highlight;
-		 * aria-current giu thong tin ngu nghia cho cong cu ho tro ma khong hien chu.
-		 */
 		function updateTrackListUI() {
 			for ( var i = 0; i < trackButtons.length; i++ ) {
 				var button = trackButtons[ i ];
@@ -239,18 +211,11 @@
 
 			var icon = playBtn.querySelector( '.nntm-thien-duong__btn-icon' );
 			if ( icon ) {
-				// U+23F8 (tam dung) / U+25B6 (phat) — ky hieu, khong phai mau, de phan biet trang thai.
+
 				icon.textContent = isPlaying ? '⏸' : '▶';
 			}
 		}
 
-		/**
-		 * Nạp bài theo vị trí trong danh sách. KHÔNG tự play() — chỉ nạp
-		 * nguồn + cập nhật tiêu đề. Nơi gọi hàm này quyết định có play()
-		 * tiếp theo hay không (luôn xuất phát từ một cử chỉ người dùng).
-		 *
-		 * @param {number} index Vị trí bài trong trackButtons (0-based).
-		 */
 		function loadTrack( index ) {
 			if ( index < 0 || index >= trackButtons.length ) {
 				return;
@@ -291,7 +256,7 @@
 
 		function playCurrent() {
 			if ( -1 === currentIndex ) {
-				// Chua chon bai nao — bam nut Phat lan dau thi tu chon bai dau danh sach.
+
 				loadTrack( 0 );
 			}
 
@@ -326,7 +291,6 @@
 			}
 		}
 
-		// ---------- Nút phát/tạm dừng ----------
 		playBtn.addEventListener( 'click', function () {
 			if ( ! audio.paused ) {
 				audio.pause();
@@ -335,7 +299,6 @@
 			}
 		} );
 
-		// ---------- Bài trước / bài sau (quay vòng, khớp trải nghiệm nghe liên tục) ----------
 		if ( prevBtn ) {
 			prevBtn.addEventListener( 'click', function () {
 				goToOffset( -1 );
@@ -347,17 +310,15 @@
 			} );
 		}
 
-		// ---------- Chọn bài trực tiếp trong danh sách ----------
 		for ( var t = 0; t < trackButtons.length; t++ ) {
 			( function ( index ) {
 				trackButtons[ index ].addEventListener( 'click', function () {
 					loadTrack( index );
-					playCurrent(); // bam chon bai la mot cu chi nguoi dung ro rang -> duoc phep phat.
+					playCurrent(); 
 				} );
 			} )( t );
 		}
 
-		// ---------- Thanh tiến độ kéo được ----------
 		if ( progressRange ) {
 			progressRange.addEventListener( 'pointerdown', function () {
 				isScrubbing = true;
@@ -377,7 +338,6 @@
 			} );
 		}
 
-		// ---------- Âm lượng ----------
 		if ( volumeRange ) {
 			volumeRange.addEventListener( 'input', function () {
 				audio.volume = parseFloat( volumeRange.value ) / 100;
@@ -436,14 +396,12 @@
 			} );
 		}
 
-		// ---------- Đồng bộ trạng thái <audio> ngược lại giao diện ----------
 		audio.addEventListener( 'play', function () {
 			showPlaybackError( '' );
 			updatePlayButtonUI();
 			updateTrackListUI();
 		} );
 
-		// `playing` chỉ nổ khi media thực sự chạy (khác `play`, có thể còn buffering).
 		audio.addEventListener( 'playing', function () {
 			showPlaybackError( '' );
 			dispatchPlaybackState( true, 'playing' );
@@ -458,7 +416,7 @@
 		} );
 
 		audio.addEventListener( 'waiting', function () {
-			// Buffering không được tính vào 5 giây phát liên tục.
+
 			clearListenTimer();
 		} );
 
@@ -491,7 +449,6 @@
 			}
 		} );
 
-		// ---------- Hết bài tự chuyển bài kế tiếp ----------
 		audio.addEventListener( 'ended', function () {
 			clearListenTimer();
 			dispatchPlaybackState( false, 'ended' );
@@ -500,8 +457,7 @@
 			playCurrent();
 		} );
 
-		// Nạp metadata bài đầu tiên để tiêu đề/thời lượng sẵn sàng, nhưng tuyệt
-		// đối không autoplay. Phát chỉ xảy ra sau click/tap của người dùng.
+
 		loadTrack( 0 );
 		updatePlayButtonUI();
 		updateTrackListUI();
@@ -515,10 +471,8 @@
 		}
 	}
 
-	// Chuỗi tiếng Việt dùng lại nhiều nơi trong script — tránh lặp/lệch dấu,
-	// gói gọn ở một chỗ. KHÔNG dùng wp_localize_script vì view.js phải chạy
-	// được độc lập, không phụ thuộc bước enqueue nào khác ngoài khai báo
-	// "viewScript" trong block.json.
+
+
 	window.nntmThienDuongI18n = window.nntmThienDuongI18n || {
 		phat: 'Phát',
 		tamDung: 'Tạm dừng',

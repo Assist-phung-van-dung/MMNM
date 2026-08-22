@@ -1,32 +1,5 @@
-/* =============================================================
-   NNTM — Cộng Tu "chuỗi trì": trang Tham gia / Cam kết thêm / Khai báo.
+ 
 
-   Tái sử dụng lớp CSS của auth.css (.nntm-auth-page, .nntm-auth-card,
-   .nntm-auth-form, .nntm-auth-field, .nntm-auth-btn, .nntm-auth-checkbox,
-   .nntm-auth-alert…) — file này CHỈ bổ sung phần còn thiếu, không chép lại.
-
-   ---------------------------------------------------------------
-   SỐ ĐO THẬT từ design/figma/6613-10636@1x.png (node Figma 6613:10636,
-   "GUI CHUOI TRI", khung 1366×770 — xem docs/07-ban-giao.md).
-   Máy này không có GD/Imagick nên đo bằng so màu từng điểm ảnh qua
-   Pillow (python), không dựng lại bằng công cụ đo tự động của dự án
-   (tools/png-do.mjs) — số đo dưới đây làm tròn theo token gần nhất khi
-   sai lệch dưới 2px, GIỮ NGUYÊN số đo thật khi lệch nhiều hơn:
-     - Thẻ kính mờ: rộng 484px, cao ~417px, NẰM GIỮA khung 1366×770
-       (lề trái/phải đo được đều 441px, lề trên/dưới ~177px/176px —
-       tức là căn giữa cả hai chiều, khớp đúng .nntm-auth-page hiện có
-       display:grid; place-items:center).
-     - Đệm ngang trong thẻ: ~40px (thẻ trái 441 → nội dung trái 481).
-     - Tiêu đề: đo được cao ~38px chữ, ước lượng cỡ chữ ~32px.
-     - Ảnh đại diện tròn: đường kính ~40px.
-     - Ô nhập số: cao ~35px (làm tròn 36px cho gần khung 44 của
-       .nntm-auth-field__control có sẵn — KHÔNG ép về 44 vì lệch quá 2px).
-     - Nút "Xác Nhận…": cao ~54px.
-   Trang "Khai Báo Chuỗi Trì" KHÔNG có thiết kế — mọi số đo ở phần đó là
-   SUY DOAN theo cùng ngôn ngữ thiết kế, ghi rõ trong từng khối bên dưới.
-   ============================================================= */
-
-/* ---------- Thẻ rộng hơn thẻ đăng nhập mặc định (360px) ---------- */
 .nntm-auth-card--cong-tu {
 	width: 484px;
 	padding: 44px 40px;
@@ -38,7 +11,6 @@
 	margin-bottom: var(--nntm-sp-6);
 }
 
-/* ---------- Dòng chào: ảnh đại diện tròn + "Xin chào" / pháp danh ---------- */
 .nntm-cong-tu__chao {
 	display: flex;
 	align-items: center;
@@ -71,7 +43,6 @@
 	color: var(--nntm-muc);
 }
 
-/* ---------- Dòng hiện trạng ("đã cam kết N…", "hôm nay đã ghi N…") ---------- */
 .nntm-cong-tu__hien-trang {
 	margin: 0 0 var(--nntm-sp-4);
 	font-family: var(--nntm-font-sans);
@@ -79,24 +50,16 @@
 	color: var(--nntm-muc-nhat);
 }
 
-/*
- * Hai thẻ dưới đây LUÔN có trong DOM để JS điền chữ vào sau khi gửi form
- * bằng AJAX (không tải lại trang, yêu cầu chủ dự án 21/08/2026 — xem
- * assets/js/cong-tu-modal.js). Khi chưa có gì thì rỗng, và thẻ rỗng phải
- * KHÔNG chiếm chỗ, nếu không thẻ sẽ tự dôi ra một khoảng trắng vô nghĩa.
- */
 .nntm-cong-tu__hien-trang:empty,
 .nntm-cong-tu__thong-bao:empty {
 	display: none;
 }
 
-/* ---------- Trạng thái đang gửi form (AJAX) ---------- */
 .nntm-cong-tu__submit[disabled] {
 	opacity: 0.6;
 	cursor: progress;
 }
 
-/* ---------- Ba nút bấm nhanh 10/20/50 (SUY DOAN — chỉ ở màn Khai Báo) ---------- */
 .nntm-cong-tu__nhanh {
 	display: flex;
 	gap: var(--nntm-sp-3);
@@ -122,7 +85,6 @@
 	color: var(--nntm-trang);
 }
 
-/* ---------- Dòng tổng kết cuối form khai báo ---------- */
 .nntm-cong-tu__tong-ket {
 	margin: var(--nntm-sp-4) 0 0;
 	font-family: var(--nntm-font-sans);
@@ -131,10 +93,6 @@
 	text-align: center;
 }
 
-/* ---------- Dòng thông báo dưới nút banner (JS dựng sau khi ghi xong) ----------
-   Nút "Cập nhật chuỗi trì" nằm trên ẢNH banner — không biết trước nền sáng hay
-   tối, nên dòng này tự mang nền đen mờ + chữ kem để đọc được trên mọi tấm.
-   Xem baoDuoiNutBanner() trong assets/js/cong-tu-modal.js. */
 .nntm-cong-tu__tong-ket--duoi-nut {
 	display: inline-block;
 	max-width: 100%;
@@ -154,38 +112,12 @@
 	margin-top: var(--nntm-sp-2);
 }
 
-/* =============================================================
-   Popup "Cập Nhật Chuỗi Trì" — yêu cầu chủ dự án 14/08/2026:
-   "nhấn vào tham gia... hiện popup lên đó luôn. Và khi tham gia rồi thì nút
-   tham gia chuyển thành nút cập nhật chuỗi trì, cũng mở popup", kèm ẢNH
-   THIẾT KẾ popup gửi qua chat (không xuất được thành file Figma — theo
-   docs/07-ban-giao.md, thiết kế gửi bằng ảnh chat từ 14/08/2026 ĐÈ LÊN
-   Figma, số đo dưới đây là ƯỚC LƯỢNG từ ảnh, quy về khung 1366 (ảnh xuất
-   2x, hệ số ×0,683), KHÔNG phải số đo Figma xuất trực tiếp:
-     - Thẻ: 481×343 (KHÔNG ép cao 343 cố định — nội dung form-khai-bao.php
-       còn dòng "Hôm nay đã ghi", 3 nút nhanh 10/20/50, dòng tổng kết cuối
-       form nên cao hơn 343 trong thực tế; ép cứng sẽ cắt chữ. Giữ nguyên
-       SỐ ĐO RỘNG thật, không suy đoán thêm chiều cao).
-     - Tiêu đề "Cập Nhật Chuỗi Trì": serif 30px (--nntm-fs-2xl), màu
-       --nntm-reu, căn giữa (tái dùng .nntm-auth-card__title--cong-tu, chỉ
-       đổi cỡ chữ 32→30).
-     - Dòng chào: avatar tròn 36px (khác 40px mặc định của popup Tham Gia)
-       + "Xin chào" 13px (--nntm-fs-xs) trên, pháp danh 16px (--nntm-fs-base) dưới.
-     - Nhãn "Nhập số chuỗi trì đã hoàn thành": 13px đậm (--nntm-fs-xs, đã
-       sẵn font-weight:700 ở .nntm-auth-field label — không cần lặp lại).
-     - Ô nhập số: cao 44px, nền trắng, góc vuông, rộng hết thẻ — ĐÃ ĐÚNG
-       SẴN từ .nntm-auth-field__control input dùng chung, không cần ghi đè.
-     - Nút "Cập nhật" đặc: cao 46px (khác 50px mặc định của .nntm-auth-btn).
-     - KHÔNG có checkbox nào — form-khai-bao.php vốn không có checkbox nào,
-       đúng yêu cầu, không cần ẩn gì thêm.
-   ============================================================= */
-
 .nntm-auth-card--cap-nhat {
 	width: 481px;
 }
 
 .nntm-auth-card--cap-nhat .nntm-auth-card__title--cong-tu {
-	font-size: var(--nntm-fs-2xl); /* 30px */
+	font-size: var(--nntm-fs-2xl);  
 }
 
 .nntm-auth-card--cap-nhat .nntm-cong-tu__avatar {
@@ -194,15 +126,15 @@
 }
 
 .nntm-auth-card--cap-nhat .nntm-cong-tu__chao-text em {
-	font-size: var(--nntm-fs-xs); /* 13px */
+	font-size: var(--nntm-fs-xs);  
 }
 
 .nntm-auth-card--cap-nhat .nntm-cong-tu__chao-text strong {
-	font-size: var(--nntm-fs-base); /* 16px */
+	font-size: var(--nntm-fs-base);  
 }
 
 .nntm-auth-card--cap-nhat .nntm-auth-field label {
-	font-size: var(--nntm-fs-xs); /* 13px, dam da co san (font-weight:700) */
+	font-size: var(--nntm-fs-xs);  
 }
 
 .nntm-auth-card--cap-nhat .nntm-auth-btn--dac {
@@ -210,8 +142,7 @@
 	line-height: 46px;
 }
 
-/* ---------- Mobile ---------- */
-/* SUY DOAN: chưa có Figma mobile cho cả hai màn. */
+ 
 @media (max-width: 767px) {
 	.nntm-auth-card--cong-tu {
 		width: 100%;

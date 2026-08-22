@@ -1,10 +1,4 @@
 <?php
-/**
- * Chi tiết Nghi Quỹ / Ấn phẩm — cùng cấu trúc với chi tiết bài viết thường.
- * Desktop source-of-truth: outer 1366px, content 1184px.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -31,7 +25,7 @@ while ( have_posts() ) :
 	);
 
 	if ( $topic_id > 0 ) {
-		$related_args['tax_query'] = array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- cần lọc cùng chủ đề.
+		$related_args['tax_query'] = array(  
 			array(
 				'taxonomy' => 'nntm_topic',
 				'field'    => 'term_id',
@@ -55,7 +49,7 @@ while ( have_posts() ) :
 						<span class="nntm-an-pham__cham" aria-hidden="true"></span>
 						<?php
 						printf(
-							/* translators: %s: ngày cập nhật */
+							 
 							esc_html__( 'Cập nhật %s', 'nntm' ),
 							esc_html( get_the_modified_date( 'd. m. Y' ) )
 						);
@@ -87,13 +81,13 @@ while ( have_posts() ) :
 
 					<div class="nntm-an-pham__hang-nut">
 						<?php if ( function_exists( 'nntm_section_render_favorite_button' ) ) : ?>
-							<?php echo nntm_section_render_favorite_button( $post_id, 'nntm-an-pham__favorite-button' ); // phpcs:ignore WordPress.Security.EscapeOutput -- helper tự escape. ?>
+							<?php echo nntm_section_render_favorite_button( $post_id, 'nntm-an-pham__favorite-button' );  ?>
 						<?php else : ?>
 							<button
 								type="button"
 								class="nntm-an-pham__yeu-thich"
 								data-nntm-favorite="<?php echo esc_attr( (string) $post_id ); ?>"
-								<?php echo is_user_logged_in() ? '' : 'data-nntm-auth-modal="dang-nhap"'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- thuộc tính cố định. ?>
+								<?php echo is_user_logged_in() ? '' : 'data-nntm-auth-modal="dang-nhap"';  ?>
 							>
 								<svg class="nntm-an-pham__tim" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
 									<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z" />
@@ -103,11 +97,7 @@ while ( have_posts() ) :
 						<?php endif; ?>
 
 						<?php
-						/*
-						 * Nút hiện theo QUYỀN ĐỌC, không theo "đã có tệp hay chưa":
-						 * ấn phẩm chưa gắn tệp vẫn mở được trang đọc, khung sách để
-						 * trống (xem nntm_doc_url()).
-						 */
+						 
 						?>
 						<?php if ( $duoc_xem ) : ?>
 							<a href="<?php echo esc_url( nntm_doc_url( $post_id ) ); ?>" class="nntm-an-pham__doc-nut">

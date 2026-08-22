@@ -1,12 +1,4 @@
-/**
- * Editor script cho block nntm/engineering-earth — JavaScript thuần,
- * không build. Cùng phong cách các block khác của theme.
- *
- * MỌI thuộc tính khai trong block.json đều phải có ô điều khiển ở đây —
- * thiếu một ô là thuộc tính đó không có cách nào sửa từ giao diện, ban
- * quản trị phải gọi lập trình viên. Đây là ràng buộc mạnh nhất của dự án
- * (docs/04-kien-truc.md mục 0.3).
- */
+ 
 ( function ( wp ) {
 	'use strict';
 
@@ -206,7 +198,7 @@
 			);
 		},
 		save: function () {
-			// Block động: PHP (render.php) tự dựng lại mỗi lần tải trang.
+
 			return null;
 		},
 	} );

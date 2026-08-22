@@ -1,26 +1,4 @@
 <?php
-/**
- * Render động cho block nntm/cta.
- *
- * WordPress tự require file này (khai báo qua "render" trong block.json)
- * mỗi khi block xuất hiện trên trang, với $attributes / $content / $block
- * sẵn có trong scope.
- *
- * fav-button LUÔN dựng thành <button> (nút bấm để bật/tắt trạng thái yêu
- * thích ngay tại chỗ, không phải điều hướng sang trang khác) — thuộc tính
- * "url" bị bỏ qua với biến thể này. Ba biến thể còn lại (default/ghost/
- * cta-text) dựng <a> khi có "url", ngược lại dựng <button type="button">
- * để dùng cho hành động JavaScript không điều hướng.
- *
- * Nút Yêu thích CHƯA nối vào bảng wp_nntm_favorites — phần lưu dữ liệu
- * thuộc task khác (xem docs/04-kien-truc.md mục 3). Ở đây chỉ dựng phần
- * hiển thị + để sẵn data-nntm-object-id cho JS phía sau nối vào.
- *
- * @package NNTM
- * @var array    $attributes Thuộc tính của block.
- * @var string   $content    Nội dung InnerBlocks (không dùng ở block này).
- * @var WP_Block $block      Instance block hiện tại.
- */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -52,7 +30,7 @@ if ( 'fav-button' === $variant ) :
 
 	$wrapper_attributes = get_block_wrapper_attributes( $wrapper_extra );
 	?>
-	<button <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput -- get_block_wrapper_attributes() da tu esc_attr() tung thuoc tinh. ?>>
+	<button <?php echo $wrapper_attributes;  ?>>
 		<span class="nntm-cta__icon" aria-hidden="true">
 			<svg viewBox="0 0 23 21" width="23" height="21" xmlns="http://www.w3.org/2000/svg" focusable="false">
 				<path d="M11.5 19.3C7.9 16.6 2 12 2 7.3 2 4.4 4.3 2 7.2 2c1.8 0 3.4.9 4.3 2.3C12.4 2.9 14 2 15.8 2 18.7 2 21 4.4 21 7.3c0 4.7-5.9 9.3-9.5 12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
@@ -85,7 +63,7 @@ else :
 
 	$wrapper_attributes = get_block_wrapper_attributes( $wrapper_extra );
 	?>
-	<<?php echo tag_escape( $tag ); ?> <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput -- get_block_wrapper_attributes() da tu esc_attr() tung thuoc tinh. ?>>
+	<<?php echo tag_escape( $tag ); ?> <?php echo $wrapper_attributes;  ?>>
 		<span class="nntm-cta__label"><?php echo esc_html( $label ); ?></span>
 	</<?php echo tag_escape( $tag ); ?>>
 	<?php

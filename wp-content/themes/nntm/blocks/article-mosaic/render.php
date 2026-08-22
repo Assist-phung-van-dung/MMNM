@@ -1,49 +1,16 @@
 <?php
-/**
- * Render động cho block nntm/article-mosaic — bố cục tạp chí: 1 bài nổi
- * bật ở cột trái + 2 thẻ vừa và 3 thẻ nhỏ ở cột phải, tổng 6 bài. Dùng
- * cho SECTION "Hoằng Pháp" (leadMedia=tall) và SECTION "Tin tức"
- * (leadMedia=short) của trang Figma "05. HOA KHAI".
- *
- * Không lưu HTML vào nội dung bài: mỗi lần tải trang, WP_Query chạy lại
- * từ $attributes hiện tại — bắt chước đúng phong cách của
- * blocks/article-rows/render.php.
- *
- * XỬ LÝ THIẾU BÀI (0–6 bài), không được vỡ bố cục:
- *   0 bài  -> thông báo tiếng Việt thân thiện, không dựng lưới.
- *   1 bài  -> chỉ cột trái (bài nổi bật), cột phải bị bỏ hẳn (không
- *             render div rỗng) và cột trái giãn ra chiếm toàn bộ chiều
- *             rộng nhờ class bổ trợ ".nntm-article-mosaic__list--solo".
- *   2 bài  -> cột trái + 1 thẻ vừa (hàng thẻ vừa chỉ có 1 phần tử flex,
- *             tự giãn full hàng — không có ô trống).
- *   3 bài  -> cột trái + 2 thẻ vừa, hàng thẻ nhỏ bị bỏ hẳn.
- *   4–5 bài -> cột trái + 2 thẻ vừa + 1–2 thẻ nhỏ (hàng thẻ nhỏ tự giãn
- *             đều theo số thẻ thật có, xem style.css).
- *   6 bài  -> đủ bố cục như Figma.
- *
- * @package NNTM
- * @var array    $attributes Thuộc tính của block.
- * @var string   $content    Nội dung InnerBlocks (không dùng ở block này).
- * @var WP_Block $block      Instance block hiện tại.
- */
 
 defined( 'ABSPATH' ) || exit;
 
-// Dùng lại nntm_card_get_primary_term() đã có ở block nntm/card thay vì
-// viết lại logic ưu tiên taxonomy (nntm_section -> nntm_topic ->
-// nntm_series -> category) — đúng nguyên tắc "sửa một chỗ" ở
-// docs/04-kien-truc.md mục 2. require_once tự đảm bảo hàm chỉ khai báo
-// một lần dù render.php của nhiều block cùng require file này.
+ 
+
+ 
 require_once get_template_directory() . '/blocks/card/inc/render-card.php';
 
-// Hàm dựng HTML (thumb/date/thẻ phụ) tách riêng vì render.php của block
-// bị WordPress core `require` (không phải `require_once`) mỗi lần
-// render — xem chú thích đầy đủ trong file inc/ này. Block này chắc
-// chắn xuất hiện hai lần trên cùng trang (Hoằng Pháp + Tin tức) nên
-// không được khai hàm trực tiếp trong render.php.
-require_once __DIR__ . '/inc/render-article-mosaic.php';
+ 
 
-// ---------- Đọc & làm sạch thuộc tính (danh sách trắng) ----------
+ 
+require_once __DIR__ . '/inc/render-article-mosaic.php';
 
 $allowed_post_types = array( 'post', 'nntm_article', 'nntm_publication', 'nntm_talk', 'nntm_video' );
 $post_type          = isset( $attributes['postType'] ) ? sanitize_key( (string) $attributes['postType'] ) : 'post';
@@ -56,19 +23,6 @@ if ( ! in_array( $lead_media, array( 'tall', 'short' ), true ) ) {
 	$lead_media = 'tall';
 }
 
-/*
- * Bố cục cột phải.
- *
- *   mosaic — 2 thẻ vừa (370) + 3 thẻ nhỏ (227), tổng 6 bài. Đây là SECTION 1
- *            của trang chủ và các SECTION của "05. HOA KHAI".
- *   grid   — lưới 3 cột x 2 hàng, 6 thẻ BẰNG NHAU 227x282, tổng 7 bài.
- *            Đây là SECTION 4 "Hoạt động - Sự kiện" (Figma `6376:6425`):
- *            Frame 139 rộng 811, sáu CARD 227x282 đặt ở x=487/754/1021 và
- *            y=158/440 — tức cách ngang 40, cách dọc 0.
- *
- * Hai bố cục khác nhau CẢ SỐ BÀI (6 và 7), nên phải đọc thuộc tính này
- * trước khi dựng truy vấn.
- */
 $secondary_layout = isset( $attributes['secondaryLayout'] ) ? sanitize_key( (string) $attributes['secondaryLayout'] ) : 'mosaic';
 if ( ! in_array( $secondary_layout, array( 'mosaic', 'grid' ), true ) ) {
 	$secondary_layout = 'mosaic';
@@ -91,36 +45,19 @@ $card_cta_label = isset( $attributes['cardCtaLabel'] )
 $taxonomy = isset( $attributes['taxonomy'] ) ? sanitize_key( (string) $attributes['taxonomy'] ) : '';
 $term_id  = isset( $attributes['termId'] ) ? absint( $attributes['termId'] ) : 0;
 
-// ---------- Truy vấn ----------
-// Bố cục cần đúng 6 bài (1 nổi bật + 2 vừa + 3 nhỏ) — số lượng KHÔNG
-// phải tham số của khách, cố định theo yêu cầu thiết kế. Không phân
-// trang nên luôn bật no_found_rows để bớt một truy vấn COUNT không
-// cần thiết.
+ 
+
+ 
 $query_args = array(
 	'post_type'           => $post_type,
 	'post_status'         => 'publish',
-	// mosaic can 6 bai (1 noi bat + 2 vua + 3 nho); grid can 7 (1 + luoi 3x2).
+	 
 	'posts_per_page'      => 'grid' === $secondary_layout ? 7 : 6,
 	'ignore_sticky_posts' => true,
 	'no_found_rows'       => true,
-	/*
-	 * KHÔNG tắt update_post_meta_cache / update_post_term_cache ở đây.
-	 * Mỗi hàng đọc cả ảnh đại diện (post meta `_thumbnail_id`) lẫn nhãn
-	 * chuyên mục (get_the_terms() qua nntm_card_get_primary_term()).
-	 * Tắt bộ nhớ đệm sẽ khiến mỗi bài sinh thêm truy vấn riêng — chậm
-	 * hơn chứ không nhanh hơn.
-	 */
+	 
 );
 
-/*
- * VI SAO MOI KIEU SAP XEP DEU KEM `ID` LAM TIEU CHI PHU:
- * du lieu nhap hang loat (seed) hay co ngay dang trung nhau tung giay. Khi
- * ORDER BY chi co mot cot ma cot do trung gia tri, MySQL duoc phep tra ve
- * thu tu bat ky — moi lan tai trang anh tu nhay cho. Them `ID` lam tieu chi
- * phu thi thu tu co dinh tuyet doi, vi ID khong bao gio trung.
- * WP_Query nhan orderby dang mang; khi dung mang thi tham so `order` rieng
- * bi bo qua, huong sap da nam trong gia tri cua tung khoa.
- */
 switch ( $order_by_choice ) {
 	case 'oldest':
 		$query_args['orderby'] = array(
@@ -137,15 +74,7 @@ switch ( $order_by_choice ) {
 		break;
 
 	case 'manual':
-		/*
-		 * Thu tu do ban quan tri tu chon, nhap danh sach ID bai o o
-		 * "Thu tu thu cong" trong bang dieu khien.
-		 *
-		 * VI SAO CAN: khi cac bai co cung ngay dang (hay gap voi du lieu
-		 * nhap hang loat), orderby=date khong quyet dinh duoc thu tu nen
-		 * moi lan tai trang WordPress sap mot kieu — anh tu nhay cho. Chot
-		 * bang post__in + orderby=post__in thi thu tu co dinh tuyet doi.
-		 */
+		 
 		$manual_ids = array();
 		if ( isset( $attributes['manualOrderIds'] ) ) {
 			foreach ( preg_split( '/[^0-9]+/', (string) $attributes['manualOrderIds'] ) as $one_id ) {
@@ -160,7 +89,7 @@ switch ( $order_by_choice ) {
 			$query_args['orderby']  = 'post__in';
 			unset( $query_args['order'] );
 		} else {
-			// Chua nhap ID nao thi roi ve moi nhat, khong de trang trong.
+			 
 			$query_args['orderby'] = array(
 				'date' => 'DESC',
 				'ID'   => 'DESC',
@@ -178,7 +107,7 @@ switch ( $order_by_choice ) {
 }
 
 if ( '' !== $taxonomy && taxonomy_exists( $taxonomy ) && $term_id > 0 ) {
-	$query_args['tax_query'] = array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- can loc theo 1 term, khong tranh duoc.
+	$query_args['tax_query'] = array(  
 		array(
 			'taxonomy' => $taxonomy,
 			'field'    => 'term_id',
@@ -187,20 +116,6 @@ if ( '' !== $taxonomy && taxonomy_exists( $taxonomy ) && $term_id > 0 ) {
 	);
 }
 
-/*
- * GHIM TAY một bài lên ô lớn (yêu cầu anh Úy 12/08/2026, mục M1.3) — admin
- * chọn đúng một bài trong bảng điều khiển, bài đó luôn nằm ở vị trí nổi
- * bật, các ô còn lại vẫn tự lấy tin mới nhất như cũ.
- *
- * KHÔNG kết hợp với "Tự chọn thứ tự từng bài" (orderBy=manual): ở đó admin
- * đã tự quyết định TOÀN BỘ thứ tự bằng danh sách ID, ghim thêm vào sẽ chỉ
- * gây rối — admin muốn ghim thì đặt bài đó lên đầu danh sách thủ công.
- *
- * Việc kiểm tra bài ghim còn hợp lệ hay không (còn tồn tại, đã xuất bản,
- * đúng loại nội dung) nằm ở plugin nntm-core (nntm_core_validate_pinned_post())
- * — dùng chung với các block khác có tính năng ghim (docs/04-kien-truc.md
- * mục 9), không tự viết lại kiểm tra này ở từng block.
- */
 $pinned_post_id = isset( $attributes['pinnedPostId'] ) ? absint( $attributes['pinnedPostId'] ) : 0;
 $pinned_post    = null;
 if ( $pinned_post_id > 0 && 'manual' !== $order_by_choice && function_exists( 'nntm_core_validate_pinned_post' ) ) {
@@ -217,12 +132,11 @@ $query = new WP_Query( $query_args );
 $mosaic_posts = $pinned_post ? array_merge( array( $pinned_post ), $query->posts ) : $query->posts;
 $total_posts  = count( $mosaic_posts );
 
-// bài 1 = nổi bật, bài 2–3 = thẻ vừa, bài 4–6 = thẻ nhỏ. array_slice() tự
-// trả mảng rỗng khi không đủ phần tử, không cần kiểm tra thủ công.
+ 
 $lead_post = $total_posts > 0 ? $mosaic_posts[0] : null;
 
 if ( 'grid' === $secondary_layout ) {
-	// Luoi 3x2: sau the bang nhau, khong chia vua/nho.
+	 
 	$medium_posts = array();
 	$small_posts  = array();
 	$grid_posts   = array_slice( $mosaic_posts, 1, 6 );
@@ -234,12 +148,10 @@ if ( 'grid' === $secondary_layout ) {
 
 $has_secondary = ! empty( $medium_posts ) || ! empty( $small_posts ) || ! empty( $grid_posts );
 
-// Ba hàm dựng HTML dùng ở dưới (nntm_article_mosaic_render_thumb,
-// nntm_article_mosaic_render_date, nntm_article_mosaic_render_secondary_card)
-// nằm ở inc/render-article-mosaic.php đã require_once phía trên.
+ 
 
-// Class bien the theo leadMedia: CSS can biet cot trai dang dung anh cao hay
-// anh thap thi moi canh duoc hai cot cho deu (xem .__secondary trong style.css).
+ 
+ 
 $wrapper_attributes = get_block_wrapper_attributes(
 	array(
 		'class' => 'nntm-article-mosaic'
@@ -248,7 +160,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 	)
 );
 ?>
-<section <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput -- get_block_wrapper_attributes() da tu esc_attr() tung thuoc tinh. ?>>
+<section <?php echo $wrapper_attributes;  ?>>
 	<div class="nntm-article-mosaic__inner">
 		<?php if ( '' !== $heading ) : ?>
 			<h2 class="nntm-article-mosaic__heading"><?php echo wp_kses_post( $heading ); ?></h2>
@@ -260,16 +172,16 @@ $wrapper_attributes = get_block_wrapper_attributes(
 			<div class="nntm-article-mosaic__content">
 				<div class="nntm-article-mosaic__list<?php echo $has_secondary ? '' : ' nntm-article-mosaic__list--solo'; ?>">
 					<?php
-					// ---------- Cột trái: bài nổi bật ----------
+					 
 					$lead_permalink  = get_permalink( $lead_post );
 					$lead_title      = get_the_title( $lead_post );
 					$lead_img_class  = 'nntm-article-mosaic__lead-img nntm-article-mosaic__lead-img--' . $lead_media;
 					?>
 					<article class="nntm-article-mosaic__lead">
-						<?php echo nntm_article_mosaic_render_thumb( $lead_post, $lead_img_class ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
+						<?php echo nntm_article_mosaic_render_thumb( $lead_post, $lead_img_class );  ?>
 						<div class="nntm-article-mosaic__lead-body">
 							<?php if ( $show_date ) : ?>
-								<?php echo nntm_article_mosaic_render_date( $lead_post ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
+								<?php echo nntm_article_mosaic_render_date( $lead_post );  ?>
 							<?php endif; ?>
 
 							<div class="nntm-article-mosaic__lead-text">
@@ -305,7 +217,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 							<?php if ( ! empty( $grid_posts ) ) : ?>
 								<div class="nntm-article-mosaic__grid">
 									<?php foreach ( $grid_posts as $grid_post ) : ?>
-										<?php echo nntm_article_mosaic_render_secondary_card( $grid_post, 'small', $show_category, $show_date, $card_cta_label ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
+										<?php echo nntm_article_mosaic_render_secondary_card( $grid_post, 'small', $show_category, $show_date, $card_cta_label );  ?>
 									<?php endforeach; ?>
 								</div>
 							<?php endif; ?>
@@ -313,7 +225,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 							<?php if ( ! empty( $medium_posts ) ) : ?>
 								<div class="nntm-article-mosaic__medium-row">
 									<?php foreach ( $medium_posts as $medium_post ) : ?>
-										<?php echo nntm_article_mosaic_render_secondary_card( $medium_post, 'medium', $show_category, $show_date, $card_cta_label ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
+										<?php echo nntm_article_mosaic_render_secondary_card( $medium_post, 'medium', $show_category, $show_date, $card_cta_label );  ?>
 									<?php endforeach; ?>
 								</div>
 							<?php endif; ?>
@@ -321,7 +233,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 							<?php if ( ! empty( $small_posts ) ) : ?>
 								<div class="nntm-article-mosaic__small-row">
 									<?php foreach ( $small_posts as $small_post ) : ?>
-										<?php echo nntm_article_mosaic_render_secondary_card( $small_post, 'small', $show_category, $show_date, $card_cta_label ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
+										<?php echo nntm_article_mosaic_render_secondary_card( $small_post, 'small', $show_category, $show_date, $card_cta_label );  ?>
 									<?php endforeach; ?>
 								</div>
 							<?php endif; ?>
@@ -332,11 +244,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 		<?php endif; ?>
 
 		<?php
-		/*
-		 * Nut "Xem Tat ca" — Figma R4 SECTION 1 co nut nay canh giua duoi
-		 * cung khoi. Chi hien khi khach da nhap nhan, de cac khoi khong can
-		 * nut (nhu SECTION 4 Tin tuc) khong tu moc ra mot nut trong.
-		 */
+		 
 		$nntm_am_xem_nhan = isset( $attributes['viewAllLabel'] ) && '' !== trim( (string) $attributes['viewAllLabel'] )
 			? sanitize_text_field( (string) $attributes['viewAllLabel'] )
 			: __( 'Xem Tất cả', 'nntm' );

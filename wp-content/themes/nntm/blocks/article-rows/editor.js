@@ -1,9 +1,4 @@
-/**
- * Editor script cho block nntm/article-rows — JavaScript thuần, không build.
- * Dùng biến toàn cục wp.* theo đúng quy ước dự án (bắt chước editor.js của
- * nntm/card-list — xem blocks/card-list/editor.js). Bảng điều khiển bên
- * phải dùng nhãn tiếng Việt dễ hiểu cho người không rành kỹ thuật.
- */
+ 
 ( function ( wp ) {
 	'use strict';
 
@@ -23,7 +18,6 @@
 	var apiFetch = wp.apiFetch;
 	var ServerSideRender = wp.serverSideRender && wp.serverSideRender.default ? wp.serverSideRender.default : wp.serverSideRender;
 
-	// Danh sách trắng loại nội dung — trùng với block.json và render.php.
 	var POST_TYPE_OPTIONS = [
 		{ label: __( 'Bài viết (6 phân mục)', 'nntm' ), value: 'nntm_article' },
 		{ label: __( 'Ấn phẩm (PDF / Books)', 'nntm' ), value: 'nntm_publication' },
@@ -43,7 +37,6 @@
 		{ label: __( 'Hàng đầu: ảnh bên phải', 'nntm' ), value: 'right' },
 	];
 
-	// Nhãn tiếng Việt cho taxonomy — khớp với class-taxonomies.php.
 	var TAXONOMY_LABELS = {
 		nntm_section: __( 'Phân mục', 'nntm' ),
 		nntm_topic: __( 'Chủ đề', 'nntm' ),
@@ -52,7 +45,6 @@
 		post_tag: __( 'Thẻ', 'nntm' ),
 	};
 
-	// Taxonomy lõi của WordPress có rest_base khác tên taxonomy.
 	var REST_BASE_OVERRIDES = {
 		category: 'categories',
 		post_tag: 'tags',
@@ -72,15 +64,14 @@
 			var setAttributes = props.setAttributes;
 			var blockProps = useBlockProps();
 
-			var taxonomyState = useState( [] ); // danh sách taxonomy hợp lệ cho postType hiện tại
+			var taxonomyState = useState( [] ); 
 			var availableTaxonomies = taxonomyState[ 0 ];
 			var setAvailableTaxonomies = taxonomyState[ 1 ];
 
-			var termState = useState( [] ); // danh sách term của taxonomy đang chọn
+			var termState = useState( [] ); 
 			var availableTerms = termState[ 0 ];
 			var setAvailableTerms = termState[ 1 ];
 
-			// Khi đổi loại nội dung: hỏi REST xem loại đó gắn được taxonomy nào.
 			useEffect(
 				function () {
 					var isCurrent = true;
@@ -110,7 +101,6 @@
 				[ attributes.postType ]
 			);
 
-			// Khi đổi taxonomy (hoặc loại nội dung làm mất taxonomy cũ): tải danh sách term.
 			useEffect(
 				function () {
 					var isCurrent = true;
@@ -153,7 +143,7 @@
 				} )
 			);
 
-			var previewAttributes = Object.assign( {}, attributes, { heading: '' } ); // tranh hien tieu de 2 lan (RichText da hien o duoi)
+			var previewAttributes = Object.assign( {}, attributes, { heading: '' } ); 
 
 			return el(
 				'div',
@@ -268,7 +258,7 @@
 			);
 		},
 		save: function () {
-			// Block động: PHP (render.php) tự chạy lại WP_Query mỗi lần tải trang.
+
 			return null;
 		},
 	} );

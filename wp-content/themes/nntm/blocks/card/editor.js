@@ -1,8 +1,4 @@
-/**
- * Editor script cho block nntm/card — JavaScript thuần, không build.
- * Dùng biến toàn cục wp.blocks / wp.element / wp.blockEditor / wp.components
- * theo đúng quy ước dự án (chưa có bước build webpack/wp-scripts).
- */
+ 
 ( function ( wp ) {
 	'use strict';
 
@@ -17,9 +13,8 @@
 	var TextControl = wp.components.TextControl;
 	var ServerSideRender = wp.serverSideRender && wp.serverSideRender.default ? wp.serverSideRender.default : wp.serverSideRender;
 
-	// Nhãn tiếng Việt cho từng variant — PHẢI giữ đúng "value" trùng tên
-	// variant trong Figma (component set CARD), chỉ "label" là tiếng Việt
-	// dễ hiểu cho người dùng không rành kỹ thuật.
+
+
 	var VARIANT_OPTIONS = [
 		{ label: __( 'Bài viết lớn (Article)', 'nntm' ), value: 'article' },
 		{ label: __( 'Bài viết vừa (Small)', 'nntm' ), value: 'small' },
@@ -109,7 +104,7 @@
 			);
 		},
 		save: function () {
-			// Block động: PHP (render.php) tự vẽ lại nội dung mỗi lần tải trang.
+
 			return null;
 		},
 	} );

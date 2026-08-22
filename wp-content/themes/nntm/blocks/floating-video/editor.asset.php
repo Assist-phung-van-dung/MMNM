@@ -1,8 +1,4 @@
 <?php
-/**
- * Dependencies for nntm/floating-video editor script.
- * Theme has no JS build step, so this asset file is maintained by hand.
- */
 
 defined( 'ABSPATH' ) || exit;
 

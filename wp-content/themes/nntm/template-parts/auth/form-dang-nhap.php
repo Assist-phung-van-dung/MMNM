@@ -1,16 +1,4 @@
 <?php
-/**
- * Form đăng nhập dùng chung — dùng ở trang toàn màn hình
- * (page-dang-nhap.php) và ở dạng gọn trong modal chân trang
- * (template-parts/auth/modal-dang-nhap.php).
- *
- * Tham số nhận qua $args:
- *   redirect_to (string) URL chuyển hướng sau khi đăng nhập thành công.
- *   compact     (bool)   true khi dùng trong modal — bớt lề ngoài.
- *
- * @package NNTM
- * @var array $args
- */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -18,7 +6,7 @@ $args        = is_array( $args ) ? $args : array();
 $redirect_to = isset( $args['redirect_to'] ) ? (string) $args['redirect_to'] : '';
 $compact     = ! empty( $args['compact'] );
 
-$is_this_action = ! empty( $_POST['nntm_auth_action'] ) && 'dang-nhap' === wp_unslash( $_POST['nntm_auth_action'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- chỉ đọc để biết có in lỗi hay không, nonce đã kiểm ở inc/auth.php.
+$is_this_action = ! empty( $_POST['nntm_auth_action'] ) && 'dang-nhap' === wp_unslash( $_POST['nntm_auth_action'] );  
 $errors         = ( $is_this_action && isset( $GLOBALS['nntm_auth_errors'] ) && is_wp_error( $GLOBALS['nntm_auth_errors'] ) )
 	? $GLOBALS['nntm_auth_errors']
 	: null;
@@ -99,12 +87,7 @@ $google_url = apply_filters( 'nntm_google_login_url', '' );
 		</p>
 
 		<?php
-		/*
-		 * Dự án CHƯA cắm OAuth Google (khảo sát câu 9 có yêu cầu Google +
-		 * Facebook, việc này ngoài phạm vi hiện tại). Lấy URL qua filter —
-		 * rỗng thì vẫn hiện đúng thiết kế nhưng ở dạng nút vô hiệu hoá,
-		 * kèm title giải thích. CHỖ CẮM SAU: `add_filter( 'nntm_google_login_url', ... )`.
-		 */
+
 		?>
 		<?php if ( $google_url ) : ?>
 			<a href="<?php echo esc_url( $google_url ); ?>" class="nntm-auth-btn nntm-auth-btn--phu">

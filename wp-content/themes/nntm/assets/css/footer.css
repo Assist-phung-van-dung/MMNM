@@ -1,106 +1,26 @@
-/* =============================================================
-   NNTM — CSS chân trang (footer.php)
 
-   DỰNG LẠI theo trang Figma "DESKTOP - R4 (UPDATED 6AUG)",
-   component FOOTER (node 6376:7384).
 
-   Footer nền tối có lời mời phản hồi, logo, liên kết và bản quyền.
-
-   ĐÃ THAY SỐ ĐO THẬT ngày 10/08/2026 (đọc node `6376:6324`). Bản trước
-   đo bằng pixel trên ảnh xuất 2x nên SAI cấu trúc: bỏ sót hẳn lớp nền
-   ĐEN bọc ngoài, và tưởng khối trong lệch trái 30px trong khi thật ra
-   đó là các lớp đệm lồng nhau.
-
-   Cây thật:
-     FOOTER      1366x167  padding 20  fill #000000   <- lop bi bo sot
-       Frame 158 1326x127  padding 20  fill #4F4F4F
-         Frame 147 1286x87  padding 10  gap 10
-           SUB     1266x67
-             Line 3    1225x0   duong ke
-             Frame 146 1226x46  space-between  gap 55
-               Frame 156 668x46  gap 20
-                 logo   143x46  #F7F1DE
-                 lien ket 275x22 #E0E0E0  Battambang 400 16/22
-               ban quyen 309x22 #E0E0E0  Battambang 400 16/22
-
-   Cong chieu cao: 20+20+10 + (ke 0 + 21 + hang 46) + 10+20+20 = 167.
-
-   GHI CHU 12/08/2026: cay "do node rieng" o tren da bi spec moi hon
-   (spec-trang-chu.md, do truc tiep tren khung 01_HOMEPAGE) thay the — spec
-   moi khong thay lop den 1366x167 boc ngoai, chi ghi mot dai #4F4F4F cao
-   127px. Da sua theo spec moi luc do (mot mau #4F4F4F day het chieu ngang).
-
-   GHI CHU 13/08/2026: ban 12/08 nói trên CŨNG SAI — anh Uy cat rieng anh
-   fig-footer.png cho thay khoi xam KHONG day het chieu ngang, ma thut vao
-   ca hai ben, phia tren/duoi khoi la nen TRANG. Cay "do node rieng" 10/08
-   ban dau (FOOTER den boc Frame 158 xam) hoa ra dung VE CAU TRUC (hai lop
-   long nhau), chi SAI MAU o lop ngoai (den → phai la trang). Da sua theo
-   dung cau truc hai lop: .nntm-footer nen trang lam lop ngoai (kem dem
-   ngang tao khoang thut), .nntm-footer__bar nen xam lam lop trong — xem
-   chu thich ngay tren khai bao hai class nay phia duoi. Khoi "Hay chia se
-   Y kien" cung da go theo chi dao nay — xem footer.php.
-
-   CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
-   assets/css/tokens.css. Mã màu trong chú thích chỉ để tra cứu.
-   ============================================================= */
-
-/*
- * SUA 13/08/2026 — chi dao anh Uy, doi chieu anh cat rieng vung chan trang
- * fig-footer.png (thay cho bang do dai ngang tren toan khung homepage dung
- * truoc do): chan trang KHONG phai mot dai #4F4F4F day het chieu ngang.
- * Dung la HAI lop:
- *
- *   .nntm-footer      nen TRANG (--nntm-trang), day het chieu rong; dem
- *                     ngang tao khoang THUT vao ~20px cho khoi xam ben
- *                     trong; dem doc tao khoang trang phia tren/duoi khoi.
- *   .nntm-footer__bar nen XAM (--nntm-muc-nhat), la khoi thut le do —
- *                     chinh no moi la "khoi nen xam" trong anh Figma.
- *
- * Khoi "Hay chia se Y kien cua ban" DA GO (xem chu thich dau footer.php) —
- * anh Figma khong co khoi nay, day la quyet dinh moi cua anh Uy 13/08/2026
- * thay cho quyet dinh giu lai truoc do.
- */
 .nntm-footer {
-	background-color: var(--nntm-den); /* nền ngoài footer theo yêu cầu hiện tại */
+	background-color: var(--nntm-den);  
 	color: var(--nntm-vien);
-	padding-inline: var(--nntm-sp-5); /* 20 — tao khoang thut cho khoi xam ben trong so voi mep trai/phai */
-	padding-block: var(--nntm-sp-4);  /* 15 — khoang trang phia tren/duoi khoi xam */
+	padding-inline: var(--nntm-sp-5);  
+	padding-block: var(--nntm-sp-4);   
 }
 
 .nntm-footer__bar {
-	/* SUA 20/08/2026: `none` -> chan 1326 (so Figma) + canh giua; khung site
-	   khong con chan 1366 nen `none` se keo dai xam het 1920. */
+
 	max-width: 1326px;
 	margin-inline: auto;
-	background-color: var(--nntm-muc-nhat); /* tu Figma: khoi nen xam #4F4F4F, thut le nho dem ngang o .nntm-footer */
-	padding: var(--nntm-sp-5); /* 20 — dem trong khoi xam, quanh duong ke + hang noi dung */
+	background-color: var(--nntm-muc-nhat);  
+	padding: var(--nntm-sp-5);  
 }
 
 .nntm-footer__inner {
-	max-width: 1286px;             /* tu Figma: Frame 147 */
+	max-width: 1286px;              
 	margin-inline: auto;
 	padding: 0;
 }
 
-/* =============================================================
-   CHÂN TRANG CÁC TRANG TRONG (.nntm-footer--inner) — MỘT ĐỊNH NGHĨA DUY NHẤT
-
-   Viền ngoài đen, không có đường kẻ ngang theo Figma. Khổ Figma:
-   147 = 20 (đệm ngoài) + 107 (thanh xám) + 20.
-
-   CHỐT 22/08/2026 — TRƯỚC ĐÂY MỖI TRANG MỘT KIỂU. Năm file
-   assets/css/pages/*-figma.css đều tự vẽ lại chân trang này, mỗi file một số
-   đo, và `dieu-thuong-figma.css` còn đổi hẳn `.__row` thành lưới 3 cột rồi
-   CANH GIỮA ở màn hẹp — nên /dieu-thuong/ có chân trang canh giữa còn mọi
-   trang khác canh trái. Đã bỏ hết những khối đó; số đo Figma dồn về đây.
-
-   THÊM MỚI THÌ SỬA Ở ĐÂY, đừng vẽ lại trong file của từng trang — đó chính là
-   cách nó lệch nhau lần trước.
-
-   Chân trang TRANG CHỦ (.nntm-footer--home) là bố cục khác hẳn (có hàng "Hãy
-   chia sẻ ý kiến", đường kẻ, logo+menu gom cột trái) — KHÔNG áp luật ở khối
-   này lên nó.
-   ============================================================= */
 .nntm-footer--inner {
 	background-color: var(--nntm-den);
 	padding: var(--nntm-sp-5);
@@ -108,7 +28,7 @@
 }
 
 .nntm-footer--inner .nntm-footer__bar {
-	min-height: 107px; /* tu Figma: thanh xam 107 trong khung 147 */
+	min-height: 107px;  
 	display: flex;
 	align-items: center;
 	box-sizing: border-box;
@@ -116,16 +36,11 @@
 
 .nntm-footer--inner .nntm-footer__inner { width: 100%; }
 
-/*
- * 16/22 là số đo Figma của chân trang các trang trong. Chỉ khoanh cho
- * `--inner`: chân trang trang chủ dùng giãn dòng 1.6 của luật chung.
- */
 .nntm-footer--inner .nntm-footer-nav a,
 .nntm-footer--inner .nntm-footer__copyright {
 	line-height: 22px;
 }
 
-/* Chỉ trang chủ có lời mời góp ý; các trang còn lại giữ chân trang gọn. */
 .nntm-footer__share {
 	display: flex;
 	align-items: center;
@@ -168,29 +83,27 @@
 
 .nntm-footer__rule {
 	width: 100%;
-	margin: 0 0 var(--nntm-sp-4) 0; /* 15 — khoang cach tu duong ke xuong hang noi dung */
+	margin: 0 0 var(--nntm-sp-4) 0;  
 	border: 0;
-	border-top: 1px solid var(--nntm-reu-dam); /* hairline */
+	border-top: 1px solid var(--nntm-reu-dam);  
 }
 
 .nntm-footer__row {
 	display: flex;
 	align-items: center;
-	gap: var(--nntm-sp-5);       /* tu Figma: Frame 156 gap 20 */
-	min-height: 46px;            /* tu Figma: Frame 146 cao 46 */
+	gap: var(--nntm-sp-5);        
+	min-height: 46px;             
 }
-
-/* ---------- Logo chữ 2 dòng ---------- */
 
 .nntm-footer__logo {
 	flex: 0 0 auto;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	min-height: 46px;               /* do tu anh 2x */
+	min-height: 46px;                
 	font-family: var(--nntm-font-display);
 	font-weight: 600;
-	font-size: var(--nntm-fs-lg);   /* 20 — hai dong trong 46px, khop chieu cao do duoc */
+	font-size: var(--nntm-fs-lg);    
 	line-height: 1.15;
 	text-transform: uppercase;
 	color: var(--nntm-kem);
@@ -212,8 +125,6 @@
 	outline-offset: 4px;
 }
 
-/* ---------- Liên kết ---------- */
-
 .nntm-footer__nav {
 	flex: 1 1 auto;
 	min-width: 0;
@@ -223,17 +134,12 @@
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	gap: var(--nntm-sp-3);          /* 10 — khoang cach quanh dau gach ngan */
+	gap: var(--nntm-sp-3);           
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
 
-/*
- * Figma viết 3 mục thành một dòng ngăn bằng dấu gạch đứng
- * ("Về chúng tôi | Liên hệ | Chính sách"). Ở đây là 3 liên kết riêng
- * để bấm được, dấu ngăn vẽ bằng ::after và ẩn với trình đọc màn hình.
- */
 .nntm-footer-nav li {
 	display: flex;
 	align-items: center;
@@ -251,7 +157,7 @@
 .nntm-footer__copyright {
 	font-family: var(--nntm-font-sans);
 	font-weight: 400;
-	font-size: var(--nntm-fs-base); /* 16 — do tu anh 2x */
+	font-size: var(--nntm-fs-base);  
 	line-height: 1.6;
 	color: var(--nntm-vien);
 	text-decoration: none;
@@ -270,17 +176,13 @@
 	outline-offset: 3px;
 }
 
-/* ---------- Bản quyền ---------- */
-
 .nntm-footer__copyright {
 	flex: 0 0 auto;
 	margin: 0;
-	margin-inline-start: auto;      /* day sat mep phai, trung mep voi duong ke */
+	margin-inline-start: auto;       
 }
 
-/* ---------- Màn hẹp ---------- */
-/* SUY DOAN: chua co Figma mobile — bo le trai 30 bat doi xung, chuyen ve
-   can deu; xep doc khi khong con du cho cho ba khoi tren mot hang. */
+
 
 @media (max-width: 1151px) {
 	.nntm-footer {

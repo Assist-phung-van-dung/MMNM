@@ -1,7 +1,4 @@
-/* =============================================================
-   nntm/article-rows — danh sách bài viết so le.
-   Desktop 1366px, nội dung đúng 1184px.
-   ============================================================= */
+
 .nntm-article-rows {
 	display: block;
 	width: 100%;
@@ -145,7 +142,6 @@
 	color: var(--nntm-chinh);
 }
 
-/* ---------- Phân trang ---------- */
 .nntm-section-pagination {
 	display: flex;
 	align-items: center;
@@ -250,7 +246,6 @@
 	}
 }
 
-/* Gutenberg preview. */
 .editor-styles-wrapper .nntm-article-rows .nntm-favorite-button {
 	appearance: none;
 	display: inline-flex;

@@ -1,18 +1,11 @@
-/*
- * Lien Dan — desktop reconciliation against Figma frame 6376:6744.
- * Reference: design/figma/6376-6744@1x.png, cropped to the 1366x1807 frame.
- * Loaded only on /lien-dan/ so shared card-list/footer architecture stays intact.
- */
 
-/* The page is a stack of full-width blocks; Gutenberg paragraph margins must not
- * create seams between the measured section boundaries. */
+
 .nntm-main--full .nntm-page,
 .nntm-main--full .nntm-page__content {
 	margin: 0;
 	padding: 0;
 }
 
-/* -------------------- KHOA TU: y=76, h=544 -------------------- */
 .nntm-lien-dan-khoa > .nntm-card-list__band {
 	height: 544px;
 	min-height: 544px;
@@ -129,7 +122,6 @@
 	text-underline-offset: 2px;
 }
 
-/* -------------------- LICH TU: y=620, h=404 -------------------- */
 .nntm-lien-dan-lich > .nntm-card-list__band {
 	height: 404px;
 	min-height: 404px;
@@ -229,7 +221,6 @@
 	color: var(--nntm-chu);
 }
 
-/* Figma arrows are 58px square floating controls. */
 .nntm-lien-dan-khoa .nntm-card-list__nav,
 .nntm-lien-dan-lich .nntm-card-list__nav {
 	position: absolute;
@@ -265,7 +256,6 @@
 	transform: translateY(-50%) scale(1.04);
 }
 
-/* -------------------- THIEN DUONG: y=1024, h=636 -------------------- */
 .nntm-thien-duong {
 	height: 636px;
 	min-height: 636px;
@@ -296,12 +286,7 @@
 
 .nntm-thien-duong__embed {
 	display: grid;
-	/*
-	 * SUA 20/08/2026: px -> fr. Khoi nay nam NGOAI moi @media nen hai cot
-	 * cung do xuong ca dai 1152-1365; tu khi bo `zoom` thi 488+685+10 = 1183
-	 * vuot khung noi dung (1003 o man 1200) va cot phai bi cat 89px.
-	 * `fr` giu dung ti le Figma va tu co theo be rong.
-	 */
+
 	grid-template-columns: minmax(0, 488fr) minmax(0, 685fr);
 	gap: 10px;
 	height: 385px;
@@ -322,37 +307,13 @@
 	object-fit: cover;
 }
 
-/* Keep the dynamic player functional but make its outer geometry match the
- * screenshot embedded in Figma. */
 
-/*
- * SUA 20/08/2026 (anh Uy bao menu toc do bi an duoi khung o man lon):
- * `overflow: hidden` o day CAT MAT popup .nntm-thien-duong__speed-menu.
- * Popup do dat tuyet doi trong .__settings nam SAU trong khung nay, mo
- * xuong duoi (`top: calc(100% + 8px)`) nen roi thang ra ngoai day khung
- * 385px cua desktop va bi cat sach.
- *
- * blocks/thien-duong/style.css von da khai `overflow: visible` cho chinh
- * phan tu nay, kem chu thich "cho popup speed menu thoat khoi khung
- * player" — luat o day de len va vo hieu hoa no.
- *
- * Bo clip la an toan: noi dung ben trong KHONG the tran ra vi
- * .__player-inner co `min-height: 0` va .__tracklist tu cuon rieng
- * (`overflow-y: auto`). Clip o day chi la lop chan du phong, va cai gia
- * phai tra la mat han menu toc do.
- */
 .nntm-thien-duong__player {
 	overflow: visible;
 	box-shadow: none;
 }
 
-/*
- * BỎ 22/08/2026 — khối "COMPACT FOOTER" từng ở đây chỉ lặp lại số đo Figma của
- * chân trang các trang trong. Giữ mỗi trang một bản là cách nó lệch nhau; giờ
- * chỉ định nghĩa ở assets/css/footer.css, khối ".nntm-footer--inner".
- */
 
-/* -------------------- MOTION / HOVER POLISH -------------------- */
 .nntm-lien-dan-khoa .nntm-card--khoa-tu,
 .nntm-lien-dan-lich .nntm-card--khoa-tu {
 	transition: transform 300ms cubic-bezier(.2,.7,.2,1), box-shadow 300ms cubic-bezier(.2,.7,.2,1);
@@ -392,7 +353,6 @@
 	}
 }
 
-/* -------------------- RESPONSIVE SAFETY -------------------- */
 @media (max-width: 1151px) {
 	.nntm-lien-dan-khoa > .nntm-card-list__band,
 	.nntm-lien-dan-lich > .nntm-card-list__band,
@@ -420,7 +380,7 @@
 	.nntm-lien-dan-khoa .nntm-card-list__heading,
 	.nntm-lien-dan-lich .nntm-card-list__heading,
 	.nntm-thien-duong__heading {
-		font-size: clamp(36px, 9vw, var(--nntm-fs-4xl)); /* tran theo token de bam bac chu tablet cua responsive.css */
+		font-size: clamp(36px, 9vw, var(--nntm-fs-4xl));  
 		line-height: 1.1;
 	}
 
@@ -460,15 +420,6 @@
 		height: auto;
 	}
 
-	/*
-	 * TABLET (768-1151): giu hai cot nhung chuyen sang TI LE.
-	 *
-	 * Khoi THIEN DUONG cua trang nay khai `grid-template-columns: 488px 685px`
-	 * NGOAI moi @media (nam sau khi khoi min-width:1152px da dong) nen hai cot
-	 * cung do o mo cong: do duoc cot phai tran 194px ra ngoai khung o 1024 va
-	 * 450px o 768. Doi sang `488fr 685fr` — dung ti le Figma nhung tu co theo
-	 * be rong. Bo luon chieu cao co dinh 385px cua desktop.
-	 */
 	.nntm-thien-duong__embed {
 		grid-template-columns: 488fr 685fr;
 		height: auto;
@@ -481,32 +432,13 @@
 		aspect-ratio: 16 / 10;
 	}
 
-	/*
-	 * SUA 20/08/2026: KHONG khoa lai ti le khung cho trinh phat. Truoc day
-	 * trinh phat dung chung luat voi anh bia nen bi ep ve 16/10, trong khi
-	 * ben trong no la danh sach bai co so dong thay doi + toolbar; do duoc
-	 * mat 87px noi dung o khung 390 va 84px o khung 768 (list co
-	 * overflow:hidden nen cat am tham). De blocks/thien-duong/style.css lo
-	 * phan nay: `aspect-ratio: auto; min-height: 320px`.
-	 */
 	.nntm-thien-duong__player {
 		width: 100%;
 		height: auto;
 	}
 
-	/*
-	 * BỎ 22/08/2026 — ba luật chân trang từng ở đây là bản CHỮA CHÁY cho chiều
-	 * cao cứng của khối COMPACT FOOTER phía trên (cũng đã bỏ). Không còn chiều
-	 * cao cứng thì không còn gì phải chữa: assets/css/footer.css để chân trang
-	 * tự cao theo nội dung từ 1023px trở xuống.
-	 */
 }
 
-/* =============================================================
-   ĐIỆN THOẠI (<= 767px) — Thiền Đường xếp dọc.
-   Dải 768–1151 giữ hai cột (ảnh bìa | trình phát) như thiết kế; chỉ điện
-   thoại mới dồn về một cột.
-   ============================================================= */
 @media (max-width: 767px) {
 	.nntm-thien-duong__embed {
 		grid-template-columns: 1fr;

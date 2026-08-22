@@ -1,16 +1,4 @@
-/* =============================================================
-   nntm/cong-tu — Thống Kê Của Đạo Tràng + Bảng Xếp Hạng Cá Nhân.
-
-   KHÔNG có Figma/ảnh chính thức cho khối này (chủ dự án mô tả bằng lời +
-   một ảnh tham khảo không có trong kho design/) — bố cục và số đo dưới
-   đây là SUY DOAN hợp lý theo mô tả (thẻ trắng 3 ô, đầu bảng đỏ thẫm chữ
-   trắng, thanh tiến trình). Màu đỏ thẫm lấy từ token --nntm-do-tham
-   (assets/css/tokens.css) — CHƯA có mã màu chính thức, cần khách duyệt.
-
-   CẤM mã màu trực tiếp — mọi màu lấy từ assets/css/tokens.css. Block tự
-   tràn hết chiều rộng, không bọc .nntm-container (docs/04-kien-truc.md
-   mục 11).
-   ============================================================= */
+ 
 
 .nntm-cong-tu {
 	width: 100%;
@@ -38,16 +26,6 @@
 	color: var(--nntm-muc-nhat);
 }
 
-/*
- * SUA 14/08/2026 (phan hoi chu du an "khac xa thiet ke — xem lai ky phan
- * duoi"): do lai theo anh giao dien day du, quy ve khung desktop 1366 (he
- * so ×2,32) — SO DO UOC LUONG tu anh, KHONG phai Figma xuat truc tiep.
- *
- * Tieu de "Thong Ke Cua Dao Trang" da CHUYEN RA NGOAI the trang (xem
- * inc/render-cong-tu.php) — mac dinh giu mau do-tham (dung tren nen sang
- * nhu kem), RIENG nen-vang ghi de sang trang+35px o khoi ".nen-vang" o
- * duoi (chu trang tren nen kem se khong doc duoc).
- */
 .nntm-cong-tu__thong-ke-heading {
 	margin: 0 0 var(--nntm-sp-7);
 	font-family: var(--nntm-font-display);
@@ -56,7 +34,6 @@
 	text-align: center;
 }
 
-/* ---------- Thẻ trắng: 3 ô Thống Kê ---------- */
 .nntm-cong-tu__thong-ke {
 	max-width: var(--nntm-w-noi-dung);
 	margin: 0 auto var(--nntm-sp-11);
@@ -79,7 +56,7 @@
 .nntm-cong-tu__o-so {
 	margin: 0;
 	font-family: var(--nntm-font-display);
-	font-size: 32px; /* tu anh giao dien — truoc la fs-4xl (52), khong co token 32 */
+	font-size: 32px;  
 	font-weight: 600;
 	color: var(--nntm-do-tham);
 	line-height: var(--nntm-lh-chat);
@@ -88,29 +65,24 @@
 .nntm-cong-tu__o-nhan {
 	margin: var(--nntm-sp-2) 0 0;
 	font-family: var(--nntm-font-sans);
-	font-size: 12px; /* tu anh giao dien — truoc la fs-xs (13), khong co token 12 */
+	font-size: 12px;  
 	font-weight: 700;
 	letter-spacing: 0.04em;
 	text-transform: uppercase;
 	color: var(--nntm-muc-nhat);
 }
 
-/*
- * Cot 3 (tien trinh chung): thanh nho nam BEN TRAI con so %, CUNG MOT
- * HANG — tu anh giao dien, truoc day thanh nam duoi so tren dong rieng.
- */
 .nntm-cong-tu__o-hang {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: var(--nntm-sp-3); /* 10 */
+	gap: var(--nntm-sp-3);  
 }
 
 .nntm-cong-tu__o--tien-trinh .nntm-cong-tu__o-so {
 	margin: 0;
 }
 
-/* ---------- Thanh tiến trình dùng chung (khối lớn + trong bảng) ---------- */
 .nntm-cong-tu__thanh {
 	margin-top: var(--nntm-sp-4);
 	height: 8px;
@@ -132,31 +104,19 @@
 	transition: width var(--nntm-dur) var(--nntm-ease);
 }
 
-/*
- * VƯỢT CAM KẾT (>100%) — thêm 21/08/2026 cùng lúc bỏ chặn trần con số
- * (yêu cầu chủ dự án: "tiến trình có thể cho phép vượt 100%").
- *
- * Con số chữ hiện đúng tỉ lệ thật (vd 200%), nhưng THANH thì vẫn đầy 100%
- * và không thể hơn — một thanh dài hơn máng chứa nó là vô nghĩa về thị
- * giác. Để người xem vẫn phân biệt được "vừa đủ 100%" với "vượt xa", thanh
- * đầy được đánh dấu bằng đường viền mảnh cùng màu chữ: KHÔNG đổi màu nền
- * thanh sang màu khác vì bảng màu thương hiệu chỉ có một màu nhấn cho tiến
- * trình (--nntm-do-tham), thêm màu mới ở đây là tự bịa ra màu ngoài bộ.
- */
 .nntm-cong-tu__thanh--vuot {
 	box-shadow: inset 0 0 0 1px var(--nntm-do-tham);
 }
 
-/* ---------- Bảng xếp hạng ---------- */
 .nntm-cong-tu__bxh {
 	max-width: var(--nntm-w-noi-dung);
 	margin: 0 auto;
 }
 
 .nntm-cong-tu__bxh-heading {
-	margin: 0 0 35px; /* tu anh giao dien — khong co token 35, gan nhat sp-7 (30)/sp-8 (40) */
+	margin: 0 0 35px;  
 	font-family: var(--nntm-font-display);
-	font-size: 28px; /* tu anh giao dien — truoc la fs-2xl (30) */
+	font-size: 28px;  
 	color: var(--nntm-do-tham);
 	text-align: center;
 }
@@ -195,7 +155,7 @@
 }
 
 .nntm-cong-tu__bxh-bang tbody tr {
-	height: 56px; /* tu anh giao dien — moi dong cao ~56 */
+	height: 56px;  
 }
 
 .nntm-cong-tu__bxh-bang tbody td {
@@ -207,7 +167,7 @@
 }
 
 .nntm-cong-tu__bxh-hang {
-	width: 0; /* an voi .nntm-sr-only o th, nhung van giu cot du lieu cho td */
+	width: 0;  
 }
 
 .nntm-cong-tu__bxh-nguoi {
@@ -252,21 +212,14 @@
 	padding: var(--nntm-sp-1) 0;
 }
 
-/* =============================================================
-   Biến thể nền VÀNG (background=vang) — trang "Kim Cương Hành Giả", dải 5
-   "Thống Kê Của Đạo Tràng". SỬA 14/08/2026 (phản hồi chủ dự án): SỐ ĐO
-   ƯỚC LƯỢNG từ ảnh giao diện đầy đủ, quy về khung desktop 1366, KHÔNG phải
-   Figma xuất trực tiếp. Chỉ áp cho ".nen-vang" — khối cong-tu dùng nền
-   kem/none ở nơi khác (nếu có) giữ nguyên như cũ.
-   ============================================================= */
 .nntm-cong-tu--nen-vang .nntm-cong-tu__thong-ke-heading {
-	color: var(--nntm-trang); /* chu TRANG tren nen vang, theo anh giao dien — quyet dinh cua chu du an, KHONG tu doi sang mau sam */
-	font-size: 35px; /* tu anh giao dien — khong co token 35 */
+	color: var(--nntm-trang);  
+	font-size: 35px;  
 }
 
 .nntm-cong-tu--nen-vang .nntm-cong-tu__thong-ke {
-	max-width: 1000px; /* tu anh giao dien — truoc la 1220 (bien w-noi-dung) */
-	min-height: 135px; /* tu anh giao dien — the cao ~135 */
+	max-width: 1000px;  
+	min-height: 135px;  
 	display: flex;
 	align-items: center;
 }
@@ -276,36 +229,28 @@
 }
 
 .nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-heading {
-	color: var(--nntm-do-tham); /* du tuong phan tot tren nen vang, khong doi */
+	color: var(--nntm-do-tham);  
 }
 
 .nntm-cong-tu--nen-vang .nntm-cong-tu__bxh {
-	max-width: 1000px; /* tu anh giao dien — truoc la 1220 */
+	max-width: 1000px;  
 }
 
-/*
- * Vung bang cuon duoc, cao toi da ~800 (truoc la 560), KHONG con nen
- * trang boc ngoai — anh giao dien cho thay tung dong nhin XUYEN XUONG
- * nen vang cua ca dai, chi co hang dau (thead) la nen do tham dac.
- */
 .nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-cuon {
-	max-height: 800px; /* tu anh giao dien — truoc la 560 */
+	max-height: 800px;  
 	background: transparent;
 	box-shadow: none;
 }
 
 .nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-bang tbody td {
-	background: transparent; /* nhin xuyen xuong nen vang, tu anh giao dien */
+	background: transparent;  
 }
 
 .nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-row--minh {
-	/* Van can phan biet duoc dong "cua ban" du nen trong suot — dung lop
-	   phu nhe mau do-tham thay vi tron mau voi nen trang nhu mac dinh. */
+	 
 	background: color-mix(in srgb, var(--nntm-do-tham) 12%, transparent);
 }
 
-/* Kim Cương — tinh chỉnh BXH theo ảnh thiết kế: nền vàng xuyên suốt,
- * thân bảng serif, không có đường kẻ ngang và scrollbar mảnh màu đen. */
 .nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-cuon {
 	background-color: var(--nntm-vang-nghe);
 	scrollbar-width: thin;
@@ -383,8 +328,7 @@
 	background: color-mix(in srgb, var(--nntm-do-tham) 10%, var(--nntm-vang-nghe));
 }
 
-/* ---------- Mobile ---------- */
-/* SUY DOAN: chưa có Figma mobile cho khối này. */
+ 
 @media (max-width: 767px) {
 	.nntm-cong-tu {
 		padding-inline: var(--nntm-sp-5);
@@ -401,25 +345,8 @@
 
 	.nntm-cong-tu__bxh-bang thead th:nth-child(3),
 	.nntm-cong-tu__bxh-bang tbody td:nth-child(3) {
-		display: none; /* an cot "Vung mien" tren man hep, giu cot chinh */
+		display: none;  
 	}
-
-	/* ---------------------------------------------------------------
-	 * SỬA 22/08/2026 — bảng xếp hạng trên điện thoại.
-	 *
-	 * ĐO THẬT ở 375px trước khi sửa: bảng rộng 382 trong khung 335 (tràn 47px,
-	 * phải kéo ngang mới thấy cột cuối), và bốn cột còn lại chia ĐỀU
-	 * 55/93/93/93 — cột tên người chỉ được 93px cho avatar 32px cộng pháp danh.
-	 *
-	 * Nguyên nhân chính KHÔNG phải đệm mà là `table-layout: fixed` của biến thể
-	 * nền vàng: fixed + không khai bề rộng cột = mọi cột bằng nhau, cắt bao
-	 * nhiêu đệm cũng không cứu được cột tên. Nên phải trả về `auto` rồi ép ba
-	 * cột số co về đúng nội dung (mẹo `width: 1%` + nowrap), cho cột tên ăn hết
-	 * phần dôi.
-	 *
-	 * Luật của biến thể nền vàng có ba lớp (0,3,0) nên phải lặp lại đúng mức đó
-	 * mới ghi đè được — media query không cộng thêm độ ưu tiên.
-	 * --------------------------------------------------------------- */
 
 	.nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-bang {
 		table-layout: auto;
@@ -432,7 +359,6 @@
 		padding: var(--nntm-sp-2) var(--nntm-sp-3);
 	}
 
-	/* Ba cột số co về đúng nội dung; cột tên nhận phần dôi. */
 	.nntm-cong-tu__bxh-hang,
 	.nntm-cong-tu__bxh-so,
 	.nntm-cong-tu__bxh-tien-trinh {
@@ -440,8 +366,6 @@
 		white-space: nowrap;
 	}
 
-	/* Ô tên là flex — thiếu min-width:0 thì pháp danh dài không chịu co, đẩy
-	   bảng rộng ra thay vì xuống dòng. */
 	.nntm-cong-tu__bxh-nguoi {
 		min-width: 0;
 	}
@@ -456,11 +380,6 @@
 		height: 24px;
 	}
 
-	/*
-	 * Thanh tiến trình vẽ trong vài chục pixel thì không đọc ra gì — bỏ phần
-	 * hình, giữ con số phần trăm ngay cạnh vì nó nói đúng cùng một thông tin.
-	 * Vẫn giữ role="progressbar" ở DOM cho trình đọc màn hình: chỉ ẩn bằng CSS.
-	 */
 	.nntm-cong-tu__bxh-tien-trinh .nntm-cong-tu__thanh {
 		display: none;
 	}

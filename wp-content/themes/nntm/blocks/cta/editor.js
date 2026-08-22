@@ -1,16 +1,4 @@
-/**
- * Editor script cho block nntm/cta — JavaScript thuần, không build.
- * Dùng biến toàn cục wp.blocks / wp.element / wp.blockEditor / wp.components
- * theo đúng quy ước dự án (chưa có bước build webpack/wp-scripts).
- *
- * Khác với nntm/card và nntm/card-list (dùng ServerSideRender vì hai block
- * đó lấy dữ liệu từ WP_Query/bài viết): nntm/cta KHÔNG phụ thuộc dữ liệu gì
- * từ máy chủ — nội dung nút chỉ là chữ + đường dẫn khách tự gõ. Nên ở đây
- * ta vẽ trực tiếp phần tử nút bằng RichText ngay trong khung soạn thảo,
- * dùng đúng class CSS như ngoài trang thật (style.css được nạp cho cả
- * editor lẫn front-end qua khai báo "style" trong block.json) để khách
- * "nhìn thấy đúng như trang thật" mà không cần gọi ngược về máy chủ.
- */
+ 
 ( function ( wp ) {
 	'use strict';
 
@@ -25,10 +13,8 @@
 	var ToggleControl = wp.components.ToggleControl;
 	var TextControl = wp.components.TextControl;
 
-	// Nhãn tiếng Việt — "value" PHẢI trùng tên biến thể trong Figma
-	// (component set CTA, node 6134:2330). HOVER / GHOST HOVER / TEXT HOVER
-	// không có mặt ở đây vì đó là trạng thái rê chuột của Default/Ghost/CTA
-	// Text, không phải biến thể người dùng tự chọn — xem ghi chú ở style.css.
+
+
 	var VARIANT_OPTIONS = [
 		{ label: __( 'Nút chính (Default)', 'nntm' ), value: 'default' },
 		{ label: __( 'Nút viền rỗng (Ghost)', 'nntm' ), value: 'ghost' },
@@ -36,9 +22,8 @@
 		{ label: __( 'Nút Yêu thích (Fav Button)', 'nntm' ), value: 'fav-button' },
 	];
 
-	// Chữ mặc định gợi ý theo từng biến thể — chỉ tự động thay chữ khi
-	// khách CHƯA sửa gì (giữ đúng chữ mặc định của biến thể cũ), tránh mất
-	// nội dung khách đã gõ khi họ đổi qua lại giữa các biến thể.
+
+
 	var VARIANT_DEFAULT_TEXT = {
 		default: __( 'Xem thêm', 'nntm' ),
 		ghost: __( 'Xem thêm', 'nntm' ),
@@ -141,7 +126,7 @@
 			);
 		},
 		save: function () {
-			// Block động: PHP (render.php) tự dựng thẻ <a>/<button> mỗi lần tải trang.
+
 			return null;
 		},
 	} );

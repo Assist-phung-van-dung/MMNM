@@ -1,27 +1,12 @@
-/* =============================================================
-   nntm/rank-card — CSS cho hero trang "Nhập Pháp Giới"
-   Nguồn số đo: bản thiết kế anh Úy gửi (ảnh chụp 2x, quy về khung
-   desktop 1366px), bóc ngày 14/08/2026. Ánh xạ Figma component set
-   "CARD DAI SI/KIM CUONG" (docs/04-kien-truc.md mục 2).
-
-   CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
-   assets/css/tokens.css. Nạp sau tokens.css/base.css qua block.json
-   "style" (front-end) hoặc add_editor_style() (trình soạn thảo).
-
-   Block tự tràn hết chiều rộng (align: wide/full), không bọc trong
-   .nntm-container (docs/04-kien-truc.md mục 11). Đầu trang (header) là
-   dải trắng riêng phía trên, KHÔNG đè lên hero này.
-   ============================================================= */
+ 
 
 .nntm-rank-card {
 	position: relative;
 	display: flex;
 	width: 100%;
-	/* min-height thật lấy từ attribute "minHeight" (inline style trong
-	   render.php) — 690px chỉ là giá trị dự phòng nếu vì lý do gì đó
-	   thuộc tính không tới được (ví dụ cache trang cũ). */
+	 
 	min-height: 690px;
-	background-color: var(--nntm-than); /* mau nen du phong khi chua chon anh */
+	background-color: var(--nntm-than);  
 	background-size: cover;
 	background-position: center;
 	overflow: hidden;
@@ -38,8 +23,6 @@
 	pointer-events: none;
 }
 
-/* Lớp phủ tối rất nhẹ để chữ trắng đọc được trên mọi ảnh nền, đồng thời
-   là khung căn giữa nội dung (tiêu đề + hàng thẻ). */
 .nntm-rank-card__overlay {
 	position: relative;
 	z-index: 1;
@@ -48,7 +31,7 @@
 	align-items: center;
 	width: 100%;
 	background-color: var(--nntm-phu-den-30);
-	/* tu ban thiet ke: tieu de cach mep tren hero 139px */
+	 
 	padding-top: 139px;
 	padding-bottom: var(--nntm-sp-10);
 	padding-inline: var(--nntm-sp-8);
@@ -57,21 +40,20 @@
 .nntm-rank-card__heading {
 	margin: 0;
 	font-family: var(--nntm-font-display);
-	font-size: 40px; /* tu ban thiet ke, khong co bien token co san khop 40px */
+	font-size: 40px;  
 	font-weight: 600;
 	line-height: var(--nntm-lh-chat);
 	color: var(--nntm-trang);
 	text-align: center;
 }
 
-/* ---------- Hàng thẻ cấp bậc ---------- */
 .nntm-rank-card__row {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
 	align-items: flex-start;
-	gap: 35px; /* tu ban thiet ke */
-	/* tu ban thiet ke: hang the cach tieu de 40px */
+	gap: 35px;  
+	 
 	margin-top: var(--nntm-sp-8);
 	width: 100%;
 }
@@ -83,22 +65,19 @@
 	text-align: center;
 }
 
-/* ---------- Một thẻ (kính mờ) ---------- */
 .nntm-rank-card__card {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	width: 360px;
 	height: 374px;
-	/* tu ban thiet ke: padding trong the la 16px — khong co token sp dung
-	   khop (sp-4=15, sp-5=20) nen giu nguyen so do that thay vi lam tron
-	   theo token gan nhat, tranh sai lech voi Figma. */
+	 
 	padding: 16px;
 	background-color: var(--nntm-the-kinh);
 	-webkit-backdrop-filter: blur(2px);
 	backdrop-filter: blur(2px);
 	border: 1px solid var(--nntm-vien-kinh);
-	border-radius: 0; /* thiet ke la goc vuong, khong bo goc */
+	border-radius: 0;  
 	box-sizing: border-box;
 }
 
@@ -114,23 +93,12 @@
 	width: 304px;
 	height: 226px;
 	object-fit: cover;
-	background-color: var(--nntm-xam); /* mau nen placeholder khi chua co anh */
+	background-color: var(--nntm-xam);  
 }
 
-/* ---------- Ảnh có link (21/08/2026) ---------- */
-/*
- * Từ 21/08/2026 thẻ bọc ảnh là <a> khi thẻ có nơi để đi (yêu cầu chủ dự án:
- * "nhấn vào ảnh cũng có link như mời vào") — xem
- * nntm_rank_card_lien_ket() trong inc/render-rank-card.php. Khi KHÔNG có nơi
- * để đi (chưa nhập trang đích, hoặc thẻ đang khoá vì chưa đủ cấp) thì nó vẫn
- * là <div> và không có gì trong khối này áp vào.
- *
- * Ảnh bấm được thì phải TRÔNG như bấm được: không có tín hiệu nào thì người
- * xem không biết mà bấm. Dùng đúng cỡ phóng 1.035 mà trang chủ đã dùng cho
- * ảnh thẻ (assets/css/pages/homepage-figma.css), không tự đặt số mới.
- */
+ 
 a.nntm-rank-card__card-media {
-	overflow: hidden; /* cat phan anh phong to ra ngoai khung 304x226 */
+	overflow: hidden;  
 }
 
 a.nntm-rank-card__card-media .nntm-rank-card__card-img {
@@ -154,21 +122,21 @@ a.nntm-rank-card__card-media:hover .nntm-rank-card__card-img {
 
 .nntm-rank-card__card-title {
 	margin: 0;
-	/* tu ban thiet ke: tieu de the cach anh 20px */
+	 
 	margin-top: var(--nntm-sp-5);
 	font-family: var(--nntm-font-display);
-	font-size: var(--nntm-fs-lg); /* 20px */
+	font-size: var(--nntm-fs-lg);  
 	color: var(--nntm-trang);
 	text-align: center;
 }
 
 .nntm-rank-card__cta {
 	display: inline-block;
-	/* tu ban thiet ke: nut cach tieu de the 10px */
+	 
 	margin-top: var(--nntm-sp-3);
 	font-family: var(--nntm-font-serif);
 	font-style: normal;
-	font-size: var(--nntm-fs-xs); /* 13px */
+	font-size: var(--nntm-fs-xs);  
 	color: var(--nntm-trang);
 	text-align: center;
 	text-decoration: none;
@@ -185,9 +153,7 @@ a.nntm-rank-card__cta:focus-visible {
 	cursor: not-allowed;
 }
 
-/* ---------- Responsive ---------- */
-/* SUY DOAN: chua co Figma mobile. The xep doc, dan het chieu rong khung
-   hep, giu dung ty le anh/tieu de/nut de khong vo bo cuc. */
+ 
 @media (max-width: 1023px) {
 	.nntm-rank-card__overlay {
 		padding-top: var(--nntm-sp-10);

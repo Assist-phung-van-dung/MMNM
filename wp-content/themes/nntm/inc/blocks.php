@@ -1,21 +1,7 @@
 <?php
 
-/**
- * Cơ chế đăng ký block riêng của theme.
- *
- * Chỉ dựng cơ chế quét thư mục blocks/ — CHƯA viết block cụ thể nào.
- * Mỗi block sau này chỉ cần thêm một thư mục con có block.json vào
- * blocks/ là tự được đăng ký, không cần sửa file này.
- */
-
 defined('ABSPATH') || exit;
 
-/**
- * Đăng ký category block riêng cho theme, đặt lên đầu danh sách.
- *
- * @param array $categories Danh sách category block hiện có.
- * @return array
- */
 function nntm_block_categories(array $categories): array
 {
 	return array_merge(
@@ -30,9 +16,6 @@ function nntm_block_categories(array $categories): array
 }
 add_filter('block_categories_all', 'nntm_block_categories');
 
-/**
- * Quét thư mục blocks/ và đăng ký mọi block có block.json.
- */
 function nntm_register_blocks(): void
 {
 	$blocks_dir = NNTM_THEME_DIR . '/blocks';
@@ -49,13 +32,6 @@ function nntm_register_blocks(): void
 }
 add_action('init', 'nntm_register_blocks');
 
-/**
- * Tao noi dung comment cua mot dynamic block de dung trong block pattern.
- *
- * @param string $name       Ten block, vi du nntm/hero-slider.
- * @param array  $attributes Thuoc tinh khoi tao.
- * @return string
- */
 function nntm_home_block_pattern_content(string $name, array $attributes = array()): string
 {
 	$encoded = empty($attributes)
@@ -65,12 +41,6 @@ function nntm_home_block_pattern_content(string $name, array $attributes = array
 	return '<!-- wp:' . $name . $encoded . ' /-->';
 }
 
-/**
- * Dang ky tung section homepage thanh mot mau Gutenberg rieng.
- *
- * Nguoi quan tri co the chen lai section da xoa tu tab Mau (Patterns), sau
- * do chinh anh, video, noi dung va nguon bai trong sidebar cua chinh block.
- */
 function nntm_register_homepage_patterns(): void
 {
 	if (! function_exists('register_block_pattern')) {

@@ -1,15 +1,4 @@
-/**
- * Editor script cho block nntm/hero-slider — JavaScript thuần, không build.
- * Bắt chước phong cách blocks/thien-duong/editor.js (MediaUpload,
- * ServerSideRender) và blocks/article-mosaic/editor.js (tải danh sách
- * term qua REST theo tầng). Khác hai block đó ở một điểm: "slides" là một
- * mảng — bảng điều khiển phải tự vẽ phần thêm/xoá/sắp lại từng tấm
- * (repeater), Gutenberg không có control dựng sẵn cho việc này.
- *
- * Bản xem trước trên canvas dùng ServerSideRender (chạy đúng logic PHP
- * thật) — mọi ô nhập nằm ở InspectorControls, không có RichText trên
- * canvas nên không sợ hiện trùng nội dung.
- */
+ 
 ( function ( wp ) {
 	'use strict';
 
@@ -34,8 +23,7 @@
 	var apiFetch = wp.apiFetch;
 	var ServerSideRender = wp.serverSideRender && wp.serverSideRender.default ? wp.serverSideRender.default : wp.serverSideRender;
 
-	// Danh sách trắng loại nội dung cho thẻ "tin mới nhất" góc phải dưới —
-	// trùng với block.json và render.php.
+
 	var SIDECARD_POST_TYPE_OPTIONS = [
 		{ label: __( 'Bài viết (6 phân mục)', 'nntm' ), value: 'nntm_article' },
 		{ label: __( 'Tin Tức / Hoằng Pháp', 'nntm' ), value: 'post' },
@@ -44,7 +32,6 @@
 		{ label: __( 'Video', 'nntm' ), value: 'nntm_video' },
 	];
 
-	// Nhãn tiếng Việt cho taxonomy — khớp với class-taxonomies.php.
 	var SIDECARD_TAXONOMY_LABELS = {
 		nntm_section: __( 'Phân mục', 'nntm' ),
 		nntm_topic: __( 'Chủ đề', 'nntm' ),
@@ -66,11 +53,6 @@
 		return SIDECARD_TAXONOMY_LABELS[ taxonomy ] || taxonomy;
 	}
 
-	/**
-	 * Một tấm trống — dùng khi bấm "Thêm tấm". render.php tự bỏ qua tấm
-	 * hoàn toàn trống (nntm_hero_slider_clean_slide()) nên không sợ hiện
-	 * tấm rỗng ra trang thật nếu khách thêm rồi đổi ý không điền gì.
-	 */
 	function emptySlide() {
 		return {
 			imageId: 0,
@@ -90,15 +72,13 @@
 			var blockProps = useBlockProps();
 			var slides = Array.isArray( attributes.slides ) ? attributes.slides : [];
 
-			// Danh sách phân mục CHA (parent=0) trong nntm_section, để bảng
-			// điều khiển chỉ cho chọn TÊN, không bắt nhập số ID.
+
 			var parentTermState = useState( [] );
 			var parentTerms = parentTermState[ 0 ];
 			var setParentTerms = parentTermState[ 1 ];
 
-			// Taxonomy hợp lệ + danh sách term cho nguồn "thẻ tin mới nhất"
-			// góc phải dưới — cùng cơ chế REST tầng nối tầng như
-			// blocks/article-mosaic/editor.js.
+
+
 			var sideTaxState = useState( [] );
 			var sideAvailableTaxonomies = sideTaxState[ 0 ];
 			var setSideAvailableTaxonomies = sideTaxState[ 1 ];
@@ -497,8 +477,7 @@
 			);
 		},
 		save: function () {
-			// Block động: PHP (render.php) tự dựng lại HTML mỗi lần tải trang.
-			// Không lưu HTML tĩnh vào nội dung bài.
+
 			return null;
 		},
 	} );

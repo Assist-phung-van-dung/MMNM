@@ -1,13 +1,5 @@
-/*
- * Diệu Thượng — page-scoped Figma composition for node 6376:6694.
- * Reference: design/figma/6376-6694@1x.png (1366 x 1032) and exact
- * Tông Chỉ media export design/figma/6376-6694-tong-chi.png (865 x 377).
- *
- * Keep generic block styles reusable elsewhere; only geometry that is
- * specific to /dieu-thuong/ lives here.
- */
 
-/* ---------- Header ---------- */
+
 .nntm-header {
 	height: 76px;
 }
@@ -17,7 +9,6 @@
 	line-height: 1;
 }
 
-/* Figma page does not show the current-menu pill on this inner page. */
 .nntm-main-nav .current-menu-item > a,
 .nntm-main-nav .current_page_item > a,
 .nntm-main-nav .current-menu-ancestor > a,
@@ -39,7 +30,6 @@
 	color: var(--nntm-chinh-hover);
 }
 
-/* ---------- Tông Chỉ ---------- */
 .nntm-feature {
 	height: 485px;
 	padding: 54px 60px 54px;
@@ -48,7 +38,7 @@
 
 .nntm-feature .nntm-container {
 	width: 100%;
-	/* SUA 20/08/2026: `none` -> tran 1366 + canh giua (khung site da bo tran). */
+
 	max-width: var(--nntm-w-rong);
 	margin-inline: auto;
 	margin-block: 0;
@@ -114,8 +104,6 @@
 	object-position: center;
 }
 
-/* The reference is static artwork; hover should feel polished without
- * moving the composition enough to break the intended crop. */
 .nntm-feature__media-img {
 	transition: transform 600ms cubic-bezier(.22,.61,.36,1), filter 600ms cubic-bezier(.22,.61,.36,1);
 }
@@ -125,7 +113,6 @@
 	filter: saturate(1.015);
 }
 
-/* ---------- Trú Xứ ---------- */
 .nntm-tru-xu-list--list {
 	min-height: 325px;
 	padding: 60px 0 52px;
@@ -134,7 +121,7 @@
 
 .nntm-tru-xu-list--list .nntm-container {
 	width: 100%;
-	/* SUA 20/08/2026: `none` -> tran 1366 + canh giua (khung site da bo tran). */
+
 	max-width: var(--nntm-w-rong);
 	margin-inline: auto;
 	margin-block: 0;
@@ -175,15 +162,6 @@
 	transform: translateX(4px);
 }
 
-/*
- * BỎ 22/08/2026 — khối "Compact inner-page footer" từng ở đây.
- *
- * Nó đổi `.nntm-footer__row` thành lưới 3 cột rồi CANH GIỮA ở màn hẹp, nên
- * /dieu-thuong/ là trang duy nhất có chân trang canh giữa — mọi trang khác
- * canh trái. Chân trang các trang trong giờ chỉ định nghĩa một chỗ:
- * assets/css/footer.css, khối ".nntm-footer--inner".
- */
-
 @media (max-width: 1151px) {
 	.nntm-feature {
 		height: auto;
@@ -206,12 +184,6 @@
 		padding-inline: 48px;
 	}
 
-	/*
-	 * SUA 20/08/2026: bac chu tablet. Truoc day hai tieu de nay chi ha xuong
-	 * 40px o khoi <=767, nen o dai 768-1024 van giu 52px cua desktop — do
-	 * duoc 52px tren khung 768. Lay dung cung mot bac 40/48 nhu khoi <=767
-	 * de ca dai tablet thong nhat voi bac chu chung o assets/css/responsive.css.
-	 */
 	.nntm-feature__heading,
 	.nntm-tru-xu-list--list .nntm-tru-xu-list__heading {
 		font-size: 40px;
@@ -257,7 +229,6 @@
 		padding-inline: 24px;
 	}
 
-	/* Chân trang màn hẹp: xem assets/css/footer.css (đã bỏ bản canh giữa riêng). */
 }
 
 @media (prefers-reduced-motion: reduce) {

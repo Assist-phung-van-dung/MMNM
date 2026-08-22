@@ -1,4 +1,4 @@
-/* Feature Carousel - Gallery: 5-layer main carousel + per-slide fullscreen photo slider popup. */
+
 .nntm-feature-gallery-carousel {
 	--fgc-active-width: 626px;
 	--fgc-active-height: 352px;
@@ -29,22 +29,6 @@
 .nntm-feature-gallery-carousel__slide[data-position="0"] { opacity: 1; pointer-events: auto; transform: translateX(-50%) scale(1); filter: none; z-index: 5; }
 .nntm-feature-gallery-carousel__media { width: 100%; height: var(--fgc-active-height); overflow: hidden; background: var(--nntm-xam); }
 
-/* =============================================================
-   LẬT TRANG SÁCH — thêm 22/08/2026, cùng một ý với blocks/feature-carousel
-   (xem chú thích dài ở style.css của khối đó): mỗi ảnh là một trang có BẢN LỀ
-   ở mép phía TRONG (mép hướng vào giữa, như gáy sách), mép ngoài nhấc về phía
-   người xem; về giữa thì trang phẳng hẳn.
-
-   Quay ở `.__media` chứ không ở `.__slide`: transform của slide đang gánh vị
-   trí (translateX + scale) với transform-origin `center top`, còn bản lề thì
-   cần đặt ở mép ĐỨNG riêng theo từng lớp.
-
-   view.js chặn data-position trong -3..3 nên khai đủ cả ±3, kể cả khi bố cục
-   hiện tại chỉ vẽ tới ±2 — thiếu thì lớp ngoài cùng đứng thẳng lạc ra giữa dải.
-
-   Dùng ĐÚNG thời lượng/đường cong của slide (650ms) để góc quay đổi cùng nhịp
-   với lúc ảnh trôi — lệch nhịp là đọc ra thành hai chuyển động rời nhau.
-   ============================================================= */
 .nntm-feature-gallery-carousel { --fgc-lat-perspective: 1200px; --fgc-lat-1: 20deg; --fgc-lat-2: 30deg; --fgc-lat-3: 36deg; }
 .nntm-feature-gallery-carousel__slide { perspective: var(--fgc-lat-perspective); }
 .nntm-feature-gallery-carousel__media { transform-origin: center center; backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: transform 650ms cubic-bezier(.22,.61,.36,1); }
@@ -76,7 +60,6 @@
 .nntm-feature-gallery-carousel__arrow--prev { left: 0; }
 .nntm-feature-gallery-carousel__arrow--next { right: 0; }
 
-/* Figma POPUP PHOTO node 6452:6256 is a 1366x768 black fullscreen frame. */
 html.nntm-fgc-modal-open,body.nntm-fgc-modal-open { overflow: hidden; }
 .nntm-feature-gallery-modal[hidden] { display: none; }
 .nntm-feature-gallery-modal { position: fixed; inset: 0; z-index: 100050; display: block; width: 100vw; height: 100dvh; background: #000; color: #fff; opacity: 0; pointer-events: none; transition: opacity 240ms ease; }

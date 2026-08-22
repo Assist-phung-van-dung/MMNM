@@ -1,10 +1,4 @@
 <?php
-/**
- * Trang Yêu thích.
- * Hoạt động cho cả Page thật slug `yeu-thich` và route ảo /yeu-thich/.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -30,7 +24,7 @@ $current_page = function_exists( 'nntm_section_favorites_current_page' ) ? nntm_
 				<div class="nntm-article-rows__list">
 					<?php foreach ( $favorite_page['posts'] as $index => $favorite_post ) : ?>
 						<?php
-						echo nntm_render_section_article_row( // phpcs:ignore WordPress.Security.EscapeOutput -- helper tự escape.
+						echo nntm_render_section_article_row(  
 							$favorite_post,
 							(int) $index,
 							array(
@@ -45,7 +39,7 @@ $current_page = function_exists( 'nntm_section_favorites_current_page' ) ? nntm_
 				</div>
 
 				<?php
-				echo nntm_render_section_pagination( // phpcs:ignore WordPress.Security.EscapeOutput -- helper tự escape.
+				echo nntm_render_section_pagination(  
 					(int) $favorite_page['current_page'],
 					(int) $favorite_page['total_pages'],
 					(string) apply_filters( 'nntm_account_favorites_url', home_url( '/yeu-thich/' ) )

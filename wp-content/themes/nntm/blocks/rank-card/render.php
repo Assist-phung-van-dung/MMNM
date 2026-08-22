@@ -1,35 +1,8 @@
 <?php
-/**
- * Render động cho block nntm/rank-card — hero trang "Nhập Pháp Giới": ảnh
- * nền tràn viền, tiêu đề giữa, hàng thẻ cấp bậc dẫn sang trang riêng theo
- * quyền thành viên (docs/04-kien-truc.md mục 2, biến thể Figma
- * "CARD DAI SI/KIM CUONG").
- *
- * WordPress tự require file này (khai báo qua "render" trong block.json)
- * mỗi khi block xuất hiện trên trang. Không lưu HTML vào nội dung bài.
- *
- * Logic quyền dùng chung nằm ở inc/render-rank-card.php, nạp bằng
- * require_once — render.php của block bị WordPress core `require` (KHÔNG
- * PHẢI `require_once`) mỗi lần render (xem wp-includes/blocks.php,
- * register_block_type_from_metadata() -> render_block()). Khai hàm thẳng
- * trong file này sẽ chết với lỗi "Cannot redeclare function" nếu khối này
- * render lần thứ hai trên cùng một trang/request (ví dụ ServerSideRender
- * trong trình soạn thảo).
- *
- * Block tự mang đệm ngoài, tràn hết chiều rộng — không bọc trong
- * .nntm-container (docs/04-kien-truc.md mục 11).
- *
- * @package NNTM
- * @var array    $attributes Thuộc tính của block.
- * @var string   $content    Nội dung InnerBlocks (không dùng ở block này).
- * @var WP_Block $block      Instance block hiện tại.
- */
 
 defined( 'ABSPATH' ) || exit;
 
 require_once __DIR__ . '/inc/render-rank-card.php';
-
-// ---------- Đọc & làm sạch thuộc tính ----------
 
 $nntm_rc_heading = isset( $attributes['heading'] ) ? (string) $attributes['heading'] : '';
 
@@ -42,7 +15,6 @@ $nntm_rc_bg_image_id  = isset( $attributes['bgImageId'] ) ? absint( $attributes[
 $nntm_rc_bg_image_url = isset( $attributes['bgImageUrl'] ) ? esc_url_raw( (string) $attributes['bgImageUrl'] ) : '';
 $nntm_rc_bg_image_alt = isset( $attributes['bgImageAlt'] ) ? trim( (string) $attributes['bgImageAlt'] ) : '';
 
-// Media nền ưu tiên lấy theo ID để luôn dùng URL hiện hành trong thư viện.
 if ( $nntm_rc_bg_image_id > 0 ) {
 	$nntm_rc_bg_src = 'video' === $nntm_rc_bg_media_type
 		? wp_get_attachment_url( $nntm_rc_bg_image_id )
@@ -70,13 +42,12 @@ foreach ( $nntm_rc_raw_cards as $nntm_rc_raw_card ) {
 	}
 }
 
-// Chưa có thẻ nào: không xuất gì ra trang thật, chỉ báo trong trình soạn
-// thảo (bắt chước đúng blocks/hero-slider/render.php).
+
 if ( empty( $nntm_rc_cards ) ) {
 	if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
 		$nntm_rc_wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'nntm-rank-card nntm-rank-card--empty' ) );
 		?>
-		<div <?php echo $nntm_rc_wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput -- get_block_wrapper_attributes() da tu esc_attr() tung thuoc tinh. ?>>
+		<div <?php echo $nntm_rc_wrapper_attributes;  ?>>
 			<p class="nntm-rank-card__empty-notice">
 				<?php esc_html_e( 'Chưa có thẻ cấp bậc nào. Mở bảng điều khiển bên phải để thêm ít nhất một thẻ.', 'nntm' ); ?>
 			</p>
@@ -96,9 +67,8 @@ $nntm_rc_wrapper_extra = array(
 	'style' => $nntm_rc_style,
 );
 
-// Ảnh nền chỉ là CSS background-image (không có thẻ <img>) nên trình đọc
-// màn hình bỏ qua mặc định. Có mô tả (alt) thì gắn role="img" + aria-label
-// để người dùng vẫn biết nội dung ảnh; không có thì để mặc định (trang trí).
+
+
 if ( 'image' === $nntm_rc_bg_media_type && '' !== $nntm_rc_bg_image_alt ) {
 	$nntm_rc_wrapper_extra['role']       = 'img';
 	$nntm_rc_wrapper_extra['aria-label'] = $nntm_rc_bg_image_alt;
@@ -106,7 +76,7 @@ if ( 'image' === $nntm_rc_bg_media_type && '' !== $nntm_rc_bg_image_alt ) {
 
 $nntm_rc_wrapper_attributes = get_block_wrapper_attributes( $nntm_rc_wrapper_extra );
 ?>
-<section <?php echo $nntm_rc_wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput -- get_block_wrapper_attributes() da tu esc_attr() tung thuoc tinh. ?>>
+<section <?php echo $nntm_rc_wrapper_attributes;  ?>>
 	<?php if ( 'video' === $nntm_rc_bg_media_type && '' !== $nntm_rc_bg_image_url ) : ?>
 		<video class="nntm-rank-card__bg-video" src="<?php echo esc_url( $nntm_rc_bg_image_url ); ?>" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
 	<?php endif; ?>
@@ -117,7 +87,7 @@ $nntm_rc_wrapper_attributes = get_block_wrapper_attributes( $nntm_rc_wrapper_ext
 
 		<div class="nntm-rank-card__row">
 			<?php foreach ( $nntm_rc_cards as $nntm_rc_card ) : ?>
-				<?php echo nntm_rank_card_render_card( $nntm_rc_card ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong. ?>
+				<?php echo nntm_rank_card_render_card( $nntm_rc_card );  ?>
 			<?php endforeach; ?>
 		</div>
 	</div>

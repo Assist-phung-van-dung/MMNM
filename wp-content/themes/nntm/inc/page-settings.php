@@ -1,15 +1,7 @@
 <?php
-/**
- * Cấu hình riêng cho từng Page trong Gutenberg.
- */
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * Đăng ký post meta dùng để ẩn H1 do page.php sinh ra.
- *
- * Meta phải show_in_rest=true để Gutenberg có thể đọc/ghi qua REST API.
- */
 function nntm_register_page_settings_meta(): void {
 	register_post_meta(
 		'page',
@@ -36,17 +28,6 @@ function nntm_register_page_settings_meta(): void {
 }
 add_action( 'init', 'nntm_register_page_settings_meta' );
 
-/**
- * Di trú cơ chế ẩn title cũ sang checkbox mới một lần.
- *
- * Trước đây theme tự ẩn title khi Page có block NNTM chứa heading. Nếu bỏ
- * cơ chế đó ngay, các Page đang chạy sẽ hiện H1 trùng. Vì vậy lần đầu admin
- * vào wp-admin sau khi cập nhật theme, ta ghi meta=true cho các Page hiện
- * đang được cơ chế cũ xác định là đã có heading riêng.
- *
- * Sau khi migration hoàn tất, checkbox là nguồn quyết định duy nhất:
- * checked = ẩn, unchecked = hiện.
- */
 function nntm_migrate_page_title_settings(): void {
 	if ( get_option( 'nntm_page_title_settings_migrated_1' ) ) {
 		return;
@@ -82,9 +63,6 @@ function nntm_migrate_page_title_settings(): void {
 }
 add_action( 'admin_init', 'nntm_migrate_page_title_settings' );
 
-/**
- * Nạp panel "NNTM Page Settings" trong sidebar của Gutenberg.
- */
 function nntm_enqueue_page_settings_editor_script(): void {
 	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
 
@@ -115,18 +93,6 @@ function nntm_enqueue_page_settings_editor_script(): void {
 }
 add_action( 'enqueue_block_editor_assets', 'nntm_enqueue_page_settings_editor_script' );
 
-/**
- * Page có yêu cầu ẩn title do template sinh ra hay không.
- *
- * Sau migration, post meta là nguồn quyết định duy nhất để checkbox có
- * semantics rõ ràng: checked = ẩn, unchecked = hiện.
- *
- * Trước khi migration chạy, vẫn fallback sang cơ chế cũ để frontend không
- * bị hiện title trùng trong khoảng thời gian giữa deploy và lần admin đầu tiên.
- *
- * @param WP_Post|null $post Page cần kiểm tra.
- * @return bool
- */
 function nntm_should_hide_page_title( ?WP_Post $post = null ): bool {
 	$post = $post ?: get_post();
 

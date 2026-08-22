@@ -1,26 +1,7 @@
 <?php
-/**
- * Template Name: NNTM — Đăng nhập
- *
- * Trang toàn màn hình, KHÔNG có đầu trang/chân trang của site (theo
- * docs/04-kien-truc.md mục 2: đăng nhập là PHP template, không phải
- * block). Ảnh nền phong cảnh núi + thẻ kính mờ giữa trang, đúng 3 ảnh
- * thiết kế anh Úy gửi.
- *
- * WordPress tự chọn file này cho Page slug `dang-nhap` theo quy tắc
- * page-{slug}.php; khai `Template Name` để ban quản trị vẫn gán tay
- * được nếu cần.
- *
- * Không gọi get_header()/get_footer() — tự in <!DOCTYPE>…wp_head()…
- * wp_footer() để không kéo theo đầu/chân trang site (xem page-r1.php
- * làm mẫu cho khuôn mẫu "template riêng toàn màn hình" này).
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
-// Đã đăng nhập rồi thì không có việc gì ở trang này nữa.
 if ( is_user_logged_in() ) {
 	wp_safe_redirect( home_url( '/' ) );
 	exit;
@@ -37,7 +18,7 @@ $nntm_bg_style     = $nntm_bg_url ? sprintf( ' style="--nntm-auth-bg: url(%s)"',
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<?php wp_head(); ?>
 </head>
-<body <?php body_class( 'nntm-auth-page' ); ?><?php echo $nntm_bg_style; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- đã esc_url() ở trên */ ?>>
+<body <?php body_class( 'nntm-auth-page' ); ?><?php echo $nntm_bg_style;   ?>>
 <?php wp_body_open(); ?>
 
 <a class="nntm-auth-page__home" href="<?php echo esc_url( home_url( '/' ) ); ?>">

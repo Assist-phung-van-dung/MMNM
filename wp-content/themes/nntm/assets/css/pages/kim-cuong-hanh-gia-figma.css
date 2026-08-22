@@ -1,18 +1,4 @@
-/*
- * Kim Cương Hành Giả — Figma 6376:7066.
- *
- * IMPORTANT: this stylesheet is enqueued only on /kim-cuong-hanh-gia/.
- * It intentionally does NOT use WordPress generated page selectors such as
- * the generated numeric page class. The five visual bands receive stable semantic classes from
- * inc/kim-cuong-hanh-gia.php (and the seed files preserve the same classes).
- *
- * Confirmed content order:
- *   1. .nntm-kchg-hero
- *   2. .nntm-kchg-articles
- *   3. .nntm-kchg-nghi-quy
- *   4. .nntm-kchg-le-dan
- *   5. .nntm-kchg-ranking
- */
+
 
 .nntm-main--full .nntm-page,
 .nntm-main--full .nntm-page__content {
@@ -20,23 +6,17 @@
 	padding: 0;
 }
 
-/* The DOM order from Gutenberg is already the design order.  Do not reorder
- * with flex/order: editor order and front-end order must stay identical. */
 .nntm-page__content {
 	display: block;
 }
 
 @media (min-width: 1152px) {
-	/* Shared desktop header in the source Figma system. */
+
 	.nntm-header {
 		height: 76px;
 		min-height: 76px;
 	}
 
-	/* ------------------------------------------------------------------
-	 * 1. Banner đầu — current page uses the 1280x720 Kim Cương video.
-	 * The later full-page artwork uses the shallower 533px treatment.
-	 * ------------------------------------------------------------------ */
 	.nntm-kchg-hero,
 	.nntm-kchg-hero .nntm-banner__stage {
 		height: 533px;
@@ -52,14 +32,10 @@
 		object-position: center center;
 	}
 
-	/* There is no foreground copy on the opening video. */
 	.nntm-kchg-hero .nntm-banner__overlay {
 		background: transparent;
 	}
 
-	/* ------------------------------------------------------------------
-	 * 2. Kim Cương Hành Giả — gold 3x2 article grid.
-	 * ------------------------------------------------------------------ */
 	.nntm-kchg-articles > .nntm-card-list__band {
 		padding: 60px 10px 50px;
 		background: var(--nntm-vang-nghe);
@@ -133,10 +109,6 @@
 		color: var(--nntm-trang);
 	}
 
-	/* ------------------------------------------------------------------
-	 * 3. Nghi Quỹ — books marquee.  Only the cards move; title and CTA
-	 * remain fixed.  No carousel arrows/scrollbar are introduced here.
-	 * ------------------------------------------------------------------ */
 	.nntm-kchg-nghi-quy > .nntm-card-list__band {
 		padding: 60px 50px 50px;
 		background: var(--nntm-kem);
@@ -234,9 +206,6 @@
 		justify-content: center;
 	}
 
-	/* ------------------------------------------------------------------
-	 * 4. Lễ Đàn Khổng Tước — full-bleed peacock artwork, left copy.
-	 * ------------------------------------------------------------------ */
 	.nntm-kchg-le-dan,
 	.nntm-kchg-le-dan .nntm-banner__stage {
 		height: 615px;
@@ -286,11 +255,6 @@
 		border-radius: 0;
 	}
 
-	/* ------------------------------------------------------------------
-	 * 5. Thống Kê / Bảng Xếp Hạng — keep the table scrollable inside the
-	 * band.  The section height is content-driven because the number of
-	 * ranking rows is data, not artwork.
-	 * ------------------------------------------------------------------ */
 	.nntm-kchg-ranking {
 		width: 100%;
 		padding: 60px 40px 70px;
@@ -345,7 +309,6 @@
 		height: 52px;
 	}
 
-	/* Chân trang: xem assets/css/footer.css, ".nntm-footer--inner". */
 }
 
 @media (min-width: 1152px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
@@ -379,8 +342,6 @@
 	}
 }
 
-/* No mobile/tablet Figma frame exists for this screen.  Release desktop
- * fixed banner/footer heights and keep the reusable block responsiveness. */
 @media (max-width: 1151px) {
 	.nntm-kchg-hero,
 	.nntm-kchg-hero .nntm-banner__stage,

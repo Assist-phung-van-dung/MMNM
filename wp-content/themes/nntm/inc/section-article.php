@@ -1,18 +1,7 @@
 <?php
-/**
- * Layout dùng chung cho trang phân mục nntm_section và chi tiết nntm_article.
- * Riêng trang Nghi Quỹ là Page / ấn phẩm nên không đi qua các hook/template này.
- *
- * Desktop source-of-truth: viewport thiết kế 1366px, vùng nội dung 1184px.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * Archive nntm_section theo thiết kế: 5 bài / trang.
- */
 function nntm_section_archive_query( WP_Query $query ): void {
 	if ( is_admin() || ! $query->is_main_query() || ! $query->is_tax( 'nntm_section' ) ) {
 		return;
@@ -26,9 +15,6 @@ function nntm_section_archive_query( WP_Query $query ): void {
 }
 add_action( 'pre_get_posts', 'nntm_section_archive_query' );
 
-/**
- * CSS/JS riêng cho danh sách + chi tiết + trang yêu thích.
- */
 function nntm_enqueue_section_article_assets(): void {
 	$is_favorites = function_exists( 'nntm_section_is_favorites_request' ) && nntm_section_is_favorites_request();
 	if ( ! is_tax( 'nntm_section' ) && ! is_singular( 'nntm_article' ) && ! $is_favorites ) {
@@ -66,9 +52,6 @@ function nntm_enqueue_section_article_assets(): void {
 }
 add_action( 'wp_enqueue_scripts', 'nntm_enqueue_section_article_assets', 40 );
 
-/**
- * Term nntm_section cụ thể nhất của bài (term có độ sâu lớn nhất).
- */
 function nntm_article_deepest_section_term( int $post_id ): ?WP_Term {
 	$terms = get_the_terms( $post_id, 'nntm_section' );
 	if ( empty( $terms ) || is_wp_error( $terms ) ) {
@@ -87,14 +70,6 @@ function nntm_article_deepest_section_term( int $post_id ): ?WP_Term {
 	return $terms[0] instanceof WP_Term ? $terms[0] : null;
 }
 
-/**
- * Một hàng bài viết so le dùng chung cho taxonomy template + dynamic block.
- *
- * @param WP_Post $post Bài cần render.
- * @param int     $index Vị trí hàng, bắt đầu 0.
- * @param array   $args  show_excerpt, show_favorite, cta_label, start_side.
- * @return string
- */
 function nntm_render_section_article_row( WP_Post $post, int $index, array $args = array() ): string {
 	$defaults = array(
 		'show_excerpt'  => true,
@@ -150,7 +125,7 @@ function nntm_render_section_article_row( WP_Post $post, int $index, array $args
 
 			<div class="nntm-article-rows__actions">
 				<?php if ( ! empty( $args['show_favorite'] ) ) : ?>
-					<?php echo nntm_section_render_favorite_button( $post->ID, 'nntm-article-rows__favorite' ); // phpcs:ignore WordPress.Security.EscapeOutput -- helper tự escape. ?>
+					<?php echo nntm_section_render_favorite_button( $post->ID, 'nntm-article-rows__favorite' );  ?>
 				<?php endif; ?>
 
 				<a class="nntm-article-rows__more" href="<?php echo esc_url( $permalink ); ?>">
@@ -163,9 +138,6 @@ function nntm_render_section_article_row( WP_Post $post, int $index, array $args
 	return trim( (string) ob_get_clean() );
 }
 
-/**
- * URL trang phân trang.
- */
 function nntm_section_pagination_url( int $page, string $base_url = '' ): string {
 	$page = max( 1, $page );
 	if ( '' === $base_url ) {
@@ -176,9 +148,6 @@ function nntm_section_pagination_url( int $page, string $base_url = '' ): string
 	return 1 === $page ? $base_url : trailingslashit( $base_url . 'page/' . $page );
 }
 
-/**
- * Phân trang đúng thiết kế: nút vuông trái/phải + dãy số ở giữa.
- */
 function nntm_render_section_pagination( int $current, int $total, string $base_url = '' ): string {
 	$current = max( 1, $current );
 	$total   = max( 1, $total );

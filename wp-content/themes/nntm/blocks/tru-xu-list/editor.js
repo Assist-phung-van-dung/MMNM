@@ -1,9 +1,4 @@
-/**
- * Editor script cho block nntm/tru-xu-list — JavaScript thuần, không build.
- * Dùng biến toàn cục wp.* theo đúng quy ước dự án (xem blocks/card-list/editor.js).
- * Khối này luôn lấy nội dung từ CPT nntm_abode (Trú Xứ) — không cho chọn
- * loại nội dung khác, vì đây là khối chuyên dụng cho SECTION 6 "Trú Xứ".
- */
+ 
 ( function ( wp ) {
 	'use strict';
 
@@ -34,7 +29,7 @@
 			var setAttributes = props.setAttributes;
 			var blockProps = useBlockProps();
 
-			var previewAttributes = Object.assign( {}, attributes, { heading: '' } ); // tranh hien tieu de 2 lan (RichText da hien o duoi)
+			var previewAttributes = Object.assign( {}, attributes, { heading: '' } ); 
 
 			return el(
 				'div',
@@ -88,7 +83,7 @@
 			);
 		},
 		save: function () {
-			// Block động: PHP (render.php) tự chạy lại WP_Query mỗi lần tải trang.
+
 			return null;
 		},
 	} );

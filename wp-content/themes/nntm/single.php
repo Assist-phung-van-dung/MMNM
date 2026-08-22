@@ -1,5 +1,5 @@
 <?php
-/** Single template for standard WordPress posts. */
+ 
 defined( 'ABSPATH' ) || exit;
 
 if ( 'post' !== get_post_type() ) {
@@ -31,7 +31,7 @@ while ( have_posts() ) :
 				<?php if ( '' !== trim( $excerpt ) ) : ?><p class="nntm-post-detail__intro"><?php echo esc_html( $excerpt ); ?></p><?php endif; ?>
 				<?php if ( has_post_thumbnail() ) : ?><figure class="nntm-post-detail__media"><?php the_post_thumbnail( 'full' ); ?></figure><?php endif; ?>
 				<div class="nntm-post-detail__content"><?php the_content(); ?></div>
-				<?php if ( function_exists( 'nntm_section_render_favorite_button' ) ) : ?><div class="nntm-post-detail__favorite"><?php echo nntm_section_render_favorite_button( get_the_ID(), 'nntm-post-detail__favorite-button' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div><?php endif; ?>
+				<?php if ( function_exists( 'nntm_section_render_favorite_button' ) ) : ?><div class="nntm-post-detail__favorite"><?php echo nntm_section_render_favorite_button( get_the_ID(), 'nntm-post-detail__favorite-button' );  ?></div><?php endif; ?>
 			</div>
 		</article>
 
@@ -60,7 +60,7 @@ while ( have_posts() ) :
 						),
 						'innerBlocks' => array(), 'innerHTML' => '', 'innerContent' => array(),
 					)
-				); // phpcs:ignore WordPress.Security.EscapeOutput
+				);  
 				?>
 			</section>
 		<?php endif; ?>

@@ -1,18 +1,4 @@
-/* =============================================================
-   Trang đọc ấn phẩm — /an-pham/{slug}/doc/
-
-   Bố cục theo mẫu chủ dự án đưa 21/08/2026: thanh trên · cột trái
-   giới thiệu · khung đọc chữ ở giữa · hai nút lật tròn nổi hai
-   bên · thanh dưới có tên chương và phần trăm.
-
-   Ba nền đọc đổi bằng `data-nen` trên <body> — nền là MỘT trạng
-   thái với ba giá trị loại trừ nhau, nên một thuộc tính diễn đạt
-   đúng hơn ba class có thể cùng bật. Cách xem đi qua `data-xem`
-   với cùng lý do.
-
-   Mặc định là nền TỐI, khác phần còn lại của site: đọc sách là
-   việc kéo dài, và mẫu chốt cũng là nền tối.
-   ============================================================= */
+ 
 
 .nntm-doc {
 	--doc-bg: #16181c;
@@ -24,7 +10,7 @@
 	--doc-bar: 60px;
 	--doc-foot: 62px;
 	--doc-side: 396px;
-	--doc-co-chu: 18px;    /* cỡ chữ khi đọc ở chế độ cuộn */
+	--doc-co-chu: 18px;     
 
 	margin: 0;
 	background: var(--doc-bg);
@@ -49,8 +35,6 @@
 	--doc-rule: #d8c9a8;
 }
 
-/* Cỡ chữ khung đọc — bậc thang, không cho nhập số tuỳ ý. */
-
 .nntm-doc__app {
 	position: fixed;
 	inset: 0;
@@ -67,8 +51,6 @@
 	clip-path: inset(50%);
 	white-space: nowrap;
 }
-
-/* ---------- Thanh trên ---------- */
 
 .nntm-doc__bar {
 	display: grid;
@@ -126,8 +108,6 @@
 
 .nntm-doc__icon.is-active,
 .nntm-doc__icon[aria-pressed="true"] { color: var(--doc-accent); }
-
-/* ---------- Thân: cột trái + khung đọc ---------- */
 
 .nntm-doc__body {
 	position: relative;
@@ -214,8 +194,6 @@
 
 .nntm-doc__intro-body p { margin: 0 0 .8em; }
 
-/* ---------- Khung đọc ---------- */
-
 .nntm-doc__stage {
 	position: relative;
 	overflow-y: auto;
@@ -223,11 +201,6 @@
 	scroll-behavior: smooth;
 }
 
-/*
- * Khối chữ. `text-align: justify` cộng với gạch nối tự động: căn đều mà không
- * bật hyphens thì tiếng Việt bị giãn thành những khoảng trắng rất thưa giữa các
- * từ, đọc rất mỏi — đúng thứ hay thấy ở các trình đọc làm vội.
- */
 .nntm-doc__text {
 	max-inline-size: 62ch;
 	margin-inline: auto;
@@ -245,7 +218,6 @@
 	text-indent: 1.6em;
 }
 
-/* Đoạn đầu của mỗi trang không thụt: nó không nối tiếp câu nào phía trên. */
 .nntm-doc__text [data-mo-trang] { text-indent: 0; }
 
 .nntm-doc__text h2 {
@@ -258,7 +230,6 @@
 	text-indent: 0;
 }
 
-/* Mốc trang: vạch mảnh kèm số, để người đọc còn đối chiếu được với bản in. */
 .nntm-doc__mark {
 	display: flex;
 	align-items: center;
@@ -301,8 +272,6 @@
 
 @keyframes nntm-doc-spin { to { transform: rotate(360deg); } }
 
-/* ---------- Hai nút lật tròn ---------- */
-
 .nntm-doc__flip {
 	position: absolute;
 	inset-block-start: 50%;
@@ -329,8 +298,6 @@
 .nntm-doc__flip--next { inset-inline-end: 22px; }
 
 .nntm-doc__flip[disabled] { opacity: .25; cursor: default; }
-
-/* ---------- Mục lục và bảng cỡ chữ ---------- */
 
 .nntm-doc__toc,
 .nntm-doc__panel {
@@ -430,8 +397,6 @@
 	outline-offset: 2px;
 }
 
-/* ---------- Thanh dưới ---------- */
-
 .nntm-doc__foot {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) auto;
@@ -472,15 +437,13 @@
 	accent-color: var(--doc-accent);
 }
 
-/* ---------- Watermark ---------- */
-
 .nntm-doc__watermark {
 	position: absolute;
 	inset-block: var(--doc-bar) var(--doc-foot);
 	inset-inline-start: var(--doc-side);
 	inset-inline-end: 0;
 	z-index: 20;
-	/* Không chặn chuột: người đọc vẫn cuộn, vẫn lật, vẫn kéo thanh trượt. */
+	 
 	pointer-events: none;
 	overflow: hidden;
 	opacity: .07;
@@ -491,15 +454,11 @@
 	letter-spacing: .1em;
 }
 
-/* ---------- Máy tính bảng: bỏ cột trái ---------- */
-
 @media (max-width: 1080px) {
 	.nntm-doc { --doc-side: 0px; }
 
 	.nntm-doc__body { grid-template-columns: 1fr; }
 
-	/* Giới thiệu sách không mất hẳn — chỉ dời xuống trang chi tiết, chỗ nó
-	   vốn thuộc về. Nhét vào khung đọc trên màn hẹp là lấy chỗ của chữ. */
 	.nntm-doc__side { display: none; }
 
 	.nntm-doc__flip--prev { inset-inline-start: 12px; }
@@ -530,19 +489,8 @@
 	.nntm-doc__flip { transition: none; }
 }
 
-/* Thuộc tính `hidden` của HTML chỉ đặt display:none ở mức UA stylesheet, nên
-   BẤT KỲ khai báo display tường minh nào trong class cũng đè được nó.
-   .nntm-doc__loading có display:flex — và đó chính là lý do dòng "Đang mở sách…"
-   vẫn hiện sau khi sách đã tải xong. Chốt một lần cho cả trang thay vì đi vá
-   từng class. */
 .nntm-doc [hidden] { display: none !important; }
 
-/* Màu chữ khai TƯỜNG MINH cho từng loại con, không chỉ đặt ở khối cha.
-   Lý do đo được 21/08/2026: base.css của site đặt `color` thẳng cho `p` và `h2`
-   (#4F4F4F, #3F3B3B — bảng màu nền sáng), nên chữ trong khung đọc ra xám sẫm
-   trên nền tối, gần như không đọc nổi. Đã gỡ base.css khỏi trang này, nhưng vẫn
-   khai lại ở đây: trình đọc không nên phụ thuộc vào việc stylesheet nào được
-   nạp hay không. */
 .nntm-doc__text p,
 .nntm-doc__text h2,
 .nntm-doc__text h3,
@@ -551,17 +499,13 @@
 
 .nntm-doc__text .nntm-doc__mark { color: var(--doc-ink-2); }
 
-/* ---------- Ẩn thanh cuộn ---------- */
-
-/* Ẩn thanh cuộn nhưng GIỮ khả năng cuộn — `overflow: hidden` sẽ chặn luôn cả
-   con lăn và bàn phím, không phải thứ mình muốn. Trình đọc đã có nút lật, thanh
-   trượt và số phần trăm, nên thanh cuộn chỉ thêm nhiễu. */
+ 
 .nntm-doc__stage,
 .nntm-doc__side,
 .nntm-doc__toc,
 .nntm-doc__panel {
-	scrollbar-width: none;          /* Firefox */
-	-ms-overflow-style: none;       /* Edge cũ */
+	scrollbar-width: none;           
+	-ms-overflow-style: none;        
 }
 
 .nntm-doc__stage::-webkit-scrollbar,
@@ -572,26 +516,18 @@
 	block-size: 0;
 }
 
-/* Thanh admin của WordPress đã bị ẩn ở tầng PHP (xem inc/doc-sach.php). Chặn
-   thêm ở đây cho trường hợp plugin nào đó ép nó hiện lại — trình đọc toàn màn
-   hình mà bị chèn một thanh 32px lên trên là mất luôn nút thoát. */
 #wpadminbar { display: none !important; }
 html.nntm-doc-html { margin-top: 0 !important; }
 
-/* ---------- Chế độ lật 3D ---------- */
-
-/* Khung sách: page-flip tự đặt kích thước, ở đây chỉ lo phần bóng và nền. */
+ 
 .nntm-doc__book {
 	margin-inline: auto;
 }
 
-/* Một tờ sách. Kích thước do JS đặt để khớp với page-flip; typography giữ đúng
-   như chế độ cuộn để đổi qua đổi lại không thấy chữ nhảy cỡ. */
 .nntm-doc__sheet {
 	position: relative;
 	box-sizing: border-box;
-	/* Bóng lõm nhẹ trong lòng tờ: lúc tờ rời khối sách để lật, nó vẫn có khối,
-	   không dẹt như tờ giấy dán. */
+	 
 	box-shadow: inset 0 0 22px -12px rgba(0, 0, 0, .5);
 	overflow: hidden;
 	padding: clamp(22px, 3.2vw, 46px) clamp(20px, 3vw, 42px);
@@ -624,7 +560,6 @@ html.nntm-doc-html { margin-top: 0 !important; }
 	color: var(--doc-ink);
 }
 
-/* Số trang chân tờ, mờ, để đối chiếu được với bản in. */
 .nntm-doc__sheet-no {
 	position: absolute;
 	inset-block-end: 14px;
@@ -637,8 +572,6 @@ html.nntm-doc-html { margin-top: 0 !important; }
 	text-indent: 0;
 }
 
-/* Hộp đo thầm: cùng hộp, cùng chữ, nhưng không ai thấy — dùng để biết bao nhiêu
-   chữ vừa một tờ. Đặt ngoài luồng để không đẩy bố cục. */
 .nntm-doc__ruler {
 	position: absolute;
 	inset-inline-start: -99999px;
@@ -647,25 +580,16 @@ html.nntm-doc-html { margin-top: 0 !important; }
 	pointer-events: none;
 }
 
-/* Khi đang lật thì khung đọc không cuộn — mọi thứ nằm gọn trong tờ. */
 .nntm-doc[data-xem="lat"] .nntm-doc__stage {
 	overflow: hidden;
 	display: grid;
 	place-items: center;
 }
 
-/* ---------- Watermark: sửa lỗi tràn ra ngoài khung đọc ---------- */
-
-/* LỖI ĐÃ SỬA 21/08/2026: bản trước đặt `transform: rotate() scale(1.5)` thẳng
-   lên chính ô watermark. `overflow: hidden` chỉ cắt phần NỘI DUNG bên trong ô,
-   còn cái ô sau khi bị phóng 1.5 lần thì tự nó tràn ra ngoài `inset-block` —
-   nên chữ mờ bò lên thanh trên và xuống cả thanh dưới, đè lên "Trang 1 / 8" và
-   thanh trượt.
-   Cách đúng: ô ngoài giữ nguyên khổ và cắt; xoay/phóng ở lớp BÊN TRONG. */
+ 
 .nntm-doc__watermark-in {
 	display: block;
-	/* Rộng hơn ô chứa để sau khi xoay vẫn phủ kín bốn góc, phần thừa bị ô
-	   ngoài cắt gọn. */
+	 
 	inline-size: 180%;
 	margin-inline-start: -40%;
 	transform: rotate(-24deg);
@@ -675,11 +599,7 @@ html.nntm-doc-html { margin-top: 0 !important; }
 	letter-spacing: .1em;
 }
 
-/* ---------- Bóng của tờ sách khi lật ---------- */
-
-/* Bóng nhiều lớp thay vì một lớp: một lớp mảnh sát mép để tách tờ khỏi nền, một
-   lớp rộng và mờ làm chiều sâu, và một vệt tối ở gáy sách. Một lớp box-shadow
-   duy nhất thì hoặc quá nhạt không thấy, hoặc quá đậm thành viền đen. */
+ 
 .nntm-doc__book {
 	box-shadow:
 		0 2px 4px rgba(0, 0, 0, .30),
@@ -687,8 +607,6 @@ html.nntm-doc-html { margin-top: 0 !important; }
 		0 40px 80px -32px rgba(0, 0, 0, .65);
 }
 
-/* Vệt tối ở gáy: tờ bên phải tối dần về mép trái, tờ bên trái tối dần về mép
-   phải — đó là chỗ giấy cong vào lòng sách. page-flip gắn sẵn hai class này. */
 .nntm-doc__sheet::after {
 	content: "";
 	position: absolute;
@@ -707,7 +625,6 @@ html.nntm-doc-html { margin-top: 0 !important; }
 	background: linear-gradient(to left, transparent, rgba(0, 0, 0, .16));
 }
 
-/* Nền sáng thì vệt gáy phải nhạt hơn, không thì trông như vết bẩn. */
 .nntm-doc[data-nen="sang"] .nntm-doc__sheet.--left::after {
 	background: linear-gradient(to right, transparent, rgba(0, 0, 0, .09));
 }
@@ -723,16 +640,8 @@ html.nntm-doc-html { margin-top: 0 !important; }
 		0 40px 80px -32px rgba(0, 0, 0, .22);
 }
 
-/* ---------- Chế độ lật: tờ là ẢNH TRANG PDF ---------- */
+ 
 
-/* ĐỔI CÁCH LÀM 21/08/2026: tờ trong chế độ lật không còn chứa chữ bóc ra chảy
-   lại, mà chứa canvas vẽ đúng trang PDF. Nhờ vậy hình vẽ trong sách hiện đúng
-   chỗ và một trang PDF nằm gọn trong một tờ. Chữ chảy lại đổi được cỡ vẫn ở
-   chế độ cuộn. */
-
-/* Bớt lề sân khấu khi lật để tờ to hết mức có thể — đây là chỗ quyết định tờ
-   dài bao nhiêu. Lề cũ chừa 96px mỗi bên cho hai mũi tên, mà mũi tên thì có thể
-   nằm đè lên lề trắng ngoài của trang in, chẳng che chữ nào. */
 .nntm-doc[data-xem="lat"] .nntm-doc__stage {
 	padding: 12px 18px 16px;
 }
@@ -741,8 +650,6 @@ html.nntm-doc-html { margin-top: 0 !important; }
 	padding: 0;
 }
 
-/* Hộp đặt ảnh, phủ kín tờ. Lúc chưa vẽ xong thì để trống — thấy màu giấy chứ
-   không thấy khoảng đen. */
 .nntm-doc__anh {
 	position: absolute;
 	inset: 0;
@@ -752,8 +659,6 @@ html.nntm-doc-html { margin-top: 0 !important; }
 	background: var(--doc-panel);
 }
 
-/* Tờ đã lấy đúng tỉ lệ trang in nên canvas phủ kín, không chừa vệt trống.
-   `object-fit: contain` để phòng trang nào lệch tỉ lệ (bìa, trang gấp). */
 .nntm-doc__canvas {
 	display: block;
 	inline-size: 100%;
@@ -761,8 +666,6 @@ html.nntm-doc-html { margin-top: 0 !important; }
 	object-fit: contain;
 }
 
-/* Số trang giờ nằm đè lên ảnh, nên cho nó cái nền mờ để đọc được trên cả giấy
-   trắng lẫn hình tối. */
 .nntm-doc[data-xem="lat"] .nntm-doc__sheet-no {
 	inset-block-end: 6px;
 	inset-inline: auto;
@@ -775,8 +678,6 @@ html.nntm-doc-html { margin-top: 0 !important; }
 	letter-spacing: .08em;
 }
 
-/* Mũi tên nằm sát mép sân khấu, đè lên lề ngoài của trang. Thêm nền đậm hơn một
-   chút để nổi trên giấy trắng. */
 .nntm-doc[data-xem="lat"] .nntm-doc__flip {
 	background: rgba(0, 0, 0, .38);
 	color: #fff;

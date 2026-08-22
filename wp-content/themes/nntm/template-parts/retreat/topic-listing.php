@@ -1,10 +1,4 @@
 <?php
-/**
- * Listing dùng chung cho chu-de/khoa-tu và chu-de/lich-tu.
- * Giao diện đồng nhất với phan-muc/nguyen-thuy.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -23,7 +17,7 @@ $term = get_queried_object();
 					the_post();
 					$post = get_post();
 					if ( $post instanceof WP_Post ) {
-						echo nntm_render_retreat_topic_row( $post, $index ); // phpcs:ignore WordPress.Security.EscapeOutput -- helper tự escape.
+						echo nntm_render_retreat_topic_row( $post, $index );  
 						++$index;
 					}
 				endwhile;
@@ -34,7 +28,7 @@ $term = get_queried_object();
 			global $wp_query;
 			$current_page = max( 1, absint( get_query_var( 'paged' ) ) );
 			if ( function_exists( 'nntm_render_section_pagination' ) ) {
-				echo nntm_render_section_pagination( $current_page, (int) $wp_query->max_num_pages ); // phpcs:ignore WordPress.Security.EscapeOutput -- helper tự escape.
+				echo nntm_render_section_pagination( $current_page, (int) $wp_query->max_num_pages );  
 			} else {
 				the_posts_pagination();
 			}

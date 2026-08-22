@@ -1,7 +1,4 @@
 <?php
-/**
- * Hiển thị khi không có bài viết nào (kết quả tìm kiếm rỗng, archive rỗng...).
- */
 
 defined( 'ABSPATH' ) || exit;
 ?>

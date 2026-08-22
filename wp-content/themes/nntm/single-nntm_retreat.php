@@ -1,10 +1,4 @@
 <?php
-/**
- * Chi tiết Khóa Tu / Lịch Tu.
- * Bố cục theo chi tiết bài viết thường, bổ sung đăng ký + chia sẻ.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -33,7 +27,7 @@ while ( have_posts() ) :
 					<span class="nntm-article-detail__meta-dot" aria-hidden="true"></span>
 					<?php
 					printf(
-						/* translators: %s: ngày cập nhật. */
+						 
 						esc_html__( 'Cập nhật %s', 'nntm' ),
 						esc_html( get_the_modified_date( 'd. m. Y' ) )
 					);
@@ -61,7 +55,7 @@ while ( have_posts() ) :
 
 					<?php
 					if ( function_exists( 'nntm_section_render_favorite_button' ) ) {
-						echo nntm_section_render_favorite_button( $post_id, 'nntm-retreat-detail__favorite-button' ); // phpcs:ignore WordPress.Security.EscapeOutput -- helper tự escape.
+						echo nntm_section_render_favorite_button( $post_id, 'nntm-retreat-detail__favorite-button' );  
 					}
 					?>
 
@@ -104,7 +98,7 @@ while ( have_posts() ) :
 						'innerHTML'    => '',
 						'innerContent' => array(),
 					)
-				); // phpcs:ignore WordPress.Security.EscapeOutput -- block tự escape đầu ra.
+				);  
 				?>
 			</div>
 		</article>

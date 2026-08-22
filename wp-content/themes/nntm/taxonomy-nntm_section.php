@@ -1,11 +1,4 @@
 <?php
-/**
- * Danh sách bài của một phân mục / term con nntm_section.
- * Thiết kế dùng chung cho mọi phân mục; Nghi Quỹ là Page riêng nên không
- * đi qua template này.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -27,7 +20,7 @@ $term = get_queried_object();
 					the_post();
 					$post = get_post();
 					if ( $post instanceof WP_Post ) {
-						echo nntm_render_section_article_row( // phpcs:ignore WordPress.Security.EscapeOutput -- helper tự escape.
+						echo nntm_render_section_article_row(  
 							$post,
 							$row_index,
 							array(
@@ -46,7 +39,7 @@ $term = get_queried_object();
 			<?php
 			global $wp_query;
 			$current_page = max( 1, (int) get_query_var( 'paged' ) );
-			echo nntm_render_section_pagination( $current_page, (int) $wp_query->max_num_pages ); // phpcs:ignore WordPress.Security.EscapeOutput -- helper tự escape.
+			echo nntm_render_section_pagination( $current_page, (int) $wp_query->max_num_pages );  
 			?>
 		<?php else : ?>
 			<p class="nntm-article-rows__empty"><?php esc_html_e( 'Chưa có bài viết nào trong mục này.', 'nntm' ); ?></p>

@@ -1,26 +1,12 @@
 <?php
-/**
- * Yêu thích dùng chung cho các nội dung của theme.
- *
- * Dữ liệu được lưu vào bảng `${prefix}nntm_favorites` do nntm-core tạo.
- * Theme chỉ cung cấp lớp giao diện + endpoint toggle + trang /yeu-thich/.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * Tên bảng favorites theo prefix WordPress hiện tại.
- */
 function nntm_section_favorites_table_name(): string {
 	global $wpdb;
 	return $wpdb->prefix . 'nntm_favorites';
 }
 
-/**
- * Bảng favorites có tồn tại không.
- */
 function nntm_section_favorites_table_exists(): bool {
 	global $wpdb;
 
@@ -31,25 +17,17 @@ function nntm_section_favorites_table_exists(): bool {
 
 	$table = nntm_section_favorites_table_name();
 	$like  = $wpdb->esc_like( $table );
-	$found = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $like ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- kiểm tra schema có sẵn.
+	$found = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $like ) );  
 
 	$exists = ( $found === $table );
 	return $exists;
 }
 
-/**
- * Các post type được phép hiện trong trang Yêu thích.
- *
- * @return string[]
- */
 function nntm_section_favorite_post_types(): array {
 	$types = array( 'nntm_article', 'nntm_publication', 'nntm_talk', 'nntm_retreat', 'nntm_video', 'post' );
 	return array_values( array_filter( array_map( 'sanitize_key', (array) apply_filters( 'nntm_section_favorite_post_types', $types ) ) ) );
 }
 
-/**
- * Kiểm tra một user đã yêu thích object chưa.
- */
 function nntm_section_is_favorite( int $object_id, int $user_id = 0 ): bool {
 	global $wpdb;
 
@@ -63,22 +41,15 @@ function nntm_section_is_favorite( int $object_id, int $user_id = 0 ): bool {
 	$table = nntm_section_favorites_table_name();
 	$found = $wpdb->get_var(
 		$wpdb->prepare(
-			"SELECT id FROM {$table} WHERE user_id = %d AND object_id = %d LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tên bảng từ $wpdb->prefix.
+			"SELECT id FROM {$table} WHERE user_id = %d AND object_id = %d LIMIT 1",  
 			$user_id,
 			$object_id
 		)
-	); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- cần trạng thái hiện tại của user.
+	);  
 
 	return null !== $found;
 }
 
-/**
- * Dựng nút Yêu thích dùng chung.
- *
- * @param int    $object_id ID bài viết.
- * @param string $class     Class bổ sung cho vị trí cụ thể.
- * @return string
- */
 function nntm_section_render_favorite_button( int $object_id, string $class = '' ): string {
 	$post = get_post( $object_id );
 	if ( ! $post instanceof WP_Post ) {
@@ -103,7 +74,7 @@ function nntm_section_render_favorite_button( int $object_id, string $class = ''
 		class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>"
 		data-nntm-favorite="<?php echo esc_attr( (string) $object_id ); ?>"
 		aria-pressed="<?php echo esc_attr( $is_favorite ? 'true' : 'false' ); ?>"
-		<?php echo $is_logged_in ? '' : 'data-nntm-auth-modal="dang-nhap"'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- chuỗi thuộc tính cố định. ?>
+		<?php echo $is_logged_in ? '' : 'data-nntm-auth-modal="dang-nhap"';  ?>
 	>
 		<svg class="nntm-favorite-button__icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
 			<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z" />
@@ -117,9 +88,6 @@ function nntm_section_render_favorite_button( int $object_id, string $class = ''
 	return trim( (string) ob_get_clean() );
 }
 
-/**
- * Endpoint AJAX lưu/bỏ yêu thích.
- */
 function nntm_section_ajax_toggle_favorite(): void {
 	check_ajax_referer( 'nntm_favorite_toggle', 'nonce' );
 
@@ -144,7 +112,7 @@ function nntm_section_ajax_toggle_favorite(): void {
 	$is_favorite = nntm_section_is_favorite( $object_id, $user_id );
 
 	if ( $is_favorite ) {
-		$result = $wpdb->delete( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- bảng nghiệp vụ riêng của dự án.
+		$result = $wpdb->delete(  
 			$table,
 			array(
 				'user_id'   => $user_id,
@@ -154,7 +122,7 @@ function nntm_section_ajax_toggle_favorite(): void {
 		);
 		$favorited = false;
 	} else {
-		$result = $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- bảng nghiệp vụ riêng của dự án.
+		$result = $wpdb->insert(  
 			$table,
 			array(
 				'user_id'     => $user_id,
@@ -180,9 +148,6 @@ function nntm_section_ajax_toggle_favorite(): void {
 }
 add_action( 'wp_ajax_nntm_section_toggle_favorite', 'nntm_section_ajax_toggle_favorite' );
 
-/**
- * Nhận diện URL /yeu-thich/ kể cả khi site chưa tạo Page vật lý.
- */
 function nntm_section_is_favorites_request(): bool {
 	if ( is_page( 'yeu-thich' ) ) {
 		return true;
@@ -193,9 +158,6 @@ function nntm_section_is_favorites_request(): bool {
 	return (bool) preg_match( '#^yeu-thich(?:/page/[0-9]+)?$#', $request );
 }
 
-/**
- * Trang hiện tại có thể chứa nút favorite của layout phân mục không.
- */
 function nntm_section_should_enqueue_favorite_assets(): bool {
 	if ( is_category() || is_tax( 'nntm_section' ) || is_tax( 'nntm_topic', array( 'khoa-tu', 'lich-tu' ) ) || is_singular( array( 'post', 'nntm_article', 'nntm_publication', 'nntm_retreat' ) ) || nntm_section_is_favorites_request() ) {
 		return true;
@@ -205,9 +167,6 @@ function nntm_section_should_enqueue_favorite_assets(): bool {
 	return $post instanceof WP_Post && has_block( 'nntm/article-rows', $post );
 }
 
-/**
- * CSS/JS nút favorite.
- */
 function nntm_section_enqueue_favorite_assets(): void {
 	if ( ! nntm_section_should_enqueue_favorite_assets() ) {
 		return;
@@ -245,11 +204,6 @@ function nntm_section_enqueue_favorite_assets(): void {
 }
 add_action( 'wp_enqueue_scripts', 'nntm_section_enqueue_favorite_assets', 30 );
 
-/**
- * Lấy một trang favorite đã lọc các bài publish và post type được hỗ trợ.
- *
- * @return array{posts: WP_Post[], total: int, total_pages: int, current_page: int}
- */
 function nntm_section_get_favorites_page( int $user_id, int $page = 1, int $per_page = 5 ): array {
 	global $wpdb;
 
@@ -274,11 +228,11 @@ function nntm_section_get_favorites_page( int $user_id, int $page = 1, int $per_
 
 	$table        = nntm_section_favorites_table_name();
 	$placeholders = implode( ', ', array_fill( 0, count( $post_types ), '%s' ) );
-	$where_sql    = "f.user_id = %d AND p.post_status = 'publish' AND p.post_type IN ({$placeholders})"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- placeholders được tạo nội bộ.
+	$where_sql    = "f.user_id = %d AND p.post_status = 'publish' AND p.post_type IN ({$placeholders})";  
 	$where_args   = array_merge( array( $user_id ), $post_types );
 
-	$count_sql = "SELECT COUNT(*) FROM {$table} f INNER JOIN {$wpdb->posts} p ON p.ID = f.object_id WHERE {$where_sql}"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tên bảng từ WordPress.
-	$total     = (int) $wpdb->get_var( $wpdb->prepare( $count_sql, $where_args ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+	$count_sql = "SELECT COUNT(*) FROM {$table} f INNER JOIN {$wpdb->posts} p ON p.ID = f.object_id WHERE {$where_sql}";  
+	$total     = (int) $wpdb->get_var( $wpdb->prepare( $count_sql, $where_args ) );  
 
 	if ( $total <= 0 ) {
 		return $empty;
@@ -288,9 +242,9 @@ function nntm_section_get_favorites_page( int $user_id, int $page = 1, int $per_
 	$page        = min( $page, $total_pages );
 	$offset      = ( $page - 1 ) * $per_page;
 
-	$ids_sql  = "SELECT f.object_id FROM {$table} f INNER JOIN {$wpdb->posts} p ON p.ID = f.object_id WHERE {$where_sql} ORDER BY f.created_at DESC, f.id DESC LIMIT %d OFFSET %d"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tên bảng từ WordPress.
+	$ids_sql  = "SELECT f.object_id FROM {$table} f INNER JOIN {$wpdb->posts} p ON p.ID = f.object_id WHERE {$where_sql} ORDER BY f.created_at DESC, f.id DESC LIMIT %d OFFSET %d";  
 	$ids_args = array_merge( $where_args, array( $per_page, $offset ) );
-	$ids      = array_map( 'absint', (array) $wpdb->get_col( $wpdb->prepare( $ids_sql, $ids_args ) ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+	$ids      = array_map( 'absint', (array) $wpdb->get_col( $wpdb->prepare( $ids_sql, $ids_args ) ) );  
 
 	$posts = array();
 	if ( ! empty( $ids ) ) {
@@ -314,9 +268,6 @@ function nntm_section_get_favorites_page( int $user_id, int $page = 1, int $per_
 	);
 }
 
-/**
- * Số trang hiện tại của URL /yeu-thich/page/N/ hoặc Page thật.
- */
 function nntm_section_favorites_current_page(): int {
 	$paged = max( 1, absint( get_query_var( 'paged' ) ) );
 	if ( $paged > 1 ) {
@@ -332,17 +283,11 @@ function nntm_section_favorites_current_page(): int {
 	return 1;
 }
 
-/**
- * Chặn canonical redirect làm mất route ảo /yeu-thich/ khi chưa tạo Page.
- */
 function nntm_section_favorites_disable_canonical( $redirect_url ) {
 	return nntm_section_is_favorites_request() ? false : $redirect_url;
 }
 add_filter( 'redirect_canonical', 'nntm_section_favorites_disable_canonical' );
 
-/**
- * Ép /yeu-thich/ dùng template riêng, kể cả chưa có Page trong wp_posts.
- */
 function nntm_section_favorites_template_include( string $template ): string {
 	if ( ! nntm_section_is_favorites_request() ) {
 		return $template;
@@ -364,9 +309,6 @@ function nntm_section_favorites_template_include( string $template ): string {
 }
 add_filter( 'template_include', 'nntm_section_favorites_template_include', 99 );
 
-/**
- * Body class rõ ràng cho route ảo.
- */
 function nntm_section_favorites_body_class( array $classes ): array {
 	if ( nntm_section_is_favorites_request() ) {
 		$classes[] = 'page-yeu-thich';
@@ -375,9 +317,6 @@ function nntm_section_favorites_body_class( array $classes ): array {
 }
 add_filter( 'body_class', 'nntm_section_favorites_body_class' );
 
-/**
- * Tiêu đề trình duyệt cho route Yêu thích ảo.
- */
 function nntm_section_favorites_document_title( string $title ): string {
 	return nntm_section_is_favorites_request() ? __( 'Yêu thích', 'nntm' ) : $title;
 }

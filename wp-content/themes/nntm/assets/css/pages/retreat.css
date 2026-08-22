@@ -1,8 +1,4 @@
-/* =============================================================
-   Khóa Tu / Lịch Tu
-   - Listing: cùng hệ 1366 / 1184 và hàng so le như Nguyên Thủy.
-   - Detail: tái dùng article-detail, chỉ thêm action + modal đăng ký.
-   ============================================================= */
+
 
 .tax-nntm_topic.term-khoa-tu .nntm-site-frame,
 .tax-nntm_topic.term-lich-tu .nntm-site-frame,
@@ -10,7 +6,6 @@
 	background-color: var(--nntm-trang);
 }
 
-/* ---------- Listing ---------- */
 .nntm-retreat-topic {
 	width: 100%;
 	max-width: var(--nntm-w-rong);
@@ -97,7 +92,6 @@
 	color: var(--nntm-chu);
 }
 
-/* ---------- Detail ---------- */
 .single-nntm_retreat .nntm-article-detail {
 	width: 100%;
 	max-width: var(--nntm-w-rong);
@@ -152,12 +146,10 @@
 	margin: 0;
 }
 
-/* Related dùng chính rule card-list của article-detail; chỉ chỉnh title case. */
 .nntm-retreat-detail__related .nntm-card-list__heading {
 	text-transform: none;
 }
 
-/* ---------- Modal đăng ký ---------- */
 .nntm-modal-open {
 	overflow: hidden;
 }

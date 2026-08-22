@@ -1,32 +1,7 @@
 <?php
-/**
- * Đầu trang bản R1 — thanh menu kính mờ nổi đè lên banner.
- *
- * Figma "DESKTOP - R1" / HEADER 4231:976 (1240x80), bóc 10/08/2026:
- *   MAIN MENU  1240x80  flex ngang, cách 137, đệm 5/40/5/40,
- *              SPACE_BETWEEN, nền #FFFFFF@0.60, bo 40,
- *              bóng 0/5/30 rgba(16,16,16,0.20)
- *   LOGO       39x50   vector #747766
- *   MENU       989x49  flex ngang, cách 30, dồn phải, canh giữa
- *     mục       #747766  Battambang 400 16/29
- *     "Nhập Pháp Giới"  162x49, đệm 10/20, nền #1F4E79, bo 60, chữ #FFFFFF
- *   ICON       42x42   đệm 10, bo 50, vector 22x22 #747766
- *
- * Menu lấy từ vị trí `primary` do khách tự quản trong Giao diện → Menu.
- * Mục cuối "Nhập Pháp Giới" tách riêng vì trong thiết kế nó là NÚT chứ
- * không phải mục menu thường.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * Trang đích của nút "Nhập Pháp Giới".
- *
- * Ưu tiên trang có slug `nhap-phap-gioi`; không có thì trỏ về trang chủ để
- * không bao giờ sinh liên kết chết.
- */
 $nntm_r1_npg_page = get_page_by_path( 'nhap-phap-gioi' );
 $nntm_r1_npg_url  = $nntm_r1_npg_page ? get_permalink( $nntm_r1_npg_page ) : home_url( '/' );
 ?>
@@ -35,11 +10,7 @@ $nntm_r1_npg_url  = $nntm_r1_npg_page ? get_permalink( $nntm_r1_npg_page ) : hom
 
 		<a class="nntm-r1-header__logo" href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
 			<?php
-			/*
-			 * Biểu tượng dựng bằng SVG nội tuyến để tô được bằng biến màu
-			 * (currentColor) — dùng thẻ <img> thì không đổi màu theo trạng
-			 * thái được. Hình lấy dáng cây bồ đề trong Figma LOGO 4231:1364.
-			 */
+			 
 			?>
 			<svg class="nntm-r1-header__logo-mark" viewBox="0 0 39 50" role="img"
 				aria-label="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" focusable="false">

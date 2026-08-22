@@ -1,31 +1,16 @@
-/* =============================================================
-   Block nntm/tru-xu-list — Figma "02. DIEU THUONG" / SECTION 6
 
-   Số đo gốc từ Figma (desktop 1366):
-     SECTION 6  1366x708  dọc, gap 20, padding 60/80/60/80
-       CONTENT  1180x588  gap 30
-         Tiêu đề "Trú Xứ"  EB Garamond 600 52px, cao 60
-         LIST    1180x498  ngang, gap 20
-           TRU XU CARD  280x498  (4 thẻ)
-             CARD (lớp chữ)  280x89  dọc, gap 11, padding 20 bốn cạnh
-               Tên       Battambang 700 18px  → font sans
-               Địa điểm  Baskerville 400 15px → font serif
-
-   Không khóa cứng 280px: dùng lưới co giãn + aspect-ratio để giữ
-   đúng dáng thẻ trên mọi bề rộng.
-   ============================================================= */
 
 .nntm-tru-xu-list {
-	padding-block: var(--nntm-sp-10);         /* 60 — tu Figma */
+	padding-block: var(--nntm-sp-10);          
 	background: var(--nntm-nen);
 }
 
 .nntm-tru-xu-list__heading {
-	margin: 0 0 var(--nntm-sp-7);             /* gap 30 giua tieu de va danh sach */
+	margin: 0 0 var(--nntm-sp-7);              
 	font-family: var(--nntm-font-display);
 	font-weight: 600;
-	font-size: var(--nntm-fs-4xl);            /* 52 */
-	line-height: var(--nntm-lh-chat);         /* 60/52 = 1.15 */
+	font-size: var(--nntm-fs-4xl);             
+	line-height: var(--nntm-lh-chat);          
 	color: var(--nntm-chu);
 	text-wrap: balance;
 }
@@ -33,7 +18,7 @@
 .nntm-tru-xu-list__grid {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
-	gap: var(--nntm-sp-5);                    /* 20 — tu Figma */
+	gap: var(--nntm-sp-5);                     
 }
 
 .nntm-tru-xu-list__empty {
@@ -47,7 +32,7 @@
 }
 
 .nntm-tru-xu-list--list .nntm-container {
-	/* SUA 20/08/2026: `none` -> tran 1366 + canh giua (khung site da bo tran). */
+
 	max-width: var(--nntm-w-rong);
 	margin-inline: auto;
 	padding-inline: var(--nntm-sp-12);
@@ -93,12 +78,10 @@
 	to { opacity: 1; transform: translateY(0); }
 }
 
-/* ---------- Thẻ ---------- */
-
 .nntm-tru-xu-card {
 	position: relative;
 	display: block;
-	aspect-ratio: 280 / 498;                  /* tu Figma: TRU XU CARD */
+	aspect-ratio: 280 / 498;                   
 	overflow: hidden;
 	border-radius: var(--nntm-r-md);
 	text-decoration: none;
@@ -142,19 +125,14 @@
 	background: var(--nntm-xam);
 }
 
-/*
- * Lớp chữ đè lên đáy ảnh. Figma cho khối chữ cao 89px, padding 20.
- * Ảnh Trú Xứ có thể sáng hoặc tối bất kỳ, nên phải có lớp phủ chuyển
- * sắc riêng để chữ luôn đọc được — không trông chờ vào ảnh.
- */
 .nntm-tru-xu-card__overlay {
 	position: absolute;
 	inset-inline: 0;
 	bottom: 0;
 	display: flex;
 	flex-direction: column;
-	gap: 11px;                                /* tu Figma: CARD gap 11 */
-	padding: var(--nntm-sp-5);                /* 20 — tu Figma */
+	gap: 11px;                                 
+	padding: var(--nntm-sp-5);                 
 	background: linear-gradient(
 		to top,
 		var(--nntm-phu-den-50) 0%,
@@ -167,23 +145,19 @@
 .nntm-tru-xu-card__name {
 	font-family: var(--nntm-font-sans);
 	font-weight: 700;
-	font-size: var(--nntm-fs-md);             /* 18 */
+	font-size: var(--nntm-fs-md);              
 	line-height: 1.4;
 }
 
 .nntm-tru-xu-card__location {
 	font-family: var(--nntm-font-serif);
 	font-weight: 400;
-	font-size: var(--nntm-fs-15);             /* 15 */
+	font-size: var(--nntm-fs-15);              
 	line-height: var(--nntm-lh-vua);
 	opacity: 0.92;
 }
 
-/* ---------- Thu hẹp màn hình ---------- */
-/* SUY DOAN: chua co Figma mobile.
-   Chọn cách xuống hàng (2 cột rồi 1 cột) thay vì cuộn ngang, vì thẻ Trú Xứ
-   rất cao (tỉ lệ 280/498) — cuộn ngang trên điện thoại sẽ khiến mỗi thẻ
-   chiếm gần hết chiều cao màn hình mà vẫn không thấy được thẻ kế bên. */
+
 
 @media (max-width: 1151px) {
 	.nntm-tru-xu-list__grid { grid-template-columns: repeat(2, 1fr); }

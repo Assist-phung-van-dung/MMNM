@@ -1,34 +1,9 @@
 <?php
-/**
- * Template trang đọc ấn phẩm — /an-pham/{slug}/doc/
- *
- * Bố cục dựng theo mẫu trình đọc mà chủ dự án đưa ngày 21/08/2026: thanh trên
- * (thoát · tên sách · nhóm công cụ), cột trái giới thiệu sách, khung đọc chữ ở
- * giữa, hai nút lật tròn nổi hai bên, thanh dưới (tên chương · thanh trượt · %).
- *
- * KHUNG ĐỌC LÀ CHỮ, KHÔNG PHẢI ẢNH TRANG PDF. Chữ được bóc ra từ tệp PDF rồi
- * dựng lại thành văn bản chảy được (xem assets/js/doc-sach.js) — đó là điều kiện
- * để có căn đều hai bên, đổi cỡ chữ và tiến độ theo chương như mẫu. Đổi lại, bố
- * cục gốc của PDF không giữ được; ai cần xem đúng bản in thì bấm "Bản gốc".
- *
- * KHÔNG dùng get_header()/get_footer(): trình đọc chiếm hết màn hình. Vẫn gọi
- * wp_head()/wp_footer() để WordPress nạp CSS/JS đã khai ở inc/doc-sach.php.
- *
- * Quyền đã kiểm ở nntm_doc_chan_quyen() (template_redirect) — tới được đây
- * nghĩa là đã được phép đọc.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
 $nntm_pub = get_queried_object();
 
-/*
- * Nút thoát về KHO ẤN PHẨM, không về trang chi tiết của cuốn đang đọc: trang
- * chi tiết giờ tự chuyển sang đây (xem nntm_an_pham_chuyen_sang_trang_doc()),
- * nên trỏ về đó là bấm thoát rồi bị đẩy vào lại — một vòng lặp kín.
- */
 $nntm_kho_sach = (string) get_post_type_archive_link( 'nntm_publication' );
 
 if ( '' === $nntm_kho_sach ) {
@@ -48,10 +23,7 @@ $nntm_gioi_thieu = has_excerpt( $nntm_pub )
 	<meta charset="<?php bloginfo( 'charset' ); ?>" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 	<?php
-	/*
-	 * Không cho đánh chỉ mục: nội dung thật nằm trong tệp PDF phía sau, trang
-	 * này chỉ là cái khung. Để index thì máy tìm kiếm thu về một trang rỗng.
-	 */
+	 
 	?>
 	<meta name="robots" content="noindex, nofollow" />
 	<?php wp_head(); ?>
@@ -81,12 +53,7 @@ $nntm_gioi_thieu = has_excerpt( $nntm_pub )
 			</button>
 
 			<?php
-			/*
-			 * Bảng này từng có cả cỡ chữ, nên biểu tượng là "Aa". Cỡ chữ đã bỏ
-			 * (chế độ lật hiện ảnh trang in nên chữ to nhỏ theo bản in), giờ chỉ
-			 * còn nền và cách xem — biểu tượng đổi thành nửa sáng nửa tối cho
-			 * khớp việc nó làm.
-			 */
+			 
 			?>
 			<button type="button" class="nntm-doc__icon" data-nntm-doc="hien" aria-expanded="false" aria-controls="nntm-doc-hien" title="<?php esc_attr_e( 'Nền và cách xem', 'nntm' ); ?>">
 				<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.4" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 3.6a8.4 8.4 0 010 16.8z" fill="currentColor"/></svg>
@@ -115,11 +82,7 @@ $nntm_gioi_thieu = has_excerpt( $nntm_pub )
 			</div>
 
 			<?php
-			/*
-			 * Khối mời đăng nhập chỉ hiện với khách vãng lai. Ấn phẩm mở thì họ
-			 * vẫn đọc được — lời mời ở đây là để lưu chỗ đang đọc và đánh dấu
-			 * trang, hai thứ cần có tài khoản. Nói đúng lợi ích, không hù.
-			 */
+			 
 			if ( ! is_user_logged_in() ) :
 				?>
 				<div class="nntm-doc__cta">
@@ -189,15 +152,7 @@ $nntm_gioi_thieu = has_excerpt( $nntm_pub )
 	</footer>
 
 	<?php
-	/*
-	 * Watermark chỉ vẽ khi đã đăng nhập: mục đích của nó là RĂN ĐE — gắn bản
-	 * chụp với một tài khoản cụ thể. Với khách vô danh thì không có gì để gắn,
-	 * vẽ lên chỉ làm khó đọc.
-	 *
-	 * Kiến trúc mục 4 nói thẳng giới hạn: người có kỹ thuật vẫn gỡ được lớp này
-	 * bằng công cụ nhà phát triển. Đây là mức răn đe cao nhất khả thi trên web,
-	 * không phải khoá thật.
-	 */
+	 
 	if ( is_user_logged_in() ) :
 		?>
 		<div class="nntm-doc__watermark" aria-hidden="true"><span class="nntm-doc__watermark-in" data-nntm-doc="watermark"></span></div>

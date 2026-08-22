@@ -1,32 +1,7 @@
 <?php
-/**
- * Khối "Tổng Chỉ" bản R1 — băng cuộn ngang gồm 5 thẻ ảnh lớn.
- *
- * Figma "DESKTOP - R1" / TONG CHI 4231:869 (1326x714), bóc 10/08/2026:
- *   TONG CHI  nền #F7F1DE, bo 40
- *   TITLE     "Tổng Chỉ"  #A47764  EB Garamond 600 52/60
- *   LIST      1364x450  flex ngang, cách 30, đệm trái 184
- *             -> thẻ cuối CỐ Ý ló ra mép phải để gợi ý còn nội dung
- *   THẺ       994x450  nền ảnh, bo 40, đệm 60/50, canh giữa
- *     số       90x70 nền #F7F1DE, chữ #747766 Battambang 700 30/38
- *     nội dung #FCFDFE  Battambang 700 30/38  canh giữa
- *   NÚT       58x58  nền #FCFDFE, mũi tên viền #1F4E79 2px,
- *             bóng 0/5/30 rgba(85,110,158,0.20)
- *
- * Khác với banner: hai nút trái/phải ở đây HIỆN (không bị ẩn như trong
- * khung BANNER), nên có dựng.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * Năm điều Tổng Chỉ. Mỗi phần tử: `noi_dung` (chữ trên thẻ) và `anh`
- * (ID tệp đính kèm làm nền, 0 = để nền rêu trơn).
- *
- * @param array[] $dieu Danh sách điều, lấy nguyên văn từ Figma.
- */
 $nntm_r1_tc_dieu = apply_filters(
 	'nntm_r1_tong_chi_dieu',
 	array(
@@ -66,14 +41,7 @@ if ( 0 === $nntm_r1_tc_tong ) {
 
 		<div class="nntm-r1-tong-chi__bang" data-nntm-tongchi>
 			<?php
-			/*
-			 * Băng cuộn dùng overflow ngang thật (không phải transform) để
-			 * người dùng vuốt được trên cảm ứng và dùng được thanh cuộn
-			 * bàn phím. Hai nút chỉ gọi scrollBy().
-			 *
-			 * KHÔNG dùng scroll-snap: bài học đã ghi trong docs/07-ban-giao.md
-			 * — scroll-snap từng làm băng cuộn tự nhảy 110px.
-			 */
+			 
 			?>
 			<ol class="nntm-r1-tong-chi__list" data-nntm-tongchi-track>
 				<?php foreach ( $nntm_r1_tc_dieu as $nntm_r1_tc_i => $nntm_r1_tc_item ) : ?>

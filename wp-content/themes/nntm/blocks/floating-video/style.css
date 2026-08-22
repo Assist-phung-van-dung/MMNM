@@ -1,9 +1,4 @@
-/* =============================================================
-   NNTM — Floating video
-   - Desktop size: exactly 388 x 243 px.
-   - Fixed at the bottom-right, inside the centered 1366px frame.
-   - Front-end shows media only: no block close button / chrome.
-   ============================================================= */
+
 
 .nntm-floating-video {
 	--nntm-floating-video-width: 388px;
@@ -11,12 +6,7 @@
 
 	position: fixed;
 	z-index: 90;
-	/*
-	 * Dùng 100% (bề rộng khối chứa của phần tử fixed = khung hiển thị, ĐÃ
-	 * TRỪ thanh cuộn) chứ không dùng 100vw: 100vw tính CẢ thanh cuộn dọc
-	 * nên ở màn hẹp thẻ video bị đẩy tràn đúng bằng bề rộng thanh cuộn
-	 * (đo được 3px ở khung 390px).
-	 */
+
 	right: max(
 		var(--nntm-floating-video-gap),
 		calc((100% - var(--nntm-w-rong, 1366px)) / 2 + var(--nntm-floating-video-gap))
@@ -47,11 +37,6 @@
 	pointer-events: none;
 }
 
-/*
- * YouTube/Vimeo video content is normally 16:9. The requested box is
- * 388:243, so make the iframe 16:9 at full box height and crop only the
- * left/right edges. This avoids letterboxing and keeps the video full-bleed.
- */
 .nntm-floating-video[data-media-type="youtube"] .nntm-floating-video__iframe,
 .nntm-floating-video[data-media-type="vimeo"] .nntm-floating-video__iframe {
 	left: 50%;
@@ -60,11 +45,6 @@
 	transform: translateX(-50%);
 }
 
-/*
- * YouTube can briefly paint its own title/logo/player chrome while the
- * iframe initializes. Keep a clean video thumbnail over it for the startup
- * window, then reveal the already-playing iframe. Pointer events remain off.
- */
 .nntm-floating-video__youtube-cover {
 	position: absolute;
 	z-index: 2;
@@ -82,10 +62,6 @@
 	visibility: hidden;
 }
 
-/*
- * Empty anchor covers the complete media area. The embedded player never
- * consumes the click; a click always opens the selected related post.
- */
 .nntm-floating-video__link {
 	position: absolute;
 	z-index: 3;
@@ -99,50 +75,16 @@
 	outline-offset: 3px;
 }
 
-/* =============================================================
-   THẺ VIDEO NỔI TRÊN MÀN HẸP — dựng lại 20/08/2026
-
-   ĐO ĐƯỢC TRƯỚC KHI SỬA (trình duyệt thật, không phải suy đoán):
-     khung 375px  ->  thẻ rộng 336px = 93% bề rộng màn, cao 210px
-     khung 480px  ->  thẻ rộng 425px = 91%
-   Thẻ đứng cố định ở đáy phải, KHÔNG có nút tắt, nên trên điện thoại nó
-   chiếm hẳn một phần màn hình suốt thời gian đọc bài. Đúng như anh Úy
-   nhận xét: "tràn màn hình, che nội dung, mất cân đối".
-
-   NGUYÊN NHÂN: bề rộng khai là `min(388px, 100% - 2*gap)` — 388px là số
-   đo Figma cho khung desktop 1366, còn nhánh `100% - 2*gap` chỉ chặn cho
-   KHỎI TRÀN chứ không hề thu nhỏ theo màn. Màn càng hẹp thì tỉ lệ thẻ so
-   với màn càng lớn.
-
-   CÁCH SỬA
-   1. Bề rộng co theo màn bằng clamp(160px, 30vw, 320px) thay vì nhảy bậc
-      theo từng điểm ngắt — chuyển mượt, không giật ở bất kỳ mốc nào:
-        1151px -> 320  |  1024px -> 307  |  768px -> 230  |  <=533px -> 160
-   2. Bo góc + đổ bóng để nó ra dáng "thẻ nổi" chứ không phải một khối chữ
-      nhật cắt ngang nội dung. CHỈ dưới 1152px — desktop giữ nguyên góc
-      vuông đúng thiết kế.
-   3. Nút đóng (render.php) 32×32 ở góc trên-phải thẻ.
-   4. Chừa lề an toàn của iPhone (env(safe-area-inset-*)) để thẻ không nằm
-      dưới vạch Home.
-
-   Từ 1152px trở lên: KHÔNG một luật nào ở đây có tác dụng.
-   ============================================================= */
-
 .nntm-floating-video__close {
 	display: none;
 }
 
 @media (max-width: 1151px) {
 	.nntm-floating-video {
-		/*
-		 * 30vw là tỉ lệ giữ cho thẻ luôn quanh 1/3 bề rộng màn; hai đầu
-		 * clamp() chặn để không nhỏ hơn 160 (mất nhìn rõ) và không lớn hơn
-		 * 320 (ngay dưới 388 của desktop, nối tiếp mượt).
-		 */
+
 		--nntm-floating-video-width: clamp(160px, 30vw, 320px);
 		--nntm-floating-video-gap: var(--nntm-sp-4);
 
-		/* Lề an toàn iPhone: cộng thêm phần khuyết của màn, không phải số cứng. */
 		right: calc(var(--nntm-floating-video-gap) + env(safe-area-inset-right, 0px));
 		bottom: calc(var(--nntm-floating-video-gap) + env(safe-area-inset-bottom, 0px));
 		width: var(--nntm-floating-video-width);
@@ -156,7 +98,7 @@
 	.nntm-floating-video__close {
 		display: inline-flex;
 		position: absolute;
-		z-index: 4;                     /* trên .nntm-floating-video__link (z-index 3) */
+		z-index: 4;                      
 		top: calc(-1 * var(--nntm-sp-2));
 		right: calc(-1 * var(--nntm-sp-2));
 		align-items: center;
@@ -177,16 +119,11 @@
 		background-color: var(--nntm-den);
 	}
 
-	/* Lớp do view.js gắn khi người dùng bấm đóng. */
 	.nntm-floating-video.is-dismissed {
 		display: none;
 	}
 }
 
-/*
- * Điện thoại: thẻ đã nhỏ (160px) nên nút đóng lùi vào trong thẻ thay vì
- * thò ra ngoài — thò ra thì nó chạm mép màn hoặc bị bo góc thẻ cắt mất.
- */
 @media (max-width: 480px) {
 	.nntm-floating-video {
 		--nntm-floating-video-gap: var(--nntm-sp-3);
@@ -200,7 +137,6 @@
 	}
 }
 
-/* ---------- Gutenberg editor-only preview ---------- */
 .nntm-floating-video-editor__preview {
 	display: grid;
 	gap: 10px;

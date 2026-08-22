@@ -1,7 +1,4 @@
 <?php
-/**
- * Template 404 — không tìm thấy trang.
- */
 
 defined( 'ABSPATH' ) || exit;
 

@@ -1,23 +1,11 @@
 <?php
-/**
- * Search results template.
- *
- * Full-width alternating rows, reusing the nntm/article-rows block layout —
- * see inc/search.php.
- *
- * This is a functional screen the client does not rearrange, so it stays a PHP
- * template rather than blocks, matching the split in docs/04-kien-truc.md
- * section 2 ("search results" is listed among the PHP templates).
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
 $nntm_query = get_search_query();
 
 $nntm_groups = nntm_result_groups();
-$nntm_group  = isset( $_GET['group'] ) ? sanitize_key( wp_unslash( $_GET['group'] ) ) : 'all'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- reading a filter, writing nothing.
+$nntm_group  = isset( $_GET['group'] ) ? sanitize_key( wp_unslash( $_GET['group'] ) ) : 'all';  
 $nntm_group  = isset( $nntm_groups[ $nntm_group ] ) ? $nntm_group : 'all';
 
 $nntm_per_page = 10;
@@ -47,7 +35,7 @@ get_header();
 					<p class="nntm-search__summary">
 						<?php
 						printf(
-							/* translators: %s: number of results. */
+							 
 							esc_html( _n( 'Tìm thấy %s nội dung.', 'Tìm thấy %s nội dung.', $nntm_results['total'], 'nntm' ) ),
 							'<strong>' . esc_html( number_format_i18n( $nntm_results['total'] ) ) . '</strong>'
 						);
@@ -120,7 +108,7 @@ get_header();
 						<span class="nntm-search__page-of">
 							<?php
 							printf(
-								/* translators: 1: current page, 2: total pages. */
+								 
 								esc_html__( 'Trang %1$s / %2$s', 'nntm' ),
 								esc_html( number_format_i18n( $nntm_page ) ),
 								esc_html( number_format_i18n( $nntm_total_pages ) )
@@ -161,13 +149,7 @@ get_header();
 						</ul>
 
 						<?php
-						/*
-						 * SỬA 17/08/2026: bỏ get_search_form() ở đây theo yêu cầu — nó
-						 * là form MẶC ĐỊNH của WordPress, không theo giao diện site
-						 * (nút viền xanh mặc định trình duyệt) và trùng lặp với ô tìm
-						 * kiếm đã có sẵn ở header (luôn hiện, kể cả khi đã đăng nhập —
-						 * xem header.php). Không cần form thứ hai ở đây.
-						 */
+						 
 						?>
 					<?php endif; ?>
 				</div>

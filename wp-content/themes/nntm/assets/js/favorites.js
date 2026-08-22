@@ -1,6 +1,4 @@
-/**
- * Toggle Yêu thích cho các nút [data-nntm-favorite].
- */
+ 
 ( function () {
 	'use strict';
 
@@ -15,7 +13,6 @@
 			return;
 		}
 
-		// Khách chưa đăng nhập để auth-modal.js xử lý cùng click này.
 		if ( ! config.isLoggedIn ) {
 			return;
 		}
@@ -53,13 +50,11 @@
 
 				setState( button, !! payload.data.favorited );
 
-				// Đồng bộ nếu cùng một bài xuất hiện ở nhiều vị trí trên trang.
 				var sameButtons = document.querySelectorAll( '[data-nntm-favorite="' + objectId + '"]' );
 				for ( var i = 0; i < sameButtons.length; i++ ) {
 					setState( sameButtons[ i ], !! payload.data.favorited );
 				}
 
-				// Ở trang Yêu thích, bỏ tim xong reload để danh sách + pagination luôn đúng.
 				if ( ! payload.data.favorited && document.body.classList.contains( 'page-yeu-thich' ) ) {
 					window.setTimeout( function () { window.location.reload(); }, 120 );
 				}

@@ -1,24 +1,7 @@
 <?php
-/**
- * Front-end semantic classes for the Kim Cương Hành Giả composition.
- *
- * The page is assembled from reusable dynamic blocks.  The design-specific
- * stylesheet must never depend on WordPress generated selectors such as
- * `.page-id-243`, so this file gives the five bands stable semantic classes
- * while keeping the stored Gutenberg order untouched.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * Append a class name to parsed block attributes without duplicating it.
- *
- * @param array  $block Parsed block data.
- * @param string $class Class to append.
- * @return array
- */
 function nntm_kchg_add_block_class( array $block, string $class ): array {
 	if ( ! isset( $block['attrs'] ) || ! is_array( $block['attrs'] ) ) {
 		$block['attrs'] = array();
@@ -36,16 +19,6 @@ function nntm_kchg_add_block_class( array $block, string $class ): array {
 	return $block;
 }
 
-/**
- * Give every visual band a stable class on the Kim Cương page.
- *
- * This does not reorder blocks and does not delete editor content.  It only
- * enriches the parsed attributes before the dynamic block render callback
- * runs, so existing databases receive the semantic classes immediately.
- *
- * @param array $parsed_block Parsed Gutenberg block.
- * @return array
- */
 function nntm_kchg_semantic_block_classes( array $parsed_block ): array {
 	if ( is_admin() || ! is_page( 'kim-cuong-hanh-gia' ) || empty( $parsed_block['blockName'] ) ) {
 		return $parsed_block;
@@ -78,7 +51,7 @@ function nntm_kchg_semantic_block_classes( array $parsed_block ): array {
 	}
 
 	if ( 'nntm/cong-tu' === $parsed_block['blockName'] ) {
-		// The Kim Cương artwork uses the gold treatment for this final band.
+
 		$parsed_block['attrs']['background'] = 'vang';
 		return nntm_kchg_add_block_class( $parsed_block, 'nntm-kchg-ranking' );
 	}

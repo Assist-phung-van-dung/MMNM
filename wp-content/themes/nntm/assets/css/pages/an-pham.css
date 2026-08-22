@@ -1,14 +1,7 @@
-/* =============================================================
-   NNTM — Chi tiết Nghi Quỹ / nntm_publication.
-   Desktop source-of-truth theo ảnh "11. NGHI QUY CHI TIET":
-   - outer frame: 1366px
-   - content: 1184px
-   - main: trắng, màu chữ rêu cố định (không đổi theo role user)
-   - related: nền kem, card 340x541, gap 20, 3 card + ló card kế
-   ============================================================= */
+ 
 
 .single-nntm_publication {
-	/* Ngoài frame 1366 luôn là nền kem #F7F1DE, không đổi theo role user. */
+	 
 	background-color: var(--nntm-kem);
 }
 
@@ -17,8 +10,7 @@
 	max-width: var(--nntm-w-rong);
 	margin-inline: auto;
 	background-color: var(--nntm-trang);
-	/* Chiều rộng cột đọc (ảnh bìa + nội dung) — hẹp hơn khung 1184px để tạo
-	   tiêu điểm kiểu trang reader, không đổi token bố cục dùng chung toàn site. */
+	 
 	--nntm-an-pham-w-doc: 760px;
 }
 
@@ -73,11 +65,6 @@
 	color: var(--nntm-reu);
 }
 
-/*
- * Ảnh chính dùng cùng tỷ lệ 3:2 với chi tiết bài viết thường, nhưng giới hạn
- * chiều rộng và căn giữa trong khung 1184px — giữ cảm giác "bìa sách" được
- * đóng khung như trang reader, thay vì banner tràn hết khung nội dung.
- */
 .nntm-an-pham__anh-bia {
 	width: 100%;
 	max-width: var(--nntm-an-pham-w-doc);
@@ -105,7 +92,6 @@
 	color: var(--nntm-reu);
 }
 
-/* base.css và role user có thể đổi màu semantic; Nghi Quỹ không được đổi màu theo role. */
 .nntm-an-pham__noi-dung :where(p, li, blockquote, figcaption, h2, h3, h4, h5, h6) {
 	color: var(--nntm-reu);
 }
@@ -130,7 +116,6 @@
 	margin-top: var(--nntm-sp-7);
 }
 
-/* Fallback button khi patch Yêu thích dùng chung chưa tồn tại. */
 .nntm-an-pham__yeu-thich,
 .nntm-an-pham__favorite-button {
 	appearance: none;
@@ -167,14 +152,12 @@
 	stroke-linejoin: round;
 }
 
-/* Nếu có helper favorite dùng chung thì icon vẫn giữ đúng màu/size của màn Nghi Quỹ. */
 .nntm-an-pham__favorite-button .nntm-favorite-button__icon {
 	width: 20px;
 	height: 20px;
 	color: var(--nntm-do-tham);
 }
 
-/* ---------- Cùng chuyên mục ---------- */
 .nntm-an-pham-related {
 	width: 100%;
 	max-width: var(--nntm-w-rong);
@@ -215,12 +198,6 @@
 	display: none;
 }
 
-/*
- * Nút dùng cùng ngôn ngữ với related của Đại Sĩ/Kim Cương:
- * 58x58, nền trắng, icon mũi tên có thân + đầu mũi tên.
- * Trên nền trắng của Hành Giả ô nút tự hòa vào nền; trên nền kem Nghi Quỹ
- * ô trắng hiện đúng như ảnh thiết kế.
- */
 .nntm-an-pham-carousel__nav {
 	appearance: none;
 	position: absolute;
@@ -293,7 +270,6 @@
 	content: none;
 }
 
-/* Card Nghi Quỹ giữ đúng kích thước listing: 340 x 541, ảnh 300 x 400. */
 .nntm-an-pham-card {
 	flex: 0 0 340px;
 	height: 541px;
@@ -399,7 +375,6 @@
 	}
 }
 
-/* ---------- Đọc ấn phẩm / khoá xem ---------- */
 .nntm-an-pham__doc-nut {
 	appearance: none;
 	display: inline-flex;

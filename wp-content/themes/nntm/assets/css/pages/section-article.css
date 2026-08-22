@@ -1,9 +1,4 @@
-/* =============================================================
-   Phân mục + chi tiết + Yêu thích.
-   Desktop source-of-truth:
-   - khung ngoài: 1366px
-   - vùng nội dung: 1184px (91px mỗi bên ở viewport 1366)
-   ============================================================= */
+
 
 .tax-nntm_section,
 .single-nntm_article,
@@ -24,7 +19,6 @@
 	margin-inline: auto;
 }
 
-/* ---------- Chi tiết bài ---------- */
 .nntm-article-detail__inner {
 	padding-top: var(--nntm-sp-10);
 	padding-bottom: var(--nntm-sp-10);
@@ -106,7 +100,6 @@
 	margin-top: var(--nntm-sp-7);
 }
 
-/* ---------- Bài viết liên quan ---------- */
 .nntm-article-related {
 	width: 100%;
 	max-width: 1366px;
@@ -254,7 +247,6 @@
 	text-underline-offset: 0.18em;
 }
 
-/* ---------- Trang Yêu thích ---------- */
 .nntm-favorites-page__empty {
 	min-height: 280px;
 	display: flex;

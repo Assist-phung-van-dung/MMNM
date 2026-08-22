@@ -1,13 +1,4 @@
-/**
- * Editor script cho block nntm/term-list — JavaScript thuần, không build.
- * Dùng biến toàn cục wp.* theo đúng quy ước dự án (xem blocks/tru-xu-list/editor.js
- * và blocks/card-list/editor.js).
- *
- * Khối này liệt kê các TERM CON của một term cha trong taxonomy nntm_section.
- * Bảng điều khiển không bắt khách nhập ID: dùng wp.apiFetch lấy danh sách
- * term thật của nntm_section qua REST rồi hiển thị tên tiếng Việt trong
- * SelectControl, giống hệt cách blocks/card-list/editor.js lấy danh sách term.
- */
+ 
 ( function ( wp ) {
 	'use strict';
 
@@ -27,8 +18,7 @@
 	var apiFetch = wp.apiFetch;
 	var ServerSideRender = wp.serverSideRender && wp.serverSideRender.default ? wp.serverSideRender.default : wp.serverSideRender;
 
-	// Taxonomy nntm_section không khai báo "rest_base" riêng (xem
-	// class-taxonomies.php) nên REST base mặc định trùng tên taxonomy.
+
 	var TAXONOMY_REST_BASE = 'nntm_section';
 
 	registerBlockType( 'nntm/term-list', {
@@ -37,7 +27,7 @@
 			var setAttributes = props.setAttributes;
 			var blockProps = useBlockProps();
 
-			var termState = useState( [] ); // danh sách term thật của nntm_section
+			var termState = useState( [] ); 
 			var terms = termState[ 0 ];
 			var setTerms = termState[ 1 ];
 
@@ -45,9 +35,8 @@
 			var isLoading = loadingState[ 0 ];
 			var setIsLoading = loadingState[ 1 ];
 
-			// Tải danh sách term của nntm_section một lần khi mở khối —
-			// dùng để dựng SelectControl chọn "term cha", không bắt khách
-			// gõ ID tay.
+
+
 			useEffect( function () {
 				var isCurrent = true;
 
@@ -74,13 +63,13 @@
 
 			var parentOptions = [ { label: __( '— Chọn phân mục cha —', 'nntm' ), value: 0 } ].concat(
 				terms.map( function ( term ) {
-					// Thụt lề nhẹ cho term con để dễ phân biệt cấp bậc trong danh sách thả xuống.
+
 					var prefix = term.parent ? '— ' : '';
 					return { label: prefix + term.name, value: term.id };
 				} )
 			);
 
-			var previewAttributes = Object.assign( {}, attributes, { heading: '' } ); // tranh hien tieu de 2 lan (RichText da hien o duoi)
+			var previewAttributes = Object.assign( {}, attributes, { heading: '' } ); 
 
 			return el(
 				'div',
@@ -173,7 +162,7 @@
 			);
 		},
 		save: function () {
-			// Block động: PHP (render.php) tự chạy lại get_terms() mỗi lần tải trang.
+
 			return null;
 		},
 	} );

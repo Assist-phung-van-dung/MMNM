@@ -34,7 +34,6 @@ $banner_images = array_values(
 	)
 );
 
-// Backward compatibility: trang cũ đang lưu một banner bằng bannerImageId/bannerImageUrl.
 if ( ! $banner_images && ( ! empty( $attributes['bannerImageId'] ) || ! empty( $attributes['bannerImageUrl'] ) ) ) {
 	$banner_images[] = array(
 		'imageId'  => absint( $attributes['bannerImageId'] ?? 0 ),
@@ -77,7 +76,7 @@ $wrapper = get_block_wrapper_attributes(
 	)
 );
 ?>
-<section <?php echo $wrapper; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+<section <?php echo $wrapper;  ?>>
 	<?php if ( $banner_images ) : ?>
 		<div class="nntm-dt__banner" data-dt-banner aria-label="<?php esc_attr_e( 'Banner hình ảnh', 'nntm' ); ?>">
 			<?php foreach ( $banner_images as $index => $item ) : ?>

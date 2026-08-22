@@ -1,12 +1,4 @@
 <?php
-/**
- * Hiển thị một bài viết — dạng thẻ tóm tắt (index/archive/search) hoặc
- * đầy đủ (single). Ranh giới quyết định bằng is_singular().
- *
- * TODO Phase sau: tách thẻ tóm tắt thành block nntm/card-list theo
- * đúng biến thể Figma (ARTICLE, SMALL, XS...) — hiện dùng markup PHP
- * tối giản để có khung chạy được trước.
- */
 
 defined( 'ABSPATH' ) || exit;
 ?>

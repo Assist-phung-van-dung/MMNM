@@ -1,10 +1,4 @@
 <?php
-/**
- * Khởi động theme Nẵng Nhân Tịch Mặc.
- *
- * File này chỉ định nghĩa hằng và nạp các file trong inc/.
- * Logic thật nằm trong từng file inc/*.php, không viết ở đây.
- */
 
 defined( 'ABSPATH' ) || exit;
 

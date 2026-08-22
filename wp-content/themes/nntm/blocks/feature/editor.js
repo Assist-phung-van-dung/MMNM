@@ -1,9 +1,4 @@
-/**
- * Editor script cho block nntm/feature — JavaScript thuần, không build.
- * Dùng biến toàn cục wp.* theo đúng quy ước dự án (xem blocks/card/editor.js,
- * blocks/card-list/editor.js). Khối này không gắn với một CPT nào — nội dung
- * (nhãn nhỏ, tiêu đề, đoạn văn, ảnh) do khách nhập trực tiếp trên khối.
- */
+ 
 ( function ( wp ) {
 	'use strict';
 
@@ -167,7 +162,7 @@
 			);
 		},
 		save: function () {
-			// Block động: PHP (render.php) tự vẽ lại nội dung mỗi lần tải trang.
+
 			return null;
 		},
 	} );

@@ -1,7 +1,4 @@
 <?php
-/**
- * Template cho archive (chuyên mục, taxonomy, ngày tháng, CPT...).
- */
 
 defined( 'ABSPATH' ) || exit;
 

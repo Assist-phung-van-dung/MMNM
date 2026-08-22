@@ -1,14 +1,4 @@
-/**
- * Editor script cho block nntm/article-feature — JavaScript thuần, không
- * build. Cùng cơ chế REST tầng nối tầng như blocks/article-mosaic/editor.js:
- * loại nội dung -> taxonomy -> term -> danh sách bài, để bảng điều khiển
- * hiện danh sách thả xuống bằng TÊN, không bắt ban quản trị nhập số ID.
- *
- * MỌI thuộc tính khai trong block.json đều phải có ô điều khiển ở đây —
- * thiếu một ô là thuộc tính đó không có cách nào sửa từ giao diện, ban
- * quản trị phải gọi lập trình viên. Đây là ràng buộc mạnh nhất của dự án
- * (docs/04-kien-truc.md mục 0.3).
- */
+ 
 ( function ( wp ) {
 	'use strict';
 
@@ -27,7 +17,6 @@
 	var apiFetch = wp.apiFetch;
 	var ServerSideRender = wp.serverSideRender && wp.serverSideRender.default ? wp.serverSideRender.default : wp.serverSideRender;
 
-	// Danh sách trắng loại nội dung — trùng với block.json và render.php.
 	var POST_TYPE_OPTIONS = [
 		{ label: __( 'Tin Tức / Hoằng Pháp', 'nntm' ), value: 'post' },
 		{ label: __( 'Bài viết (6 phân mục)', 'nntm' ), value: 'nntm_article' },
@@ -40,7 +29,6 @@
 		{ label: __( 'Ảnh bên trái', 'nntm' ), value: 'left' },
 	];
 
-	// Nhãn tiếng Việt cho taxonomy — khớp với class-taxonomies.php.
 	var TAXONOMY_LABELS = {
 		nntm_section: __( 'Phân mục', 'nntm' ),
 		nntm_topic: __( 'Chủ đề', 'nntm' ),
@@ -49,7 +37,6 @@
 		post_tag: __( 'Thẻ', 'nntm' ),
 	};
 
-	// Taxonomy lõi của WordPress có rest_base khác tên taxonomy.
 	var REST_BASE_OVERRIDES = {
 		category: 'categories',
 		post_tag: 'tags',
@@ -63,8 +50,7 @@
 		return TAXONOMY_LABELS[ taxonomy ] || taxonomy;
 	}
 
-	// REST trả tiêu đề dạng HTML đã mã hoá ("Vi sao &#8230;"). Giải mã bằng
-	// textarea để danh sách thả xuống hiện đúng chữ như trên trang.
+
 	function plainTitle( post ) {
 		var raw = ( post && post.title && post.title.rendered ) || '';
 		var box = document.createElement( 'textarea' );
@@ -94,7 +80,6 @@
 			var availablePosts = postsState[ 0 ];
 			var setAvailablePosts = postsState[ 1 ];
 
-			// Tầng 1: loại nội dung -> taxonomy gắn được + rest_base của nó.
 			useEffect(
 				function () {
 					var isCurrent = true;
@@ -125,7 +110,6 @@
 				[ attributes.postType ]
 			);
 
-			// Tầng 2: taxonomy -> danh sách term.
 			useEffect(
 				function () {
 					var isCurrent = true;
@@ -156,7 +140,6 @@
 				[ attributes.taxonomy ]
 			);
 
-			// Tầng 3: nguồn nội dung -> danh sách bài để chọn thẳng một bài.
 			useEffect(
 				function () {
 					var isCurrent = true;
@@ -201,9 +184,8 @@
 				} )
 			);
 
-			// Bài đã chọn có thể nằm ngoài bộ lọc hiện tại (đổi chuyên mục
-			// sau khi chọn). Vẫn phải hiện được trong ô, nếu không ban quản
-			// trị mở ra thấy "Bài mới nhất" và tưởng mình chưa từng chọn gì.
+
+
 			var postOptions = [ { label: __( '— Tự lấy bài mới nhất —', 'nntm' ), value: 0 } ].concat(
 				availablePosts.map( function ( one ) {
 					return { label: one.title, value: one.id };
@@ -317,7 +299,7 @@
 			);
 		},
 		save: function () {
-			// Block động: PHP (render.php) tự đọc lại bài mỗi lần tải trang.
+
 			return null;
 		},
 	} );

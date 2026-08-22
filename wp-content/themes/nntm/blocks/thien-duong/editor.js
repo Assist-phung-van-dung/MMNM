@@ -1,16 +1,4 @@
-/**
- * Editor script cho block nntm/thien-duong — JavaScript thuần, không build.
- * Bắt chước phong cách blocks/feature/editor.js (MediaUpload cho ảnh bìa)
- * và blocks/article-mosaic/editor.js (ServerSideRender cho khối truy vấn
- * CPT). Khối này luôn lấy bài từ CPT nntm_zen_track — không cho chọn loại
- * nội dung khác.
- *
- * Bản xem trước dùng ServerSideRender nên chạy đúng logic PHP thật (kiểm
- * tra đăng nhập, lọc bài có tệp âm thanh...). Vì người đang mở trình soạn
- * thảo luôn đã đăng nhập (và phải có quyền edit_posts mới vào được màn
- * này), bản xem trước sẽ hiện đúng trình phát đầy đủ — không phải màn mời
- * đăng nhập.
- */
+ 
 ( function ( wp ) {
 	'use strict';
 
@@ -52,8 +40,7 @@
 				setAttributes( { coverImageId: 0, coverImageUrl: '' } );
 			}
 
-			// Tránh hiện tiêu đề/mô tả hai lần trong bản xem trước — RichText
-			// bên dưới đã hiện rồi (đúng cách làm ở article-mosaic/tru-xu-list).
+
 			var previewAttributes = Object.assign( {}, attributes, { heading: '', subheading: '' } );
 
 			return el(
@@ -154,8 +141,7 @@
 			);
 		},
 		save: function () {
-			// Block động: PHP (render.php) tự chạy lại WP_Query + kiểm tra đăng
-			// nhập mỗi lần tải trang. Không lưu HTML tĩnh vào nội dung bài.
+
 			return null;
 		},
 	} );

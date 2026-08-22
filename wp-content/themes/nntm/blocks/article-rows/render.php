@@ -1,12 +1,4 @@
 <?php
-/**
- * Render block nntm/article-rows — dùng chung giao diện danh sách phân mục.
- * Markup từng hàng được chia sẻ với taxonomy-nntm_section.php qua helper
- * nntm_render_section_article_row().
- *
- * @package NNTM
- * @var array $attributes
- */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -41,8 +33,8 @@ $taxonomy = isset( $attributes['taxonomy'] ) ? sanitize_key( (string) $attribute
 $term_id  = isset( $attributes['termId'] ) ? absint( $attributes['termId'] ) : 0;
 
 $paged = $show_paging ? max( 1, absint( get_query_var( 'paged' ) ) ) : 1;
-if ( $show_paging && isset( $_GET['paged'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- chỉ đọc số trang.
-	$paged = max( 1, absint( wp_unslash( $_GET['paged'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+if ( $show_paging && isset( $_GET['paged'] ) ) {  
+	$paged = max( 1, absint( wp_unslash( $_GET['paged'] ) ) );  
 }
 
 $query_args = array(
@@ -71,7 +63,7 @@ switch ( $order_by_choice ) {
 }
 
 if ( '' !== $taxonomy && taxonomy_exists( $taxonomy ) && $term_id > 0 ) {
-	$query_args['tax_query'] = array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- nguồn block do admin chọn.
+	$query_args['tax_query'] = array(  
 		array(
 			'taxonomy'         => $taxonomy,
 			'field'            => 'term_id',
@@ -85,7 +77,7 @@ $query = new WP_Query( $query_args );
 
 $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'nntm-article-rows' ) );
 ?>
-<section <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput -- core tự escape. ?>>
+<section <?php echo $wrapper_attributes;  ?>>
 	<div class="nntm-article-rows__inner">
 		<?php if ( '' !== trim( wp_strip_all_tags( $heading ) ) ) : ?>
 			<h2 class="nntm-article-rows__heading"><?php echo wp_kses_post( $heading ); ?></h2>
@@ -95,7 +87,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'nntm-arti
 			<div class="nntm-article-rows__list">
 				<?php foreach ( $query->posts as $index => $queried_post ) : ?>
 					<?php
-					echo nntm_render_section_article_row( // phpcs:ignore WordPress.Security.EscapeOutput -- helper tự escape.
+					echo nntm_render_section_article_row(  
 						$queried_post,
 						(int) $index,
 						array(
@@ -110,7 +102,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'nntm-arti
 			</div>
 
 			<?php if ( $show_paging ) : ?>
-				<?php echo nntm_render_section_pagination( $paged, (int) $query->max_num_pages ); // phpcs:ignore WordPress.Security.EscapeOutput -- helper tự escape. ?>
+				<?php echo nntm_render_section_pagination( $paged, (int) $query->max_num_pages );  ?>
 			<?php endif; ?>
 		<?php else : ?>
 			<p class="nntm-article-rows__empty"><?php esc_html_e( 'Chưa có bài viết nào phù hợp để hiển thị.', 'nntm' ); ?></p>

@@ -1,29 +1,4 @@
-/* =============================================================
-   POPUP TOÀN MÀN HÌNH phát video YouTube — thêm 21/08/2026.
-
-   Dùng chung cho MỌI khối có video YouTube:
-     - hai dải băng chạy "Xuyên Vạn Kiếp" và "GITA CENTER x NẴNG NHÂN
-       TỊCH MẶC" (block nntm/card-list, videoSource=youtube);
-     - hai khung video của dải phim ENGINEERING EARTH
-       (block nntm/engineering-earth).
-
-   Yêu cầu chủ dự án 21/08/2026: "khi nhấn vào sẽ mở 1 popup full màn
-   hình và xem hết video" (băng trang chủ), rồi "2 video ở block Dải
-   phim anh cũng muốn nhấn vào sẽ mở popup".
-
-   VÌ SAO Ở CẤP THEME, KHÔNG NẰM TRONG MỘT BLOCK: hai block khác nhau
-   cùng dùng popup này. Để CSS/JS/markup trong blocks/card-list/ thì
-   block engineering-earth chỉ chạy được khi tình cờ có thêm một băng
-   YouTube trên cùng trang — một ràng buộc ngầm sẽ vỡ ở trang khác.
-
-   Khung do PHP in MỘT LẦN ở chân trang (xem inc/video-lightbox.php),
-   nằm NGOÀI .nntm-site-frame nên position:fixed không bị lớp `zoom` của
-   responsive.css làm lệch. <iframe> do JS chèn/tháo.
-
-   Khác hover xem thử / video nền (câm tiếng, không thanh điều khiển): ở
-   đây là bản ĐẦY ĐỦ — có tiếng, có thanh điều khiển, cho phép bật
-   fullscreen thật của YouTube.
-   ============================================================= */
+ 
 .nntm-yt-lightbox {
 	position: fixed;
 	inset: 0;
@@ -32,9 +7,6 @@
 	place-items: center;
 }
 
-/* Khai riêng vì [hidden] của trình duyệt có độ đặc hiệu ngang bằng
-   .nntm-yt-lightbox (display:grid ở trên) — cùng khuôn đã dùng ở
-   .nntm-card-list__nav[hidden]. */
 .nntm-yt-lightbox[hidden] {
 	display: none;
 }
@@ -45,12 +17,6 @@
 	background-color: rgba(0, 0, 0, 0.92);
 }
 
-/*
- * Khung video LỚN NHẤT có thể mà vẫn giữ đúng tỉ lệ 16:9: rộng bằng bề
- * rộng màn hình, nhưng không cao hơn màn hình (177.78vh = 16/9 × 100vh).
- * Không dùng object-fit vì iframe không hỗ trợ, và cũng KHÔNG cắt viền
- * như băng nền — người xem phải thấy đủ khung phim.
- */
 .nntm-yt-lightbox__panel {
 	position: relative;
 	width: min(100vw, 177.78vh);
@@ -70,9 +36,6 @@
 	border: 0;
 }
 
-/* position:fixed (không phải absolute trong panel): khi khung phim rộng
-   bằng cả màn hình thì nút nằm trong panel sẽ đè lên phim. Neo theo màn
-   hình thì nút luôn ở góc trên-phải, không che nội dung chính. */
 .nntm-yt-lightbox__close {
 	position: fixed;
 	top: 16px;
@@ -98,7 +61,6 @@
 	outline-offset: 2px;
 }
 
-/* Chặn cuộn trang phía sau trong lúc popup mở — JS gắn lớp này lên <html>. */
 .nntm-yt-lightbox-mo {
 	overflow: hidden;
 }

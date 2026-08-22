@@ -1,42 +1,15 @@
-/* =============================================================
-   NNTM — Bài chi tiết khu Hành Giả (Đại Sĩ / Kim Cương)
 
-   NGUỒN SỐ ĐO: ảnh thiết kế anh Úy gửi, bóc bằng mắt và quy về khung
-   1366 — ĐÂY LÀ ƯỚC LƯỢNG, KHÔNG PHẢI FIGMA CHÍNH THỨC. Khi có Figma
-   thật cho màn này, đọc lại và chỉnh cho khớp (docs/04-kien-truc.md
-   mục 0.1). Vài khoảng cách không được ghi rõ trong ảnh gốc (ví dụ gap
-   giữa dòng ngày và đoạn văn đầu tiên, gap trong hàng nút giữa icon và
-   nhãn) đã chọn giá trị hợp lý dựa theo token --nntm-sp-* hiện có, đánh
-   dấu SUY DOAN ngay tại chỗ.
-
-   Nạp có điều kiện bởi inc/hanh-gia.php (nntm_hanh_gia_enqueue_assets),
-   chỉ trên bài `nntm_article` thuộc khu Hành Giả. Phụ thuộc nntm-tokens,
-   nntm-base — KHÔNG viết mã màu trực tiếp trong file này.
-   ============================================================= */
-
-/* ---------- Dải nền navy tràn viền ---------- */
 
 .nntm-bai-hanh-gia__than {
-	/*
-	 * Biến ngữ nghĩa riêng cho khu Hành Giả — đảo được theo cấp mà KHÔNG
-	 * nhân đôi template (docs/04-kien-truc.md mục 3). Đại Sĩ dùng đúng
-	 * token navy --nntm-cham đã có sẵn trong tokens.css.
-	 */
+
 	--nntm-bhg-nen: var(--nntm-cham);
-	/*
-	 * Biến chữ — tách riêng khỏi --nntm-trang cứng để đảo được theo cấp mà
-	 * KHÔNG nhân đôi template. Đại Sĩ (nền navy) chữ trắng đủ tương phản.
-	 */
+
 	--nntm-bhg-chu: var(--nntm-trang);
 
 	background: var(--nntm-bhg-nen);
-	padding: var(--nntm-sp-10) 0 var(--nntm-sp-12); /* 60px trên, 90px dưới đáy dải */
+	padding: var(--nntm-sp-10) 0 var(--nntm-sp-12);  
 }
 
-/*
- * Kim Cương dùng nền vàng nghệ nhưng thiết kế chi tiết vẫn dùng chữ TRẮNG
- * (ảnh BAI CHI TIET KIM CUONG). Chỉ đảo nền; màu chữ giữ trắng giống Đại Sĩ.
- */
 .nntm-bai-hanh-gia__than.nntm-bai-hanh-gia--kim-cuong {
 	--nntm-bhg-nen: var(--nntm-vang-nghe);
 	--nntm-bhg-chu: var(--nntm-trang);
@@ -49,21 +22,19 @@
 	padding: 0;
 }
 
-/* ---------- Tiêu đề + dòng ngày ---------- */
-
 .nntm-bai-hanh-gia__tieu-de {
-	margin: 0 0 var(--nntm-sp-4) 0; /* 18px cách dòng ngày */
+	margin: 0 0 var(--nntm-sp-4) 0;  
 	font-family: var(--nntm-font-display);
 	font-size: var(--nntm-fs-4xl);
 	line-height: var(--nntm-lh-chat);
-	color: var(--nntm-bhg-chu); /* chữ trắng trên cả nền Đại Sĩ và Kim Cương theo thiết kế */
+	color: var(--nntm-bhg-chu);  
 }
 
 .nntm-bai-hanh-gia__ngay {
 	display: flex;
 	align-items: center;
 	gap: var(--nntm-sp-2);
-	margin: 0 0 var(--nntm-sp-3) 0; /* SUY DOAN: gap tới đoạn văn đầu tiên, không có số đo rõ trong ảnh gốc */
+	margin: 0 0 var(--nntm-sp-3) 0;  
 	font-family: var(--nntm-font-sans);
 	font-size: var(--nntm-fs-15);
 	color: var(--nntm-bhg-chu);
@@ -78,8 +49,6 @@
 	flex: none;
 }
 
-/* ---------- Nội dung bài (đoạn văn + ảnh trong bài) ---------- */
-
 .nntm-bai-hanh-gia__noi-dung {
 	font-family: var(--nntm-font-serif);
 	font-size: var(--nntm-fs-base);
@@ -87,7 +56,6 @@
 	color: var(--nntm-bhg-chu);
 }
 
-/* base.css đặt màu trực tiếp lên p/h*, nên phải ghi đè trên chính phần tử. */
 .nntm-bai-hanh-gia__noi-dung :where(p, li, blockquote, figcaption, h2, h3, h4, h5, h6) {
 	color: var(--nntm-bhg-chu);
 }
@@ -98,35 +66,27 @@
 }
 
 .nntm-bai-hanh-gia__noi-dung > p {
-	margin: 0 0 var(--nntm-sp-3) 0; /* 12px cách nhau giữa các đoạn văn */
+	margin: 0 0 var(--nntm-sp-3) 0;  
 }
 
 .nntm-bai-hanh-gia__noi-dung > p:last-child {
 	margin-bottom: 0;
 }
 
-/*
- * Ảnh chèn trong bài (do biên tập viên chèn trực tiếp trong nội dung,
- * qua the_content()) — 550×684 dọc, canh trái, cách trên/dưới 28px.
- * Không dùng float: các đoạn văn trước/sau xếp chồng đứng theo thiết
- * kế, không chảy chữ quanh ảnh.
- */
 .nntm-bai-hanh-gia__noi-dung img {
 	display: block;
 	width: 550px;
 	max-width: 100%;
 	height: 684px;
 	object-fit: cover;
-	margin: 28px 0; /* cách trên/dưới 28px theo thiết kế — không khớp token --nntm-sp-* nào sẵn có, ghi cứng theo đúng số đo */
+	margin: 28px 0;  
 	border-radius: 0;
 }
 
-/* Kim Cương: ảnh chính mặc định nằm giữa khung như bản thiết kế. */
 .nntm-bai-hanh-gia--kim-cuong :where(.nntm-bai-hanh-gia__noi-dung img) {
 	margin-inline: auto;
 }
 
-/* Tôn trọng lựa chọn căn ảnh của biên tập viên trong Gutenberg. */
 .nntm-bai-hanh-gia__noi-dung .aligncenter,
 .nntm-bai-hanh-gia__noi-dung figure.aligncenter img {
 	margin-inline: auto;
@@ -144,19 +104,17 @@
 	margin-inline-end: auto;
 }
 
-/* ---------- Hàng nút cuối bài ---------- */
-
 .nntm-bai-hanh-gia__hang-nut {
 	display: flex;
 	align-items: center;
 	gap: 62px;
-	margin-top: var(--nntm-sp-8); /* 40px cách đoạn cuối */
+	margin-top: var(--nntm-sp-8);  
 }
 
 .nntm-bai-hanh-gia__yeu-thich {
 	display: inline-flex;
 	align-items: center;
-	gap: var(--nntm-sp-2); /* SUY DOAN: khoảng cách icon-nhãn không có số đo rõ trong ảnh gốc */
+	gap: var(--nntm-sp-2);  
 	background: none;
 	border: none;
 	padding: 0;
@@ -185,8 +143,6 @@
 	text-decoration: underline;
 }
 
-/* ---------- Dải trắng "Bài viết liên quan" ---------- */
-
 .nntm-bai-hanh-gia__lien-quan {
 	background: var(--nntm-trang);
 	padding: 75px 0 90px;
@@ -206,11 +162,6 @@
 	color: var(--nntm-reu);
 }
 
-/*
- * Carousel liên quan theo đúng khung 1184: card ARTICLE rộng 348px, gap 20;
- * 3 card đầy đủ + một phần card thứ 4. Hai nút nằm ngoài khung nội dung
- * nhưng vẫn ở trong frame 1366 (91px lề mỗi bên).
- */
 @media (min-width: 1152px) {
 	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__carousel {
 		position: relative;
@@ -251,11 +202,6 @@
 	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__nav--next { right: -75px; }
 }
 
-/* =============================================================
-   Responsive — SUY DOAN: chua co Figma mobile.
-   Ước lượng thu gọn theo cùng tỷ lệ giữ khoảng trắng, chưa đối chiếu
-   với bất kỳ bản thiết kế mobile chính thức nào.
-   ============================================================= */
 @media (max-width: 1023px) {
 	.nntm-bai-hanh-gia__than {
 		padding: var(--nntm-sp-8) 0 var(--nntm-sp-9);
@@ -289,11 +235,6 @@
 	}
 }
 
-/* =============================================================
-   Related Hành Giả — đồng bộ icon điều hướng với ảnh thiết kế.
-   Nút 58x58 nền trắng; trên dải trắng chỉ còn thấy mũi tên có thân.
-   Scope riêng để không đổi icon các Card List khác trong site.
-   ============================================================= */
 @media (min-width: 1152px) {
 	.nntm-bai-hanh-gia__lien-quan .nntm-card-list__nav {
 		border-radius: 0;

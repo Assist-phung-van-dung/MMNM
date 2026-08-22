@@ -1,32 +1,7 @@
-/* =============================================================
-   nntm/banner — Băng chuyền ảnh lớn đầu trang (bản R1)
-
-   Nguồn số đo: Figma QmYLYBVSRkqIbKuKzPUfUe, trang "DESKTOP - R1",
-   khung BANNER 4231:941 — bóc ngày 10/08/2026:
-
-     BANNER      1326x700  bo góc 40
-     IMG         phủ kín khung
-     DOTS        84x12, flex ngang, cách 10, canh giữa
-                 chấm đang xem 12x12 #FFFFFF · chấm thường 8x8 #747766
-     TEXT        809x324, flex dọc, cách 10, canh giữa
-       Vector    105x134  #F7F1DE
-       Frame 132 809x180, flex dọc, cách 20, canh giữa
-         tiêu đề  EB Garamond 600 58/68  #FFFFFF  canh giữa
-         phụ đề   Battambang   400 18/24  #FFFFFF  canh giữa
-
-   Battambang bị loại (font Khmer, thiếu dấu tiếng Việt) → dùng
-   --nntm-font-sans (Be Vietnam Pro). Xem docs/05-font-thay-the.md.
-
-   CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
-   assets/css/tokens.css.
-
-   Figma chỉ có khung desktop 1366 → dùng aspect-ratio và clamp() để co
-   giãn được xuống màn hình nhỏ.
-   ============================================================= */
+ 
 
 .nntm-banner {
-	/* Figma: khung 1326 nằm giữa khung thiết kế 1366 → thụt 20px mỗi bên.
-	   Block tự mang đệm, template không canh lề hộ (kiến trúc mục 11). */
+	 
 	padding-inline: var(--nntm-sp-5);
 	padding-block: var(--nntm-sp-5) 0;
 }
@@ -35,29 +10,15 @@
 	position: relative;
 	max-width: var(--nntm-w-rong);
 	margin-inline: auto;
-	/* Figma 1326x700 */
+	 
 	aspect-ratio: 1326 / 700;
-	/* Không để băng chuyền cao quá màn hình khi cửa sổ rất rộng */
+	 
 	max-height: 88vh;
 	border-radius: var(--nntm-r-2xl);
 	overflow: hidden;
 	background-color: var(--nntm-reu);
 }
 
-/* =============================================================
-   Biến thể "tràn viền" (thuộc tính tranVien, mặc định FALSE)
-
-   Sinh ra 14/08/2026 cho trang Kim Cương Hành Giả: banner phải TRÀN HẾT
-   chiều rộng màn hình, góc VUÔNG — khác banner mặc định ở trên (đệm 20px
-   + bo góc 40px bóc từ Figma TRANG CHỦ, khung 1326 nằm giữa 1366).
-
-   Dùng selector kép ".nntm-banner.nntm-banner--tran-vien" (2 lớp) thay vì
-   chỉ ".nntm-banner--tran-vien" để độ đặc hiệu CSS luôn thắng các quy tắc
-   ".nntm-banner" / ".nntm-banner__stage" một lớp ở khối "Màn hình hẹp" bên
-   dưới, bất kể thứ tự khai báo trong file.
-
-   Mặc định false nên MỌI banner đang dùng (trang chủ) không đổi gì.
-   ============================================================= */
 .nntm-banner.nntm-banner--tran-vien {
 	padding-inline: 0;
 	padding-block: 0;
@@ -66,25 +27,17 @@
 .nntm-banner.nntm-banner--tran-vien .nntm-banner__stage {
 	max-width: none;
 	border-radius: 0;
-	/*
-	 * Bỏ aspect-ratio 1326/700 (chỉ đúng cho khung có đệm của trang chủ).
-	 * SUY ĐOÁN: chưa có số đo Figma riêng cho biến thể tràn viền — ước
-	 * lượng chiều cao theo tỉ lệ gần bằng mặc định (700/1326 ≈ 0,528) quy
-	 * theo chiều rộng màn hình, giới hạn min/max để không quá thấp trên
-	 * màn hình hẹp hoặc quá cao trên màn hình rất rộng.
-	 */
+	 
 	aspect-ratio: auto;
 	height: clamp(420px, 45vw, 615px);
 	max-height: 88vh;
 }
 
-/* ---------- Từng tấm: chồng lên nhau, làm mờ chồng khi chuyển ---------- */
-
 .nntm-banner__slide {
 	position: absolute;
 	inset: 0;
 	opacity: 0;
-	/* visibility để tấm đang ẩn không nhận được tiêu điểm bàn phím */
+	 
 	visibility: hidden;
 	transition:
 		opacity var(--nntm-dur) var(--nntm-ease),
@@ -99,7 +52,6 @@
 		visibility 0s;
 }
 
-/* Chỉ có một tấm thì không cần định vị tuyệt đối */
 .nntm-banner__stage > .nntm-banner__slide:only-of-type {
 	position: absolute;
 	opacity: 1;
@@ -113,16 +65,12 @@
 	display: block;
 }
 
-/* Lớp phủ tối nhẹ: chữ trắng đè lên ảnh phong cảnh sáng (mặt trời mọc)
-   nếu không có lớp này sẽ không đủ tương phản để đọc. */
 .nntm-banner__overlay {
 	position: absolute;
 	inset: 0;
 	background-color: var(--nntm-phu-den-30);
 	pointer-events: none;
 }
-
-/* ---------- Khối chữ canh giữa ---------- */
 
 .nntm-banner__text {
 	position: absolute;
@@ -131,15 +79,15 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	gap: var(--nntm-sp-3); /* Figma: TEXT gap 10 */
+	gap: var(--nntm-sp-3);  
 	padding-inline: var(--nntm-sp-8);
-	/* Chừa chỗ cho dãy chấm ở đáy để chữ không đè lên */
+	 
 	padding-bottom: var(--nntm-sp-10);
 	text-align: center;
 }
 
 .nntm-banner__emblem {
-	/* Figma: Vector 105x134 */
+	 
 	width: clamp(64px, 7.7vw, 105px);
 	height: auto;
 	display: block;
@@ -149,8 +97,8 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: var(--nntm-sp-5); /* Figma: Frame 132 gap 20 */
-	/* Figma: 809 trong khung 1366 */
+	gap: var(--nntm-sp-5);  
+	 
 	max-width: 59.2%;
 }
 
@@ -158,27 +106,22 @@
 	margin: 0;
 	font-family: var(--nntm-font-display);
 	font-weight: 600;
-	/* Figma 58px — thu nhỏ dần trên màn hình hẹp */
+	 
 	font-size: clamp(1.75rem, 4.25vw, var(--nntm-fs-5xl));
-	line-height: var(--nntm-lh-chat); /* Figma 58/68 = 1,17 */
+	line-height: var(--nntm-lh-chat);  
 	color: var(--nntm-trang);
 	text-wrap: balance;
 }
 
 .nntm-banner__sub {
 	margin: 0;
-	font-family: var(--nntm-font-sans); /* thay Battambang */
+	font-family: var(--nntm-font-sans);  
 	font-weight: 400;
 	font-size: clamp(var(--nntm-fs-sm), 1.32vw, var(--nntm-fs-md));
-	line-height: var(--nntm-lh-khit); /* Figma 18/24 = 1,33 */
+	line-height: var(--nntm-lh-khit);  
 	color: var(--nntm-trang);
 }
 
-/*
- * Nút hành động (vd: "Tham gia" — dải "Lễ Đàn Khổng Tước"). CHƯA có số đo
- * Figma/ảnh riêng cho nút này (mục 5 việc cần làm) — dựng theo dáng nút
- * chính đã dùng chung toàn site (pill, nền màu chủ đạo), ước lượng.
- */
 .nntm-banner__btn {
 	margin-top: var(--nntm-sp-2);
 	display: inline-flex;
@@ -202,52 +145,26 @@
 	background-color: var(--nntm-chinh-hover);
 }
 
-/* Filter nntm_tham_gia_chuoi_tri_url chưa trả URL (Cộng Tu chưa xong) —
-   VẪN hiện nút nhưng vô hiệu hoá rõ ràng bằng mắt, không chỉ dựa vào
-   thuộc tính disabled của trình duyệt. */
 .nntm-banner__btn--tat {
 	opacity: 0.45;
 	cursor: not-allowed;
 }
 
-/* =============================================================
-   HAI BANNER TRÀN VIỀN, DÙNG CHUNG CHO CẢ HAI KHU "ĐẠI SĨ HÀNH GIẢ" (ID 242)
-   VÀ "KIM CƯƠNG HÀNH GIẢ" (ID 243) — sửa 14/08/2026 sau phản hồi chủ dự án
-   "khác xa thiết kế", mở rộng sang Đại Sĩ khi cả hai khu dùng chung một
-   kiểu banner đầu trang không chữ.
-
-   Cả hai đều dùng chung thuộc tính tranVien=true (đã có sẵn), nhưng KHÁC
-   NHAU về chiều cao và cách đặt chữ, nên cần hai class riêng gán qua
-   "Additional CSS class" của từng khối:
-     .nntm-banner--khu-dau  : dải đầu trang KHÔNG có chữ — DÙNG CHUNG cho cả
-                              Đại Sĩ (tools/seed-dai-si-hanh-gia.php) và Kim
-                              Cương (tools/seed-kim-cuong-hanh-gia.php).
-     .nntm-banner--kc-ledan : dải "Lễ Đàn Khổng Tước" (CÓ chữ + nút), CHỈ
-                              dùng ở Kim Cương — không đổi tên.
-
-   SỐ ĐO ƯỚC LƯỢNG từ ảnh giao diện đầy đủ chủ dự án gửi, quy về khung
-   desktop 1366 (hệ số ×2,32) — KHÔNG phải Figma xuất trực tiếp.
-   ============================================================= */
 .nntm-banner.nntm-banner--khu-dau .nntm-banner__stage {
-	height: 533px; /* tu anh giao dien — thay the clamp() uoc luong chung cua tranVien */
+	height: 533px;  
 	max-height: none;
 }
 
 .nntm-banner.nntm-banner--kc-ledan .nntm-banner__stage {
-	height: 615px; /* tu anh giao dien */
+	height: 615px;  
 	max-height: none;
 }
 
-/*
- * Nội dung dải "Lễ Đàn Khổng Tước" CĂN TRÁI, bắt đầu ở lề 92px, đặt ở
- * khoảng GIỮA theo chiều dọc — khác hẳn kiểu canh giữa mặc định của
- * ".nntm-banner__text" (dùng chung cho các banner khác, không đổi ở đây).
- */
 .nntm-banner.nntm-banner--kc-ledan .nntm-banner__text {
 	align-items: flex-start;
-	justify-content: center; /* "khoang giua theo chieu doc" — SUY DOAN, anh khong ghi so do chinh xac */
+	justify-content: center;  
 	text-align: left;
-	padding-inline-start: 92px; /* tu anh giao dien */
+	padding-inline-start: 92px;  
 	padding-bottom: 0;
 }
 
@@ -257,27 +174,27 @@
 }
 
 .nntm-banner.nntm-banner--kc-ledan .nntm-banner__heading {
-	font-size: 37px; /* tu anh giao dien — khong co token 37, gan nhat fs-3xl (38) nhung anh do ro 37 */
+	font-size: 37px;  
 	text-align: left;
 	text-wrap: initial;
 }
 
 .nntm-banner.nntm-banner--kc-ledan .nntm-banner__sub {
-	margin-top: var(--nntm-sp-3); /* 10 — tu anh giao dien, cach tieu de */
-	font-size: var(--nntm-fs-sm); /* 14 */
+	margin-top: var(--nntm-sp-3);  
+	font-size: var(--nntm-fs-sm);  
 	text-align: left;
 }
 
 .nntm-banner.nntm-banner--kc-ledan .nntm-banner__btn {
-	margin-top: var(--nntm-sp-5); /* 20 — tu anh giao dien, cach phu de */
+	margin-top: var(--nntm-sp-5);  
 	width: auto;
 	height: 49px;
 	box-sizing: border-box;
 	padding: 0 10px;
-	border-radius: 0; /* goc vuong — khac dang pill mac dinh */
-	background-color: var(--nntm-nen-noi); /* nen sang, khac mau chinh mac dinh */
-	color: var(--nntm-chu); /* chu sam */
-	font-size: var(--nntm-fs-xs); /* 13 */
+	border-radius: 0;  
+	background-color: var(--nntm-nen-noi);  
+	color: var(--nntm-chu);  
+	font-size: var(--nntm-fs-xs);  
 }
 
 .nntm-banner.nntm-banner--kc-ledan .nntm-banner__btn:hover,
@@ -297,22 +214,20 @@
 	}
 }
 
-/* ---------- Dãy chấm ---------- */
-
 .nntm-banner__dots {
 	position: absolute;
 	left: 50%;
 	transform: translateX(-50%);
-	/* Figma: DOTS cách đáy khung 700 - (600 + 12) ≈ 88 → dùng thang có sẵn */
+	 
 	bottom: var(--nntm-sp-7);
 	display: flex;
 	align-items: center;
-	gap: var(--nntm-sp-3); /* Figma: gap 10 */
+	gap: var(--nntm-sp-3);  
 	z-index: 2;
 }
 
 .nntm-banner__dot {
-	/* Figma: chấm thường 8x8 #747766 */
+	 
 	width: 8px;
 	height: 8px;
 	padding: 0;
@@ -327,7 +242,7 @@
 }
 
 .nntm-banner__dot.is-active {
-	/* Figma: chấm đang xem 12x12 #FFFFFF */
+	 
 	width: 12px;
 	height: 12px;
 	background-color: var(--nntm-trang);
@@ -341,8 +256,6 @@
 	outline: 2px solid var(--nntm-trang);
 	outline-offset: 3px;
 }
-
-/* ---------- Nhắc trong trình soạn thảo khi chưa có tấm nào ---------- */
 
 .nntm-banner--empty {
 	padding: var(--nntm-sp-10) var(--nntm-sp-8);
@@ -358,8 +271,6 @@
 	color: var(--nntm-chu-phu);
 }
 
-/* ---------- Màn hình hẹp ---------- */
-
 @media (max-width: 767px) {
 	.nntm-banner {
 		padding-inline: var(--nntm-sp-3);
@@ -367,7 +278,7 @@
 	}
 
 	.nntm-banner__stage {
-		/* Khung 1326x700 quá dẹt trên điện thoại — chuyển sang khung đứng hơn */
+		 
 		aspect-ratio: 3 / 4;
 		border-radius: var(--nntm-r-xl);
 	}
@@ -377,22 +288,12 @@
 	}
 }
 
-/* Người dùng đã bật giảm chuyển động: bỏ hiệu ứng mờ chồng.
-   (view.js đồng thời không tạo bộ đếm giờ tự chạy nào.) */
 @media (prefers-reduced-motion: reduce) {
 	.nntm-banner__slide,
 	.nntm-banner__dot {
 		transition: none;
 	}
 }
-
-/* =============================================================
-   Xem trước trong TRÌNH SOẠN THẢO
-
-   editor.js chỉ vẽ tấm đầu tiên (tĩnh, không tự chạy) để khách thấy
-   ngay bố cục thật mà không bị ảnh nhấp nháy khi đang sửa nội dung.
-   block.json khai file này ở "style" nên nó có mặt ở cả hai nơi.
-   ============================================================= */
 
 .nntm-banner-editor__stage {
 	position: relative;

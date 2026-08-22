@@ -1,25 +1,6 @@
 <?php
-/**
- * Render động cho block nntm/feature.
- *
- * WordPress tự require file này (khai báo qua "render" trong block.json)
- * mỗi khi block xuất hiện trên trang, với $attributes / $content / $block
- * sẵn có trong scope. Không lưu HTML vào nội dung bài — đổi bố cục sau
- * này chỉ cần sửa file này + style.css.
- *
- * Khác với nntm/card (nntm/card-list): khối này không truy vấn CPT nào,
- * toàn bộ nội dung (nhãn nhỏ, tiêu đề, đoạn văn, ảnh) do khách nhập trực
- * tiếp trên khối, nên không cần WP_Query — chỉ cần đọc & escape $attributes.
- *
- * @package NNTM
- * @var array    $attributes Thuộc tính của block.
- * @var string   $content    Nội dung InnerBlocks (không dùng ở block này).
- * @var WP_Block $block      Instance block hiện tại.
- */
 
 defined( 'ABSPATH' ) || exit;
-
-// ---------- Đọc & làm sạch thuộc tính ----------
 
 $eyebrow = isset( $attributes['eyebrow'] ) ? (string) $attributes['eyebrow'] : '';
 $heading = isset( $attributes['heading'] ) ? (string) $attributes['heading'] : '';
@@ -40,7 +21,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 	)
 );
 ?>
-<section <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput -- get_block_wrapper_attributes() da tu esc_attr() tung thuoc tinh. ?>>
+<section <?php echo $wrapper_attributes;  ?>>
 	<div class="nntm-container">
 		<div class="nntm-feature__content">
 			<div class="nntm-feature__text">
@@ -61,8 +42,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 
 			<div class="nntm-feature__media">
 				<?php
-				// Ảnh trang trí (không có mô tả) thì rơi về alt="" + role="presentation"
-				// theo đúng yêu cầu — người dùng đọc màn hình sẽ bỏ qua ảnh này.
+
 				$is_decorative = ( '' === $image_alt );
 
 				if ( $image_id > 0 ) :
@@ -84,7 +64,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 						src="<?php echo esc_url( $image_url ); ?>"
 						alt="<?php echo esc_attr( $image_alt ); ?>"
 						loading="lazy"
-						<?php echo $is_decorative ? 'role="presentation"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput -- gia tri co dinh, khong tu du lieu nguoi dung. ?>
+						<?php echo $is_decorative ? 'role="presentation"' : '';  ?>
 					/>
 					<?php
 				else :

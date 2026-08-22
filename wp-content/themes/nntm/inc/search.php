@@ -1,30 +1,7 @@
 <?php
-/**
- * Search results page — data shaping and row rendering.
- *
- * Layout follows the nntm/article-rows block (Figma "03. PHAP TOA - NGUYEN
- * THUY"): full-width rows with the image and text alternating sides. It reuses
- * that block's CSS classes rather than declaring a second set, so a Figma change
- * updates both places at once.
- *
- * Why the row renderer lives in inc/ and not in blocks/article-rows/render.php:
- * that file is `require`d (not require_once), so declaring a function there dies
- * with "Cannot redeclare function" the second time the block renders in one
- * request — the trap recorded in docs/07-ban-giao.md section 9.
- *
- * The query layer belongs to the nntm-search plugin. What is left here is a
- * fallback so the page never goes blank when the plugin is switched off.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * Result groups shown as tabs.
- *
- * @return array<string, array{label: string, post_type: string[]}>
- */
 function nntm_result_groups(): array {
 	if ( function_exists( 'nntm_search_groups' ) ) {
 		return nntm_search_groups();
@@ -46,21 +23,11 @@ function nntm_result_groups(): array {
 	);
 }
 
-/**
- * Fetch results for the search page.
- *
- * @param string $query    Search query.
- * @param string $group    Group key.
- * @param int    $page     1-based page number.
- * @param int    $per_page Results per page.
- * @return array{rows: array[], total: int, counts: array<string, int>}
- */
 function nntm_get_search_results( string $query, string $group, int $page, int $per_page ): array {
 	if ( function_exists( 'nntm_search_query' ) ) {
 		return nntm_search_query( $query, $group, $page, $per_page, true );
 	}
 
-	// Fallback: plugin disabled. Plain WP_Query, no highlighting, no PDF pages.
 	$groups = nntm_result_groups();
 	$group  = isset( $groups[ $group ] ) ? $group : 'all';
 
@@ -101,18 +68,6 @@ function nntm_get_search_results( string $query, string $group, int $page, int $
 	return $results;
 }
 
-/**
- * Render one result row.
- *
- * The DOM always emits the IMAGE first and the TEXT second; flipping sides is
- * done purely with a CSS class. That keeps the reading and focus order the same
- * on every row for keyboard and screen-reader users — the rule fixed in
- * docs/04-kien-truc.md section 10.
- *
- * @param array $row     Row data. `title` and `excerpt` are pre-escaped and may
- *                       contain `<mark>`.
- * @param bool  $flipped Whether the image goes on the right.
- */
 function nntm_render_search_row( array $row, bool $flipped ): void {
 	$classes = 'nntm-article-rows__row';
 
@@ -120,7 +75,6 @@ function nntm_render_search_row( array $row, bool $flipped ): void {
 		$classes .= ' nntm-article-rows__row--reversed';
 	}
 
-	// Allowlist: only <mark> gets through, and only the highlighter inserts it.
 	$allowed_tags = array( 'mark' => array() );
 	$thumb        = (string) ( $row['thumb_tag'] ?? '' );
 	?>
@@ -156,8 +110,7 @@ function nntm_render_search_row( array $row, bool $flipped ): void {
 				</a>
 				<?php
 				if ( '' !== $row['cta_2'] ) :
-					// Nút phụ có thể trỏ đi chỗ khác nút chính (ví dụ hàng PDF:
-					// nút chính mở đúng trang, nút phụ tải file về).
+
 					$cta_2_url = ! empty( $row['cta_2_url'] ) ? $row['cta_2_url'] : $row['permalink'];
 					?>
 					<a
@@ -174,15 +127,6 @@ function nntm_render_search_row( array $row, bool $flipped ): void {
 	<?php
 }
 
-/**
- * Load the search page styles, plus the article-rows block stylesheet.
- *
- * The block only enqueues its own CSS when it appears in post content, and the
- * search page contains no blocks — so load it explicitly here.
- *
- * Same pattern as nntm_publication_enqueue_assets() in inc/an-pham.php: do not touch
- * inc/enqueue.php.
- */
 function nntm_search_page_assets(): void {
 	if ( ! is_search() ) {
 		return;

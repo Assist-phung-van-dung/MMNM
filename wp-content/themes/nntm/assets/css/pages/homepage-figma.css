@@ -1,19 +1,8 @@
-/* =============================================================
-   Homepage — pixel alignment to Figma frame 6376:6322 (1366px desktop)
-
-   This file is intentionally page-scoped. The same blocks are reused on
-   taxonomy/detail pages, so the homepage composition is corrected here
-   instead of changing shared component geometry for the whole site.
-
-   Typography family substitutions remain the project-approved mapping:
-   Battambang -> Be Vietnam Pro, Baskerville -> Lora, EB Garamond unchanged.
-   ============================================================= */
+ 
 
 .home {
 	--nntm-home-w: 1366px;
-	/* Figma page canvas is white; individual cream/orange/black sections paint
-	 * their own backgrounds. Keeping the page itself white also fixes the
-	 * inter-section strip below Gót Son / above Engineering Earth. */
+	 
 	background-color: var(--nntm-trang);
 }
 
@@ -21,9 +10,6 @@
 	background-color: var(--nntm-trang);
 }
 
-/* Homepage footer adds wrappers only to mirror the desktop Figma hierarchy.
- * Outside the 1366px source frame keep those wrappers transparent so the
- * theme's existing responsive footer behavior remains unchanged. */
 .home .nntm-footer__share-row,
 .home .nntm-footer__sub,
 .home .nntm-footer__sub-content,
@@ -31,23 +17,8 @@
 	display: contents;
 }
 
-/* ---------- Desktop source-of-truth: Figma 1366px ----------
- * Cổng mở từ 1025px (không phải 1366px): responsive.css thu nhỏ đồng đều
- * cả .nntm-site-frame nên bên trong khung bố cục LUÔN được dàn ở đúng
- * 1366px đơn vị dàn trang. Mọi số đo px cứng dưới đây vì thế vẫn khớp
- * Figma ở mọi cỡ màn từ 1025 trở lên. */
 @media (min-width: 1152px) {
-	/* ===== HEADER — node 6376:6487 ===== */
-	/*
-	 * Chi so do CHUNG cho ca hai trang thai. Mau nen / bong / mau chu tach
-	 * rieng theo --trong va --dac o hai khoi duoi.
-	 *
-	 * SUA 20/08/2026 (anh Uy bao): truoc day khoi nay son `background:
-	 * var(--nntm-trang)` + bong + chu mau muc cho CA `.nntm-header--trong`,
-	 * nen o dinh trang chu dau trang van trang doc — dung H1 la phai TRONG
-	 * SUOT de len banner, cuon qua 80px moi chuyen sang trang dac
-	 * (assets/js/header-scroll.js doi hai class nay).
-	 */
+
 	.home .nntm-header,
 	.home .nntm-header--guest,
 	.home .nntm-header--auth {
@@ -57,21 +28,12 @@
 		-webkit-backdrop-filter: none;
 	}
 
-	/* O dinh trang: trong suot, khong bong, chu/icon mau sang de doc tren anh. */
 	.home .nntm-header.nntm-header--trong {
 		background: transparent;
 		box-shadow: none;
 		color: var(--nntm-trang);
 	}
 
-	/*
-	 * Chu/icon KHONG co nen rieng doi sang mau sang. Phai ghep ca `.home` va
-	 * `--trong`: khoi MENU o duoi file khai `.home .nntm-main-nav a` (cung do
-	 * dac ta 0,0,3,0 voi luat `--trong` cua header.css nhung nam SAU nen
-	 * thang) — do dung la ly do menu trang chu van mau muc dam khi dau trang
-	 * dang trong suot. O tim kiem (nen --nntm-vien) va nut ngon ngu (nen
-	 * --nntm-chinh) khong doi: chung tuong phan voi nen cua chinh minh.
-	 */
 	.home .nntm-header--trong .nntm-header__logo,
 	.home .nntm-header--trong .nntm-main-nav a,
 	.home .nntm-header--trong .nntm-header__login,
@@ -79,7 +41,6 @@
 		color: var(--nntm-trang);
 	}
 
-	/* Da cuon qua 80px: nen trang dac + bong dung Figma. */
 	.home .nntm-header.nntm-header--dac,
 	.home .nntm-header--guest.nntm-header--dac,
 	.home .nntm-header--auth.nntm-header--dac {
@@ -124,12 +85,8 @@
 		line-height: 0.95;
 	}
 
-	/* The Figma logo artwork is wider than the theme's text fallback while
-	 * keeping the same cap height. Scale only the fallback glyphs so the
-	 * 147x48 brand box stays unchanged. */
 	.home .nntm-header__logo-line {
-		/* transform: scaleX(1.29);
-		transform-origin: center; */
+		 
 	}
 
 	.home .nntm-header__nav {
@@ -138,7 +95,7 @@
 	}
 
 	.home .nntm-main-nav {
-		/* 1.46vw = 20/1366: giu dung 20 tu 1366 tro len, hep hon thi thu lai. */
+		 
 		gap: clamp(10px, 1.46vw, 20px);
 	}
 
@@ -164,15 +121,6 @@
 		color: var(--nntm-kem);
 	}
 
-	/*
-	 * SUA 20/08/2026: cum ben phai duoc phep CO LAI duoi 1366.
-	 *
-	 * Truoc day `flex: 0 0` (khong co, khong gian) an toan vi khung site luon
-	 * la 1366. Gio khung tran man va co that duoi 1366, tong be rong can
-	 * (logo 147 + menu ~605 + cum phai 430 + dem 40 = 1222) vuot khung nhin
-	 * 1185 o man 1200 -> do duoc cum phai bi cat 23px, o 1152 cat 71px.
-	 * Doi sang `0 1` de o tim kiem thu lai truoc, giu du cho cho menu.
-	 */
 	.home .nntm-header__tools {
 		flex: 0 1 430px;
 		min-width: 0;
@@ -218,7 +166,6 @@
 		display: none;
 	}
 
-	/* ===== HERO / BANNER — node 6376:6325 ===== */
 	.home .nntm-hero-slider__stage {
 		height: 768px;
 		aspect-ratio: auto;
@@ -239,11 +186,6 @@
 		display: none;
 	}
 
-	/*
-	 * SUA 20/08/2026: cong them --nntm-cot-le. San khau hero gio tran het
-	 * man (anh tran man theo y anh Uy) nen `left: 93px` khong con dem tu mep
-	 * cot 1366 nua — thieu no thi tren man 1920 chu dinh sat mep man.
-	 */
 	.home .nntm-hero-slider__content {
 		left: calc(var(--nntm-cot-le) + 93px);
 		right: auto;
@@ -331,7 +273,6 @@
 		line-height: 25px;
 	}
 
-
 	.home .nntm-hero-slider__quicklink:nth-child(1) { width: 112px; }
 	.home .nntm-hero-slider__quicklink:nth-child(2) { width: 101px; }
 	.home .nntm-hero-slider__quicklink:nth-child(3) { width: 75px; }
@@ -389,7 +330,6 @@
 		text-underline-offset: 2px;
 	}
 
-	/* ===== FEATURED MOSAIC — node 6588:9007 ===== */
 	.home .nntm-article-mosaic--lead-tall.nntm-article-mosaic--phai-mosaic {
 		height: 870px;
 		background: var(--nntm-kem);
@@ -492,7 +432,7 @@
 	}
 
 	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__medium-card {
-		/* 0 1 + min-width 0: giu 370 tu 1366 tro len, hep hon thi co theo. */
+		 
 		flex: 0 1 370px;
 		min-width: 0;
 		width: 100%;
@@ -556,8 +496,7 @@
 	.home .nntm-article-mosaic--lead-tall .nntm-article-mosaic__viewall-wrap {
 		position: absolute;
 		left: 0;
-		/* Figma: CTA is y=742 inside CONTENT, whose own y=30 inside SECTION.
-		 * The absolute containing block here is SECTION/inner, so use 30+742. */
+		 
 		top: 772px;
 		width: 100%;
 		margin: 0;
@@ -573,7 +512,6 @@
 		border-radius: 0;
 	}
 
-	/* ===== ARTICLE FEATURE — node 6376:6467 ===== */
 	.home .nntm-article-feature {
 		height: 1005px;
 		padding: 60px 70px 0;
@@ -677,7 +615,7 @@
 
 	.home .nntm-article-feature__media-link {
 		position: relative;
-		/* Co lai duoc duoi 1366; tu 1366 tro len van dung 532 nhu Figma. */
+		 
 		width: 100%;
 		max-width: 532px;
 		height: 945px;
@@ -700,7 +638,6 @@
 		object-fit: cover;
 	}
 
-	/* ===== GÓT SON / XUYÊN VẠN KIẾP — node 6376:6399 ===== */
 	.home .nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) {
 		height: 544px;
 		margin-top: 56px;
@@ -716,8 +653,7 @@
 	}
 
 	.home .nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) > .nntm-card-list__band > .nntm-container {
-		/* SUA 20/08/2026: `max-width: none` -> chan 1366 + canh giua. Nen dai
-		   (.__band) van tran het man, chi noi dung dung lai o cot 1366. */
+		 
 		width: 100%;
 		max-width: var(--nntm-w-rong);
 		margin-inline: auto;
@@ -797,9 +733,6 @@
 		object-fit: cover;
 	}
 
-	/* The overlay itself must keep covering the whole media box. Previously
-	 * width/height:75px was applied to BOTH overlay and SVG, which pinned the
-	 * play button to the top-left. Only the glyph is 75x75 in Figma. */
 	.home .nntm-card-list__yt-play {
 		inset: 0;
 		width: auto;
@@ -846,11 +779,10 @@
 		font-weight: 400;
 		line-height: 26px;
 		letter-spacing: 0;
-		color: var(--nntm-muc); /* Figma #3F3B3B */
+		color: var(--nntm-muc);  
 		background: var(--nntm-trang);
 	}
 
-	/* ===== ENGINEERING EARTH — node 6376:6412 ===== */
 	.home .nntm-engineering-earth--homepage-figma {
 		position: relative;
 		width: 100%;
@@ -875,7 +807,7 @@
 		left: 40px;
 		top: 60px;
 		width: 100%;
-		/* Tru ca hai le 40 de khong vuot ra ngoai dai khi man hep hon 1180. */
+		 
 		max-width: min(1100px, calc(100% - 80px));
 		display: flex;
 		flex-direction: column;
@@ -893,7 +825,7 @@
 		font-weight: 600;
 		line-height: 68px;
 		letter-spacing: 0;
-		color: var(--nntm-reu); /* Figma #747766 */
+		color: var(--nntm-reu);  
 	}
 
 	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__subheading {
@@ -904,32 +836,14 @@
 		color: var(--nntm-reu);
 	}
 
-	/*
-	 * SUA 20/08/2026: nen den cua dai tran HET be rong man, con hop dai va
-	 * moi thu ben trong GIU NGUYEN 1366 nhu Figma.
-	 *
-	 * Cach lam: khong dong vao hinh hoc cua chinh `.__band` (neu keo no
-	 * rong ra thi `padding: 60px 140px` se do tu mep man vao, keo ca hang
-	 * video lech han). Thay vao do ve nen bang mot ::before rong 100vw canh
-	 * giua khung nhin. `.__band` co `transform` nen no da la mot ngu canh
-	 * xep lop rieng — `z-index: -1` chi lui ra sau NOI DUNG cua dai, khong
-	 * lui ra sau ca trang.
-	 */
 	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__band {
 		position: absolute;
 		left: 50%;
 		top: 174px;
-		/* min() de duoi 1366 dai khong tran ra ngoai khung nhin roi bi cat. */
+		 
 		width: min(1366px, 100vw);
 		height: 418px;
-		/*
-		 * Dem ngang KHONG deu — dung nhu Figma: hang video cach le trai 140 va
-		 * le phai 70 (140 + 1156 + 70 = 1366). Truoc day khai `padding: 60px
-		 * 140px` roi de hang video rong 1156 THO ra khoi hop dem 70px; viet
-		 * thanh hai gia tri thi hang video chi can `width: 100%` la ra dung
-		 * 1156, va tu co lai khi man hep hon 1366.
-		 *   10.25vw = 140/1366   |   5.12vw = 70/1366
-		 */
+		 
 		padding-block: 60px;
 		padding-inline: clamp(var(--nntm-sp-5), 10.25vw, 140px) clamp(var(--nntm-sp-3), 5.12vw, 70px);
 		box-sizing: border-box;
@@ -961,7 +875,7 @@
 	}
 
 	.home .nntm-engineering-earth__figma-main {
-		/* 0 1: cho phep co lai o dai 1152-1365, khong cho gian them. */
+		 
 		flex: 0 1 590px;
 		min-width: 0;
 		width: 100%;
@@ -1020,8 +934,7 @@
 
 	.home .nntm-engineering-earth__figma-pip {
 		position: absolute;
-		/* 65.42% = 772/1180: neo theo TI LE cua dai 1180 nen khi dai co lai
-		   duoi 1366, the nho van nam trong khung (truoc do tran 23px o 1152). */
+		 
 		left: min(772px, 65.42%);
 		top: 421px;
 		width: 100%;
@@ -1042,31 +955,14 @@
 		object-fit: cover;
 	}
 
-	/*
-	 * Thẻ nhỏ nay là VIDEO THẬT, không còn ảnh tĩnh (21/08/2026 — yêu cầu
-	 * chủ dự án, nguồn là thuộc tính bgVideoUrl của block; xem
-	 * blocks/engineering-earth/render.php).
-	 *
-	 * Khe video lấp đúng ô nội dung của thẻ (388 − 2×20 = 348 rộng), chiều
-	 * cao suy ra từ TỈ LỆ 348/203 của thiết kế thay vì khai số px — nhờ vậy ở
-	 * breakpoint hẹp (nơi thẻ chuyển sang height:auto và ảnh cũ dùng
-	 * height:auto để tự cao theo tỉ lệ) khe vẫn cao đúng, KHÔNG phải khai lại
-	 * số đo ở từng breakpoint. Không có tỉ lệ này thì khe cao 0 vì poster bên
-	 * trong là position:absolute.
-	 */
 	.home .nntm-engineering-earth__figma-pip .nntm-engineering-earth__video-slot {
 		width: 100%;
 		height: auto;
 		aspect-ratio: 348 / 203;
-		border-radius: 0; /* thiết kế thẻ nhỏ là góc vuông, khác --nntm-r-md mặc định của khe */
-		background-color: transparent; /* nền xám mặc định của khe sẽ lộ ra trên lớp kính mờ đen */
+		border-radius: 0;  
+		background-color: transparent;  
 	}
 
-	/*
-	 * Đè quy tắc ".figma-pip img" phía trên (348×203 cố định, và 100%/auto ở
-	 * breakpoint hẹp): poster của khe phải phủ kín khe theo inset:0 của
-	 * blocks/engineering-earth/style.css, không tự giữ số px riêng.
-	 */
 	.home .nntm-engineering-earth__figma-pip .nntm-engineering-earth__video-slot img.nntm-engineering-earth__video-poster {
 		width: 100%;
 		height: 100%;
@@ -1078,7 +974,6 @@
 		outline-offset: 3px;
 	}
 
-	/* ===== HOẠT ĐỘNG - SỰ KIỆN — node 6585:8120 ===== */
 	.home .nntm-article-mosaic--lead-short.nntm-article-mosaic--phai-grid {
 		height: 816px;
 		margin-top: 56px;
@@ -1176,7 +1071,7 @@
 		width: 100%;
 		max-width: 771px;
 		height: 564px;
-		/* minmax(0,…) de cot co the co duoi kich thuoc noi dung khi man hep. */
+		 
 		grid-template-columns: repeat(3, minmax(0, 227fr));
 		grid-template-rows: repeat(2, 282px);
 		column-gap: 40px;
@@ -1202,7 +1097,6 @@
 		margin-top: 0;
 	}
 
-	/* ===== GITA — node 6376:6450 ===== */
 	.home .nntm-card-list--nen-cam {
 		height: 666px;
 		box-sizing: border-box;
@@ -1269,9 +1163,6 @@
 		animation-delay: 600ms;
 	}
 
-	/* The homepage animation shorthand above resets animation-play-state.
-	 * Re-assert pause after the shorthand with higher specificity so hovering
-	 * a previewing iframe really freezes the marquee under the pointer. */
 	.home .nntm-card-list__yt-marquee:hover > .nntm-card-list__yt-track,
 	.home .nntm-card-list__yt-marquee:focus-within > .nntm-card-list__yt-track {
 		animation-play-state: paused;
@@ -1338,11 +1229,6 @@
 		height: 47px;
 	}
 
-	/* ===== FOOTER — node 6376:6324 =====
-	 * Match the Figma hierarchy instead of faking the 50px parent gap across
-	 * three siblings. In Figma the 50px gap is between SHARE and SUB; the
-	 * rule + bottom row live together inside SUB with a 21px row gap.
-	 */
 	.home .nntm-footer {
 		height: 299.25px;
 		padding: 20px;
@@ -1352,9 +1238,7 @@
 	}
 
 	.home .nntm-footer__bar {
-		/* SUA 20/08/2026: chan 1326 + canh giua. Truoc day la `max-width: none;
-		   margin: 0` vi khung site da chan 1366 nen khoi xam tu vua; gio khung
-		   tran man, khong chan thi dai xam keo het 1920. */
+		 
 		width: 100%;
 		max-width: 1326px;
 		height: 259.25px;
@@ -1428,8 +1312,7 @@
 		align-content: center;
 		align-items: center;
 		justify-content: space-between;
-		/* Figma row-gap is 21px with a zero-height line; our 1px CSS border
-		 * consumes one pixel, so 20px yields the same 21px visual separation. */
+		 
 		row-gap: 20px;
 	}
 
@@ -1444,8 +1327,7 @@
 	}
 
 	.home .nntm-footer__row {
-		/* 0 1: giu 1226 tu 1366 tro len, hep hon thi hang chan trang co lai
-		   thay vi tran ra ngoai (do duoc tran 91px o man 1200 truoc khi sua). */
+		 
 		flex: 0 1 1226px;
 		min-width: 0;
 		width: 100%;
@@ -1489,7 +1371,7 @@
 
 	.home .nntm-footer-nav {
 		gap: 10px;
-		/* Duoi 1366 cho phep xuong dong thay vi day hang tran ra ngoai. */
+		 
 		flex-wrap: wrap;
 	}
 
@@ -1503,7 +1385,6 @@
 	}
 }
 
-/* ---------- Responsive safety (Figma has no tablet/mobile source frames) ---------- */
 @media (max-width: 1151px) {
 	.home .nntm-engineering-earth--homepage-figma {
 		width: 100%;
@@ -1570,13 +1451,7 @@
 	}
 }
 
-
-/* =============================================================
-   HOMEPAGE MOTION / HOVER POLISH
-   - Continuous marquee stays GPU-only (transform) and loops on the exact
-     beginning of the duplicated half, including half the 20px seam gap.
-   - Hover motion is intentionally subtle so the moving track does not jump.
-   ============================================================= */
+ 
 @keyframes nntm-home-yt-marquee {
 	from {
 		transform: translate3d(0, 0, 0);

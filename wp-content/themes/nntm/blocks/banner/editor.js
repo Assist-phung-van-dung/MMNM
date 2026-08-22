@@ -1,11 +1,4 @@
-/**
- * Editor script cho block nntm/banner — JavaScript thuần, không build.
- * Dùng biến toàn cục wp.* theo đúng quy ước dự án (xem blocks/feature/editor.js).
- *
- * Ràng buộc kiến trúc: ban quản trị phải tự thêm / xoá / sắp lại từng tấm
- * mà không cần lập trình viên (docs/04-kien-truc.md mục 2). Vì vậy mọi thao
- * tác với danh sách tấm đều nằm trong bảng điều khiển bên phải.
- */
+
 ( function ( wp ) {
 	'use strict';
 
@@ -68,7 +61,6 @@
 				setAttributes( { slides: moi } );
 			}
 
-			// ---------- Bảng điều khiển: từng tấm ----------
 			var bangTam = slides.map( function ( tam, chiSo ) {
 				return el(
 					PanelBody,
@@ -199,7 +191,6 @@
 				);
 			} );
 
-			// ---------- Xem trước trong trình soạn thảo ----------
 			var tamDau = slides.length > 0 ? slides[ 0 ] : null;
 
 			var xemTruoc = tamDau
@@ -365,7 +356,7 @@
 			);
 		},
 		save: function () {
-			// Block động: PHP (render.php) tự vẽ lại nội dung mỗi lần tải trang.
+
 			return null;
 		},
 	} );

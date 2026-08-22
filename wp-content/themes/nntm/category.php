@@ -1,5 +1,5 @@
 <?php
-/** Category archive for standard WordPress posts. */
+ 
 defined( 'ABSPATH' ) || exit;
 
 $css = NNTM_THEME_DIR . '/assets/css/pages/category-post.css';
@@ -38,7 +38,7 @@ $query = new WP_Query(
 					<?php
 					$post_obj = get_post();
 					if ( function_exists( 'nntm_render_section_article_row' ) && $post_obj instanceof WP_Post ) {
-						echo nntm_render_section_article_row( $post_obj, $index, array( 'show_excerpt' => true, 'show_favorite' => true, 'cta_label' => __( 'Xem thêm', 'nntm' ), 'start_side' => 'left' ) ); // phpcs:ignore WordPress.Security.EscapeOutput
+						echo nntm_render_section_article_row( $post_obj, $index, array( 'show_excerpt' => true, 'show_favorite' => true, 'cta_label' => __( 'Xem thêm', 'nntm' ), 'start_side' => 'left' ) );  
 					} else {
 						$reversed = 1 === $index % 2 ? ' nntm-article-rows__row--reversed' : '';
 						?>
@@ -48,7 +48,7 @@ $query = new WP_Query(
 								<h2 class="nntm-article-rows__title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
 								<p class="nntm-article-rows__excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 34, '…' ) ); ?></p>
 								<div class="nntm-article-rows__actions">
-									<?php if ( function_exists( 'nntm_section_render_favorite_button' ) ) echo nntm_section_render_favorite_button( get_the_ID(), 'nntm-article-rows__favorite' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+									<?php if ( function_exists( 'nntm_section_render_favorite_button' ) ) echo nntm_section_render_favorite_button( get_the_ID(), 'nntm-article-rows__favorite' );  ?>
 									<a class="nntm-article-rows__more" href="<?php the_permalink(); ?>"><?php esc_html_e( 'Xem thêm', 'nntm' ); ?></a>
 								</div>
 							</div>
@@ -62,7 +62,7 @@ $query = new WP_Query(
 
 			<?php
 			if ( function_exists( 'nntm_render_section_pagination' ) ) {
-				echo nntm_render_section_pagination( $paged, (int) $query->max_num_pages ); // phpcs:ignore WordPress.Security.EscapeOutput
+				echo nntm_render_section_pagination( $paged, (int) $query->max_num_pages );  
 			} else {
 				echo '<div class="nntm-category-post__pagination">' . wp_kses_post( paginate_links( array( 'total' => $query->max_num_pages, 'current' => $paged, 'type' => 'list' ) ) ) . '</div>';
 			}

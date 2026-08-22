@@ -1,24 +1,13 @@
 <?php
-/**
- * Form đăng ký thành viên — thẻ RỘNG hơn 2 form kia. Dùng ở
- * page-dang-ky.php.
- *
- * Tham số nhận qua $args:
- *   redirect_to (string) URL chuyển hướng sau khi đăng ký thành công.
- *
- * @package NNTM
- * @var array $args
- */
 
 defined( 'ABSPATH' ) || exit;
 
 $args        = is_array( $args ) ? $args : array();
 $redirect_to = isset( $args['redirect_to'] ) ? (string) $args['redirect_to'] : '';
 
-$is_this_action = ! empty( $_POST['nntm_auth_action'] ) && 'dang-ky' === wp_unslash( $_POST['nntm_auth_action'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- chỉ đọc để biết có in lỗi hay không, nonce đã kiểm ở inc/auth.php.
+$is_this_action = ! empty( $_POST['nntm_auth_action'] ) && 'dang-ky' === wp_unslash( $_POST['nntm_auth_action'] );  
 $errors = ( $is_this_action && isset( $GLOBALS['nntm_auth_errors'] ) && is_wp_error( $GLOBALS['nntm_auth_errors'] ) ) ? $GLOBALS['nntm_auth_errors'] : null;
 
-// Giữ lại giá trị đã gõ khi có lỗi (trừ mật khẩu) — xem inc/auth.php::nntm_handle_register_post().
 $values = wp_parse_args(
 	( $is_this_action && isset( $GLOBALS['nntm_auth_values'] ) && is_array( $GLOBALS['nntm_auth_values'] ) ) ? $GLOBALS['nntm_auth_values'] : array(),
 	array(
@@ -32,7 +21,6 @@ $values = wp_parse_args(
 	)
 );
 
-// Trang chính sách đã có sẵn (slug `chinh-sach`) — theo chỉ đạo trong việc này.
 $nntm_chinh_sach     = get_page_by_path( 'chinh-sach' );
 $nntm_chinh_sach_url = $nntm_chinh_sach ? get_permalink( $nntm_chinh_sach ) : home_url( '/chinh-sach/' );
 ?>

@@ -1,23 +1,10 @@
-/* =============================================================
-   NNTM — Bố cục dùng chung: container, lưới, tiện ích khoảng cách.
-   Mobile-first: viết mặc định cho màn nhỏ trước, min-width nới dần.
 
-   Điểm ngắt: 480 / 768 / 1024 / 1025 (khung thiết kế 1366 — xem responsive.css:
-   từ 1025px trở lên khung luôn dàn ở đúng 1366px rồi thu nhỏ vừa màn).
-   Figma khách gửi CHỈ có khung desktop 1366px, CHƯA có bản mobile.
-   Mọi chỗ có suy đoán responsive được đánh dấu bằng chú thích
-   "SUY DOAN: chua co Figma mobile" ngay tại vị trí đó.
 
-   CẤM mã màu (#hex, rgb) và số px cứng ngoài breakpoint —
-   mọi giá trị lấy từ tokens.css. Nạp SAU tokens.css và base.css.
-   ============================================================= */
-
-/* ---------- Container ---------- */
 .nntm-container {
 	width: 100%;
 	max-width: var(--nntm-w-noi-dung);
 	margin-inline: auto;
-	/* SUY DOAN: chua co Figma mobile — padding ngang nho hon o man nho */
+
 	padding-inline: var(--nntm-sp-5);
 }
 
@@ -27,7 +14,7 @@
 
 @media (min-width: 768px) {
 	.nntm-container {
-		/* SUY DOAN: chua co Figma mobile — noi suy giua man nho va desktop 1366 */
+
 		padding-inline: var(--nntm-sp-7);
 	}
 }
@@ -39,23 +26,18 @@
 }
 
 
-/* Khung main full-width vẫn dừng ở desktop Figma 1366px. */
 .nntm-main--full {
 	width: 100%;
 	max-width: var(--nntm-w-rong);
 	margin-inline: auto;
 }
 
-/* ---------- Lưới ---------- */
 .nntm-grid {
 	display: grid;
 	grid-template-columns: 1fr;
 	gap: var(--nntm-sp-7);
 }
 
-/* SUY DOAN: chua co Figma mobile — mac dinh gop ve 1 cot o man nho,
-   mo dan so cot theo breakpoint. Figma 1366 la nguon duy nhat cho
-   so cot "day du" (--2/--3/--4). */
 .nntm-grid--2,
 .nntm-grid--3,
 .nntm-grid--4 {
@@ -97,15 +79,12 @@
 
 @media (min-width: 1152px) {
 	.nntm-grid--4 {
-		/* Khung Figma 1366 — mật độ khoảng cách dày như thiết kế gốc. Cổng mở
-		   từ 1025 vì responsive.css thu nhỏ cả khung cho vừa màn, bên trong
-		   vẫn là 1366px đơn vị dàn trang. */
+
 		gap: var(--nntm-sp-8);
 	}
 }
 
-/* ---------- Tiện ích khoảng cách ---------- */
-/* Chỉ phủ các mốc dùng nhiều nhất trong Figma (10/20/30/40/50/60/80). */
+
 .nntm-mt-3 { margin-top: var(--nntm-sp-3); }
 .nntm-mt-5 { margin-top: var(--nntm-sp-5); }
 .nntm-mt-7 { margin-top: var(--nntm-sp-7); }
@@ -129,7 +108,6 @@
 .nntm-gap-5 { gap: var(--nntm-sp-5); }
 .nntm-gap-7 { gap: var(--nntm-sp-7); }
 
-/* ---------- Tiện ích flex nhỏ, dùng lại nhiều ở header/card ---------- */
 .nntm-flex {
 	display: flex;
 	align-items: center;
@@ -144,16 +122,6 @@
 .nntm-flex--wrap {
 	flex-wrap: wrap;
 }
-
-/* =============================================================
-   Trang ghép từ block section — <main> toàn chiều rộng.
-
-   Mỗi block section đã tự mang đệm ngoài đúng Figma (SECTION 1 của
-   Hoa Khai đệm ngang 70, SECTION 6 của Pháp Tòa đệm 80...). Bọc thêm
-   .nntm-container ở <main> sẽ thành đệm chồng đệm, làm nội dung hẹp
-   hơn thiết kế khoảng 200px trên MỌI trang phân mục.
-   Xem nntm_page_uses_section_blocks() trong inc/setup.php.
-   ============================================================= */
 
 .nntm-main--full {
 	width: 100%;

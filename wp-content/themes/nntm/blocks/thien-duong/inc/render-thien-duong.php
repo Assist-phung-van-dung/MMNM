@@ -1,52 +1,17 @@
 <?php
-/**
- * Hàm dựng HTML + truy vấn dùng chung cho render.php của block
- * nntm/thien-duong.
- *
- * Tách riêng ra file inc/ (bắt chước đúng blocks/article-mosaic/inc/) vì
- * render.php của block bị WordPress core `require` (KHÔNG PHẢI
- * `require_once`) mỗi lần block render. Nếu khai hàm thẳng trong
- * render.php, một trang gọi lại khối này lần thứ hai sẽ chết với lỗi
- * "Cannot redeclare function". File inc/ này được require_once từ
- * render.php nên chỉ khai báo đúng một lần dù render.php bị require lại
- * bao nhiêu lần.
- *
- * QUAN TRỌNG VỀ RÒ RỈ: hàm nntm_thien_duong_get_tracks() và
- * nntm_thien_duong_render_player() CHỈ được render.php gọi tới khi
- * is_user_logged_in() đã trả về true — bản thân các hàm này không tự
- * kiểm tra lại việc đăng nhập. Đường dẫn tệp âm thanh (wp_get_attachment_url)
- * chỉ xuất hiện trong HTML qua nhánh gọi này; nhánh chưa đăng nhập trong
- * render.php gọi nntm_thien_duong_render_login_invite() — hàm này không
- * đụng tới WP_Query hay meta âm thanh nào cả.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
 if ( ! function_exists( 'nntm_thien_duong_get_tracks' ) ) {
-	/**
-	 * Truy vấn CPT nntm_zen_track, chỉ lấy bài đã gán tệp âm thanh hợp lệ.
-	 *
-	 * Bài chưa nhập meta "_nntm_track_audio" (hoặc nhập 0) bị loại ngay ở
-	 * lớp truy vấn (meta_query compare '>' tự INNER JOIN, bài không có
-	 * dòng meta sẽ không khớp) — đúng yêu cầu "bỏ qua, không hiện, không
-	 * gây lỗi". Bài có meta nhưng tệp đã bị xóa khỏi Media Library (ID cũ
-	 * không còn attachment) được lọc thêm một lần nữa ở PHP vì
-	 * wp_get_attachment_url() trả về false trong trường hợp đó.
-	 *
-	 * @param int    $posts_per_page Số bài tối đa (đã giới hạn 1–50 ở render.php).
-	 * @param string $order_by       'newest' | 'oldest' | 'title'.
-	 * @return array<int, array{id: int, title: string, audio_url: string, image_url: string, duration: string, listen_count: int}>
-	 */
+	 
 	function nntm_thien_duong_get_tracks( int $posts_per_page, string $order_by ): array {
 		$query_args = array(
 			'post_type'           => 'nntm_zen_track',
 			'post_status'         => 'publish',
 			'posts_per_page'      => $posts_per_page,
 			'ignore_sticky_posts' => true,
-			'no_found_rows'       => true, // khong phan trang o khoi nay.
-			'meta_query'          => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- can loc bai co gan tep am thanh, khong tranh duoc.
+			'no_found_rows'       => true,  
+			'meta_query'          => array(  
 				array(
 					'key'     => '_nntm_track_audio',
 					'value'   => 0,
@@ -90,8 +55,7 @@ if ( ! function_exists( 'nntm_thien_duong_get_tracks' ) ) {
 
 			$audio_url = wp_get_attachment_url( $audio_id );
 			if ( ! $audio_url ) {
-				// Meta con ID cu nhung tep da bi xoa khoi Media Library — bo qua,
-				// khong bao loi, dung nhu yeu cau "bai chua co tep -> bo qua".
+
 				continue;
 			}
 
@@ -117,13 +81,7 @@ if ( ! function_exists( 'nntm_thien_duong_get_tracks' ) ) {
 }
 
 if ( ! function_exists( 'nntm_thien_duong_render_login_invite' ) ) {
-	/**
-	 * Dựng HTML lời mời đăng nhập cho người chưa đăng nhập. KHÔNG chạy
-	 * WP_Query, KHÔNG đọc meta âm thanh nào — đảm bảo tuyệt đối không có
-	 * đường dẫn .mp3/.m4a/.ogg nào lọt ra HTML ở nhánh này.
-	 *
-	 * @return string HTML đã escape.
-	 */
+	 
 	function nntm_thien_duong_render_login_invite(): string {
 		$login_url = wp_login_url( get_permalink() );
 
@@ -143,10 +101,7 @@ if ( ! function_exists( 'nntm_thien_duong_render_login_invite' ) ) {
 }
 
 if ( ! function_exists( 'nntm_thien_duong_render_guest_preview' ) ) {
-	/**
-	 * Giao diện xem trước kiểu Spotify cho khách. Chỉ đọc tiêu đề bài công
-	 * khai, tuyệt đối không đọc meta hay xuất URL tệp âm thanh.
-	 */
+	 
 	function nntm_thien_duong_render_guest_preview( int $limit, string $order_by ): string {
 		$args = array(
 			'post_type'              => 'nntm_zen_track',
@@ -188,15 +143,7 @@ if ( ! function_exists( 'nntm_thien_duong_render_guest_preview' ) ) {
 }
 
 if ( ! function_exists( 'nntm_thien_duong_render_track_item' ) ) {
-	/**
-	 * Dựng HTML một dòng trong danh sách bài — nút bấm chọn được, đường
-	 * dẫn âm thanh nằm trong data-attribute để view.js đọc và gán vào
-	 * thẻ <audio> khi được bấm.
-	 *
-	 * @param array $track Một phần tử trả về từ nntm_thien_duong_get_tracks().
-	 * @param int   $index Vị trí trong danh sách (0-based), dùng để đánh số hiển thị.
-	 * @return string HTML đã escape.
-	 */
+	 
 	function nntm_thien_duong_render_track_item( array $track, int $index ): string {
 		$title = (string) $track['title'];
 
@@ -210,7 +157,7 @@ if ( ! function_exists( 'nntm_thien_duong_render_track_item' ) ) {
 				data-nntm-track-title="<?php echo esc_attr( $title ); ?>"
 				data-nntm-track-id="<?php echo esc_attr( (string) $track['id'] ); ?>"
 				data-nntm-track-image="<?php echo esc_url( $track['image_url'] ); ?>"
-				aria-label="<?php echo esc_attr( sprintf( /* translators: %s: ten bai nhac thien */ __( 'Nghe bài "%s"', 'nntm' ), $title ) ); ?>"
+				aria-label="<?php echo esc_attr( sprintf(   __( 'Nghe bài "%s"', 'nntm' ), $title ) ); ?>"
 			>
 				<span class="nntm-thien-duong__track-index" aria-hidden="true"><?php echo esc_html( (string) ( $index + 1 ) ); ?></span>
 				<span class="nntm-thien-duong__track-title"><?php echo esc_html( $title ); ?></span>
@@ -224,22 +171,14 @@ if ( ! function_exists( 'nntm_thien_duong_render_track_item' ) ) {
 }
 
 if ( ! function_exists( 'nntm_thien_duong_render_player' ) ) {
-	/**
-	 * Dựng toàn bộ HTML trình phát (thẻ audio, nút điều khiển, thanh tiến
-	 * độ/âm lượng, chỗ cắm hiển thị số người đang nghe, danh sách bài) —
-	 * chỉ được gọi khi đã xác nhận is_user_logged_in() ở render.php.
-	 *
-	 * @param array $tracks Danh sách bài từ nntm_thien_duong_get_tracks().
-	 * @return string HTML đã escape.
-	 */
+	 
 	function nntm_thien_duong_render_player( array $tracks ): string {
 		$realtime_ready = function_exists( 'nntm_zen_track_realtime_is_ready' ) && nntm_zen_track_realtime_is_ready();
 		if ( $realtime_ready && function_exists( 'nntm_zen_track_enqueue_realtime_assets' ) ) {
 			nntm_zen_track_enqueue_realtime_assets();
 		}
 
-		// wp_unique_id() để nhãn <label for="…"> không đụng ID nếu khối này
-		// (hiếm khi) xuất hiện nhiều lần trên cùng một trang.
+		 
 		$uid = wp_unique_id( 'nntm-thien-duong-' );
 
 		ob_start();
@@ -334,7 +273,6 @@ if ( ! function_exists( 'nntm_thien_duong_render_player' ) ) {
 				</div>
 			</div>
 
-
 			<div class="nntm-thien-duong__playlist-title">
 				<strong><?php esc_html_e( 'Phổ biến', 'nntm' ); ?></strong>
 			</div>
@@ -342,7 +280,7 @@ if ( ! function_exists( 'nntm_thien_duong_render_player' ) ) {
 			<ol class="nntm-thien-duong__tracklist">
 				<?php
 				foreach ( $tracks as $index => $track ) {
-					echo nntm_thien_duong_render_track_item( $track, $index ); // phpcs:ignore WordPress.Security.EscapeOutput -- ham con da tu esc trong.
+					echo nntm_thien_duong_render_track_item( $track, $index );  
 				}
 				?>
 			</ol>

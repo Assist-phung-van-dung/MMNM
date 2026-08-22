@@ -1,16 +1,4 @@
-/* =============================================================
-   nntm/thien-duong — CSS cho block "Thiền Đường" (trình phát nhạc thiền)
-   Nguồn số đo: Figma "04. LIEN DAN", SECTION 5 "Thiền Đường"
-   (1366x636, gap 30, padding 60/50/60/50) — số đo đã bóc sẵn, xem mô tả
-   nhiệm vụ, KHÔNG gọi lại Figma API.
-
-   CẤM mã màu (#hex, rgb) và cỡ chữ viết cứng — mọi giá trị lấy từ
-   assets/css/tokens.css. Số đo hình học Figma chưa có biến tương ứng thì
-   dùng px kèm chú thích "tu Figma".
-
-   Block tự mang đệm ngoài (docs/04-kien-truc.md mục 11) — template KHÔNG
-   canh lề hộ.
-   ============================================================= */
+ 
 
 .nntm-thien-duong {
 	display: block;
@@ -18,22 +6,21 @@
 }
 
 .nntm-thien-duong__inner {
-	/* tu Figma: SECTION rong 1366 = khop dung --nntm-w-rong */
+	 
 	max-width: var(--nntm-w-rong);
 	margin-inline: auto;
-	/* tu Figma: SECTION padding 60/50/60/50 (tren/phai/duoi/trai), khop dung sp-10 (60) / sp-9 (50) */
+	 
 	padding: var(--nntm-sp-10) var(--nntm-sp-9);
 	display: flex;
 	flex-direction: column;
-	/* tu Figma: SECTION gap=30, khop dung sp-7 */
+	 
 	gap: var(--nntm-sp-7);
 }
 
-/* ---------- TIEU DE ---------- */
 .nntm-thien-duong__header {
 	display: flex;
 	flex-direction: column;
-	/* tu Figma: TIEU DE gap=10, khop dung sp-3 */
+	 
 	gap: var(--nntm-sp-3);
 	align-items: center;
 	text-align: center;
@@ -41,7 +28,7 @@
 
 .nntm-thien-duong__heading {
 	margin: 0;
-	/* tu Figma: "Thiền Đường" — EB Garamond 600 52px, khop dung fs-4xl */
+	 
 	font-family: var(--nntm-font-display);
 	font-size: var(--nntm-fs-4xl);
 	font-weight: 600;
@@ -50,7 +37,7 @@
 
 .nntm-thien-duong__subheading {
 	margin: 0;
-	/* tu Figma: mo ta phu — Baskerville 400 18px, khop dung fs-md + font-serif (Lora) */
+	 
 	font-family: var(--nntm-font-serif);
 	font-size: var(--nntm-fs-md);
 	font-weight: 400;
@@ -58,17 +45,12 @@
 	color: var(--nntm-trang);
 }
 
-/* ---------- EMBED CONTENT: ảnh bìa + trình phát ---------- */
-/*
- * Ti le 453:817 lay dung theo Figma (IMG 453x416 / khu trinh phat 817x416),
- * dung "fr" de co gian theo khung chua thay vi khoa cung px — dung yeu cau
- * "bo cuc co gian: dung ti le", KHONG dung 453px/817px co dinh.
- */
+ 
 .nntm-thien-duong__embed {
 	display: grid;
 	grid-template-columns: 453fr 817fr;
 	align-items: stretch;
-	/* tu Figma: EMBED CONTENT gap=10, khop dung sp-3 */
+	 
 	gap: var(--nntm-sp-3);
 }
 
@@ -77,8 +59,8 @@
 	position: relative;
 	overflow: hidden;
 	border-radius: 0;
-	background-color: var(--nntm-xam); /* nen placeholder khi chua chon anh bia */
-	/* tu Figma: IMG 453x416 */
+	background-color: var(--nntm-xam);  
+	 
 	aspect-ratio: 453 / 416;
 }
 
@@ -196,25 +178,18 @@
 	font-size: var(--nntm-fs-xs);
 }
 
-/*
- * TAM DUNG: Figma chi co anh chup man hinh dan vao ("Screenshot 2026-08-04
- * at 14.33.57"), chua co thiet ke that cho khu trinh phat 817x416. Khung
- * duoi day dung theo token + ty le tham khao Figma, KHONG phai chep lai
- * anh chup — se thay lai khi khach gui thiet ke thuc.
- */
 .nntm-thien-duong__player {
 	display: flex;
 	flex-direction: column;
 	border-radius: 0;
 	background-color: var(--nntm-nhac-toi);
 	box-shadow: var(--nntm-sh-card);
-	/* Cho popup speed menu thoat khoi khung player, tranh bi cat mat cac muc dau. */
+	 
 	overflow: visible;
-	/* tu Figma: khu trinh phat 817x416 — chi la khung tham khao, xem chu thich tren */
+	 
 	aspect-ratio: 817 / 416;
 }
 
-/* ---------- Lời mời đăng nhập (chưa đăng nhập) ---------- */
 .nntm-thien-duong__invite {
 	display: flex;
 	flex: 1 1 auto;
@@ -222,7 +197,7 @@
 	align-items: center;
 	justify-content: center;
 	text-align: center;
-	/* tu Figma: CONTENT padding=10, khop dung sp-3, mo rong them cho de tho hon khi thay the anh chup */
+	 
 	padding: var(--nntm-sp-8);
 	gap: var(--nntm-sp-5);
 }
@@ -259,7 +234,6 @@
 	color: var(--nntm-kem);
 }
 
-/* ---------- Trình phát đầy đủ (đã đăng nhập) ---------- */
 .nntm-thien-duong__empty {
 	margin: 0;
 	padding: var(--nntm-sp-8);
@@ -273,7 +247,7 @@
 	display: flex;
 	flex-direction: column;
 	height: 100%;
-	min-height: 0; /* cho phep .nntm-thien-duong__tracklist ben trong cuon rieng thay vi day tran khung */
+	min-height: 0;  
 	padding: 0;
 	gap: 0;
 	color: var(--nntm-trang);
@@ -293,7 +267,6 @@
 	color: var(--nntm-trang);
 }
 
-
 .nntm-thien-duong__playback-error {
 	flex: 1 1 100%;
 	width: 100%;
@@ -309,7 +282,6 @@
 	display: none !important;
 }
 
-/* ---------- Cụm điều khiển ---------- */
 .nntm-thien-duong__controls {
 	display: flex;
 	align-items: center;
@@ -327,7 +299,7 @@
 	align-items: center;
 	justify-content: center;
 	flex: none;
-	width: 40px; /* SUY DOAN: chua co Figma cho kich thuoc nut, uoc luong theo ty le CTA trong he thong */
+	width: 40px;  
 	height: 40px;
 	border: none;
 	border-radius: 50%;
@@ -468,7 +440,7 @@
 .nntm-thien-duong__speed-menu {
 	position: absolute;
 	right: 0;
-	/* Mo xuong va de len playlist thay vi mo len roi bi player cat mat 0.75x/1x. */
+	 
 	top: calc(100% + var(--nntm-sp-2));
 	bottom: auto;
 	z-index: 1000;
@@ -516,9 +488,7 @@
 }
 
 .nntm-thien-duong__range-label {
-	/* Nhan co ban buoc phai co (khong bat buoc hien thi) — an truc quan nhung
-	   trinh doc man hinh van doc duoc, dung ky thuat "screen-reader-text" quen
-	   thuoc cua WordPress. */
+	 
 	position: absolute;
 	width: 1px;
 	height: 1px;
@@ -542,7 +512,6 @@
 	white-space: nowrap;
 }
 
-/* ---------- Chỗ cắm Soketi: xem inc/render-thien-duong.php + view.js ---------- */
 .nntm-thien-duong__presence {
 	margin: 0;
 	font-family: var(--nntm-font-sans);
@@ -561,7 +530,6 @@
 	font-size: var(--nntm-fs-xs);
 }
 
-/* ---------- Danh sách bài ---------- */
 .nntm-thien-duong__tracklist {
 	list-style: none;
 	margin: 0;
@@ -605,7 +573,6 @@
 	outline-offset: 2px;
 }
 
-/* Bai dang phat: dung nen + vach nhan dien, khong hien chu "Dang phat". */
 .nntm-thien-duong__track.is-playing {
 	background-color: var(--nntm-xam-chu);
 	box-shadow: inset 3px 0 0 var(--nntm-xanh-nhac);
@@ -648,23 +615,14 @@
 	text-align: right;
 }
 
-
-/* =============================================================
-   SUY DOAN: chua co Figma mobile — Figma chi co khung desktop 1366px.
-   Duoi diem ngat nay: anh bia va trinh phat xep doc, bo khoa aspect-ratio
-   cua trinh phat de danh sach bai co du cho hien thi tren man hep.
-   ============================================================= */
+ 
 @media (max-width: 1151px) {
 	.nntm-thien-duong__inner {
 		padding: var(--nntm-sp-8) var(--nntm-sp-5);
 	}
 
-	/*
-	 * TABLET (768-1151): GIU hai cot — luoi co so `453fr 817fr` tu chia ti le.
-	 * Xep doc chuyen xuong <=767 (xem khoi duoi).
-	 */
 	.nntm-thien-duong__cover {
-		aspect-ratio: 453 / 300; /* SUY DOAN: thap hon de khong chiem qua nhieu chieu cao man hinh doc */
+		aspect-ratio: 453 / 300;  
 	}
 
 	.nntm-thien-duong__player {
@@ -673,7 +631,6 @@
 	}
 }
 
-/* DIEN THOAI (<=767): moi xep doc anh bia va trinh phat. */
 @media (max-width: 767px) {
 	.nntm-thien-duong__embed {
 		grid-template-columns: 1fr;
@@ -706,7 +663,6 @@
 	}
 }
 
-/* ---------- Realtime Soketi: góc phải player ---------- */
 .nntm-thien-duong__player-inner {
 	position: relative;
 }

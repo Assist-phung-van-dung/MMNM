@@ -1,34 +1,15 @@
 <?php
-/**
- * Danh sách chủ đề Khóa Tu / Lịch Tu và nghiệp vụ đăng ký khóa tu.
- *
- * Dữ liệu nntm_retreat + nntm_topic thuộc nntm-core; theme chỉ chịu trách
- * nhiệm render giao diện và nhận form đăng ký vào bảng nghiệp vụ đã có.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * Hai term nntm_topic dùng giao diện danh sách so le như Nguyên Thủy.
- *
- * @return string[]
- */
 function nntm_retreat_topic_slugs(): array {
 	return array( 'khoa-tu', 'lich-tu' );
 }
 
-/**
- * Có đang ở archive Khóa Tu / Lịch Tu không.
- */
 function nntm_is_retreat_topic_archive(): bool {
 	return is_tax( 'nntm_topic', nntm_retreat_topic_slugs() );
 }
 
-/**
- * Query archive theo đúng thiết kế: 5 bài / trang, mới nhất trước.
- */
 function nntm_retreat_topic_archive_query( WP_Query $query ): void {
 	if ( is_admin() || ! $query->is_main_query() || ! $query->is_tax( 'nntm_topic', nntm_retreat_topic_slugs() ) ) {
 		return;
@@ -42,10 +23,6 @@ function nntm_retreat_topic_archive_query( WP_Query $query ): void {
 }
 add_action( 'pre_get_posts', 'nntm_retreat_topic_archive_query' );
 
-/**
- * Nạp assets riêng. Listing tái dùng CSS article-rows; detail tái dùng
- * article-detail để spacing/slider không lệch với bài viết thường.
- */
 function nntm_enqueue_retreat_assets(): void {
 	if ( ! nntm_is_retreat_topic_archive() && ! is_singular( 'nntm_retreat' ) ) {
 		return;
@@ -102,9 +79,6 @@ function nntm_enqueue_retreat_assets(): void {
 }
 add_action( 'wp_enqueue_scripts', 'nntm_enqueue_retreat_assets', 36 );
 
-/**
- * Render một hàng retreat với đúng DOM/class của article-rows.
- */
 function nntm_render_retreat_topic_row( WP_Post $post, int $index ): string {
 	$index          = max( 0, $index );
 	$image_on_right = ( 1 === $index % 2 );
@@ -145,7 +119,7 @@ function nntm_render_retreat_topic_row( WP_Post $post, int $index ): string {
 			<div class="nntm-article-rows__actions">
 				<?php
 				if ( function_exists( 'nntm_section_render_favorite_button' ) ) {
-					echo nntm_section_render_favorite_button( $post->ID, 'nntm-article-rows__favorite' ); // phpcs:ignore WordPress.Security.EscapeOutput -- helper tự escape.
+					echo nntm_section_render_favorite_button( $post->ID, 'nntm-article-rows__favorite' );  
 				}
 				?>
 				<a class="nntm-article-rows__more" href="<?php echo esc_url( $permalink ); ?>"><?php esc_html_e( 'Xem thêm', 'nntm' ); ?></a>
@@ -156,9 +130,6 @@ function nntm_render_retreat_topic_row( WP_Post $post, int $index ): string {
 	return trim( (string) ob_get_clean() );
 }
 
-/**
- * Term Khóa Tu/Lịch Tu của retreat hiện tại; ưu tiên đúng 2 term thiết kế.
- */
 function nntm_retreat_primary_topic( int $post_id ): ?WP_Term {
 	$terms = get_the_terms( $post_id, 'nntm_topic' );
 	if ( empty( $terms ) || is_wp_error( $terms ) ) {
@@ -176,20 +147,13 @@ function nntm_retreat_primary_topic( int $post_id ): ?WP_Term {
 	return $terms[0] instanceof WP_Term ? $terms[0] : null;
 }
 
-/**
- * Bảng đăng ký khóa tu có tồn tại không.
- */
 function nntm_retreat_signup_table_exists(): bool {
 	global $wpdb;
 	$table = $wpdb->prefix . 'nntm_retreat_signup';
-	$found = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table ) ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- kiểm tra schema do nntm-core tạo.
+	$found = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table ) ) );  
 	return $found === $table;
 }
 
-/**
- * Đăng ký tham dự khóa tu qua AJAX. Cho phép cả thành viên và khách vì
- * schema nntm-core đã dành user_id=0 cho khách chưa đăng nhập.
- */
 function nntm_ajax_retreat_signup(): void {
 	check_ajax_referer( 'nntm_retreat_signup', 'nonce' );
 
@@ -199,7 +163,6 @@ function nntm_ajax_retreat_signup(): void {
 		wp_send_json_error( array( 'message' => __( 'Khóa tu không hợp lệ.', 'nntm' ) ), 400 );
 	}
 
-	// Honeypot: bot điền trường ẩn thì trả thành công giả, không ghi DB.
 	$website = isset( $_POST['website'] ) ? trim( (string) wp_unslash( $_POST['website'] ) ) : '';
 	if ( '' !== $website ) {
 		wp_send_json_success( array( 'message' => __( 'Đăng ký đã được ghi nhận.', 'nntm' ) ) );
@@ -218,7 +181,6 @@ function nntm_ajax_retreat_signup(): void {
 		wp_send_json_error( array( 'message' => __( 'Vui lòng nhập đầy đủ họ tên, số điện thoại và email hợp lệ.', 'nntm' ) ), 422 );
 	}
 
-	// Chặn submit liên tục trong 20 giây từ cùng client/retreat.
 	$remote_addr = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : 'unknown';
 	$throttle    = 'nntm_retreat_signup_' . md5( $remote_addr . '|' . $retreat_id );
 	if ( get_transient( $throttle ) ) {
@@ -230,24 +192,23 @@ function nntm_ajax_retreat_signup(): void {
 	$table   = $wpdb->prefix . 'nntm_retreat_signup';
 	$user_id = get_current_user_id();
 
-	// Tránh tạo bản ghi trùng khi reload/bấm lại.
 	if ( $user_id > 0 ) {
 		$existing = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT id FROM {$table} WHERE retreat_id = %d AND user_id = %d AND status <> 'cancelled' LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tên bảng từ prefix tin cậy.
+				"SELECT id FROM {$table} WHERE retreat_id = %d AND user_id = %d AND status <> 'cancelled' LIMIT 1",  
 				$retreat_id,
 				$user_id
 			)
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		);  
 	} else {
 		$existing = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT id FROM {$table} WHERE retreat_id = %d AND email = %s AND phone = %s AND status <> 'cancelled' LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- tên bảng từ prefix tin cậy.
+				"SELECT id FROM {$table} WHERE retreat_id = %d AND email = %s AND phone = %s AND status <> 'cancelled' LIMIT 1",  
 				$retreat_id,
 				$email,
 				$phone
 			)
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		);  
 	}
 
 	if ( $existing ) {
@@ -259,7 +220,7 @@ function nntm_ajax_retreat_signup(): void {
 		);
 	}
 
-	$result = $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- bảng nghiệp vụ riêng của dự án.
+	$result = $wpdb->insert(  
 		$table,
 		array(
 			'retreat_id' => $retreat_id,

@@ -1,14 +1,4 @@
 <?php
-/**
- * Form "Quên mật khẩu" — dùng ở page-quen-mat-khau.php.
- *
- * Tham số nhận qua $args:
- *   redirect_to (string) URL chuyển hướng sau khi gửi yêu cầu thành công.
- *   compact     (bool)   true khi dùng trong khung hẹp hơn (dự phòng).
- *
- * @package NNTM
- * @var array $args
- */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -16,7 +6,7 @@ $args        = is_array( $args ) ? $args : array();
 $redirect_to = isset( $args['redirect_to'] ) ? (string) $args['redirect_to'] : '';
 $compact     = ! empty( $args['compact'] );
 
-$is_this_action = ! empty( $_POST['nntm_auth_action'] ) && 'quen-mat-khau' === wp_unslash( $_POST['nntm_auth_action'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- chỉ đọc để biết có in thông báo hay không, nonce đã kiểm ở inc/auth.php.
+$is_this_action = ! empty( $_POST['nntm_auth_action'] ) && 'quen-mat-khau' === wp_unslash( $_POST['nntm_auth_action'] );  
 $errors  = ( $is_this_action && isset( $GLOBALS['nntm_auth_errors'] ) && is_wp_error( $GLOBALS['nntm_auth_errors'] ) ) ? $GLOBALS['nntm_auth_errors'] : null;
 $success = ( $is_this_action && ! empty( $GLOBALS['nntm_auth_success'] ) ) ? (string) $GLOBALS['nntm_auth_success'] : '';
 ?>

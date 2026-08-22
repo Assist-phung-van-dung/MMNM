@@ -1,10 +1,4 @@
-/**
- * Ba nút bấm nhanh 10/20/50 ở màn "Khai Báo Chuỗi Trì" — JS thuần, không thư
- * viện. Bấm nút thì điền số vào ô nhập; TẮT JS vẫn gõ tay được vào ô số bình
- * thường (yêu cầu bắt buộc, xem docs/07-ban-giao.md).
- *
- * @package NNTM
- */
+
 ( function () {
 	'use strict';
 

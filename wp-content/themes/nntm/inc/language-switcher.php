@@ -1,15 +1,7 @@
 <?php
-/**
- * Giao diện chuyển ngôn ngữ của header, tích hợp Polylang khi có.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * In một nút ngôn ngữ hiện tại; bấm nút để mở danh sách VN/EN.
- */
 function nntm_render_language_switcher(): void {
 	$current = function_exists( 'pll_current_language' ) ? pll_current_language( 'slug' ) : '';
 	$current = $current ?: ( 0 === strpos( get_locale(), 'vi' ) ? 'vi' : 'en' );
@@ -47,7 +39,7 @@ function nntm_render_language_switcher(): void {
 			href="<?php echo esc_url( $url ); ?>"
 			hreflang="<?php echo esc_attr( $slug ); ?>"
 			lang="<?php echo esc_attr( $slug ); ?>"
-			<?php echo $is_active ? 'aria-current="page"' : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- chuỗi cố định. ?>
+			<?php echo $is_active ? 'aria-current="page"' : '';  ?>
 		><?php echo esc_html( $label ); ?></a>
 		<?php
 	}

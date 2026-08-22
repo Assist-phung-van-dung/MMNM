@@ -1,18 +1,4 @@
 <?php
-/**
- * Template chân trang.
- *
- * Homepage bám theo Figma FOOTER node 6376:6324:
- * - lớp ngoài 1366px nền đen, padding 20px;
- * - panel #4F4F4F 1326px;
- * - hàng "Hãy chia sẻ / Ý kiến / của bạn";
- * - SUB gồm rule 1225px và hàng logo + menu / copyright 1226px.
- *
- * Các trang trong vẫn dùng cấu trúc footer gọn hiện có; wrapper bổ sung chỉ
- * được render trên homepage để không làm thay đổi layout ngoài scope này.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -75,7 +61,7 @@ if ( ! $nntm_is_home && $nntm_front_id && function_exists( 'pll_get_post_transla
 					<p class="nntm-footer__copyright">
 						<?php
 						printf(
-							/* translators: %s: năm hiện tại. */
+
 							$nntm_footer_en ? '© Copyright Nang Nhan Tich Mac %s' : '© Copyright Năng Nhân Tịch Mặc %s',
 							esc_html( wp_date( 'Y' ) )
 						);

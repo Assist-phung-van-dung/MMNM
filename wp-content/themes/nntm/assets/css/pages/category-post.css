@@ -1,4 +1,4 @@
-/* Category + single standard post. Mirrors the approved nntm_section/article detail system. */
+
 .category .nntm-category-post,
 .single-post .nntm-post-detail { background: var(--nntm-trang); }
 

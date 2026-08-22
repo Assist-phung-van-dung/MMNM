@@ -1,16 +1,4 @@
-/* =============================================================
-   NNTM — Đăng nhập / Đăng ký / Quên mật khẩu + modal đăng nhập
 
-   Tự dựng theo 3 ảnh thiết kế anh Úy gửi (chưa có Figma chính thức cho
-   3 màn này). Số đo bóc từ ảnh 2x, quy về khung desktop 1366px.
-
-   Ảnh nền phong cảnh núi: mặc định attachment ID 115 ("Núi lớp lớp trong
-   sương") — xem nntm_auth_background_url() trong inc/auth.php. Giá trị
-   dự phòng dưới đây (gradient xám-xanh) chỉ dùng khi option bị xoá hoặc
-   filter trả rỗng.
-
-   CẤM viết mã màu trực tiếp — mọi màu lấy từ assets/css/tokens.css.
-   ============================================================= */
 
 .nntm-auth-page {
   --nntm-auth-bg: linear-gradient(160deg, #6b7a86 0%, #4a5560 60%, #333c44 100%);
@@ -40,8 +28,6 @@
   text-decoration: underline;
 }
 
-/* ---------- Thẻ kính mờ dùng chung cho đăng nhập / quên mật khẩu ---------- */
-
 .nntm-auth-card {
   width: 360px;
   max-width: 100%;
@@ -50,11 +36,10 @@
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   border: 1px solid var(--nntm-vien-kinh);
-  border-radius: 0; /* thiết kế góc vuông, không bo */
+  border-radius: 0;  
   box-sizing: border-box;
 }
 
-/* Thẻ đăng ký rộng hơn, đệm khác, chừa lề trên/dưới để cuộn được. */
 .nntm-auth-card--rong {
   width: 480px;
   padding: 48px 50px;
@@ -62,7 +47,6 @@
   margin-bottom: 40px;
 }
 
-/* Thẻ dùng trong modal — bớt đệm ngoài viewport, không cần margin trên/dưới. */
 .nntm-auth-card--compact {
   margin: 0;
 }
@@ -88,8 +72,6 @@
   letter-spacing: normal;
 }
 
-/* ---------- Form ---------- */
-
 .nntm-auth-form {
   display: flex;
   flex-direction: column;
@@ -108,7 +90,6 @@
   margin-bottom: 8px;
 }
 
-/* Bên trong thẻ đăng nhập/quên mật khẩu, nhãn chữ trắng để đọc được trên nền tối. */
 .nntm-auth-card:not(.nntm-auth-card--rong) .nntm-auth-field label {
   color: var(--nntm-trang);
 }
@@ -182,8 +163,6 @@
   text-decoration: underline;
 }
 
-/* ---------- Nút ---------- */
-
 .nntm-auth-btn {
   display: block;
   width: 100%;
@@ -230,8 +209,6 @@
   cursor: not-allowed;
 }
 
-/* ---------- Checkbox (form đăng ký) ---------- */
-
 .nntm-auth-checkbox {
   margin-bottom: 14px;
   font-family: var(--nntm-font-sans);
@@ -252,8 +229,6 @@
 .nntm-auth-checkbox a {
   color: var(--nntm-reu);
 }
-
-/* ---------- Khối thông báo ---------- */
 
 .nntm-auth-alert {
   margin: 0 0 18px;
@@ -279,8 +254,6 @@
   background: rgba(116, 119, 102, 0.15);
   color: var(--nntm-reu);
 }
-
-/* ---------- Modal đăng nhập (chân trang, mọi trang cho khách chưa đăng nhập) ---------- */
 
 .nntm-auth-modal {
   position: fixed;
@@ -308,8 +281,6 @@
   max-height: 90vh;
 }
 
-/* Modal KHÔNG dùng ảnh nền phong cảnh núi — chỉ nổi trên lớp phủ tối,
-   nên thẻ kính mờ bên trong cần nền một chút đậm hơn để chữ trắng đọc được. */
 .nntm-auth-modal__panel .nntm-auth-card {
     background: rgb(0 0 0);
 }
@@ -329,8 +300,7 @@
   cursor: pointer;
 }
 
-/* ---------- Mobile ---------- */
-/* SUY DOAN: chua co Figma mobile — thu nho the lai cho vua man hinh. */
+
 @media (max-width: 767px) {
   .nntm-auth-card,
   .nntm-auth-card--rong {

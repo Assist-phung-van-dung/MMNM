@@ -1,15 +1,4 @@
-/**
- * Editor script cho block nntm/cong-tu — JavaScript thuần, không build.
- * Dùng ServerSideRender để xem trước ĐÚNG NHƯ trang thật (giống khuôn
- * blocks/term-list/editor.js, blocks/card-list/editor.js) — khối này đọc
- * dữ liệu thật từ nntm-core (chương trình, KPI, BXH) nên preview vẽ tay
- * bằng JS sẽ luôn lệch với PHP, không đáng làm.
- *
- * MỌI thuộc tính trong block.json đều có ô điều khiển ở đây — đây là lỗi
- * hay lặp nhất của dự án (xem docs/07-ban-giao.md mục "Bài học"), nên liệt
- * kê lại đối chiếu: programId, heading, bxhHeading, showThongKe, showBxh,
- * bxhLimit, background.
- */
+
 ( function ( wp ) {
 	'use strict';
 
@@ -118,7 +107,7 @@
 			);
 		},
 		save: function () {
-			// Block động: PHP (render.php) tự vẽ lại nội dung mỗi lần tải trang.
+
 			return null;
 		},
 	} );

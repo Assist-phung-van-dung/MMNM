@@ -1,19 +1,4 @@
-/*
- * Nhập Pháp Giới — Figma frame 6376:6488.
- * Reference: design/figma/6376-6488@1x.png, cropped to the actual
- * 1366 x 2352 frame. The exported PNG is wider because the two video
- * marquees intentionally overflow beyond the frame on the right.
- *
- * Frame stack at 1366px:
- *   Header                     76px
- *   Rank Card hero            692px
- *   Gót Son title band         99px
- *   Xuyên Vạn Kiếp            544px
- *   Caption band              108px
- *   GITA                      666px
- *   White separator            21px
- *   Compact footer            146px
- */
+
 
 .nntm-main--full .nntm-page,
 .nntm-main--full .nntm-page__content {
@@ -21,7 +6,6 @@
 	padding: 0;
 }
 
-/* ---------- Header: Figma keeps the inner-page header plain ---------- */
 .nntm-header {
 	height: 76px;
 	box-sizing: border-box;
@@ -54,12 +38,11 @@
 }
 
 @media (min-width: 1152px) {
-	/* ---------- Rank Card: y=76, h=692 ---------- */
+
 	.nntm-rank-card {
 		height: 692px;
 		min-height: 692px;
-		/* Figma scales the 2688px source to ~2016px inside the 1366px hero
-		 * (ORB fit scale 0.7502), then centers it horizontally. */
+
 		background-size: 147.6% auto;
 		background-position: center 47.5%;
 	}
@@ -138,7 +121,6 @@
 		transition: transform 260ms cubic-bezier(.22, 1, .36, 1), opacity 260ms ease;
 	}
 
-
 	.nntm-rank-card__card:hover,
 	.nntm-rank-card__card:focus-within {
 		transform: translateY(-4px);
@@ -157,10 +139,6 @@
 		transform: translateX(3px);
 	}
 
-	/* ---------- Gót Son / Xuyên Vạn Kiếp ----------
-	 * White title band: 99px. The heading-above itself is absolutely
-	 * anchored to the top of the black section, exactly like Figma.
-	 */
 	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) {
 		height: 544px;
 		min-height: 544px;
@@ -294,10 +272,6 @@
 		-webkit-line-clamp: 2;
 	}
 
-	/* Figma caption band is pure white across the full 1366px frame.
-	 * The caption itself is only 1082px wide; without this full-width layer,
-	 * the 108px margin below the black section reveals --nntm-nen (cream)
-	 * at both sides and makes the band look like the wrong background. */
 	.nntm-card-list--nen-toi:has(> .nntm-card-list__caption-below)::after {
 		content: "";
 		position: absolute;
@@ -328,7 +302,6 @@
 		z-index: 1;
 	}
 
-	/* ---------- GITA: y=1519, h=666 ---------- */
 	.nntm-card-list--nen-cam {
 		height: 666px;
 		min-height: 666px;
@@ -465,20 +438,13 @@
 		height: 47px;
 	}
 
-	/*
-	 * BỎ 22/08/2026 — khối "Compact footer" từng ở đây lặp lại số đo Figma của
-	 * chân trang các trang trong. Xem assets/css/footer.css, ".nntm-footer--inner".
-	 */
 }
 
-/* Exact duplicated-half movement: include half the 20px seam gap so the
- * reset lands on the same pixel and never produces a visible jump. */
 @keyframes nntm-npg-yt-marquee {
 	from { transform: translate3d(0, 0, 0); }
 	to { transform: translate3d(calc(-50% - var(--nntm-npg-yt-loop-offset, 0px)), 0, 0); }
 }
 
-/* Motion polish: only transform/opacity/filter, never width/margin reflow. */
 @media (min-width: 1152px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
 	.nntm-card-list__yt-cell {
 		transition: transform 420ms cubic-bezier(.22, 1, .36, 1), box-shadow 420ms cubic-bezier(.22, 1, .36, 1);
@@ -524,8 +490,6 @@
 	}
 }
 
-/* No mobile/tablet Figma frame exists. Keep shared responsive architecture
- * and only release desktop fixed heights so content can wrap safely. */
 @media (max-width: 1151px) {
 	.nntm-header { height: auto; }
 	.nntm-header__logo { height: 36px; }
@@ -545,15 +509,6 @@
 		flex-wrap: wrap;
 	}
 
-	/*
-	 * SUA 20/08/2026: le tren/duoi tu 80/100 xuong 60/60.
-	 *
-	 * Hai so cu la cho de HOLD cho .__heading-above va .__caption-below khi
-	 * hai doan chu do con `position: absolute` (nam ngoai luong nen phai tu
-	 * chua cho). Tu dot nay blocks/card-list/style.css tra chung ve luong o
-	 * duoi 1152 (xem chu thich tai do) nen section da tu cao du — giu 80/100
-	 * thanh khoang trong chet.
-	 */
 	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) {
 		height: auto;
 		min-height: 0;
@@ -570,7 +525,7 @@
 	.nntm-card-list__heading-above,
 	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) .nntm-card-list__heading,
 	.nntm-card-list--nen-cam .nntm-card-list__heading {
-		font-size: clamp(38px, 8vw, var(--nntm-fs-4xl)); /* tran theo token — xem responsive.css */
+		font-size: clamp(38px, 8vw, var(--nntm-fs-4xl));  
 		line-height: 1.15;
 	}
 

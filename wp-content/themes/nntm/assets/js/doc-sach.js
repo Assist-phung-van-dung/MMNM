@@ -1,21 +1,4 @@
-/**
- * Trình đọc ấn phẩm — /an-pham/{slug}/doc/
- *
- * BA CÁCH XEM, chọn ở bảng `Aa`:
- *   lát  — lật 3D như sách thật (mặc định)
- *   cuộn — chữ chảy liên tục, cuộn dọc; nhẹ và thân thiện với màn nhỏ
- *   gốc  — ảnh trang PDF đúng bản in, cho trang có bảng/sơ đồ
- *
- * ĐIỀU KHÓ NHẤT LÀ LẬT 3D VỚI CHỮ CHẢY:
- * page-flip cần những "tờ" có kích thước cố định, còn chữ chảy thì không biết
- * trước bao nhiêu chữ vừa một tờ. Nên phải TỰ CHIA TỜ: dựng một hộp đo thầm
- * đúng bằng khổ tờ, cùng cỡ chữ cùng giãn dòng, rồi nhồi từng khối chữ vào cho
- * đến khi tràn thì cắt sang tờ mới. Đoạn nào một mình đã tràn thì cắt theo từ,
- * dò bằng chia đôi để không phải thử từng từ một.
- *
- * Đổi cỡ chữ, đổi khổ cửa sổ hay đổi nền đều phải chia tờ lại — số chữ vừa một
- * tờ đã khác. Vì vậy mọi lần đổi đều đi qua `veLai()`.
- */
+ 
 ( function () {
 	'use strict';
 
@@ -25,26 +8,19 @@
 
 	var CFG = nntmDocSach;
 
-	/*
-	 * Ấn phẩm chưa gắn tệp thì inc/doc-sach.php truyền pdfUrl rỗng và KHÔNG nạp
-	 * pdf.js — nên không được coi thiếu pdfjsLib là lỗi mà thoát sớm. Bộ khung
-	 * vẫn phải dựng đủ, chỉ khung sách để trống.
-	 */
 	var coTep = !! CFG.pdfUrl && 'undefined' !== typeof pdfjsLib;
 
 	if ( coTep ) {
 		pdfjsLib.GlobalWorkerOptions.workerSrc = CFG.workerUrl;
 	}
 
-	// Chỉ dùng khi hỏi tỉ lệ trang PDF thất bại. Bình thường lấy tỉ lệ thật của
-	// trang, vì sách khổ vuông hay khổ ngang mà áp con số này thì méo.
+
 	var TY_LE_TO = 1.42;
-	// Ruột sân khấu rộng từ mức này trở lên thì mở hai tờ. Dưới mức đó, mỗi tờ
-	// hẹp quá, dòng chữ ngắn tới mức khó đọc, nên mở một tờ cho lành.
+
 	var NGUONG_DOI_TO = 760;
-	var CUA_SO   = 6;      // số trang dựng sẵn quanh chỗ đang đọc, cho chế độ cuộn
-	var GAN      = 4;      // vẽ sẵn bao nhiêu tờ mỗi bên chỗ đang đọc
-	var XA       = 10;     // ra ngoài khoảng này thì xoá ảnh tờ cho nhẹ máy
+	var CUA_SO   = 6;      
+	var GAN      = 4;      
+	var XA       = 10;     
 
 	var el = {
 		stage:    document.querySelector( '[data-nntm-doc="stage"]' ),
@@ -66,32 +42,18 @@
 
 	var pdf     = null;
 	var soTrang = 0;
-	var trangHT = 1;         // trang PDF đang đọc
-	var cheDo   = 'lat';     // 'lat' | 'cuon'
+	var trangHT = 1;         
+	var cheDo   = 'lat';     
 	var mucLuc  = [];
-	var khoiTheoTrang = {};  // trang PDF -> [{loai, chu}] , bóc một lần rồi dùng lại
-	var to      = [];        // danh sách tờ: { trang, el, xong, dangVe, viec }
-	var tyLeTrang = 0;       // cao / rộng của trang PDF thật, đo một lần ở trang 1
-	var toHT    = 0;         // chỉ số tờ đang mở
+	var khoiTheoTrang = {};  
+	var to      = [];        
+	var tyLeTrang = 0;       
+	var toHT    = 0;         
 	var pageFlip = null;
 	var tuTrang = 1;
 	var denTrang = 0;
 
-	/* =====================================================================
-	 * Bóc chữ một trang PDF thành các khối
-	 * ===================================================================== */
-
-	/**
-	 * Gom các mẩu chữ của một trang thành danh sách dòng.
-	 *
-	 * pdf.js trả từng mẩu rời kèm ma trận biến đổi: `transform[4]` là hoành độ,
-	 * `transform[5]` là tung độ (gốc toạ độ PDF ở đáy trang). Mẩu nào tung độ
-	 * gần nhau thì cùng một dòng; sai số lấy theo chiều cao chữ chứ không phải
-	 * một số cố định, vì cỡ chữ mỗi sách mỗi khác.
-	 *
-	 * @param {Object} noiDung Kết quả page.getTextContent().
-	 * @return {Array} Danh sách dòng.
-	 */
+	 
 	function gomDong( noiDung ) {
 		var dong = [];
 
@@ -131,22 +93,12 @@
 		return dong.filter( function ( d ) { return d.chu.length > 0; } );
 	}
 
-	/**
-	 * Gộp dòng thành đoạn, nhận diện tiêu đề.
-	 *
-	 * Hai dấu hiệu mở đoạn dùng cùng nhau vì mỗi cái lẻ đều sai: dòng thụt vào
-	 * so với lề chung, và khoảng trắng dọc lớn hơn hẳn giãn dòng thường.
-	 *
-	 * @param {Array} dong Danh sách dòng.
-	 * @return {Array} [{ loai: 'p'|'h', chu }]
-	 */
 	function gopDoan( dong ) {
 		if ( ! dong.length ) {
 			return [];
 		}
 
-		// Lề chung = hoành độ HAY GẶP NHẤT, không phải nhỏ nhất: dòng thụt đầu
-		// đoạn hay số trang lẻ có thể lệch hẳn ra ngoài.
+
 		var demX = {};
 
 		dong.forEach( function ( d ) {
@@ -176,8 +128,7 @@
 			} else {
 				var cuoi = khoi[ khoi.length - 1 ];
 
-				// Dòng trên kết thúc bằng gạch nối là từ bị cắt ngang dòng —
-				// bỏ gạch, dán liền.
+
 				if ( /-$/.test( cuoi.chu ) ) {
 					cuoi.chu = cuoi.chu.replace( /-$/, '' ) + d.chu;
 				} else {
@@ -193,12 +144,6 @@
 		} );
 	}
 
-	/**
-	 * Khối chữ của một trang PDF, bóc một lần rồi giữ lại.
-	 *
-	 * @param {number} so Số trang.
-	 * @return {Promise<Array>}
-	 */
 	function layKhoi( so ) {
 		if ( khoiTheoTrang[ so ] ) {
 			return Promise.resolve( khoiTheoTrang[ so ] );
@@ -212,19 +157,7 @@
 		} );
 	}
 
-	/* =====================================================================
-	 * Khổ tờ
-	 * ===================================================================== */
-
-	/**
-	 * Tỉ lệ cao/rộng của trang PDF, hỏi một lần ở trang đầu rồi giữ lại.
-	 *
-	 * Tờ trong reader phải cùng tỉ lệ với trang in, nếu không thì ảnh trang co
-	 * lại để vừa và chừa hai vệt trống hai bên — trông như dán ảnh chứ không
-	 * còn ra quyển sách.
-	 *
-	 * @return {Promise<number>}
-	 */
+	 
 	function layTyLeTrang() {
 		if ( tyLeTrang ) {
 			return Promise.resolve( tyLeTrang );
@@ -243,20 +176,10 @@
 		} );
 	}
 
-	/**
-	 * Khổ một tờ, tính từ khung đọc.
-	 *
-	 * Trên màn rộng thì mở hai tờ cạnh nhau như sách thật; màn hẹp thì một tờ,
-	 * vì hai tờ trên điện thoại thì chữ nhỏ đến mức không đọc được.
-	 *
-	 * @return {Object} { rong, cao, doi }
-	 */
 	function khoTo() {
-		// LỖI ĐÃ SỬA 21/08/2026: bản trước lấy clientWidth, tức là ĐÃ TÍNH CẢ
-		// padding của sân khấu (96px mỗi bên, chỗ để hai mũi tên). Quyển sách vì
-		// thế rộng hơn phần ruột thật, tràn ra ngoài rồi bị `overflow: hidden`
-		// cắt mất một khúc trang bên phải, và còn đè lên hai nút lật. Phải trừ
-		// padding ra để lấy đúng khổ ruột.
+
+
+
 		var cs = window.getComputedStyle( el.stage );
 		var W  = el.stage.clientWidth  - ( parseFloat( cs.paddingLeft ) || 0 ) - ( parseFloat( cs.paddingRight ) || 0 );
 		var H  = el.stage.clientHeight - ( parseFloat( cs.paddingTop )  || 0 ) - ( parseFloat( cs.paddingBottom ) || 0 );
@@ -266,7 +189,6 @@
 		var rong = doi ? ( W - 24 ) / 2 : W - 16;
 		var cao  = rong * ty;
 
-		// Cao quá khung thì lấy chiều cao làm chuẩn rồi suy ngược ra chiều rộng.
 		if ( cao > H - 12 ) {
 			cao  = H - 12;
 			rong = cao / ty;
@@ -280,10 +202,6 @@
 		d.textContent = s || '';
 		return d.innerHTML;
 	}
-
-	/* =====================================================================
-	 * Vẽ — ba chế độ
-	 * ===================================================================== */
 
 	function dep() {
 		huyVeTo();
@@ -300,11 +218,6 @@
 		el.text.textContent = '';
 	}
 
-	/**
-	 * Dải trang cần chia tờ quanh chỗ đang đọc.
-	 *
-	 * @return {number[]}
-	 */
 	function daiTrang() {
 		tuTrang  = Math.max( 1, Math.min( soTrang, trangHT ) );
 		denTrang = Math.min( soTrang, tuTrang + CUA_SO - 1 );
@@ -318,23 +231,6 @@
 		return ds;
 	}
 
-	/**
-	 * Vẽ chế độ lật 3D — mỗi tờ là ẢNH của đúng một trang PDF.
-	 *
-	 * ĐỔI CÁCH LÀM 21/08/2026: bản trước bóc chữ ra rồi chảy lại thành tờ. Cách
-	 * đó có ba tật mà người dùng chỉ ra: hình vẽ trong sách mất sạch (getTextContent
-	 * chỉ trả về chữ), một trang PDF bị xé thành nhiều tờ, và tờ thì ngắn.
-	 *
-	 * Giờ vẽ thẳng trang PDF lên canvas: hình với chữ hiện đúng như bản in, một
-	 * trang PDF nằm gọn trong một tờ, và tờ lấy đúng tỉ lệ trang in. Chữ chảy lại
-	 * đổi được cỡ vẫn còn ở chế độ cuộn.
-	 *
-	 * Dựng đủ số tờ ngay từ đầu — tờ rỗng thì nhẹ — nên bỏ luôn được cái cửa sổ
-	 * trang và hàm nối trang, thứ vốn hay làm lệch chỉ số. Chỉ số tờ giờ đúng
-	 * bằng số trang trừ một.
-	 *
-	 * @return {Promise}
-	 */
 	function veLat() {
 		dep();
 
@@ -362,8 +258,7 @@
 				width: kho.rong,
 				height: kho.cao,
 				size: 'fixed',
-				// Sách chữ không có bìa cứng ở giữa nội dung — showCover chỉ
-				// đúng khi tờ đầu thật là bìa.
+
 				showCover: false,
 				usePortrait: ! kho.doi,
 				maxShadowOpacity: 0.5,
@@ -395,15 +290,6 @@
 		} );
 	}
 
-	/**
-	 * Biến danh sách tờ thành node cho page-flip.
-	 *
-	 * Tờ tạo ra là tờ rỗng: chỗ đặt ảnh để trống, tới gần lúc đọc mới vẽ. Dựng
-	 * sẵn cả trăm canvas thì tốn bộ nhớ vô ích và treo máy lúc mở sách.
-	 *
-	 * @param {Array} ds Danh sách tờ.
-	 * @return {NodeList}
-	 */
 	function taoTo( ds ) {
 		var kho = document.createElement( 'div' );
 		kho.className = 'nntm-doc__ruler';
@@ -419,12 +305,10 @@
 
 		var ds2 = kho.querySelectorAll( '.nntm-doc__sheet' );
 
-		// Giữ tham chiếu thẻ để lát vẽ ảnh vào đúng tờ. page-flip bốc mấy thẻ này
-		// sang khung của nó nhưng vẫn là cùng một node, nên tham chiếu còn dùng được.
+
 		ds.forEach( function ( t, i ) { t.el = ds2[ i ] || null; } );
 
-		// page-flip bốc xong thì để lại cái hộp tạm rỗng. Không dọn thì mỗi lần
-		// dựng lại sách lại thừa một hộp nằm trong sân khấu.
+
 		window.setTimeout( function () {
 			if ( kho.parentNode ) { kho.parentNode.removeChild( kho ); }
 		}, 0 );
@@ -432,11 +316,6 @@
 		return ds2;
 	}
 
-	/**
-	 * Vẽ ảnh cho mấy tờ quanh chỗ đang đọc, và xoá ảnh mấy tờ đã đi xa.
-	 *
-	 * @return {Promise}
-	 */
 	function veToQuanh() {
 		if ( ! to.length ) {
 			return Promise.resolve();
@@ -450,9 +329,8 @@
 			viec.push( veToCanvas( to[ i ] ) );
 		}
 
-		// Một trang khổ A4 vẽ ở 2x là hơn chục megabyte bộ nhớ ảnh. Sách vài trăm
-		// trang mà giữ hết thì máy đứng, nên tờ nào đi xa là xoá ảnh, lúc quay lại
-		// vẽ lại — vẽ một trang chỉ mất chừng trăm mili giây.
+
+
 		to.forEach( function ( t, i ) {
 			if ( i < toHT - XA || i > toHT + XA ) { xoaAnhTo( t ); }
 		} );
@@ -460,12 +338,6 @@
 		return Promise.all( viec );
 	}
 
-	/**
-	 * Vẽ một trang PDF lên canvas rồi đặt vào tờ.
-	 *
-	 * @param {Object} t Tờ.
-	 * @return {Promise}
-	 */
 	function veToCanvas( t ) {
 		if ( ! t || ! t.el || t.xong || t.dangVe ) {
 			return Promise.resolve();
@@ -476,8 +348,7 @@
 		return pdf.getPage( t.trang ).then( function ( trang ) {
 			var kho = khoTo();
 			var goc = trang.getViewport( { scale: 1 } );
-			// Vẽ theo mật độ điểm của màn, chặn ở 2x: 3x trên màn điện thoại chỉ
-			// tốn thêm bộ nhớ chứ mắt không thấy khác.
+
 			var net = Math.min( window.devicePixelRatio || 1, 2 );
 			var ti  = Math.max( ( kho.rong / goc.width ) * net, 0.2 );
 			var vp  = trang.getViewport( { scale: ti } );
@@ -507,11 +378,6 @@
 		} );
 	}
 
-	/**
-	 * Bỏ ảnh của một tờ, trả bộ nhớ lại cho máy.
-	 *
-	 * @param {Object} t Tờ.
-	 */
 	function xoaAnhTo( t ) {
 		if ( ! t || ! t.el || ! t.xong ) {
 			return;
@@ -524,9 +390,6 @@
 		t.xong = false;
 	}
 
-	/**
-	 * Huỷ mọi việc vẽ đang dở và bỏ tham chiếu thẻ.
-	 */
 	function huyVeTo() {
 		to.forEach( function ( t ) {
 			if ( t.viec ) {
@@ -540,11 +403,6 @@
 		} );
 	}
 
-	/**
-	 * Vẽ chế độ cuộn.
-	 *
-	 * @return {Promise}
-	 */
 	function veCuon() {
 		dep();
 
@@ -589,22 +447,8 @@
 		} );
 	}
 
-	/**
-	 * Vẽ lại theo chế độ đang chọn.
-	 *
-	 * BỎ 21/08/2026: từng có chế độ thứ ba là "bản gốc" — vẽ ảnh trang PDF ra
-	 * giữa khung, để đọc mấy trang mà bóc chữ không ra. Từ lúc chế độ lật vẽ
-	 * thẳng trang PDF thì hai chế độ làm y hệt một việc, chỉ khác là bản gốc
-	 * không lật được. Bỏ đi cho gọn.
-	 *
-	 * @return {Promise}
-	 */
 	function veLai() {
-		/*
-		 * Không có tệp thì không có gì để chia tờ. Vẫn ghi data-xem để bố cục
-		 * theo cách xem đang chọn, rồi trả về Promise đã xong — doiCheDo() nối
-		 * .then() vào đây, trả undefined là vỡ.
-		 */
+		 
 		if ( ! pdf ) {
 			document.body.dataset.xem = cheDo;
 			return Promise.resolve();
@@ -617,18 +461,13 @@
 		return 'cuon' === cheDo ? veCuon() : veLat();
 	}
 
-	/* =====================================================================
-	 * Chuyển trang
-	 * ===================================================================== */
-
 	function toiTrang( so ) {
 		if ( ! pdf ) { return; }
 
 		so = Math.max( 1, Math.min( soTrang, so | 0 ) );
 
 		if ( 'lat' === cheDo ) {
-			// Một trang PDF là một tờ, nên chỉ số tờ đúng bằng số trang trừ một —
-			// không phải dò trong danh sách như hồi còn xé trang thành nhiều tờ.
+
 			var i = so - 1;
 
 			if ( ! pageFlip || ! to.length ) {
@@ -670,11 +509,6 @@
 		veCuon().then( function () { hienDangTai( false ); luuViTri(); } );
 	}
 
-	/**
-	 * Số tờ mỗi lần lật: mở hai tờ cạnh nhau thì lật cả cặp, một tờ thì lật một.
-	 *
-	 * @return {number}
-	 */
 	function buocTo() {
 		if ( pageFlip && 'function' === typeof pageFlip.getOrientation ) {
 			return 'landscape' === pageFlip.getOrientation() ? 2 : 1;
@@ -683,23 +517,6 @@
 		return khoTo().doi ? 2 : 1;
 	}
 
-	/**
-	 * Lật một bước, tự tính tờ đích.
-	 *
-	 * ĐO THẬT 21/08/2026: `flipNext()` ở cặp trang ĐẦU không làm gì cả — bấm lần
-	 * một không đổi trang, từ lần hai mới nhảy (1 → 1 → 3 → 5). Đó là tật bên
-	 * trong page-flip khi đang mở hai tờ và chỉ số hiện tại là 0.
-	 *
-	 * Nên không dùng flipNext/flipPrev nữa: tự tính chỉ số tờ đích rồi gọi
-	 * `flip()`, thứ vốn vẫn chạy đúng. Sau khi lật còn hỏi lại thư viện xem nó
-	 * đang ở tờ nào để đồng bộ — có lần nó lật mà không phát sự kiện.
-	 *
-	 * Ghi thêm: tật "bấm lần đầu không đổi trang" quan sát được hôm đó lại còn do
-	 * tab chạy ẩn — requestAnimationFrame đứng hẳn nên hoạt cảnh lật treo giữa
-	 * đường. Trình duyệt thật không bị.
-	 *
-	 * @param {number} huong -1 lùi, 1 tiến.
-	 */
 	function latTo( huong ) {
 		if ( ! pageFlip || ! to.length ) {
 			return;
@@ -707,7 +524,6 @@
 
 		var dich = Math.max( 0, Math.min( to.length - 1, toHT + huong * buocTo() ) );
 
-		// Đã ở tờ đầu hoặc tờ cuối. Mọi trang đều dựng sẵn nên hết là hết thật.
 		if ( dich === toHT ) {
 			return;
 		}
@@ -719,9 +535,6 @@
 		window.setTimeout( dongBoTo, 850 );
 	}
 
-	/**
-	 * Hỏi lại page-flip đang ở tờ nào rồi cập nhật thanh trạng thái.
-	 */
 	function dongBoTo() {
 		if ( ! pageFlip || 'function' !== typeof pageFlip.getCurrentPageIndex ) {
 			return;
@@ -763,13 +576,8 @@
 		toiTrang( trangHT + 1 );
 	}
 
-	/* =====================================================================
-	 * Thanh trạng thái
-	 * ===================================================================== */
-
 	function capNhat() {
-		// Không có tệp: soTrang = 0, trangHT/soTrang ra NaN nên thanh dưới sẽ
-		// ghi "NaN%". Giữ nguyên "0%" và ô chương trống mà template đã in.
+
 		if ( ! pdf ) { return; }
 
 		if ( el.slider ) { el.slider.value = trangHT; }
@@ -784,8 +592,7 @@
 			if ( ten ) {
 				el.chapter.textContent = ten;
 			} else if ( 'lat' === cheDo && 2 === buocTo() && to[ toHT + 1 ] && to[ toHT + 1 ].trang !== trangHT ) {
-				// Đang mở hai tờ thì nói cả hai trang. Ghi một số trong khi mắt
-				// đang đọc hai trang là nói không đúng thứ người ta thấy.
+
 				el.chapter.textContent = CFG.i18n.trang + ' ' + trangHT + '–' + to[ toHT + 1 ].trang + ' / ' + soTrang;
 			} else {
 				el.chapter.textContent = CFG.i18n.trang + ' ' + trangHT + ' / ' + soTrang;
@@ -819,10 +626,6 @@
 	function hienDangTai( bat ) {
 		if ( el.loading ) { el.loading.hidden = ! bat; }
 	}
-
-	/* =====================================================================
-	 * Nhớ chỗ đang đọc và đánh dấu
-	 * ===================================================================== */
 
 	var henLuu = 0;
 
@@ -879,10 +682,6 @@
 		capNhat();
 	}
 
-	/* =====================================================================
-	 * Mục lục
-	 * ===================================================================== */
-
 	function dungMucLuc() {
 		if ( ! el.tocBody ) { return Promise.resolve(); }
 
@@ -902,8 +701,7 @@
 				} );
 			}( ds, 0 ) );
 
-			// Mục lục PDF trỏ tới "đích" nội bộ, không kèm số trang — phải hỏi
-			// pdf.js từng cái. Làm một lần lúc mở sách rồi dùng lại.
+
 			return Promise.all( phang.map( function ( m ) {
 				return soTrangCuaDich( m.dest ).then( function ( so ) {
 					m.trang = so;
@@ -938,10 +736,6 @@
 		return lay( dest );
 	}
 
-	/* =====================================================================
-	 * Watermark
-	 * ===================================================================== */
-
 	function veWatermark() {
 		if ( ! el.water || ! CFG.watermark ) { return; }
 
@@ -952,10 +746,6 @@
 
 		el.water.textContent = khoi.join( '\n' );
 	}
-
-	/* =====================================================================
-	 * Nối các nút
-	 * ===================================================================== */
 
 	function moDong( btn, hop ) {
 		if ( ! btn || ! hop ) { return; }
@@ -1005,7 +795,6 @@
 			} );
 		}
 
-		// Nền đọc. Không cần chia tờ lại — chỉ đổi màu, không đổi khổ chữ.
 		document.querySelectorAll( '[data-nntm-doc="nen"]' ).forEach( function ( b ) {
 			b.addEventListener( 'click', function () {
 				document.body.dataset.nen = b.dataset.nen;
@@ -1018,7 +807,6 @@
 			} );
 		} );
 
-		// Hai chế độ xem.
 		var nutXem = {
 			lat:  document.querySelector( '[data-nntm-doc="xem-lat"]' ),
 			cuon: document.querySelector( '[data-nntm-doc="xem-cuon"]' )
@@ -1045,7 +833,6 @@
 			}
 		} );
 
-		// Toàn màn hình.
 		function doiFull() {
 			if ( document.fullscreenElement ) {
 				document.exitFullscreen();
@@ -1078,7 +865,6 @@
 			}
 		} );
 
-		// Cuộn: chỉ có nghĩa ở chế độ cuộn.
 		var henCuon = 0;
 
 		el.stage.addEventListener( 'scroll', function () {
@@ -1107,8 +893,7 @@
 			}, 120 );
 		} );
 
-		// Đổi khổ cửa sổ: khổ tờ đổi theo, phải chia lại. Hoãn để không chia
-		// hàng chục lần trong lúc người dùng đang kéo.
+
 		var henResize = 0;
 
 		window.addEventListener( 'resize', function () {
@@ -1121,16 +906,11 @@
 		} );
 	}
 
-	/* =====================================================================
-	 * Khởi động
-	 * ===================================================================== */
-
 	try {
 		var nenLuu = window.localStorage.getItem( 'nntm-doc-nen' );
 		var xemLuu = window.localStorage.getItem( 'nntm-doc-xem' );
 
-		// Cỡ chữ đã bỏ, nên khoá 'nntm-doc-chu' của bản cũ giờ vô nghĩa. Dọn luôn
-		// để máy ai từng đọc rồi không giữ rác trong localStorage.
+
 		window.localStorage.removeItem( 'nntm-doc-chu' );
 
 		if ( nenLuu ) {
@@ -1140,22 +920,12 @@
 			} );
 		}
 
-		// Máy ai từng chọn 'goc' thì rơi về 'lat' — chế độ lật giờ cũng vẽ đúng
-		// trang PDF nên không mất gì.
+
 		if ( xemLuu && [ 'lat', 'cuon' ].indexOf( xemLuu ) >= 0 ) {
 			cheDo = xemLuu;
 		}
 	} catch ( e ) {}
 
-	/*
-	 * Ấn phẩm chưa gắn tệp: dựng đúng bộ khung như lúc có tệp, chỗ trang sách để
-	 * TRỐNG — không câu báo lỗi, không ảnh thay thế. Chủ dự án chốt 22/08/2026.
-	 *
-	 * Vẫn nối nút để đổi nền, đổi cách xem, mục lục, toàn màn hình chạy như
-	 * thường; riêng những nút chỉ có nghĩa khi có trang (lật trước/sau, thanh
-	 * trượt, đánh dấu) thì khoá lại — để đó bấm được mà không xảy ra gì là nói
-	 * dối với người dùng.
-	 */
 	if ( ! coTep ) {
 		document.body.dataset.xem = cheDo;
 

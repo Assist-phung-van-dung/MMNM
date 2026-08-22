@@ -1,49 +1,17 @@
-/* =============================================================
-   nntm/engineering-earth — "dải phim" trang chủ
 
-   Cập nhật 12/08/2026 (docs/spec-trang-chu.md mục A + D1) — tách đúng 2
-   dải theo Figma (trước đây gộp làm một khối cao 709, lệch xa Figma 672):
-
-     Dải 1 TRẮNG  cao 254px  — tiêu đề "The Drum of the True Dharma" + EARTH
-     Dải 2 ĐEN    cao 418px  — sân khấu 2 video (video lớn + video nền,
-                               nhấp để đổi vùng xem, xem view.js) + chữ
-                               "ENGINEERING EARTH" / "WHAT WILL EARTH LOOK LIKE?"
-
-   Số đo gốc (Figma R4, 01_HOMEPAGE 6376:6322, node Frame 155 `6376:6412`):
-     TIEU. DE      x=40  y=60   1100x104  flex-col gap 10  center
-       heading     EB Garamond 600 58/68  #747766  center
-       EARTH       Baskerville 400 18/26  #747766  center
-     Frame 145     1366x418  flex-row gap 20, padding 60/140, fill #000000
-       Frame 154   590x298   <- ANH LON (Figma) -> nay la sân khấu video
-       TITLE       546x174   flex-col gap 10
-         bandTitle     EB Garamond 600 52/60  #FFFFFF
-         bandSubtitle  Baskerville 400 15/22  #F7F1DE  italic
-
-   D1 THAY THẾ hẳn "ảnh lớn tĩnh + thẻ video nổi + đoạn chú thích" cũ bằng
-   2 video YouTube (nguồn: link admin dán vào block, không dùng API) — vì
-   vậy không còn caption/imageId/videoId trong bố cục này (xem
-   render.php + block.json).
-
-   CẤM mã màu và cỡ chữ viết cứng — mọi giá trị lấy từ tokens.css.
-   ============================================================= */
 
 .nntm-engineering-earth {
 	display: block;
 }
 
-/* ---------- Dải 1: TRẮNG, cao 254px ---------- */
 .nntm-engineering-earth__white {
-	/*
-	 * min-height (khong phai height cung) de chu dai qua bat thuong (chu
-	 * dai gap boi) khong bi cat mat — noi dung binh thuong chi cao khoang
-	 * 104px nen dai se hien dung 254 nhu Figma.
-	 */
+
 	min-height: 254px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	background-color: var(--nntm-trang);
-	padding-inline: var(--nntm-sp-8); /* tu Figma: TIEU. DE x=40 */
+	padding-inline: var(--nntm-sp-8);  
 }
 
 .nntm-engineering-earth__heading-group {
@@ -51,81 +19,50 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: var(--nntm-sp-3); /* tu Figma: gap 10 */
+	gap: var(--nntm-sp-3);  
 	text-align: center;
-	/* Tách thêm khỏi phần chú thích của dải video phía trên, theo góp ý homepage. */
+
 	transform: translateY(var(--nntm-sp-4));
 }
 
 .nntm-engineering-earth__heading {
 	margin: 0;
-	font-family: var(--nntm-font-display); /* tu Figma: EB Garamond, giữ nguyên */
-	font-size: var(--nntm-fs-5xl);         /* tu Figma: 58 */
+	font-family: var(--nntm-font-display);  
+	font-size: var(--nntm-fs-5xl);          
 	font-weight: 600;
-	line-height: var(--nntm-lh-chat);      /* tu Figma: 68/58 = 1.172 */
-	color: var(--nntm-chinh);              /* tu Figma: #747766 */
+	line-height: var(--nntm-lh-chat);       
+	color: var(--nntm-chinh);               
 }
 
 .nntm-engineering-earth__subheading {
 	margin: 0;
-	font-family: var(--nntm-font-serif); /* tu Figma: Baskerville -> Lora */
-	font-size: var(--nntm-fs-md);        /* tu Figma: 18 */
-	line-height: var(--nntm-lh-vua);     /* tu Figma: 26/18 = 1.444 */
-	color: var(--nntm-chinh);            /* tu Figma: #747766 */
+	font-family: var(--nntm-font-serif);  
+	font-size: var(--nntm-fs-md);         
+	line-height: var(--nntm-lh-vua);      
+	color: var(--nntm-chinh);             
 }
 
-/* ---------- Dải 2: ĐEN, cao 418px, tràn viền ---------- */
 .nntm-engineering-earth__band {
-	/*
-	 * width 100% cua .nntm-engineering-earth (block da chiem tron chieu
-	 * rong khung nho supports.align: full/wide) — khong can meo margin
-	 * am hay 100vw (100vw con tinh ca thanh cuon, gay cuon ngang).
-	 *
-	 * padding 60/140: 418 - 2*60 = 298 -> dung chieu cao noi dung ben
-	 * trong (xem .__band-inner height:298 phia duoi) -> tong dung 418,
-	 * KHONG con khoang cach nao voi dai trang phia tren (Figma hai dai
-	 * lien mach, khong co khe).
-	 */
-	padding: var(--nntm-sp-10) 140px; /* tu Figma: 60 dọc / 140 ngang */
-	background-color: var(--nntm-den); /* tu Figma: #000000 */
+
+	padding: var(--nntm-sp-10) 140px;  
+	background-color: var(--nntm-den);  
 }
 
 .nntm-engineering-earth__band-inner {
-	position: relative; /* moc de dinh vi tuyet doi the video nho (--bg), xem khoi CSS D1 phia duoi */
+	position: relative;  
 	display: grid;
 	width: 100%;
 	max-width: 1086px;
-	height: 298px; /* 418 - 2*60 = 298, xem ghi chu .__band phia tren */
+	height: 298px;  
 	margin-inline: auto;
-	grid-template-columns: 590fr 476fr; /* tu Figma: Frame 153 anh 590 / chu 476 (546 that nhung giu trong khung) */
+	grid-template-columns: 590fr 476fr;  
 	align-items: stretch;
-	gap: var(--nntm-sp-5); /* tu Figma: gap 20 */
+	gap: var(--nntm-sp-5);  
 }
 
-/* =============================================================
-   Khung media LỚN + thẻ nhỏ tràn mép (D1) — SỬA 13/08/2026
-
-   Đối chiếu ảnh Figma thật (fig-drum.png, toạ độ từ mép trái dải đen,
-   y tính từ mép TRÊN dải đen — bản 12/08/2026 trước đó dựng SAI, dùng 2
-   khe xếp dọc tỉ lệ 3:1, không giống Figma):
-
-     Khung media lớn   x 140→730 (rong 590)   y 59→358 (cao 299)
-     Chu "ENGINEERING EARTH"  bat dau x=750, y~66
-     The nho (video nen)     x 885→1235 (rong 350, cao 197, ti le 16:9)
-                              y bat dau ~264 -> TRAN XUONG duoi mep dai
-                              den ~43px (264+197=461, dai den cao 418)
-
-   Khung media lon TRÙNG với cột trái của grid 590fr/476fr đã có (band-text
-   ở cột phải) — không cần đổi grid. Thẻ nhỏ là phần tử THỨ BA, tách khỏi
-   luồng grid bằng position:absolute (neo theo .__band-inner đã
-   position:relative), tính lại toạ độ tương đối với band-inner (đã trừ
-   phần đệm 140/59 của .__band):
-     left = 885 - 140 = 745   (SUY DOAN lam tron nhe theo do Figma)
-     top  = 264 - 59  = 205
-   ============================================================= */
 .nntm-engineering-earth__video-stage {
 	position: relative;
-	display: contents; /* khong tao hop rieng — hai khe la con truc tiep cua grid .__band-inner */
+	display: contents;  
 }
 
 .nntm-engineering-earth__video-poster--rong {
@@ -155,8 +92,6 @@
 	border-radius: var(--nntm-r-md);
 }
 
-/* Khung MEDIA LỚN = video/ảnh CHÍNH — nằm trong luồng grid, chiếm đúng
-   cột trái (590fr) đã khai ở .__band-inner, cao hết chiều cao dải. */
 .nntm-engineering-earth__video-slot--main {
 	grid-column: 1;
 	grid-row: 1;
@@ -164,12 +99,10 @@
 	height: 100%;
 }
 
-/* THẺ NHỎ = video NỀN — tách khỏi luồng grid, đè lên góc dưới-phải, TRÀN
-   xuống dưới mép dải đen (xem số đo ở khối ghi chú phía trên). */
 .nntm-engineering-earth__video-slot--bg {
 	position: absolute;
-	left: 745px;  /* SUY DOAN: quy tu toa do Figma 885 (tinh tu mep dai) sang toa do band-inner (tru dem trai 140) */
-	top: 205px;   /* SUY DOAN: quy tu toa do Figma 264 sang band-inner (tru dem tren 59) */
+	left: 745px;   
+	top: 205px;    
 	width: 350px;
 	height: 197px;
 	z-index: 2;
@@ -198,9 +131,6 @@
 	background-color: var(--nntm-xam);
 }
 
-/* iframe YouTube không hỗ trợ object-fit — "phủ kín khung" bằng cách
-   phóng to nhẹ rồi cắt viền dư, đúng kỹ thuật "video nền kiểu awwwards.com"
-   nêu trong yêu cầu (mục D1). */
 .nntm-engineering-earth__video-embed iframe {
 	position: absolute;
 	top: 50%;
@@ -222,15 +152,10 @@
 	text-decoration: none;
 }
 
-/* Khi đã có iframe (đang phát), ẩn ảnh giữ chỗ để không đè lên video. */
 .nntm-engineering-earth__video-slot.is-loaded .nntm-engineering-earth__video-poster {
 	opacity: 0;
 }
 
-/* Nút play tròn: CHỈ hiện ở khe --bg (thẻ nhỏ), đúng Figma (khung media
-   lớn không có nút play vẽ đè). HTML giống nhau ở cả hai khe (xem
-   inc/render-engineering-earth.php) — CSS quyết định hiện/ẩn theo class,
-   nên khi JS đổi class lúc đổi vai trò thì nút play tự chuyển theo. */
 .nntm-engineering-earth__video-play {
 	position: absolute;
 	inset: 0;
@@ -251,34 +176,28 @@
 	display: flex;
 	flex-direction: column;
 	min-width: 0;
-	/*
-	 * SỬA 13/08/2026: căn giữa dọc (justify-content:center) đẩy chữ xuống
-	 * quá thấp — điều phối viên đo trên trang thật: "ENGINEERING EARTH" ở
-	 * y=133 trong khi Figma là y=66 (tính từ mép trên dải đen), khiến dòng
-	 * "WHAT WILL EARTH LOOK LIKE?" (y=263) bị thẻ video nhỏ (mép trên
-	 * y=265) đè lên. Đổi sang căn ĐẦU + đệm trên nhỏ để khớp lại y=66.
-	 */
+
 	justify-content: flex-start;
-	padding-top: 6px; /* tu Figma: y=66 cua chu - y=60 (dem tren cua dai) = 6 */
-	gap: var(--nntm-sp-3); /* tu Figma: TITLE gap 10 */
+	padding-top: 6px;  
+	gap: var(--nntm-sp-3);  
 }
 
 .nntm-engineering-earth__band-title {
 	margin: 0;
-	font-family: var(--nntm-font-display); /* tu Figma: EB Garamond */
-	font-size: var(--nntm-fs-4xl);         /* tu Figma: 52 */
+	font-family: var(--nntm-font-display);  
+	font-size: var(--nntm-fs-4xl);          
 	font-weight: 600;
-	line-height: var(--nntm-lh-chat);      /* tu Figma: 60/52 = 1.154 */
-	color: var(--nntm-trang);              /* tu Figma: #FFFFFF */
+	line-height: var(--nntm-lh-chat);       
+	color: var(--nntm-trang);               
 }
 
 .nntm-engineering-earth__band-subtitle {
 	margin: 0;
-	font-family: var(--nntm-font-serif); /* tu Figma: Baskerville -> Lora */
-	font-size: var(--nntm-fs-15);        /* tu Figma: 15 */
-	font-style: italic;                  /* tu Figma: italic */
-	line-height: var(--nntm-lh-vua);     /* tu Figma: 22/15 = 1.467 */
-	color: var(--nntm-kem);              /* tu Figma: #F7F1DE */
+	font-family: var(--nntm-font-serif);  
+	font-size: var(--nntm-fs-15);         
+	font-style: italic;                   
+	line-height: var(--nntm-lh-vua);      
+	color: var(--nntm-kem);               
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -287,10 +206,6 @@
 	}
 }
 
-/* =============================================================
-   SUY DOAN: chưa có Figma mobile — Figma chỉ có khung desktop 1366px.
-   Dưới điểm ngắt này: dải xếp dọc (sân khấu video trên, chữ dưới).
-   ============================================================= */
 @media (max-width: 1151px) {
 	.nntm-engineering-earth__white {
 		min-height: 0;
@@ -307,15 +222,7 @@
 
 	.nntm-engineering-earth__band-inner {
 		grid-template-columns: 1fr;
-		/*
-		 * SUA 20/08/2026: hang 1 de `auto`, KHONG khoa 240px.
-		 *
-		 * .__video-slot--main da tu mang `aspect-ratio: 590 / 298` (dung ti le
-		 * Figma). Khoa thang hang grid ve 240px la ep nguoc lai ti le do: do
-		 * duoc anh poster ben trong cao 340px trong o cao 240px nen mat 100px
-		 * (overflow:hidden cat am tham), khung 390 mat 42px. De `auto` thi
-		 * chieu cao tu ti le khung tinh ra, vua khit va dung ti le thiet ke.
-		 */
+
 		grid-template-rows: auto auto;
 		height: auto;
 	}
@@ -329,8 +236,6 @@
 		grid-row: 1;
 	}
 
-	/* The nho tran mep chi hop ly tren man rong (Figma desktop) — man hep
-	   thu gon vi tri/kich thuoc de khong tran ra ngoai khung. SUY DOAN. */
 	.nntm-engineering-earth__video-slot--bg {
 		left: auto;
 		right: var(--nntm-sp-4);

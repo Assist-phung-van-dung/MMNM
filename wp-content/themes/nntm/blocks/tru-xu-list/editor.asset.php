@@ -1,8 +1,4 @@
 <?php
-/**
- * Khai báo phụ thuộc script cho editor.js của block nntm/tru-xu-list.
- * Viết tay thay cho file .asset.php tự sinh vì dự án chưa có bước build.
- */
 
 defined( 'ABSPATH' ) || exit;
 

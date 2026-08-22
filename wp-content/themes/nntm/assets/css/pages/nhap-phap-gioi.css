@@ -1,25 +1,9 @@
-/* =============================================================
-   Nhập Pháp Giới — layout page-specific.
 
-   SỬA 18/08/2026:
-   - Không ép riêng trang này vào frame 1366px nữa. Hero/card-list đi theo
-     chính layout responsive/full-width chung của theme, giống các page khác.
-   - Riêng cụm Gót Son / Xuyên Vạn Kiếp: heading-above và caption-below của
-     card-list global đang absolute để phục vụ bố cục Homepage cũ. Trên trang
-     Nhập Pháp Giới cần chúng nằm trong flow thật:
-       Hero -> Gót Son (trắng) -> Xuyên Vạn Kiếp (đen)
-            -> caption (trắng) -> GITA (cam).
-     Vì vậy override CHỈ ở stylesheet được enqueue cho page này.
-   ============================================================= */
 
-/* Hero đã có title riêng bên trong block rank-card. Không render thêm H1
-   của Page nếu admin quên bật ẩn tiêu đề. */
 .nntm-page__title {
 	display: none;
 }
 
-/* Không khóa width/max-width của page, hero hay hai card-list. Các block
-   trở về hành vi responsive/full-width gốc giống toàn site. */
 .nntm-main--full,
 .nntm-page,
 .nntm-page__content,
@@ -36,11 +20,6 @@
 	margin-block: 0;
 }
 
-/* -----------------------------------------------------------------
-   Gót Son / Xuyên Vạn Kiếp
-   Global card-list dùng absolute cho heading/caption. Ở page này đưa hai
-   phần đó về normal flow để không đè vào hero hoặc GITA.
-   ----------------------------------------------------------------- */
 .nntm-card-list:has(> .nntm-card-list__heading-above),
 .nntm-card-list:has(> .nntm-card-list__caption-below) {
 	position: relative;
@@ -59,15 +38,10 @@
 	box-sizing: border-box;
 }
 
-/* Giữ style tiêu đề trong dải nhưng lề ngang co giãn theo viewport thay vì
-   bị neo tuyệt đối vào khung 1366. */
 .nntm-card-list:has(> .nntm-card-list__heading-above) .nntm-card-list__heading {
 	padding-left: clamp(28px, 14.6vw, 200px);
 }
 
-/* Quote là một dải trắng THẬT trong flow. Section cha đã mang nền trắng,
-   nên hai bên caption không còn lộ nền đen. Width chữ tối đa 1082 như thiết
-   kế, nhưng co lại tự nhiên ở màn hẹp. */
 .nntm-card-list__caption-below {
 	position: static;
 	inset: auto;
@@ -85,9 +59,6 @@
 	text-align: center;
 }
 
-/* Khi màn nhỏ, bỏ các offset desktop của dải Gót Son; block global đã có
-   responsive riêng, đây chỉ bảo đảm override page-specific không giữ lại
-   khoảng thụt lớn. */
 @media (max-width: 1151px) {
 	.nntm-card-list__heading-above {
 		padding-inline: var(--nntm-sp-5);

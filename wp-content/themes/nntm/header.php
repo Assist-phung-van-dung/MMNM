@@ -1,56 +1,10 @@
 <?php
-/**
- * Template phần đầu trang — logo, menu chính, ngôn ngữ, tìm kiếm, tài khoản.
- *
- * Dựng lại theo số đo THẬT bóc từ Figma (đã được chủ dự án xác nhận —
- * xem chỉ đạo trong phiên làm việc; KHÔNG gọi lại Figma API vì đang bị
- * rate-limit). Ba trạng thái:
- *
- *   A — CHƯA ĐĂNG NHẬP  (.nntm-header--guest) : nền trắng, menu 6 mục,
- *       màu chữ --nntm-muc-nhat, khu phải có ô tìm kiếm + "Đăng nhập" + ngôn ngữ.
- *   B — ĐÃ ĐĂNG NHẬP    (.nntm-header--auth)  : nền trắng 60% + làm mờ nền,
- *       menu 7 mục (thêm "Tin Tức"), màu chữ --nntm-chinh, khu phải có ô tìm
- *       kiếm + icon tài khoản + ngôn ngữ.
- *
- *   SỬA 17/08/2026: trước đây ô tìm kiếm CHỈ nằm trong nhánh A (Figma có
- *       component riêng cho trạng thái B không vẽ ô tìm kiếm) — chủ dự án
- *       xác nhận đây là thiếu sót, không phải cố ý: thành viên đăng nhập là
- *       người xem được nhiều nội dung nhất nên càng cần chỗ để tìm. Ô tìm
- *       kiếm chuyển ra ngoài if/else, dùng chung cho cả hai trạng thái.
- *   C — DÍNH TRÊN CÙNG KHI CUỘN (.nntm-header--sticky, cộng .nntm-header--stuck
- *       do header.js gắn qua IntersectionObserver): giữ nguyên nền màu của
- *       trạng thái A/B (không có nền "trong suốt" nào cả), chỉ thêm bóng nhẹ.
- *
- * CHỈ ĐẠO MỚI 12/08/2026 (spec-trang-chu.md, mục H1) — chồng thêm lên ba
- * trạng thái trên, không thay thế:
- *
- *   .nntm-header--trong : ở đỉnh trang, CHỈ gắn cho trang có banner ảnh
- *       ngay dưới đầu trang (dùng lại nntm_page_starts_with_hero(), cùng
- *       hàm mà inc/setup.php dùng để gắn class nntm-dau-trang-de-len lên
- *       <body>). Nền trong suốt, đè lên banner, chữ/icon không có nền
- *       riêng (menu, logo, "Đăng nhập", icon tài khoản) đổi sang màu sáng.
- *   .nntm-header--dac    : nền trắng đặc, chữ theo đúng màu trạng thái A/B
- *       như cũ. Trang KHÔNG có banner nhận thẳng class này, không cần JS.
- *
- * assets/js/header-scroll.js đổi qua lại hai class này bằng
- * IntersectionObserver khi cuộn quá 80px — chỉ hoạt động nếu header bắt
- * đầu ở .nntm-header--trong; trang không có banner thì script tự bỏ qua.
- *
- * Mục menu đang xem hiển thị dạng viên thuốc qua class current-menu-item /
- * current_page_item mà WordPress tự gắn — xem header.css.
- */
 
 defined( 'ABSPATH' ) || exit;
 
 $nntm_logged_in   = is_user_logged_in();
 $nntm_header_class = 'nntm-header ' . ( $nntm_logged_in ? 'nntm-header--auth' : 'nntm-header--guest' );
 
-/*
- * H1: trạng thái trong suốt chỉ áp cho trang mở đầu bằng banner ảnh ngay
- * dưới đầu trang (tái dùng nntm_page_starts_with_hero(), đã có sẵn trong
- * inc/setup.php cho đúng mục đích này — không viết hàm mới trùng việc).
- * Trang thường (không hero) nhận .nntm-header--dac ngay, trắng từ đầu.
- */
 $nntm_has_hero = ( is_front_page() || is_page() )
 	&& function_exists( 'nntm_page_starts_with_hero' )
 	&& nntm_page_starts_with_hero( get_queried_object() );
@@ -92,11 +46,7 @@ $nntm_panel_id = 'nntm-header-panel';
 			<?php endif; ?>
 		</div>
 
-		<?php /*
-		SUY DOAN: chua co Figma mobile — nut hamburger mo/dong menu chinh tren
-		man hinh nho. Figma chi co khung desktop 1366px nen khong the biet
-		hinh dang that cua nut nay tren mobile; hanh vi la tu dung hoan toan.
-		*/ ?>
+		<?php   ?>
 		<button
 			type="button"
 			class="nntm-header__menu-toggle"
@@ -108,24 +58,11 @@ $nntm_panel_id = 'nntm-header-panel';
 		</button>
 
 		<?php
-		/*
-		 * .nntm-header__panel — MỘT khối bọc chung cho menu chính + khu công
-		 * cụ (tìm kiếm / đăng nhập / ngôn ngữ). Thêm 20/08/2026.
-		 *
-		 * LÝ DO: dưới 1152px cả hai phần cùng gập vào một panel trượt
-		 * (drawer). Trước đây chỉ <nav> gập vào panel, còn ô tìm kiếm bị
-		 * `display: none` và "Đăng nhập" + ngôn ngữ vẫn nằm lại trên thanh
-		 * header — ở khung 375px chỉ còn 89px cho cả hai nên chúng chèn vào
-		 * nhau, và người dùng điện thoại KHÔNG có chỗ nào để tìm kiếm.
-		 *
-		 * Từ 1152px trở lên khối này là `display: contents` (xem header.css)
-		 * nên <nav> và khu công cụ vẫn là con trực tiếp của .nntm-header__bar
-		 * đúng như cũ — bố cục desktop 1366/1280 KHÔNG đổi một pixel nào.
-		 */
+
 		?>
 		<div class="nntm-header__panel" id="<?php echo esc_attr( $nntm_panel_id ); ?>">
 
-			<?php /* Chỉ hiện trong drawer (dưới 1152px) — xem header.css. */ ?>
+			<?php   ?>
 			<div class="nntm-header__panel-head">
 				<span class="nntm-header__panel-title"><?php esc_html_e( 'Menu', 'nntm' ); ?></span>
 				<button type="button" class="nntm-header__panel-close" data-nntm-menu-close>
@@ -138,17 +75,7 @@ $nntm_panel_id = 'nntm-header-panel';
 
 			<nav id="<?php echo esc_attr( $nntm_nav_id ); ?>" class="nntm-header__nav" aria-label="<?php esc_attr_e( 'Menu chính', 'nntm' ); ?>">
 				<?php
-				/*
-				 * Mục "Tin Tức" chỉ hiện khi đã đăng nhập (trạng thái B có 7 mục,
-				 * trạng thái A có 6 mục — xem docs/04-kien-truc.md). Nhận diện
-				 * bằng TÊN MỤC: ban quản trị đặt tên mục trong Giao diện → Menu
-				 * đúng là "Tin Tức" (không phân biệt hoa/thường, tự bỏ khoảng
-				 * trắng thừa hai đầu) thì mục sẽ tự ẩn với khách chưa đăng nhập.
-				 * Đổi tên mục khác đi thì mục KHÔNG còn được lọc và sẽ hiện với
-				 * mọi người — đây là điều cần lưu ý khi bàn giao cho ban quản trị.
-				 * Chỉ áp filter đúng lúc gọi wp_nav_menu() rồi gỡ ngay, để không
-				 * ảnh hưởng menu "footer" hay bất kỳ chỗ gọi wp_nav_menu nào khác.
-				 */
+
 				$nntm_hide_tin_tuc = static function ( $sorted_menu_items, $args ) {
 					if ( empty( $args->theme_location ) || 'primary' !== $args->theme_location ) {
 						return $sorted_menu_items;
@@ -191,15 +118,7 @@ $nntm_panel_id = 'nntm-header-panel';
 			<div class="nntm-header__tools">
 
 				<?php
-				/*
-				 * SỬA 17/08/2026: ô tìm kiếm giờ hiện ở CẢ HAI trạng thái đăng
-				 * nhập/chưa đăng nhập — trước đây chỉ nằm trong nhánh "chưa đăng
-				 * nhập" nên thành viên đăng nhập vào thì KHÔNG có chỗ nào để tìm,
-				 * dù họ là người xem được nhiều nội dung nhất. Figma có component
-				 * riêng cho trạng thái đã đăng nhập không vẽ ô tìm kiếm (từng nghi
-				 * là cố ý, xem docs/10-ban-giao-tim-kiem.md mục 10.5) — chủ dự án
-				 * đã xác nhận đây là thiếu sót cần thêm, không phải thiết kế cố ý.
-				 */
+
 				$nntm_search_id = wp_unique_id( 'nntm-header-search-' );
 				?>
 				<form role="search" method="get" class="nntm-header__search-form" action="<?php echo esc_url( home_url( '/' ) ); ?>">
@@ -223,13 +142,7 @@ $nntm_panel_id = 'nntm-header-panel';
 					/>
 
 					<?php
-					/*
-					 * Tìm bằng hình ảnh. Nút và ô chọn file để ẨN SẴN trong HTML
-					 * chứ không do JavaScript sinh ra, để không nhấp nháy lúc tải
-					 * trang. Plugin nntm-search bật thì gỡ thuộc tính hidden;
-					 * plugin tắt thì cả hai vô hình và form vẫn chạy như cũ —
-					 * theme không phụ thuộc plugin.
-					 */
+
 					?>
 					<button type="button" class="nntm-header__search-camera" hidden>
 						<span class="nntm-sr-only"><?php esc_html_e( 'Tìm bằng hình ảnh', 'nntm' ); ?></span>
@@ -247,12 +160,7 @@ $nntm_panel_id = 'nntm-header-panel';
 					<?php
 					$nntm_current_user  = wp_get_current_user();
 					$nntm_rank          = nntm_user_rank( $nntm_current_user->ID );
-					/*
-					 * Trang "Yêu thích" chưa có slug cố định trong dự án (mới có
-					 * bảng dữ liệu wp_nntm_favorites, xem class-schema.php) —
-					 * SUY DOAN tạm dùng /yeu-thich/, lọc qua filter để ban quản
-					 * trị hoặc lập trình viên sau này trỏ đúng trang khi có.
-					 */
+
 					$nntm_account_url   = apply_filters( 'nntm_account_page_url', home_url( '/tai-khoan/' ) );
 					$nntm_favorites_url = apply_filters( 'nntm_account_favorites_url', home_url( '/yeu-thich/' ) );
 					$nntm_logout_url    = wp_logout_url( home_url( '/' ) );
@@ -275,7 +183,7 @@ $nntm_panel_id = 'nntm-header-panel';
 						<div class="nntm-header__account-panel" id="nntm-account-panel" hidden>
 							<p class="nntm-header__account-name">
 								<?php
-								/* translators: %s: tên hiển thị của thành viên đang đăng nhập. */
+
 								echo esc_html( sprintf( __( 'Xin chào, %s', 'nntm' ), $nntm_current_user->display_name ) );
 								?>
 							</p>
@@ -312,7 +220,7 @@ $nntm_panel_id = 'nntm-header-panel';
 				<?php endif; ?>
 
 				<?php
-				/* Polylang: hiển thị đủ VN/EN và đánh dấu ngôn ngữ hiện tại. */
+
 				?>
 				<div class="nntm-header__lang" id="nntm-lang-switch">
 					<?php nntm_render_language_switcher(); ?>
@@ -325,10 +233,7 @@ $nntm_panel_id = 'nntm-header-panel';
 	</div>
 
 	<?php
-	/*
-	 * Lớp phủ mờ phía sau drawer (chỉ dưới 1152px). Bấm vào là đóng menu.
-	 * Đặt NGOÀI .nntm-header__bar để không bị lớp phủ che mất chính drawer.
-	 */
+
 	?>
 	<div class="nntm-header__scrim" data-nntm-menu-close aria-hidden="true"></div>
 </header>

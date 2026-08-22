@@ -1,16 +1,7 @@
-/* Hoa Khai — desktop reconciliation against Figma frame 6376:6603.
- * Reference: design/figma/6376-6603@1x.png. Loaded only on /hoa-khai/.
- */
+ 
 .nntm-main--full .nntm-page,
 .nntm-main--full .nntm-page__content { margin:0; padding:0; }
 
-/* Nghiêng 3D "coverflow" của bìa Ấn Phẩm — đặt NGOÀI @media (min-width:1152px)
- * để chạy ở mọi kích thước màn (dưới 1152px biến rỗng nếu để trong đó, transform
- * bị coi invalid, rơi về "none"). rotateY() (quay quanh trục dọc) — không dùng
- * rotate() thuần (trục Z, làm thẻ méo hình bình hành). --nntm-tilt-scale nhân
- * chung để giảm góc ở màn nhỏ. Perspective dùng chung ở khung nhìn (.marquee,
- * không di chuyển) + preserve-3d bắc cầu qua track/item, để mọi thẻ tính trong
- * CÙNG một không gian 3D (không phải mỗi thẻ một tâm chiếu riêng). */
 .nntm-hk-publications .nntm-card-list__marquee {
   perspective:800px;
   perspective-origin:50% 50%;
@@ -33,27 +24,12 @@
   border-radius:6px 4px 4px 6px;
 }
 
-/* Rê chuột/focus vào MỘT thẻ: thẻ đó đứng thẳng lại để đọc rõ bìa, thẻ khác
- * giữ nguyên nghiêng. Đổ bóng đậm/lan rộng hơn khi hover (thẻ box-shadow đã có
- * transition:box-shadow 400ms sẵn) để mô phỏng thẻ nổi lên — cùng specificity
- * với box-shadow tĩnh ở nth-child(odd/even) nhưng khai SAU nên thắng khi hover. */
 .nntm-hk-publications .nntm-card-list__marquee-item:hover .nntm-card--books,
 .nntm-hk-publications .nntm-card-list__marquee-item:focus-within .nntm-card--books {
   transform:rotateY(0deg) rotateX(0deg);
   box-shadow:0 24px 40px rgba(0,0,0,.45);
 }
 
-/* SỬA 22/08/2026 — ĐỘNG TÁC HOVER PHẢI GIỐNG DESKTOP Ở MỌI CỠ MÀN.
- *
- * Ba dòng dưới trước đây nằm trong @media (min-width:1152px), nên từ 1151px trở
- * xuống thẻ KHÔNG nhích lên, KHÔNG phóng to, và không có transition — chỉ bìa
- * đứng thẳng lại. Rê chuột trên tablet hay Tab tới bằng bàn phím đều ra cảm
- * giác khác desktop. Chuyển ra ngoài @media: `perspective` của .marquee cũng
- * khai ngoài @media nên translateZ có tác dụng ở mọi cỡ.
- *
- * Vì .marquee-track/.marquee-item có transform-style:preserve-3d, thứ tự vẽ do
- * ĐỘ SÂU 3D thật quyết định — nên phải đẩy bằng translateZ, z-index một mình
- * không đủ. */
 .nntm-hk-publications .nntm-card-list__marquee-item {
   position:relative;
   transition:transform 320ms cubic-bezier(.22,1,.36,1);
@@ -65,11 +41,6 @@
   transform:translateZ(80px) translateY(0px) scale(1.06);
 }
 
-/* Trình bày thẻ (bìa trần, ẩn chữ, nghiêng 3D) — ĐẶT NGOÀI @media
- * (min-width:1152px) để áp dụng ở MỌI kích thước màn, không riêng desktop.
- * Số đo px cứng (230px, margin-right…) của .marquee-item vẫn ở trong @media
- * vì CÓ override riêng theo breakpoint bên dưới; còn khối .card--books này
- * KHÔNG có override nào khác nên phải chạy mọi nơi ngay từ đây. */
 .nntm-hk-publications .nntm-card--books {
   display:block; box-sizing:border-box; width:100%; height:auto; padding:0;
   border:0; background:none; backdrop-filter:none;
@@ -79,22 +50,16 @@
   transform:rotateY(calc(var(--nntm-tilt-y) * var(--nntm-tilt-scale))) rotateX(calc(1deg * var(--nntm-tilt-scale)));
   transition:transform 400ms cubic-bezier(.25,.8,.25,1), box-shadow 400ms;
 }
-/* height:auto + aspect-ratio ở đây là mặc định cho MỌI màn (co theo width
- * clamp() của .marquee-item ở tablet/mobile bên dưới) — desktop override
- * sang height cứng 420px trong @media (min-width:1152px), tránh bìa bị kéo
- * dài biến dạng khi width co nhỏ trên điện thoại. */
+ 
 .nntm-hk-publications .nntm-card--books .nntm-card__img {
   width:100%; height:auto; aspect-ratio:3/4; box-shadow:none; overflow:hidden; background-color:transparent;
 }
 .nntm-hk-publications .nntm-card--books .nntm-card__img-el { width:100%; height:100%; object-fit:cover; border-radius:5px; }
 
-/* Chỉ hiện bìa — ẩn tiêu đề/CTA (ảnh mẫu không có chữ). Tên sách vẫn còn
- * trong alt của <img> nên liên kết không mất tên khi đọc bằng trình đọc
- * màn hình, chỉ ẩn đi phần chữ trực quan. */
 .nntm-hk-publications .nntm-card--books .nntm-card__body { display:none; }
 
 @media (min-width:1152px) {
-  /* Frame stack: header 76 + news 811 + dharma 954 + publications 650 + footer 147 = 2638. */
+   
   .nntm-hk-news { height:811px; min-height:811px; background:#fff; overflow:hidden; }
   .nntm-hk-news .nntm-article-mosaic__inner {
     height:811px; max-width:1366px; padding:30px 93px 40px; gap:25px; box-sizing:border-box; background:#fff;
@@ -147,12 +112,6 @@
   .nntm-hk-dharma .nntm-article-mosaic__small-img { width:227px; height:163px; aspect-ratio:auto; }
   .nntm-hk-dharma .nntm-article-mosaic__viewall-wrap { margin-top:auto; }
 
-  /* Publications — exact desktop geometry from Figma export 6376:6603.
-   * SỬA 21/08/2026: đổi carousel (nút + JS clone-loop hay giật lúc chạm mép
-   * loop) sang layout=marquee — chạy liên tục bằng CSS thuần (@keyframes
-   * nntm-card-list-marquee ở blocks/card-list/style.css + PHP nhân đôi danh
-   * sách ở inc/render-card-list-marquee.php), không nút, không JS. Số đo
-   * thẻ/băng/màu GIỮ NGUYÊN đúng Figma cũ, chỉ đổi cơ chế chạy. */
   .nntm-hk-publications > .nntm-card-list__band { height:650px; min-height:650px; padding:30px 0; background:#000; overflow:hidden; }
   .nntm-hk-publications > .nntm-card-list__band > .nntm-container { height:590px; max-width:1366px; margin-inline:auto; padding:0; }
   .nntm-hk-publications .nntm-card-list__header-row { height:60px; justify-content:center; margin:0 0 30px; padding:0; }
@@ -160,11 +119,6 @@
 
   .nntm-hk-publications .nntm-card-list__marquee { height:500px; }
 
-  /* Mờ hai mép trong khung nội dung 1366px (SỬA: trước tràn viền toàn màn,
-   * giới hạn lại 1366px cho khớp quy ước site + giảm số thẻ chồng nhau cùng
-   * lúc ở màn rất rộng — chỗ hover z-index bị "cào" lên trông rối).
-   * Trình duyệt không hiểu mask-image thì bỏ qua hai dòng dưới, băng vẫn
-   * hiện đúng, chỉ mất hiệu ứng mờ mép. */
   .nntm-hk-publications .nntm-card-list__marquee {
     -webkit-mask-image: linear-gradient(to right, transparent 0, #000 80px, #000 calc(100% - 80px), transparent 100%);
     mask-image: linear-gradient(to right, transparent 0, #000 80px, #000 calc(100% - 80px), transparent 100%);
@@ -172,11 +126,7 @@
 
   .nntm-hk-publications .nntm-card-list__marquee-track { height:500px; align-items:center; }
 
-  /* SỬA 21/08/2026 (ảnh chủ dự án gửi): bìa chồng mép, không còn khung nền
-   * đen/viền/tiêu đề của thiết kế Figma cũ (bản "xoè quạt" nghiêng+so le đã
-   * bỏ theo yêu cầu sau đó — chỉ còn chồng mép thẳng hàng). */
-  /* Height cứng CHỈ ở desktop — "cho dễ nhìn" theo yêu cầu, không áp cho
-   * tablet/mobile (bên dưới) để tránh bìa kéo dài biến dạng khi width co nhỏ. */
+   
   .nntm-hk-publications .nntm-card--books { height:420px; }
   .nntm-hk-publications .nntm-card--books .nntm-card__img { height:100%; aspect-ratio:auto; }
 
@@ -184,25 +134,14 @@
     flex:0 0 270px;
     width:270px;
     height:auto;
-    /* -50px không đủ che khe hở khi bìa nghiêng rotateY co hẹp lại theo
-     * chiều ngang — tăng chồng mép lên để luôn thừa, không vừa khít.
-     * -90/270 = một phần ba; tablet/mobile bám đúng tỉ lệ này. */
+     
     margin-right:-90px;
   }
 
-  /* Rê chuột/focus: thẻ nổi lên trên các thẻ lân cận (chồng mép), nhích lên
-   * và phóng to nhẹ. SỬA: .marquee-track/.marquee-item có transform-style:
-   * preserve-3d (cho nghiêng 3D của bìa) — trong không gian 3D chung đó,
-   * thứ tự vẽ giữa các thẻ anh em do ĐỘ SÂU 3D thật (translateZ) quyết định,
-   * z-index không còn tác dụng như bình thường. Đẩy thẻ ra phía trước bằng
-   * translateZ thay vì chỉ dựa z-index. */
-  /* Hover cap item da chuyen ra ngoai @media — xem chu thich o tren file. */
+   
 
-  /* Chân trang: xem assets/css/footer.css, ".nntm-footer--inner". */
 }
 
-/* Smooth but restrained hover for the article sections. Publications has
- * its own non-reflow interaction rules above. */
 .nntm-hk-news .nntm-article-mosaic__media-link img,
 .nntm-hk-dharma .nntm-article-mosaic__media-link img { transition:transform 360ms cubic-bezier(.22,1,.36,1), filter 360ms cubic-bezier(.22,1,.36,1); }
 .nntm-hk-news .nntm-article-mosaic__media-link:hover img,
@@ -216,50 +155,23 @@
   .nntm-hk-dharma .nntm-article-mosaic__inner { height:auto; padding:40px 20px; }
   .nntm-hk-news .nntm-article-mosaic__heading,
   .nntm-hk-dharma .nntm-article-mosaic__heading { height:auto; font-size:clamp(38px,7vw,var(--nntm-fs-4xl)); line-height:1.15; }
-  /* SỬA: color:#f7f1de trước đây chỉ khai trong @media (min-width:1152px)
-   * — dưới 1151px chữ "Ấn Phẩm" rơi về màu chữ tối mặc định, gần như
-   * không đọc được trên nền đen của băng. */
+   
   .nntm-hk-publications .nntm-card-list__heading { color:#f7f1de; }
-  /* TABLET (1024-1151): giu hai cot, chi bo be rong 1180px cung cua desktop.
-     Gop mot cot chuyen xuong khoi <=1023 o cuoi file — o khung 1136px danh
-     sach mot cot lam the dan dau rong 1076px, la bo cuc cua dien thoai. */
+   
   .nntm-hk-news .nntm-article-mosaic__list,
   .nntm-hk-dharma .nntm-article-mosaic__list { width:100%; }
   .nntm-hk-news .nntm-article-mosaic__lead,
   .nntm-hk-dharma .nntm-article-mosaic__lead { width:100%; max-width:none; }
-  /* SỬA: background:#000 trước đây chỉ khai trong @media (min-width:1152px)
-   * — dưới 1151px băng không có nền đen nào, lộ nền trắng/kem của trang. */
+   
   .nntm-hk-publications > .nntm-card-list__band { padding:40px 0; background:#000; overflow:hidden; }
-  /* Do nghieng GIU DUNG 1 nhu desktop (bo ban 0.6 cu) — chu du an chot 22/08/2026:
-     tablet/mobile phai la dung khoi cua desktop, chi nho hon. */
+   
   .nntm-hk-publications .nntm-card-list__marquee { height:auto; }
   .nntm-hk-publications .nntm-card-list__marquee-track { height:auto; padding-block:20px; }
   .nntm-hk-publications .nntm-card-list__marquee-item { flex:0 0 clamp(120px,34vw,190px); width:clamp(120px,34vw,190px); height:auto; margin-right:clamp(-70px,-16vw,-40px); }
 }
 
-/* Màn nhỏ (≤767): bỏ nghiêng hẳn (bìa hẹp mà nghiêng 3D sâu dễ trông rối),
- * chồng mép cũng bớt lại. */
 @media (max-width:767px) {
-  /* SỬA 22/08/2026 — trên điện thoại dải này KHÔNG CÒN RA DÁNG BĂNG CHẠY.
-   *
-   * Đo thật ở 375px trước khi sửa: bìa 128x170, chồng lấn 14px, chỉ 2,9 bìa
-   * nằm trong khung 335 — mà --nntm-tilt-scale:0 lại bỏ hẳn độ nghiêng, tức
-   * bỏ đúng cái làm nên dáng "kệ sách xòe" của bản desktop (tilt 1, bìa 270).
-   * Còn lại là mấy tấm ảnh nhỏ phẳng nằm đè nhau — trông như một xấp ảnh
-   * đứng yên, không phải băng đang trôi.
-   *
-   * Lý do đặt 0 hồi trước ("bìa hẹp mà nghiêng 3D sâu dễ trông rối") đúng với
-   * bìa 128px; nới bìa lên 150 thì nghiêng NỬA (0.5) vừa đủ nhận ra là cùng
-   * một khối với desktop mà không rối.
-   */
-  /* Độ nghiêng giữ đúng 1 như desktop — không hạ xuống 0.5 nữa.
-   *
-   * CHỒNG MÉP TÍNH THEO TỈ LỆ, không gõ số cứng. Phải trừ cả `gap` của track
-   * (20px) mới ra phần chồng THẬT: desktop bìa 270, margin-right -90, gap +20
-   * → chồng thật 70 = 26% bề rộng bìa. Bản cũ ở đây chồng thật 14/128 = 11%,
-   * nên bìa nằm rời rạc chứ không xếp lớp như desktop.
-   *
-   * Dải tablet (<=1151) tình cờ đã đúng 26% (190 / -70 / +20) nên không đụng. */
+
   .nntm-hk-publications .nntm-card-list__marquee-item {
     --nntm-hk-bia: clamp(128px, 40vw, 180px);
     flex: 0 0 var(--nntm-hk-bia);
@@ -272,7 +184,6 @@
   .nntm-hk-news *, .nntm-hk-dharma *, .nntm-hk-publications * { transition:none; }
 }
 
-/* DUOI 1024: gop hai cot ve mot; anh dan dau chuyen ti le ngang. */
 @media (max-width:1023px) {
   .nntm-hk-news .nntm-article-mosaic__list,
   .nntm-hk-dharma .nntm-article-mosaic__list { grid-template-columns:1fr; }

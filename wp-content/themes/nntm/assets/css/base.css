@@ -1,13 +1,4 @@
-/* =============================================================
-   NNTM — Reset nhẹ & kiểu chữ gốc
-   Áp dụng cho toàn site: cả nội dung dựng bằng block lẫn màn PHP
-   template (đăng nhập, tìm kiếm, tài khoản...) không đi qua
-   theme.json global styles.
 
-   CẤM mã màu (#hex, rgb) và số px cứng — mọi giá trị lấy từ
-   assets/css/tokens.css. File này PHẢI nạp SAU tokens.css
-   (xem inc/enqueue.php).
-   ============================================================= */
 
 *,
 *::before,
@@ -42,22 +33,6 @@ body {
 	-moz-osx-font-smoothing: grayscale;
 }
 
-/*
- * KHUNG SITE — SỬA 20/08/2026 (anh Úy chốt đổi kiến trúc).
- *
- * TRƯỚC: `max-width: 1366px` ở đây khoá CẢ TRANG lại 1366 rồi canh giữa,
- * nên trên màn 1920/2560 toàn bộ site — kể cả NỀN của từng dải section —
- * chỉ rộng 1366 và hai bên là hai dải `--nntm-kem-dam` trơ ra.
- *
- * SAU: khung tràn hết bề rộng màn. Mỗi dải section tự chặn NỘI DUNG của nó
- * ở `max-width: var(--nntm-w-rong)` và canh giữa (xem assets/css/responsive.css,
- * mục "DẢI TRÀN MÀN — NỘI DUNG DỪNG Ở 1366"). Nhờ vậy nền/ảnh của section
- * tràn hết màn còn nội dung vẫn đúng tỉ lệ Figma, KHÔNG dùng transform:
- * scale() hay zoom để phóng giao diện.
- *
- * Vẫn giữ `overflow-x: clip`: các băng chạy ngang (marquee/carousel) cố ý
- * tràn ra ngoài và không được phép sinh thanh cuộn ngang cho cả trang.
- */
 .nntm-site-frame {
 	width: 100%;
 	min-height: 100vh;
@@ -66,9 +41,7 @@ body {
 	flex-direction: column;
 	position: relative;
 	background-color: var(--nntm-nen);
-	/* Hard desktop boundary: accidental full-width/negative offsets cannot
-	 * paint into the outer monitor gutters. Component carousels still manage
-	 * their own horizontal overflow inside this 1366px frame. */
+
 	overflow-x: clip;
 }
 
@@ -77,10 +50,8 @@ body {
 	max-width: 100%;
 }
 
-/* Trang ngắn vẫn giữ chân trang ở đáy viewport. */
 .nntm-footer { margin-top: auto; }
 
-/* Reset khoảng cách mặc định để layout.css toàn quyền kiểm soát. */
 h1, h2, h3, h4, h5, h6,
 p, figure, blockquote, dl, dd,
 ul, ol {
@@ -93,7 +64,6 @@ ol[class] {
 	list-style: none;
 }
 
-/* ---------- Ảnh / media responsive ---------- */
 img,
 picture,
 video,
@@ -105,10 +75,9 @@ svg {
 }
 
 img {
-	font-style: italic; /* chú thích alt hiện đẹp hơn khi ảnh lỗi */
+	font-style: italic;  
 }
 
-/* ---------- Tiêu đề ---------- */
 h1, h2, h3 {
 	font-family: var(--nntm-font-display);
 	color: var(--nntm-chu);
@@ -134,7 +103,6 @@ p {
 	color: var(--nntm-chu-phu);
 }
 
-/* ---------- Liên kết ---------- */
 a {
 	color: var(--nntm-chinh);
 	text-decoration-color: var(--nntm-reu-nhat);
@@ -146,36 +114,21 @@ a:focus {
 	color: var(--nntm-chinh-hover);
 }
 
-/* ---------- Danh sách có nội dung bài viết (không .nntm-*) ---------- */
 ul:not([class]),
 ol:not([class]) {
 	padding-inline-start: var(--nntm-sp-7);
 }
 
-/*
- * Chi gian dong cho danh sach TRONG NOI DUNG BAI VIET, dung pham vi y het
- * luat ngay tren.
- *
- * Truoc day de selector tran `li + li` nen no dinh vao MOI danh sach cua
- * site: menu chinh, menu chan trang, luoi the cua cac block. Hau qua do
- * duoc ngay 10/08/2026: menu chinh bi day xuong 8px tu muc thu hai tro di,
- * lam <nav> cao 37px trong khi moi <li> chi 29px, va muc dau tien thi
- * khong bi day nen troi len 4px so voi cac muc con lai.
- *
- * Cac danh sach co class (.nntm-*) deu tu quan khoang cach bang gap cua
- * flex/grid roi, khong can margin o day.
- */
 ul:not([class]) > li + li,
 ol:not([class]) > li + li {
 	margin-top: var(--nntm-sp-2);
 }
 
-/* ---------- Trích dẫn ---------- */
 blockquote {
 	font-family: var(--nntm-font-serif);
 	font-style: italic;
 	color: var(--nntm-chu-phu);
-	border-inline-start: 1px solid var(--nntm-duong-vien); /* hairline, không cần token */
+	border-inline-start: 1px solid var(--nntm-duong-vien);  
 	padding-inline-start: var(--nntm-sp-5);
 	margin-block: var(--nntm-sp-7);
 }
@@ -189,7 +142,6 @@ blockquote cite {
 	color: var(--nntm-chu-phu);
 }
 
-/* ---------- Bảng ---------- */
 table {
 	width: 100%;
 	border-collapse: collapse;
@@ -201,7 +153,7 @@ th,
 td {
 	text-align: left;
 	padding: var(--nntm-sp-3) var(--nntm-sp-4);
-	border-bottom: 1px solid var(--nntm-duong-vien); /* hairline */
+	border-bottom: 1px solid var(--nntm-duong-vien);  
 }
 
 th {
@@ -209,7 +161,6 @@ th {
 	color: var(--nntm-chu);
 }
 
-/* ---------- Form gốc (chưa có block form riêng) ---------- */
 input,
 select,
 textarea,
@@ -220,13 +171,12 @@ button {
 
 hr {
 	border: 0;
-	border-top: 1px solid var(--nntm-duong-vien); /* hairline */
+	border-top: 1px solid var(--nntm-duong-vien);  
 	margin-block: var(--nntm-sp-7);
 }
 
-/* ---------- Focus & selection ---------- */
 :focus-visible {
-	outline: 1px solid var(--nntm-chinh); /* hairline theo quy ước, độ dày không hardcode thêm */
+	outline: 1px solid var(--nntm-chinh);  
 	outline-offset: var(--nntm-sp-1);
 }
 
@@ -235,15 +185,6 @@ hr {
 	color: var(--nntm-trang);
 }
 
-/*
- * Cắt tiêu đề tối đa 2 dòng, quá thì hiện "…" — yêu cầu anh Úy 12/08/2026
- * (spec trang chủ mục M1.4 / D): "mọi ô có chữ trên/dưới ảnh" phải giới
- * hạn 2 dòng, kể cả các thẻ đã có min-height giữ chỗ — clamp cắt PHẦN
- * HIỂN THỊ, min-height (nếu có) vẫn tiếp tục giữ chỗ để card không xô
- * lệch khi tiêu đề ngắn. Dùng chung cho mọi block có tiêu đề trên/dưới
- * ảnh (article-mosaic, card-list, card, …) — gắn thẳng class này lên
- * phần tử tiêu đề, không cần viết lại -webkit-line-clamp ở từng file.
- */
 .nntm-cat-2-dong {
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
@@ -251,10 +192,9 @@ hr {
 	overflow: hidden;
 }
 
-/* Ẩn nội dung nhưng vẫn đọc được bằng trình đọc màn hình. */
 .nntm-sr-only {
 	position: absolute;
-	width: 55px; /* hairline — kích thước tối thiểu để phần tử vẫn "hiện diện" với trình đọc màn hình */
+	width: 55px;  
 	height: 1px;
 	padding: 0;
 	margin: -1px;

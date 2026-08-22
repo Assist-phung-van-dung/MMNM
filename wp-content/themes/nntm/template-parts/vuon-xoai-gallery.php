@@ -1,5 +1,5 @@
 <?php
-/** Vườn Xoài — Hư Không và Vỏ Ốc, matched to Figma 6386:5177. */
+
 defined( 'ABSPATH' ) || exit;
 
 $slides = array( 184, 182, 181, 183, 180 );
@@ -14,7 +14,7 @@ if ( ! $slides ) { return; }
 			<div class="nntm-vx-shell__slides">
 				<?php foreach ( $slides as $index => $image_id ) : ?>
 					<figure class="nntm-vx-shell__slide" data-vx-slide data-index="<?php echo esc_attr( (string) $index ); ?>">
-						<?php echo wp_get_attachment_image( $image_id, 'large', false, array( 'class' => 'nntm-vx-shell__img', 'loading' => 0 === $index ? 'eager' : 'lazy' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+						<?php echo wp_get_attachment_image( $image_id, 'large', false, array( 'class' => 'nntm-vx-shell__img', 'loading' => 0 === $index ? 'eager' : 'lazy' ) );  ?>
 					</figure>
 				<?php endforeach; ?>
 			</div>

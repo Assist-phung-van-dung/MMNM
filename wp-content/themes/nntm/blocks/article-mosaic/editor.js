@@ -1,9 +1,4 @@
-/**
- * Editor script cho block nntm/article-mosaic — JavaScript thuần, không
- * build. Bắt chước y hệt phong cách blocks/article-rows/editor.js: cùng
- * cơ chế REST tầng nối tầng (postType -> taxonomy -> term) để bảng điều
- * khiển hiện danh sách thả xuống tên tiếng Việt, không bắt nhập số ID.
- */
+ 
 ( function ( wp ) {
 	'use strict';
 
@@ -23,7 +18,6 @@
 	var apiFetch = wp.apiFetch;
 	var ServerSideRender = wp.serverSideRender && wp.serverSideRender.default ? wp.serverSideRender.default : wp.serverSideRender;
 
-	// Danh sách trắng loại nội dung — trùng với block.json và render.php.
 	var POST_TYPE_OPTIONS = [
 		{ label: __( 'Tin Tức / Hoằng Pháp', 'nntm' ), value: 'post' },
 		{ label: __( 'Bài viết (6 phân mục)', 'nntm' ), value: 'nntm_article' },
@@ -49,7 +43,6 @@
 		{ label: __( 'Ảnh thấp (Tin Tức)', 'nntm' ), value: 'short' },
 	];
 
-	// Nhãn tiếng Việt cho taxonomy — khớp với class-taxonomies.php.
 	var TAXONOMY_LABELS = {
 		nntm_section: __( 'Phân mục', 'nntm' ),
 		nntm_topic: __( 'Chủ đề', 'nntm' ),
@@ -58,7 +51,6 @@
 		post_tag: __( 'Thẻ', 'nntm' ),
 	};
 
-	// Taxonomy lõi của WordPress có rest_base khác tên taxonomy.
 	var REST_BASE_OVERRIDES = {
 		category: 'categories',
 		post_tag: 'tags',
@@ -72,8 +64,7 @@
 		return TAXONOMY_LABELS[ taxonomy ] || taxonomy;
 	}
 
-	// REST tra tieu de dang HTML da ma hoa ("Vi sao &#8230;"). Giai ma bang
-	// textarea de o chon hien dung chu nhu tren trang.
+
 	function plainTitle( post ) {
 		var raw = ( post && post.title && post.title.rendered ) || '';
 		var box = document.createElement( 'textarea' );
@@ -81,8 +72,7 @@
 		return box.value.trim() || __( '(bài không có tiêu đề)', 'nntm' );
 	}
 
-	// "28,29,30" -> [ 28, 29, 30 ]. Cat theo moi ky tu khong phai so, giong
-	// het cach render.php doc lai chuoi nay — hai ben phai hieu nhu nhau.
+
 	function parseIdList( value ) {
 		return String( value || '' )
 			.split( /[^0-9]+/ )
@@ -100,23 +90,22 @@
 			var setAttributes = props.setAttributes;
 			var blockProps = useBlockProps();
 
-			var taxonomyState = useState( [] ); // danh sách taxonomy hợp lệ cho postType hiện tại
+			var taxonomyState = useState( [] ); 
 			var availableTaxonomies = taxonomyState[ 0 ];
 			var setAvailableTaxonomies = taxonomyState[ 1 ];
 
-			var termState = useState( [] ); // danh sách term của taxonomy đang chọn
+			var termState = useState( [] ); 
 			var availableTerms = termState[ 0 ];
 			var setAvailableTerms = termState[ 1 ];
 
-			var restBaseState = useState( 'posts' ); // rest_base của postType hiện tại
+			var restBaseState = useState( 'posts' ); 
 			var postRestBase = restBaseState[ 0 ];
 			var setPostRestBase = restBaseState[ 1 ];
 
-			var candidateState = useState( [] ); // [{ id, title }] để chọn thứ tự thủ công
+			var candidateState = useState( [] ); 
 			var candidatePosts = candidateState[ 0 ];
 			var setCandidatePosts = candidateState[ 1 ];
 
-			// Khi đổi loại nội dung: hỏi REST xem loại đó gắn được taxonomy nào.
 			useEffect(
 				function () {
 					var isCurrent = true;
@@ -128,7 +117,7 @@
 							}
 							var taxonomies = ( typeInfo && typeInfo.taxonomies ) || [];
 							setAvailableTaxonomies( taxonomies );
-							// rest_base khác tên post type ở lõi WP (post -> posts).
+
 							setPostRestBase( ( typeInfo && typeInfo.rest_base ) || 'posts' );
 
 							if ( attributes.taxonomy && taxonomies.indexOf( attributes.taxonomy ) === -1 ) {
@@ -148,7 +137,6 @@
 				[ attributes.postType ]
 			);
 
-			// Khi đổi taxonomy (hoặc loại nội dung làm mất taxonomy cũ): tải danh sách term.
 			useEffect(
 				function () {
 					var isCurrent = true;
@@ -179,11 +167,9 @@
 				[ attributes.taxonomy ]
 			);
 
-			// Tầng thứ ba: tải danh sách bài thật để ô "Tự chọn thứ tự" gợi ý
-			// theo TÊN BÀI. Ban quản trị không phải đi tra số ID ở đâu khác —
-			// đúng ràng buộc "admin sửa được, không cần lập trình viên"
-			// (docs/04-kien-truc.md mục 0.3). Lọc theo đúng nguồn nội dung mà
-			// khối đang dùng nên danh sách gợi ý luôn sát với bài sẽ hiện ra.
+
+
+
 			useEffect(
 				function () {
 					var isCurrent = true;
@@ -216,21 +202,19 @@
 				[ postRestBase, attributes.taxonomy, attributes.termId ]
 			);
 
-			// Hai bảng tra ngược nhau giữa ID (thứ lưu vào block) và tiêu đề
-			// (thứ ban quản trị nhìn thấy).
+
 			var titleById = {};
 			var idByTitle = {};
 			candidatePosts.forEach( function ( one ) {
 				titleById[ one.id ] = one.title;
 				if ( ! idByTitle[ one.title ] ) {
-					idByTitle[ one.title ] = one.id; // trùng tên thì giữ bài mới nhất
+					idByTitle[ one.title ] = one.id; 
 				}
 			} );
 
 			var manualIds = parseIdList( attributes.manualOrderIds );
 
-			// Bài nằm ngoài bộ lọc hiện tại vẫn giữ nguyên dạng "#28" thay vì
-			// biến mất — đổi bộ lọc rồi đổi lại không được làm mất thứ tự đã chọn.
+
 			var manualTokens = manualIds.map( function ( id ) {
 				return titleById[ id ] || '#' + id;
 			} );
@@ -249,7 +233,7 @@
 					var text = String( token ).trim();
 					var id = idByTitle[ text ];
 					if ( ! id ) {
-						// Thẻ dạng "#28" của bài ngoài bộ lọc, hoặc người dùng gõ thẳng số.
+
 						id = parseInt( text.replace( /^#/, '' ), 10 );
 					}
 					if ( id > 0 && ids.indexOf( id ) === -1 ) {
@@ -271,9 +255,8 @@
 				} )
 			);
 
-			// Danh sách chọn "Ghim tay một bài lên ô lớn" — cùng nguồn dữ liệu
-			// candidatePosts đã tải cho ô "Tự chọn thứ tự" ở dưới. Bài đã ghim
-			// nằm ngoài bộ lọc hiện tại vẫn hiện dạng "#28" thay vì biến mất.
+
+
 			var pinnedPostOptions = [ { label: __( '— Tự động (mới nhất) —', 'nntm' ), value: 0 } ].concat(
 				candidatePosts.map( function ( one ) {
 					return { label: one.title, value: one.id };
@@ -286,7 +269,7 @@
 				} );
 			}
 
-			var previewAttributes = Object.assign( {}, attributes, { heading: '' } ); // tranh hien tieu de 2 lan (RichText da hien o duoi)
+			var previewAttributes = Object.assign( {}, attributes, { heading: '' } ); 
 
 			return el(
 				'div',
@@ -324,9 +307,8 @@
 									},
 							  } )
 							: null,
-						// Ghim tay MOT bai len o lon (yeu cau anh Uy 12/08/2026, muc M1.3).
-						// Dung lai danh sach candidatePosts da tai theo dung nguon dang
-						// chon o tren — admin khong phai di tra so ID o dau khac.
+
+
 						'manual' !== attributes.orderBy
 							? el( SelectControl, {
 									label: __( 'Ghim tay một bài lên ô lớn', 'nntm' ),
@@ -373,9 +355,8 @@
 								setAttributes( { orderBy: value } );
 							},
 						} ),
-						// Chỉ hiện khi chọn "Tự chọn thứ tự từng bài". Bắt buộc phải
-						// có ô này: thiếu nó thì thuộc tính manualOrderIds trong
-						// block.json không có cách nào sửa từ giao diện.
+
+
 						'manual' === attributes.orderBy
 							? el(
 									wp.element.Fragment,
@@ -424,8 +405,7 @@
 								setAttributes( { cardCtaLabel: value } );
 							},
 						} ),
-						// Nut "Xem Tat ca" o duoi cung khoi (Figma R4 SECTION 1).
-						// Chi hien tren trang khi nhap DU ca nhan va duong dan.
+
 						el( TextControl, {
 							label: __( 'Nhãn nút "Xem Tất cả"', 'nntm' ),
 							help: __( 'Để trống thì không hiện nút. Cần nhập cả nhãn và đường dẫn bên dưới.', 'nntm' ),
@@ -461,7 +441,7 @@
 			);
 		},
 		save: function () {
-			// Block động: PHP (render.php) tự chạy lại WP_Query mỗi lần tải trang.
+
 			return null;
 		},
 	} );

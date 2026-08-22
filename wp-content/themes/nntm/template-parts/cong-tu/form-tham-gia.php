@@ -1,21 +1,10 @@
 <?php
-/**
- * Form "Tham Gia Chuỗi Trì" / "Cam Kết Thêm" — MỘT template duy nhất, đổi
- * chữ theo nntm_kpi_da_tham_gia() (đúng yêu cầu, KHÔNG đẻ file thứ hai).
- *
- * Dựng theo ảnh thiết kế thật design/figma/6613-10636@1x.png (node Figma
- * 6613:10636, khung 1366×770 — xem docs/07-ban-giao.md). Số đo bóc bằng
- * cách so màu từng điểm ảnh (không có GD/Imagick ở máy này nên đo bằng
- * Pillow qua dòng lệnh `python`), xem chi tiết số đo trong cong-tu.css.
- *
- * @package NNTM
- */
 
 defined( 'ABSPATH' ) || exit;
 
 $nntm_ct_program = function_exists( 'nntm_program_hien_tai' ) ? nntm_program_hien_tai() : null;
 $nntm_ct_errors  = isset( $GLOBALS['nntm_congtu_errors'] ) && is_wp_error( $GLOBALS['nntm_congtu_errors'] ) ? $GLOBALS['nntm_congtu_errors'] : null;
-$nntm_ct_ok      = isset( $_GET['nntm_congtu_ok'] ) && 'cam-ket' === $_GET['nntm_congtu_ok']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- chi doc co dua hien thong bao, khong tao doi.
+$nntm_ct_ok      = isset( $_GET['nntm_congtu_ok'] ) && 'cam-ket' === $_GET['nntm_congtu_ok'];  
 
 $nntm_ct_user_id = get_current_user_id();
 ?>
@@ -56,7 +45,7 @@ $nntm_ct_user_id = get_current_user_id();
 		<h1 class="nntm-auth-card__title nntm-auth-card__title--cong-tu"><?php echo esc_html( $nntm_ct_tieu_de ); ?></h1>
 
 		<div class="nntm-cong-tu__chao">
-			<?php echo get_avatar( $nntm_ct_user_id, 40, '', '', array( 'class' => 'nntm-cong-tu__avatar' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_avatar() da tu esc. ?>
+			<?php echo get_avatar( $nntm_ct_user_id, 40, '', '', array( 'class' => 'nntm-cong-tu__avatar' ) );  ?>
 			<span class="nntm-cong-tu__chao-text">
 				<em><?php esc_html_e( 'Xin chào', 'nntm' ); ?></em>
 				<strong><?php echo esc_html( $nntm_ct_phap_danh ); ?></strong>
@@ -64,19 +53,12 @@ $nntm_ct_user_id = get_current_user_id();
 		</div>
 
 		<?php
-		/*
-		 * Dòng trạng thái LUÔN in ra (rỗng khi chưa tham gia) — AJAX sau khi
-		 * cam kết xong sẽ điền chữ vào đúng thẻ này mà không phải tải lại
-		 * trang, nên thẻ phải tồn tại sẵn trong DOM. Thẻ rỗng bị CSS ẩn
-		 * (:empty trong cong-tu.css) nên lần đầu vẫn không chiếm chỗ — VÌ VẬY
-		 * mở/đóng thẻ phải nằm SÁT nhau, không xuống dòng: :empty không khớp
-		 * phần tử có dù chỉ một khoảng trắng bên trong.
-		 */
+		 
 		?>
 		<p class="nntm-cong-tu__hien-trang"><?php echo $nntm_ct_da_tham_gia ? esc_html( nntm_congtu_cau_da_cam_ket( (int) $nntm_ct_tong['cam_ket'], (int) $nntm_ct_tong['thuc_hien'] ) ) : ''; ?></p>
 
 		<?php
-		// Ô thông báo dùng chung cho POST thường và AJAX — xem form-khai-bao.php.
+		 
 		?>
 		<div class="nntm-cong-tu__thong-bao" data-nntm-congtu-thong-bao>
 			<?php if ( $nntm_ct_errors ) : ?>

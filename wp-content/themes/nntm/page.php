@@ -1,8 +1,4 @@
 <?php
-/**
- * Template cho Page — nội dung chủ yếu tới từ block/pattern khách tự sửa
- * (xem docs/04-kien-truc.md mục 2). Template chỉ dựng khung.
- */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -10,11 +6,7 @@ get_header();
 ?>
 
 <?php
-/*
- * Trang ghép từ block section thì <main> để toàn chiều rộng — mỗi block đã
- * tự mang đệm ngoài đúng Figma. Bọc thêm container ở đây sẽ thành đệm chồng
- * đệm và làm nội dung hẹp hơn thiết kế (xem nntm_page_uses_section_blocks()).
- */
+ 
 $nntm_main_class = nntm_page_uses_section_blocks( get_queried_object() )
 	? 'nntm-main--full'
 	: 'nntm-container nntm-mt-8 nntm-mb-8';
