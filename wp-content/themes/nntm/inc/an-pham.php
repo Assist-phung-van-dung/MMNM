@@ -122,3 +122,24 @@ function nntm_an_pham_enqueue_assets(): void {
 
 }
 add_action( 'wp_enqueue_scripts', 'nntm_an_pham_enqueue_assets', 30 );
+
+/** Số bìa sách mỗi trang ở kho ấn phẩm — 12 = 3 hàng đủ của lưới 4 cột. */
+const NNTM_AN_PHAM_MOI_TRANG = 12;
+
+/**
+ * Kho ấn phẩm /an-pham/ — 12 bìa mỗi trang, mới nhất trước.
+ *
+ * Đặt ở pre_get_posts chứ không dùng WP_Query riêng trong template: có vậy
+ * `paginate_links()` và `$wp_query->max_num_pages` mới tính đúng, và /page/2/
+ * mới không trả 404.
+ */
+function nntm_an_pham_archive_query( WP_Query $query ): void {
+	if ( is_admin() || ! $query->is_main_query() || ! $query->is_post_type_archive( 'nntm_publication' ) ) {
+		return;
+	}
+
+	$query->set( 'posts_per_page', NNTM_AN_PHAM_MOI_TRANG );
+	$query->set( 'orderby', 'date' );
+	$query->set( 'order', 'DESC' );
+}
+add_action( 'pre_get_posts', 'nntm_an_pham_archive_query' );

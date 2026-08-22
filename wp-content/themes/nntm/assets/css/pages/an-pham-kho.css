@@ -1,0 +1,203 @@
+/* =============================================================
+   Kho ấn phẩm — /an-pham/  (archive-nntm_publication.php)
+
+   Gallery bìa sách: 4 bìa một hàng ở desktop, mỗi bìa chỉ ảnh + tên.
+   Chốt 22/08/2026.
+
+   BÌA LÀ KHỔ DỌC, KHÔNG PHẢI VUÔNG. Bìa thật của khách trong
+   tools/assets/an-pham-thich-long-vien/ đều đúng 349×510 — nên ô ảnh lấy y
+   nguyên tỉ lệ đó, không làm tròn thành 2/3 (0,667 so với 0,684: chênh 2,5%,
+   đủ để mỗi bìa bị liếm mất một vạch ở hai bên).
+
+   Dùng 1/1 như thẻ .nntm-card--books của dải Hoa Khai thì mọi bìa bị cắt mất
+   đầu hoặc chân trang — đó là thẻ dựng cho nền đen khổ vuông, việc khác.
+   ============================================================= */
+
+.nntm-an-pham-kho {
+	padding-block: var(--nntm-sp-9) var(--nntm-sp-11);
+}
+
+.nntm-an-pham-kho__dau {
+	margin-bottom: var(--nntm-sp-8);
+	text-align: center;
+}
+
+.nntm-an-pham-kho__tieu-de {
+	margin: 0;
+	font-family: var(--nntm-font-display, var(--nntm-font-serif));
+	font-size: var(--nntm-fs-4xl);
+	line-height: var(--nntm-lh-chat);
+	color: var(--nntm-chu);
+}
+
+/* ---------- Lưới ---------- */
+
+.nntm-an-pham-kho__luoi {
+	display: grid;
+	/* 4 cột cố định, KHÔNG auto-fill: yêu cầu là đúng 4 bìa một hàng. auto-fill
+	   sẽ tự đổi số cột theo bề rộng, hàng cuối 45 bìa lẻ ra trông ngẫu nhiên. */
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: var(--nntm-sp-8) var(--nntm-sp-6);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.nntm-an-pham-kho__o {
+	margin: 0;
+}
+
+.nntm-an-pham-kho__the {
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-4);
+	text-decoration: none;
+	color: inherit;
+}
+
+/* ---------- Bìa ---------- */
+
+.nntm-an-pham-kho__bia {
+	position: relative;
+	display: block;
+	overflow: hidden;
+	aspect-ratio: 349 / 510; /* đúng khổ bìa gốc của khách */
+	border-radius: var(--nntm-r-sm);
+	background-color: var(--nntm-nen-noi);
+	box-shadow: var(--nntm-sh-card);
+	transition: transform var(--nntm-dur, .25s) var(--nntm-ease, ease),
+	            box-shadow var(--nntm-dur, .25s) var(--nntm-ease, ease);
+}
+
+.nntm-an-pham-kho__anh {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+/* Ấn phẩm chưa có ảnh bìa: ô vẫn chiếm đúng một chỗ của lưới, không để hàng
+   bị lệch. Vệt chéo nhạt để phân biệt với bìa đang tải. */
+.nntm-an-pham-kho__bia-trong {
+	position: absolute;
+	inset: 0;
+	background-image: linear-gradient(135deg, var(--nntm-nen) 0%, var(--nntm-nen-noi) 100%);
+	border: 1px solid var(--nntm-duong-vien);
+}
+
+.nntm-an-pham-kho__the:hover .nntm-an-pham-kho__bia,
+.nntm-an-pham-kho__the:focus-visible .nntm-an-pham-kho__bia {
+	transform: translateY(-4px);
+	box-shadow: var(--nntm-sh-lift);
+}
+
+/* ---------- Tên sách ---------- */
+
+.nntm-an-pham-kho__ten {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	/* Hai dòng: tên ấn phẩm ở dự án này dài (“… — Tập 12”), một dòng thì cắt
+	   mất đúng cái số tập là thứ phân biệt các cuốn với nhau. */
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	overflow: hidden;
+	font-size: var(--nntm-fs-base);
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-chu);
+}
+
+.nntm-an-pham-kho__the:hover .nntm-an-pham-kho__ten,
+.nntm-an-pham-kho__the:focus-visible .nntm-an-pham-kho__ten {
+	color: var(--nntm-chinh);
+}
+
+.nntm-an-pham-kho__trong {
+	margin: 0;
+	text-align: center;
+	color: var(--nntm-chu-phu);
+}
+
+/* ---------- Phân trang ---------- */
+
+.nntm-an-pham-kho__phan-trang {
+	margin-top: var(--nntm-sp-10);
+}
+
+.nntm-an-pham-kho__phan-trang .nav-links {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	gap: var(--nntm-sp-2);
+}
+
+.nntm-an-pham-kho__phan-trang .page-numbers {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 40px;
+	min-height: 40px;
+	padding-inline: var(--nntm-sp-3);
+	border: 1px solid var(--nntm-duong-vien);
+	border-radius: var(--nntm-r-sm);
+	font-size: var(--nntm-fs-sm);
+	text-decoration: none;
+	color: var(--nntm-chu);
+}
+
+.nntm-an-pham-kho__phan-trang .page-numbers:hover,
+.nntm-an-pham-kho__phan-trang .page-numbers:focus-visible {
+	border-color: var(--nntm-chinh);
+	color: var(--nntm-chinh);
+}
+
+.nntm-an-pham-kho__phan-trang .page-numbers.current {
+	border-color: var(--nntm-chinh);
+	background-color: var(--nntm-chinh);
+	color: var(--nntm-trang);
+}
+
+.nntm-an-pham-kho__phan-trang .page-numbers.dots {
+	border-color: transparent;
+}
+
+/* ---------- Màn nhỏ ---------- */
+
+/* Bám hai mốc chuẩn của dự án (responsive.css): 1151 và 767. */
+@media (max-width: 1151px) {
+	.nntm-an-pham-kho__luoi {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 767px) {
+	.nntm-an-pham-kho {
+		padding-block: var(--nntm-sp-7) var(--nntm-sp-9);
+	}
+
+	.nntm-an-pham-kho__luoi {
+		/* Hai cột, không một cột: bìa sách một cột thì cao gần hết màn hình,
+		   cuộn mãi mới hết 12 cuốn. */
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: var(--nntm-sp-6) var(--nntm-sp-4);
+	}
+
+	.nntm-an-pham-kho__tieu-de {
+		font-size: var(--nntm-fs-2xl);
+	}
+
+	.nntm-an-pham-kho__ten {
+		font-size: var(--nntm-fs-sm);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-an-pham-kho__bia {
+		transition: none;
+	}
+
+	.nntm-an-pham-kho__the:hover .nntm-an-pham-kho__bia,
+	.nntm-an-pham-kho__the:focus-visible .nntm-an-pham-kho__bia {
+		transform: none;
+	}
+}

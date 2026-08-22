@@ -305,6 +305,25 @@ function nntm_enqueue_lien_dan_figma_assets(): void {
 add_action( 'wp_enqueue_scripts', 'nntm_enqueue_lien_dan_figma_assets', 60 );
 
 /**
+ * Kho ấn phẩm /an-pham/ — gallery bìa sách (archive-nntm_publication.php).
+ * Chỉ nạp ở đúng archive này, không đụng thẻ bìa sách dùng chung nơi khác.
+ */
+function nntm_enqueue_an_pham_kho_assets(): void {
+	if ( ! is_post_type_archive( 'nntm_publication' ) ) {
+		return;
+	}
+
+	$css_path = NNTM_THEME_DIR . '/assets/css/pages/an-pham-kho.css';
+	wp_enqueue_style(
+		'nntm-an-pham-kho',
+		NNTM_THEME_URI . '/assets/css/pages/an-pham-kho.css',
+		array( 'nntm-tokens', 'nntm-base', 'nntm-layout', 'nntm-header', 'nntm-footer' ),
+		nntm_asset_version( $css_path )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'nntm_enqueue_an_pham_kho_assets', 62 );
+
+/**
  * Pixel reconciliation for Hoa Khai (Figma frame 6376:6603).
  * Page-scoped so shared article-mosaic/card-list defaults remain reusable.
  */

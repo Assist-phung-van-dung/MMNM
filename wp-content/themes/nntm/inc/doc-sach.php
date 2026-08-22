@@ -28,10 +28,28 @@ defined( 'ABSPATH' ) || exit;
 const NNTM_DOC_ENDPOINT = 'doc';
 
 /**
+ * Phiên bản luật đường dẫn của trình đọc — tăng lên khi đổi/thêm endpoint.
+ */
+const NNTM_DOC_REWRITE_VERSION = '1';
+
+/**
  * Đăng ký endpoint /doc/ sau permalink.
+ *
+ * `add_rewrite_endpoint()` chỉ KHAI BÁO luật; luật đang chạy thật nằm trong
+ * option `rewrite_rules` của cơ sở dữ liệu. Kéo code mới về là có hàm này
+ * nhưng option vẫn là bản cũ, nên /an-pham/<slug>/doc/ trả 404 cho tới khi ai
+ * đó vào Cài đặt → Đường dẫn tĩnh → Lưu. Không ai nhớ bước đó lúc deploy, và
+ * khi quên thì lỗi trông y như trình đọc chưa được viết — nên tự dựng lại luật
+ * đúng MỘT lần, canh bằng option version. Không flush mỗi lần init: flush là
+ * ghi lại toàn bộ bảng luật, làm mọi lượt tải trang chậm đi.
  */
 function nntm_doc_dang_ky_endpoint(): void {
 	add_rewrite_endpoint( NNTM_DOC_ENDPOINT, EP_PERMALINK );
+
+	if ( NNTM_DOC_REWRITE_VERSION !== get_option( 'nntm_doc_rewrite_version' ) ) {
+		flush_rewrite_rules();
+		update_option( 'nntm_doc_rewrite_version', NNTM_DOC_REWRITE_VERSION );
+	}
 }
 add_action( 'init', 'nntm_doc_dang_ky_endpoint' );
 
@@ -57,13 +75,18 @@ function nntm_dang_o_trang_doc(): bool {
 /**
  * URL trang đọc của một ấn phẩm.
  *
+ * Ấn phẩm CHƯA gắn tệp PDF vẫn có trang đọc: mở ra đủ bộ khung (thanh trên, cột
+ * giới thiệu, hai nút lật, thanh dưới), chỉ riêng chỗ trang sách để trống. Chủ
+ * dự án chốt 22/08/2026 — thà một khung sách rỗng còn hơn hai lối đi khác nhau
+ * tuỳ theo ấn phẩm đã có tệp hay chưa, vì người xem không biết trước điều đó.
+ *
  * @param int|WP_Post|null $post Ấn phẩm.
- * @return string Rỗng nếu ấn phẩm chưa gắn tệp PDF.
+ * @return string Rỗng nếu không tìm ra ấn phẩm.
  */
 function nntm_doc_url( $post = null ): string {
 	$post = get_post( $post );
 
-	if ( ! $post || '' === nntm_an_pham_pdf_url( $post ) ) {
+	if ( ! $post ) {
 		return '';
 	}
 
@@ -73,11 +96,15 @@ function nntm_doc_url( $post = null ): string {
 /**
  * Chặn lối vào trang đọc khi chưa được phép.
  *
- * Ba trường hợp, ba xử lý khác nhau — gộp thành một câu "không xem được" là
+ * Hai trường hợp, hai xử lý khác nhau — gộp thành một câu "không xem được" là
  * làm người đọc bí, không biết phải làm gì tiếp:
- *   - chưa gắn tệp      → về trang chi tiết
  *   - ấn phẩm bị khoá   → về trang chi tiết (ở đó có khối mời thanh toán)
  *   - cổng quyền đòi đăng nhập → sang trang đăng nhập, kèm đường về
+ *
+ * CHƯA GẮN TỆP THÌ KHÔNG CÒN CHẶN. Trước đây trường hợp này bị đẩy về trang chi
+ * tiết; giờ vào được, khung sách để trống (xem nntm_doc_url()). Quyền đọc và
+ * việc có tệp là hai chuyện khác nhau — trộn vào một chỗ thì ấn phẩm mở nhưng
+ * thiếu tệp lại bị xử như ấn phẩm bị khoá.
  */
 function nntm_doc_chan_quyen(): void {
 	if ( ! nntm_dang_o_trang_doc() ) {
@@ -91,11 +118,6 @@ function nntm_doc_chan_quyen(): void {
 	}
 
 	$chi_tiet = (string) get_permalink( $post );
-
-	if ( '' === nntm_an_pham_pdf_url( $post ) ) {
-		wp_safe_redirect( $chi_tiet );
-		exit;
-	}
 
 	if ( nntm_an_pham_can_access( $post ) ) {
 		return;
@@ -114,6 +136,74 @@ function nntm_doc_chan_quyen(): void {
 	exit;
 }
 add_action( 'template_redirect', 'nntm_doc_chan_quyen', 5 );
+
+/**
+ * Vào trang chi tiết ấn phẩm thì sang thẳng trang đọc.
+ *
+ * Chủ dự án chốt 22/08/2026: ấn phẩm là để ĐỌC, không phải để xem giới thiệu
+ * rồi bấm thêm một nút nữa. Phần giới thiệu (bìa, tên, mô tả) đã có sẵn ở cột
+ * trái của trình đọc, nên trang chi tiết thành một chặng dừng vô nghĩa.
+ *
+ * BA CHỖ DỄ TỰ BẮN VÀO CHÂN, nên chốt rõ ở đây:
+ *
+ * 1. CHỈ chuyển khi người xem THẬT SỰ được đọc. Ấn phẩm bị khoá thì ở lại trang
+ *    chi tiết — vì nntm_doc_chan_quyen() lại đẩy /doc/ về trang chi tiết, hai
+ *    bên đá nhau thành vòng lặp chuyển hướng vô hạn, trình duyệt báo
+ *    ERR_TOO_MANY_REDIRECTS. Đó cũng đúng nghiệp vụ: trang chi tiết là nơi đặt
+ *    lời mời thanh toán.
+ *
+ * 2. Dùng 302, KHÔNG dùng 301. Việc chuyển hay không phụ thuộc trạng thái khoá
+ *    và việc đã thanh toán — hai thứ thay đổi được. 301 bị trình duyệt nhớ vĩnh
+ *    viễn, nên ngày ấn phẩm bị khoá lại thì máy người đã ghé vẫn lao vào /doc/
+ *    mà không hỏi máy chủ nữa.
+ *
+ * 3. Chừa đường xem trang chi tiết: thêm `?chi-tiet=1`. Không có nó thì trang
+ *    chi tiết của ấn phẩm mở thành ra không ai xem được nữa, kể cả người đang
+ *    làm khối thanh toán trên chính trang đó.
+ */
+function nntm_an_pham_chuyen_sang_trang_doc(): void {
+	if ( is_admin() || ! is_singular( 'nntm_publication' ) ) {
+		return;
+	}
+
+	// Đang ở /doc/ rồi — chính nó cũng là is_singular( 'nntm_publication' ).
+	if ( nntm_dang_o_trang_doc() ) {
+		return;
+	}
+
+	if ( is_feed() || is_embed() || is_preview() || is_customize_preview() ) {
+		return;
+	}
+
+	if ( isset( $_GET['chi-tiet'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- chi doc, khong doi du lieu.
+		return;
+	}
+
+	$post = get_queried_object();
+
+	if ( ! $post instanceof WP_Post ) {
+		return;
+	}
+
+	/** Tắt hẳn hành vi này ở nơi khác nếu cần, không phải sửa file. */
+	if ( ! apply_filters( 'nntm_an_pham_tu_chuyen_sang_doc', true, $post ) ) {
+		return;
+	}
+
+	if ( ! nntm_an_pham_can_access( $post ) ) {
+		return;
+	}
+
+	$dich = nntm_doc_url( $post );
+
+	if ( '' === $dich ) {
+		return;
+	}
+
+	wp_safe_redirect( $dich, 302 );
+	exit;
+}
+add_action( 'template_redirect', 'nntm_an_pham_chuyen_sang_trang_doc', 6 );
 
 /**
  * Dùng template riêng cho trang đọc.
@@ -140,12 +230,13 @@ function nntm_doc_enqueue_assets(): void {
 		return;
 	}
 
-	$post    = get_queried_object();
-	$pdf_url = $post instanceof WP_Post ? nntm_an_pham_pdf_url( $post ) : '';
+	$post = get_queried_object();
 
-	if ( '' === $pdf_url ) {
+	if ( ! $post instanceof WP_Post ) {
 		return;
 	}
+
+	$pdf_url = nntm_an_pham_pdf_url( $post );
 
 	$css = NNTM_THEME_DIR . '/assets/css/pages/doc-sach.css';
 	wp_enqueue_style(
@@ -159,19 +250,30 @@ function nntm_doc_enqueue_assets(): void {
 	$flip  = NNTM_THEME_DIR . '/assets/vendor/page-flip/page-flip.browser.js';
 	$js    = NNTM_THEME_DIR . '/assets/js/doc-sach.js';
 
-	if ( ! is_readable( $pdfjs ) || ! is_readable( $flip ) ) {
-		return;
+	/*
+	 * Hai thư viện đọc PDF nặng hơn 1,3 MB — chỉ nạp khi thật có tệp để đọc.
+	 * Ấn phẩm chưa gắn tệp vẫn nạp doc-sach.js (không phụ thuộc thư viện nào) để
+	 * thanh công cụ, đổi nền và toàn màn hình vẫn chạy như thường; nó tự nhận ra
+	 * pdfUrl rỗng và để trống khung sách.
+	 */
+	$co_tep    = '' !== $pdf_url && is_readable( $pdfjs ) && is_readable( $flip );
+	$phu_thuoc = array();
+
+	if ( $co_tep ) {
+		wp_enqueue_script( 'nntm-vendor-pdfjs', NNTM_THEME_URI . '/assets/vendor/pdfjs/pdf.min.js', array(), nntm_asset_version( $pdfjs ), true );
+		wp_enqueue_script( 'nntm-vendor-page-flip', NNTM_THEME_URI . '/assets/vendor/page-flip/page-flip.browser.js', array(), nntm_asset_version( $flip ), true );
+
+		$phu_thuoc = array( 'nntm-vendor-pdfjs', 'nntm-vendor-page-flip' );
 	}
 
-	wp_enqueue_script( 'nntm-vendor-pdfjs', NNTM_THEME_URI . '/assets/vendor/pdfjs/pdf.min.js', array(), nntm_asset_version( $pdfjs ), true );
-	wp_enqueue_script( 'nntm-vendor-page-flip', NNTM_THEME_URI . '/assets/vendor/page-flip/page-flip.browser.js', array(), nntm_asset_version( $flip ), true );
-	wp_enqueue_script( 'nntm-doc-sach', NNTM_THEME_URI . '/assets/js/doc-sach.js', array( 'nntm-vendor-pdfjs', 'nntm-vendor-page-flip' ), nntm_asset_version( $js ), true );
+	wp_enqueue_script( 'nntm-doc-sach', NNTM_THEME_URI . '/assets/js/doc-sach.js', $phu_thuoc, nntm_asset_version( $js ), true );
 
 	wp_localize_script(
 		'nntm-doc-sach',
 		'nntmDocSach',
 		array(
-			'pdfUrl'    => $pdf_url,
+			// Rỗng = ấn phẩm chưa gắn tệp; doc-sach.js dựa vào đây để bỏ bước đọc tệp.
+			'pdfUrl'    => $co_tep ? $pdf_url : '',
 			'workerUrl' => NNTM_THEME_URI . '/assets/vendor/pdfjs/pdf.worker.min.js',
 			'objectId'  => $post->ID,
 			'ajaxUrl'   => admin_url( 'admin-ajax.php' ),

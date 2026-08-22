@@ -25,6 +25,7 @@ require NNTM_THEME_DIR . '/inc/favorites.php';
 require_once NNTM_THEME_DIR . '/inc/section-article.php';
 require_once NNTM_THEME_DIR . '/inc/retreat.php';
 require NNTM_THEME_DIR . '/inc/hanh-gia.php';
+require NNTM_THEME_DIR . '/inc/hoa-khai.php';
 require NNTM_THEME_DIR . '/inc/an-pham.php';
 require NNTM_THEME_DIR . '/inc/doc-sach.php';
 require NNTM_THEME_DIR . '/inc/cong-tu.php';

@@ -22,11 +22,22 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$nntm_pub      = get_queried_object();
-$nntm_chi_tiet = (string) get_permalink( $nntm_pub );
-$nntm_tieu_de  = get_the_title( $nntm_pub );
-$nntm_tac_gia  = (string) get_post_meta( $nntm_pub->ID, '_nntm_pub_tac_gia', true );
-$nntm_bia      = get_the_post_thumbnail_url( $nntm_pub, 'medium' );
+$nntm_pub = get_queried_object();
+
+/*
+ * Nút thoát về KHO ẤN PHẨM, không về trang chi tiết của cuốn đang đọc: trang
+ * chi tiết giờ tự chuyển sang đây (xem nntm_an_pham_chuyen_sang_trang_doc()),
+ * nên trỏ về đó là bấm thoát rồi bị đẩy vào lại — một vòng lặp kín.
+ */
+$nntm_kho_sach = (string) get_post_type_archive_link( 'nntm_publication' );
+
+if ( '' === $nntm_kho_sach ) {
+	$nntm_kho_sach = home_url( '/' );
+}
+
+$nntm_tieu_de    = get_the_title( $nntm_pub );
+$nntm_tac_gia    = (string) get_post_meta( $nntm_pub->ID, '_nntm_pub_tac_gia', true );
+$nntm_bia        = get_the_post_thumbnail_url( $nntm_pub, 'medium' );
 $nntm_gioi_thieu = has_excerpt( $nntm_pub )
 	? get_the_excerpt( $nntm_pub )
 	: wp_trim_words( wp_strip_all_tags( (string) $nntm_pub->post_content ), 120, '…' );
@@ -51,7 +62,7 @@ $nntm_gioi_thieu = has_excerpt( $nntm_pub )
 <div class="nntm-doc__app">
 
 	<header class="nntm-doc__bar">
-		<a class="nntm-doc__icon nntm-doc__icon--back" href="<?php echo esc_url( $nntm_chi_tiet ); ?>" title="<?php esc_attr_e( 'Thoát', 'nntm' ); ?>">
+		<a class="nntm-doc__icon nntm-doc__icon--back" href="<?php echo esc_url( $nntm_kho_sach ); ?>" title="<?php esc_attr_e( 'Thoát', 'nntm' ); ?>">
 			<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
 			<span class="nntm-doc__sr"><?php esc_html_e( 'Thoát', 'nntm' ); ?></span>
 		</a>

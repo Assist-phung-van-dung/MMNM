@@ -106,12 +106,17 @@ function nntm_render_card_markup( int $post_id, string $variant, bool $show_date
 
 	/*
 	 * variant "books" là bìa sách để đọc, không phải bài viết để đọc mô tả —
-	 * nếu ấn phẩm có tệp PDF gắn kèm và người xem được phép đọc, bấm bìa vào
-	 * THẲNG trang đọc /doc/, bỏ qua trang chi tiết. Ấn phẩm chưa gắn tệp hoặc
-	 * đang khoá vẫn về trang chi tiết như cũ (nơi có nút mời thanh toán).
+	 * người xem được phép đọc thì bấm bìa vào THẲNG trang đọc /doc/, bỏ qua
+	 * trang chi tiết. Ấn phẩm đang khoá vẫn về trang chi tiết như cũ (nơi có nút
+	 * mời thanh toán).
+	 *
+	 * KHÔNG xét "đã gắn tệp hay chưa": chưa gắn thì trang đọc vẫn mở, khung sách
+	 * để trống. Xét ở đây thì cùng một dải bìa sách lại có hai đích đến khác
+	 * nhau, người xem không đoán được bấm vào sẽ đi đâu.
 	 */
 	if ( 'books' === $variant ) {
 		$duong_doc = nntm_doc_url( $post );
+
 		if ( '' !== $duong_doc && nntm_an_pham_can_access( $post ) ) {
 			$permalink = $duong_doc;
 		}

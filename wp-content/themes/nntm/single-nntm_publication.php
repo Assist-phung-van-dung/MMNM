@@ -41,7 +41,6 @@ while ( have_posts() ) :
 	}
 
 	$related  = new WP_Query( $related_args );
-	$pdf_url  = nntm_an_pham_pdf_url( $post_id );
 	$bi_khoa  = nntm_an_pham_bi_khoa( $post_id );
 	$duoc_xem = nntm_an_pham_can_access( $post_id );
 	?>
@@ -103,7 +102,14 @@ while ( have_posts() ) :
 							</button>
 						<?php endif; ?>
 
-						<?php if ( '' !== $pdf_url && $duoc_xem ) : ?>
+						<?php
+						/*
+						 * Nút hiện theo QUYỀN ĐỌC, không theo "đã có tệp hay chưa":
+						 * ấn phẩm chưa gắn tệp vẫn mở được trang đọc, khung sách để
+						 * trống (xem nntm_doc_url()).
+						 */
+						?>
+						<?php if ( $duoc_xem ) : ?>
 							<a href="<?php echo esc_url( nntm_doc_url( $post_id ) ); ?>" class="nntm-an-pham__doc-nut">
 								<?php esc_html_e( 'Đọc ấn phẩm', 'nntm' ); ?>
 							</a>

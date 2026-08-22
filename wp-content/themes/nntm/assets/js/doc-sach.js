@@ -19,13 +19,22 @@
 ( function () {
 	'use strict';
 
-	if ( 'undefined' === typeof nntmDocSach || 'undefined' === typeof pdfjsLib ) {
+	if ( 'undefined' === typeof nntmDocSach ) {
 		return;
 	}
 
 	var CFG = nntmDocSach;
 
-	pdfjsLib.GlobalWorkerOptions.workerSrc = CFG.workerUrl;
+	/*
+	 * Ấn phẩm chưa gắn tệp thì inc/doc-sach.php truyền pdfUrl rỗng và KHÔNG nạp
+	 * pdf.js — nên không được coi thiếu pdfjsLib là lỗi mà thoát sớm. Bộ khung
+	 * vẫn phải dựng đủ, chỉ khung sách để trống.
+	 */
+	var coTep = !! CFG.pdfUrl && 'undefined' !== typeof pdfjsLib;
+
+	if ( coTep ) {
+		pdfjsLib.GlobalWorkerOptions.workerSrc = CFG.workerUrl;
+	}
 
 	// Chỉ dùng khi hỏi tỉ lệ trang PDF thất bại. Bình thường lấy tỉ lệ thật của
 	// trang, vì sách khổ vuông hay khổ ngang mà áp con số này thì méo.
@@ -591,6 +600,16 @@
 	 * @return {Promise}
 	 */
 	function veLai() {
+		/*
+		 * Không có tệp thì không có gì để chia tờ. Vẫn ghi data-xem để bố cục
+		 * theo cách xem đang chọn, rồi trả về Promise đã xong — doiCheDo() nối
+		 * .then() vào đây, trả undefined là vỡ.
+		 */
+		if ( ! pdf ) {
+			document.body.dataset.xem = cheDo;
+			return Promise.resolve();
+		}
+
 		document.body.dataset.xem = cheDo;
 
 		el.text.hidden = 'cuon' !== cheDo;
@@ -603,6 +622,8 @@
 	 * ===================================================================== */
 
 	function toiTrang( so ) {
+		if ( ! pdf ) { return; }
+
 		so = Math.max( 1, Math.min( soTrang, so | 0 ) );
 
 		if ( 'lat' === cheDo ) {
@@ -721,6 +742,8 @@
 	}
 
 	function truoc() {
+		if ( ! pdf ) { return; }
+
 		if ( 'lat' === cheDo ) {
 			latTo( -1 );
 			return;
@@ -730,6 +753,8 @@
 	}
 
 	function sau() {
+		if ( ! pdf ) { return; }
+
 		if ( 'lat' === cheDo ) {
 			latTo( 1 );
 			return;
@@ -743,6 +768,10 @@
 	 * ===================================================================== */
 
 	function capNhat() {
+		// Không có tệp: soTrang = 0, trangHT/soTrang ra NaN nên thanh dưới sẽ
+		// ghi "NaN%". Giữ nguyên "0%" và ô chương trống mà template đã in.
+		if ( ! pdf ) { return; }
+
 		if ( el.slider ) { el.slider.value = trangHT; }
 
 		if ( el.percent ) {
@@ -837,6 +866,8 @@
 	}
 
 	function doiDanhDau() {
+		if ( ! pdf ) { return; }
+
 		try {
 			if ( danhDauHienTai() === trangHT ) {
 				window.localStorage.removeItem( 'nntm-dau-' + CFG.objectId );
@@ -1115,6 +1146,37 @@
 			cheDo = xemLuu;
 		}
 	} catch ( e ) {}
+
+	/*
+	 * Ấn phẩm chưa gắn tệp: dựng đúng bộ khung như lúc có tệp, chỗ trang sách để
+	 * TRỐNG — không câu báo lỗi, không ảnh thay thế. Chủ dự án chốt 22/08/2026.
+	 *
+	 * Vẫn nối nút để đổi nền, đổi cách xem, mục lục, toàn màn hình chạy như
+	 * thường; riêng những nút chỉ có nghĩa khi có trang (lật trước/sau, thanh
+	 * trượt, đánh dấu) thì khoá lại — để đó bấm được mà không xảy ra gì là nói
+	 * dối với người dùng.
+	 */
+	if ( ! coTep ) {
+		document.body.dataset.xem = cheDo;
+
+		document.querySelectorAll( '[data-nntm-doc^="xem-"]' ).forEach( function ( b ) {
+			b.classList.toggle( 'is-active', b.dataset.nntmDoc === 'xem-' + cheDo );
+		} );
+
+		veWatermark();
+		noiNut();
+		hienDangTai( false );
+
+		if ( el.tocBody ) {
+			el.tocBody.textContent = CFG.i18n.khongMucLuc;
+		}
+
+		[ el.prev, el.next, el.slider, el.mark ].forEach( function ( x ) {
+			if ( x ) { x.disabled = true; }
+		} );
+
+		return;
+	}
 
 	pdfjsLib.getDocument( { url: CFG.pdfUrl } ).promise.then( function ( tep ) {
 		pdf     = tep;
