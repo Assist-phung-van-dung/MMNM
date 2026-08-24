@@ -1,0 +1,27 @@
+:root {
+	--nntm-reveal-dur: 1500ms;
+	--nntm-reveal-ease: cubic-bezier(0.22, 1, 0.36, 1);
+	--nntm-reveal-dich: 20px;
+}
+
+html.nntm-co-js .nntm-reveal {
+	opacity: 0;
+	transform: translateY(var(--nntm-reveal-dich));
+	transition:
+		opacity var(--nntm-reveal-dur) var(--nntm-reveal-ease),
+		transform var(--nntm-reveal-dur) var(--nntm-reveal-ease);
+}
+
+html.nntm-co-js .nntm-reveal.is-hien {
+	opacity: 1;
+	transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html.nntm-co-js .nntm-reveal,
+	html.nntm-co-js .nntm-reveal.is-hien {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+}
