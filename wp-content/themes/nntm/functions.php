@@ -27,4 +27,8 @@ require NNTM_THEME_DIR . '/inc/kim-cuong-hanh-gia.php';
 require NNTM_THEME_DIR . '/inc/card-list-ajax.php';
 require NNTM_THEME_DIR . '/inc/video-lightbox.php';
 require NNTM_THEME_DIR . '/inc/reveal.php';
+require NNTM_THEME_DIR . '/inc/admin-bar.php';
+require NNTM_THEME_DIR . '/inc/len-dau-trang.php';
+require NNTM_THEME_DIR . '/inc/chia-se.php';
+require NNTM_THEME_DIR . '/inc/ke-sach-an-pham.php';
 require NNTM_THEME_DIR . '/inc/search.php';

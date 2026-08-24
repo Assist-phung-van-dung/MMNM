@@ -1,0 +1,38 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "nntm/floating-bar",
+	"title": "Thanh Nổi (Floating Bar)",
+	"category": "nntm",
+	"icon": "menu-alt",
+	"description": "Thanh liên kết nổi, hiện lên khi người xem cuộn qua dải banner đầu trang.",
+	"textdomain": "nntm",
+	"supports": {
+		"html": false,
+		"align": false,
+		"customClassName": true,
+		"multiple": false
+	},
+	"attributes": {
+		"items": {
+			"type": "array",
+			"default": [
+				{ "label": "Chuyện về Thầy tôi", "url": "" },
+				{ "label": "Lời Thầy Dạy", "url": "" },
+				{ "label": "Gót Son Xuyên Vạn Kiếp", "url": "" },
+				{ "label": "The Drum of the True Dharma", "url": "" },
+				{ "label": "Hoạt Động & Sự Kiện", "url": "" },
+				{ "label": "Cộng Đồng", "url": "" }
+			]
+		},
+		"moKhi": {
+			"type": "string",
+			"enum": [ "qua-banner", "cuon-ngay" ],
+			"default": "qua-banner"
+		}
+	},
+	"editorScript": "file:./editor.js",
+	"style": "file:./style.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}

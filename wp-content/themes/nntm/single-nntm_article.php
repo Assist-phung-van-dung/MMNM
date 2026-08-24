@@ -111,11 +111,7 @@ if ( null === $nntm_cap_hanh_gia ) {
 
 		$nntm_ngay_cap_nhat = get_the_modified_date( 'd. m. Y' );
 
-		$nntm_trang_lien_dan = get_page_by_path( 'lien-dan' );
-		$nntm_url_khoa_tu    = apply_filters(
-			'nntm_dang_ky_khoa_tu_url',
-			$nntm_trang_lien_dan ? get_permalink( $nntm_trang_lien_dan ) : home_url( '/' )
-		);
+		$nntm_url_chia_se = function_exists( 'nntm_chia_se_url' ) ? nntm_chia_se_url( get_the_ID() ) : '';
 
 		$nntm_terms_hien_tai   = get_the_terms( get_the_ID(), 'nntm_section' );
 		$nntm_term_id_hien_tai = ( is_array( $nntm_terms_hien_tai ) && ! empty( $nntm_terms_hien_tai ) )
@@ -143,21 +139,17 @@ if ( null === $nntm_cap_hanh_gia ) {
 					</div>
 
 					<div class="nntm-bai-hanh-gia__hang-nut">
-						<button
-							type="button"
-							class="nntm-bai-hanh-gia__yeu-thich"
-							data-nntm-favorite="<?php echo esc_attr( (string) get_the_ID() ); ?>"
-							<?php echo is_user_logged_in() ? '' : 'data-nntm-auth-modal="dang-nhap"';  ?>
-						>
-							<svg class="nntm-bai-hanh-gia__tim" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
-								<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-							</svg>
-							<?php esc_html_e( 'Yêu thích', 'nntm' ); ?>
-						</button>
+						<?php
+						if ( function_exists( 'nntm_section_render_favorite_button' ) ) {
+							echo nntm_section_render_favorite_button( get_the_ID(), 'nntm-bai-hanh-gia__yeu-thich' );  
+						}
+						?>
 
-						<a class="nntm-bai-hanh-gia__dang-ky" href="<?php echo esc_url( $nntm_url_khoa_tu ); ?>">
-							<?php esc_html_e( 'Đăng Ký Khoá Tu', 'nntm' ); ?>
-						</a>
+						<?php if ( '' !== $nntm_url_chia_se ) : ?>
+							<a class="nntm-bai-hanh-gia__dang-ky" href="<?php echo esc_url( $nntm_url_chia_se ); ?>">
+								<?php esc_html_e( 'Chia sẻ', 'nntm' ); ?>
+							</a>
+						<?php endif; ?>
 					</div>
 				</div>
 			</section>

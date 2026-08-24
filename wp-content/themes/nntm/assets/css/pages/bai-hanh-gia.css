@@ -291,3 +291,19 @@
 		transform: translateY(-50%) rotate(45deg);
 	}
 }
+
+.nntm-bai-hanh-gia__yeu-thich {
+	font-size: var(--nntm-fs-15);
+	color: var(--nntm-bhg-chu);
+}
+
+.nntm-bai-hanh-gia__yeu-thich .nntm-favorite-button__icon {
+	width: 24px;
+	height: 24px;
+	flex: 0 0 24px;
+	color: inherit;
+}
+
+.nntm-bai-hanh-gia__yeu-thich.is-active .nntm-favorite-button__icon {
+	color: var(--nntm-do-tham);
+}

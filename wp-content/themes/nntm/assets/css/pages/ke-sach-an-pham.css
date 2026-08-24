@@ -1,0 +1,115 @@
+.nntm-hk-publications .nntm-card-list__marquee {
+  perspective:800px;
+  perspective-origin:50% 50%;
+}
+.nntm-hk-publications .nntm-card-list__marquee-track,
+.nntm-hk-publications .nntm-card-list__marquee-item {
+  transform-style:preserve-3d;
+}
+
+.nntm-hk-publications { --nntm-tilt-scale:1; }
+
+.nntm-hk-publications .nntm-card-list__marquee-item:nth-child(odd) .nntm-card--books {
+  --nntm-tilt-y:-15deg;
+  box-shadow:-8px 8px 18px rgba(0,0,0,.35);
+  border-radius:4px 6px 6px 4px;
+}
+.nntm-hk-publications .nntm-card-list__marquee-item:nth-child(even) .nntm-card--books {
+  --nntm-tilt-y:-15deg;
+  box-shadow:8px 8px 18px rgba(0,0,0,.35);
+  border-radius:6px 4px 4px 6px;
+}
+
+.nntm-hk-publications .nntm-card-list__marquee-item:hover .nntm-card--books,
+.nntm-hk-publications .nntm-card-list__marquee-item:focus-within .nntm-card--books {
+  transform:rotateY(0deg) rotateX(0deg);
+  box-shadow:0 24px 40px rgba(0,0,0,.45);
+}
+
+.nntm-hk-publications .nntm-card-list__marquee-item {
+  position:relative;
+  transition:transform 320ms cubic-bezier(.22,1,.36,1);
+}
+
+.nntm-hk-publications .nntm-card-list__marquee-item:hover,
+.nntm-hk-publications .nntm-card-list__marquee-item:focus-within {
+  z-index:5;
+  transform:translateZ(80px) translateY(0px) scale(1.06);
+}
+
+.nntm-hk-publications .nntm-card--books {
+  display:block; box-sizing:border-box; width:100%; height:auto; padding:0;
+  border:0; background:none; backdrop-filter:none;
+  --nntm-tilt-y:0deg;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  transform:rotateY(calc(var(--nntm-tilt-y) * var(--nntm-tilt-scale))) rotateX(calc(1deg * var(--nntm-tilt-scale)));
+  transition:transform 400ms cubic-bezier(.25,.8,.25,1), box-shadow 400ms;
+}
+ 
+.nntm-hk-publications .nntm-card--books .nntm-card__img {
+  width:100%; height:auto; aspect-ratio:3/4; box-shadow:none; overflow:hidden; background-color:transparent;
+}
+.nntm-hk-publications .nntm-card--books .nntm-card__img-el { width:100%; height:100%; object-fit:cover; border-radius:5px; }
+
+.nntm-hk-publications .nntm-card--books .nntm-card__body { display:none; }
+
+@media (min-width:1152px) {
+
+  .nntm-hk-publications > .nntm-card-list__band { height:650px; min-height:650px; padding:30px 0; background:#000; overflow:hidden; }
+  .nntm-hk-publications > .nntm-card-list__band > .nntm-container { height:590px; max-width:1366px; margin-inline:auto; padding:0; }
+  .nntm-hk-publications .nntm-card-list__header-row { height:60px; justify-content:center; margin:0 0 30px; padding:0; }
+  .nntm-hk-publications .nntm-card-list__heading { margin:0; font-size:52px; font-weight:600; line-height:60px; color:#f7f1de; }
+
+  .nntm-hk-publications .nntm-card-list__marquee { height:500px; }
+
+  .nntm-hk-publications .nntm-card-list__marquee {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 80px, #000 calc(100% - 80px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 80px, #000 calc(100% - 80px), transparent 100%);
+  }
+
+  .nntm-hk-publications .nntm-card-list__marquee-track { height:500px; align-items:center; }
+
+   
+  .nntm-hk-publications .nntm-card--books { height:420px; }
+  .nntm-hk-publications .nntm-card--books .nntm-card__img { height:100%; aspect-ratio:auto; }
+
+  .nntm-hk-publications .nntm-card-list__marquee-item {
+    flex:0 0 270px;
+    width:270px;
+    height:auto;
+     
+    margin-right:-90px;
+  }
+}
+
+
+@media (max-width:1151px) {
+  .nntm-hk-news,
+  .nntm-hk-dharma,
+  .nntm-hk-publications > .nntm-card-list__band { height:auto; min-height:0; }
+   
+  .nntm-hk-publications .nntm-card-list__heading { color:#f7f1de; }
+   
+  .nntm-hk-publications > .nntm-card-list__band { padding:40px 0; background:#000; overflow:hidden; }
+   
+  .nntm-hk-publications .nntm-card-list__marquee { height:auto; }
+  .nntm-hk-publications .nntm-card-list__marquee-track { height:auto; padding-block:20px; }
+  .nntm-hk-publications .nntm-card-list__marquee-item { flex:0 0 clamp(120px,34vw,190px); width:clamp(120px,34vw,190px); height:auto; margin-right:clamp(-70px,-16vw,-40px); }
+}
+
+
+@media (max-width:767px) {
+
+  .nntm-hk-publications .nntm-card-list__marquee-item {
+    --nntm-hk-bia: clamp(128px, 40vw, 180px);
+    flex: 0 0 var(--nntm-hk-bia);
+    width: var(--nntm-hk-bia);
+    margin-right: calc(var(--nntm-hk-bia) * -0.26 - var(--nntm-sp-5));
+  }
+}
+
+
+@media (prefers-reduced-motion:reduce) {
+  .nntm-hk-news *, .nntm-hk-dharma *, .nntm-hk-publications * { transition:none; }
+}

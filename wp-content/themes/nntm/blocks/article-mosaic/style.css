@@ -561,3 +561,15 @@
 	outline: 2px solid var(--nntm-chinh);
 	outline-offset: 3px;
 }
+
+.nntm-article-mosaic__lead-title,
+.nntm-article-mosaic__lead-title a,
+.nntm-article-mosaic__medium-title,
+.nntm-article-mosaic__medium-title a,
+.nntm-article-mosaic__small-title,
+.nntm-article-mosaic__small-title a {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}

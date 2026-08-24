@@ -1230,10 +1230,11 @@
 	}
 
 	.home .nntm-footer {
-		height: 299.25px;
-		padding: 20px;
+		height: auto;
+		min-height: calc(299.25px * var(--nntm-footer-ty-le));
+		padding: calc(20px * var(--nntm-footer-ty-le));
 		box-sizing: border-box;
-		background: var(--nntm-den);
+		background: var(--nntm-muc-nhat);
 		margin-top: 0;
 	}
 
@@ -1241,10 +1242,11 @@
 		 
 		width: 100%;
 		max-width: 1326px;
-		height: 259.25px;
+		height: auto;
+		min-height: calc(259.25px * var(--nntm-footer-ty-le));
 		margin-inline: auto;
 		margin-block: 0;
-		padding: 20px;
+		padding: calc(20px * var(--nntm-footer-ty-le));
 		box-sizing: border-box;
 		background: var(--nntm-muc-nhat);
 	}
@@ -1258,38 +1260,38 @@
 		padding: 0;
 		display: flex;
 		flex-direction: column;
-		gap: 50px;
+		gap: calc(50px * var(--nntm-footer-ty-le));
 	}
 
 	.home .nntm-footer__share-row {
 		width: 100%;
-		padding-top: 30px;
+		padding-top: calc(30px * var(--nntm-footer-ty-le));
 		box-sizing: border-box;
 		display: flex;
 		align-items: flex-start;
 	}
 
 	.home .nntm-footer__share {
-		min-height: 44px;
+		min-height: calc(44px * var(--nntm-footer-ty-le));
 		margin: 0;
 		padding: 0;
-		gap: 10px;
+		gap: calc(10px * var(--nntm-footer-ty-le));
 		flex-wrap: nowrap;
 		font-family: var(--nntm-font-display);
-		font-size: 38px;
+		font-size: calc(38px * var(--nntm-footer-ty-le-chu));
 		font-weight: 600;
-		line-height: 44px;
+		line-height: calc(44px * var(--nntm-footer-ty-le-chu));
 		color: var(--nntm-vien);
 	}
 
 	.home .nntm-footer__share-link {
 		min-height: 0;
-		padding: 5px 20px;
+		padding: calc(5px * var(--nntm-footer-ty-le)) calc(20px * var(--nntm-footer-ty-le));
 		border-radius: 5px;
 		background: var(--nntm-vien);
 		box-shadow: 0 5px 30px rgba(116, 119, 102, 0.2);
 		font-family: var(--nntm-font-sans);
-		font-size: 23px;
+		font-size: calc(23px * var(--nntm-footer-ty-le-chu));
 		font-style: normal;
 		font-weight: 700;
 		line-height: normal;
@@ -1298,7 +1300,7 @@
 
 	.home .nntm-footer__sub {
 		width: 100%;
-		padding: 10px;
+		padding: calc(10px * var(--nntm-footer-ty-le));
 		box-sizing: border-box;
 		display: flex;
 		flex-direction: column;
@@ -1313,7 +1315,7 @@
 		align-items: center;
 		justify-content: space-between;
 		 
-		row-gap: 20px;
+		row-gap: calc(20px * var(--nntm-footer-ty-le));
 	}
 
 	.home .nntm-footer__rule {
@@ -1332,8 +1334,8 @@
 		min-width: 0;
 		width: 100%;
 		max-width: 1226px;
-		height: 46.25px;
-		min-height: 46.25px;
+		height: auto;
+		min-height: calc(46.25px * var(--nntm-footer-ty-le));
 		margin: 0;
 		gap: 0;
 		align-items: center;
