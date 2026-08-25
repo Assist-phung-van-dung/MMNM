@@ -55,6 +55,7 @@ class Post_Types {
 		register_post_type( 'nntm_video', $this->args_video() );
 		register_post_type( 'nntm_zen_track', $this->args_zen_track() );
 		register_post_type( 'nntm_program', $this->args_program() );
+		register_post_type( 'nntm_chuyen_thay_toi', $this->args_chuyen_thay_toi() );
 	}
 
 	/**
@@ -268,6 +269,32 @@ class Post_Types {
 			'hierarchical'       => false,
 			'rewrite'            => array(
 				'slug'       => 'nhac-thien',
+				'with_front' => false,
+			),
+			'capability_type'    => 'post',
+			'map_meta_cap'       => true,
+		);
+	}
+
+
+	/**
+	 * nntm_chuyen_thay_toi — Nội dung Chuyện Thầy Tôi.
+	 */
+	private function args_chuyen_thay_toi(): array {
+		return array(
+			'labels'             => $this->labels( __( 'Chuyện Thầy Tôi', 'nntm' ) ),
+			'public'             => true,
+			'show_in_rest'       => true,
+			'menu_icon'          => 'dashicons-book-alt',
+			'menu_position'      => 38,
+			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'revisions', 'author' ),
+			'has_archive'        => true,
+			'show_in_menu'       => true,
+			'show_in_admin_bar'  => true,
+			'show_in_nav_menus'  => true,
+			'hierarchical'       => false,
+			'rewrite'            => array(
+				'slug'       => 'chuyen-thay-toi',
 				'with_front' => false,
 			),
 			'capability_type'    => 'post',

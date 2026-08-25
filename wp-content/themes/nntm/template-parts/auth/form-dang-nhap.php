@@ -87,21 +87,6 @@ $google_url = apply_filters( 'nntm_google_login_url', '' );
 		</p>
 
 		<?php
-
 		?>
-		<?php if ( $google_url ) : ?>
-			<a href="<?php echo esc_url( $google_url ); ?>" class="nntm-auth-btn nntm-auth-btn--phu">
-				<?php esc_html_e( 'Đăng nhập bằng Gmail', 'nntm' ); ?>
-			</a>
-		<?php else : ?>
-			<button
-				type="button"
-				class="nntm-auth-btn nntm-auth-btn--phu"
-				disabled
-				title="<?php esc_attr_e( 'Sẽ bật khi cắm đăng nhập Google', 'nntm' ); ?>"
-			>
-				<?php esc_html_e( 'Đăng nhập bằng Gmail', 'nntm' ); ?>
-			</button>
-		<?php endif; ?>
 	</form>
 </div>

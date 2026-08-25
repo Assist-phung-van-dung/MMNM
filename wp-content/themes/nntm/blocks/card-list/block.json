@@ -31,6 +31,7 @@
 				"nntm_abode",
 				"nntm_video",
 				"nntm_zen_track",
+				"nntm_chuyen_thay_toi",
 				"post"
 			],
 			"default": "nntm_article"

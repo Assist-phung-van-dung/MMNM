@@ -6,7 +6,7 @@ require_once get_template_directory() . '/blocks/card/inc/render-card.php';
 require_once __DIR__ . '/inc/render-card-list-youtube.php';
 require_once __DIR__ . '/inc/render-card-list-marquee.php';
 
-$allowed_post_types = array( 'nntm_article', 'nntm_publication', 'nntm_talk', 'nntm_retreat', 'nntm_abode', 'nntm_video', 'nntm_zen_track', 'post' );
+$allowed_post_types = array( 'nntm_article', 'nntm_publication', 'nntm_talk', 'nntm_retreat', 'nntm_abode', 'nntm_video', 'nntm_zen_track', 'nntm_chuyen_thay_toi', 'post' );
 $post_type          = isset( $attributes['postType'] ) ? sanitize_key( (string) $attributes['postType'] ) : 'nntm_article';
 if ( ! in_array( $post_type, $allowed_post_types, true ) ) {
 	$post_type = 'nntm_article';
