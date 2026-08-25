@@ -56,9 +56,6 @@ while ( have_posts() ) :
 					}
 					?>
 
-					<a class="nntm-cpt-detail__retreat-register" href="<?php echo esc_url( $retreat_archive_url ); ?>">
-						<?php esc_html_e( 'Đăng ký Khóa Tu', 'nntm' ); ?>
-					</a>
 				</div>
 			</div>
 
@@ -70,7 +67,7 @@ while ( have_posts() ) :
 						'attrs'        => array(
 							'heading'          => sprintf(
 								/* translators: %s: post type label. */
-								__( '%s liên quan', 'nntm' ),
+								__( 'Bài viết liên quan', 'nntm' ),
 								$type_name
 							),
 							'postType'         => $post_type,

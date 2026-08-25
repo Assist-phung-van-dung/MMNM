@@ -4,7 +4,7 @@ defined( 'ABSPATH' ) || exit;
 
 $nntm_pub = get_queried_object();
 
-$nntm_kho_sach = (string) get_post_type_archive_link( 'nntm_publication' );
+$nntm_kho_sach = home_url( '/hoa-khai' );
 
 if ( '' === $nntm_kho_sach ) {
 	$nntm_kho_sach = home_url( '/' );
