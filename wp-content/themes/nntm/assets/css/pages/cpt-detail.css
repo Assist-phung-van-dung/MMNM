@@ -1,0 +1,23 @@
+/* Shared detail UI for NNTM CPTs that do not own a dedicated single template. */
+.nntm-cpt-detail {
+	width: 100%;
+	max-width: var(--nntm-w-rong);
+	margin-inline: auto;
+	background: var(--nntm-trang);
+}
+
+.nntm-cpt-detail__actions {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 24px;
+	margin-top: 30px;
+}
+
+.nntm-cpt-detail__actions .nntm-favorite-button {
+	margin: 0;
+}
+
+.nntm-cpt-detail__related .nntm-card-list__heading {
+	text-transform: none;
+}

@@ -24,7 +24,7 @@ function nntm_section_favorites_table_exists(): bool {
 }
 
 function nntm_section_favorite_post_types(): array {
-	$types = array( 'nntm_article', 'nntm_publication', 'nntm_talk', 'nntm_retreat', 'nntm_video', 'post' );
+	$types = array( 'nntm_article', 'nntm_publication', 'nntm_talk', 'nntm_retreat', 'nntm_abode', 'nntm_video', 'nntm_zen_track', 'nntm_chuyen_thay_toi', 'post' );
 	return array_values( array_filter( array_map( 'sanitize_key', (array) apply_filters( 'nntm_section_favorite_post_types', $types ) ) ) );
 }
 
@@ -159,11 +159,16 @@ function nntm_section_is_favorites_request(): bool {
 }
 
 function nntm_section_should_enqueue_favorite_assets(): bool {
-	if ( is_post_type_archive( nntm_section_favorite_post_types() ) ) {
-		return true;
-	}
+	$favorite_types = nntm_section_favorite_post_types();
 
-	if ( is_category() || is_tax( 'nntm_section' ) || is_tax( 'nntm_topic', array( 'khoa-tu', 'lich-tu' ) ) || is_singular( array( 'post', 'nntm_article', 'nntm_publication', 'nntm_retreat' ) ) || nntm_section_is_favorites_request() ) {
+	if (
+		is_category()
+		|| is_tax( 'nntm_section' )
+		|| is_tax( 'nntm_topic', array( 'khoa-tu', 'lich-tu' ) )
+		|| is_post_type_archive( $favorite_types )
+		|| is_singular( $favorite_types )
+		|| nntm_section_is_favorites_request()
+	) {
 		return true;
 	}
 

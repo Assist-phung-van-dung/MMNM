@@ -118,17 +118,19 @@
 }
 
 .nntm-retreat-detail__register {
-	min-height: 48px;
-	padding: 0 28px;
-	background-color: var(--nntm-muc);
-	color: var(--nntm-trang);
+	min-height: 36px;
+	padding: 0 14px;
+	border: 1px solid var(--nntm-chu);
+	background: transparent;
+	color: var(--nntm-chu);
 }
 
 .nntm-retreat-detail__register:hover,
 .nntm-retreat-detail__register:focus-visible {
-	background-color: var(--nntm-chinh);
+	border-color: var(--nntm-chinh-hover);
+	color: var(--nntm-chinh-hover);
+	background: transparent;
 }
-
 .nntm-retreat-detail__share {
 	padding: 0;
 	background: transparent;

@@ -49,15 +49,15 @@ while ( have_posts() ) :
 				</div>
 
 				<div class="nntm-retreat-detail__actions">
-					<button type="button" class="nntm-retreat-detail__register" data-nntm-retreat-open-register>
-						<?php esc_html_e( 'Đăng ký Khóa Tu', 'nntm' ); ?>
-					</button>
-
 					<?php
 					if ( function_exists( 'nntm_section_render_favorite_button' ) ) {
 						echo nntm_section_render_favorite_button( $post_id, 'nntm-retreat-detail__favorite-button' );  
 					}
 					?>
+
+					<button type="button" class="nntm-retreat-detail__register" data-nntm-retreat-open-register>
+						<?php esc_html_e( 'Đăng ký Khóa Tu', 'nntm' ); ?>
+					</button>
 
 					<button
 						type="button"
