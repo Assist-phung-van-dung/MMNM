@@ -863,12 +863,12 @@ a.nntm-card-list__paging-so:focus-visible {
 
 .nntm-card-list__nav--prev .nntm-card-list__nav-icon {
 	margin-left: 3px;
-	transform: rotate(-135deg);  
+	transform: rotate(0deg);  
 }
 
 .nntm-card-list__nav--next .nntm-card-list__nav-icon {
 	margin-right: 3px;
-	transform: rotate(45deg);  
+	transform: rotate(0deg);  
 }
 
 @media (max-width: 1151px) {
