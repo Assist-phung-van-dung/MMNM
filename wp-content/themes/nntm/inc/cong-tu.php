@@ -330,11 +330,6 @@ function nntm_congtu_ghi_cam_ket( $so_chuoi_raw, bool $dong_y, bool $ban_tin ) {
 	}
 
 	$user_id = get_current_user_id();
-
-	if ( ! nntm_kpi_da_tham_gia( $program->ID, $user_id ) && ! $dong_y ) {
-		return new WP_Error( 'dieu_khoan', __( 'Vui lòng đồng ý với Điều khoản sử dụng.', 'nntm' ) );
-	}
-
 	$so_chuoi = nntm_congtu_so_nguyen_duong( $so_chuoi_raw );
 
 	if ( false === $so_chuoi ) {
@@ -396,7 +391,6 @@ function nntm_congtu_xu_ly_cam_ket(): void {
 
 	$ket_qua = nntm_congtu_ghi_cam_ket(
 		$_POST['so_chuoi'] ?? '',
-		! empty( $_POST['nntm_congtu_dong_y'] ),
 		! empty( $_POST['nntm_congtu_ban_tin'] )
 	);
 
@@ -480,7 +474,6 @@ function nntm_congtu_ajax_gui_form(): void {
 	if ( 'cam-ket' === $viec ) {
 		$ket_qua = nntm_congtu_ghi_cam_ket(
 			$_POST['so_chuoi'] ?? '',
-			! empty( $_POST['nntm_congtu_dong_y'] ),
 			! empty( $_POST['nntm_congtu_ban_tin'] )
 		);
 	} else {
