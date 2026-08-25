@@ -281,7 +281,7 @@ function nntm_handle_register_post(): void {
 	$dia_chi      = isset( $_POST['nntm_dia_chi'] ) ? sanitize_text_field( wp_unslash( $_POST['nntm_dia_chi'] ) ) : '';
 	$dien_thoai   = isset( $_POST['nntm_dien_thoai'] ) ? sanitize_text_field( wp_unslash( $_POST['nntm_dien_thoai'] ) ) : '';
 	$nhan_ban_tin = ! empty( $_POST['nntm_nhan_ban_tin'] );
-	$dong_y       = ! empty( $_POST['nntm_dong_y_dieu_khoan'] );
+	// $dong_y       = ! empty( $_POST['nntm_dong_y_dieu_khoan'] );
 
 	$GLOBALS['nntm_auth_values'] = array(
 		'ho_ten'            => $ho_ten,
@@ -321,9 +321,9 @@ function nntm_handle_register_post(): void {
 		$errors->add( 'password', __( 'Mật khẩu phải có ít nhất 8 ký tự.', 'nntm' ) );
 	}
 
-	if ( ! $dong_y ) {
-		$errors->add( 'dieu_khoan', __( 'Vui lòng đồng ý với Điều khoản sử dụng.', 'nntm' ) );
-	}
+	// if ( ! $dong_y ) {
+	// 	$errors->add( 'dieu_khoan', __( 'Vui lòng đồng ý với Điều khoản sử dụng.', 'nntm' ) );
+	// }
 
 	if ( $errors->has_errors() ) {
 		$GLOBALS['nntm_auth_errors'] = $errors;
