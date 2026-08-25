@@ -159,6 +159,10 @@ function nntm_section_is_favorites_request(): bool {
 }
 
 function nntm_section_should_enqueue_favorite_assets(): bool {
+	if ( is_post_type_archive( nntm_section_favorite_post_types() ) ) {
+		return true;
+	}
+
 	if ( is_category() || is_tax( 'nntm_section' ) || is_tax( 'nntm_topic', array( 'khoa-tu', 'lich-tu' ) ) || is_singular( array( 'post', 'nntm_article', 'nntm_publication', 'nntm_retreat' ) ) || nntm_section_is_favorites_request() ) {
 		return true;
 	}

@@ -1,0 +1,111 @@
+/*
+ * Shared visual treatment for every public NNTM CPT archive.
+ * Matches the listing presentation used by /chu-de/khoa-tu/ while keeping
+ * each CPT's native WordPress query and URL behavior intact.
+ */
+.post-type-archive .nntm-site-frame {
+	background-color: var(--nntm-trang);
+}
+
+.nntm-cpt-archive {
+	width: 100%;
+	max-width: var(--nntm-w-rong);
+	margin-inline: auto;
+	background-color: var(--nntm-trang);
+}
+
+.nntm-cpt-archive .nntm-article-rows__inner {
+	width: min(1184px, calc(100% - 40px));
+	max-width: 1184px;
+	margin-inline: auto;
+	padding: 60px 0 72px;
+}
+
+.nntm-cpt-archive .nntm-article-rows__heading {
+	margin-bottom: 30px;
+}
+
+.nntm-cpt-archive .nntm-article-rows__list {
+	padding-bottom: 0;
+}
+
+.nntm-cpt-archive .nntm-article-rows__actions {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 40px;
+	margin-top: 4px;
+}
+
+.nntm-cpt-archive .nntm-article-rows__more {
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-xs);
+	font-weight: 700;
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-chu);
+	text-decoration: underline;
+	text-underline-offset: 0.18em;
+}
+
+.nntm-cpt-archive .nntm-section-pagination {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 30px;
+	width: 100%;
+	margin-top: 60px;
+}
+
+.nntm-cpt-archive .nntm-section-pagination__numbers {
+	display: flex;
+	align-items: center;
+	gap: 30px;
+}
+
+.nntm-cpt-archive .nntm-section-pagination__arrow {
+	width: 58px;
+	height: 58px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--nntm-den);
+	color: var(--nntm-trang);
+	text-decoration: none;
+	font-size: var(--nntm-fs-lg);
+}
+
+.nntm-cpt-archive .nntm-section-pagination__arrow.is-disabled {
+	opacity: 0.85;
+}
+
+.nntm-cpt-archive .nntm-section-pagination__number,
+.nntm-cpt-archive .nntm-section-pagination__ellipsis {
+	min-width: 12px;
+	text-align: center;
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+	line-height: 1;
+	color: var(--nntm-reu-nhat);
+	text-decoration: none;
+}
+
+.nntm-cpt-archive .nntm-section-pagination__number.is-current {
+	color: var(--nntm-chu);
+}
+
+@media (max-width: 767px) {
+	.nntm-cpt-archive .nntm-article-rows__inner {
+		width: min(1184px, calc(100% - 30px));
+		padding: 40px 0 56px;
+	}
+
+	.nntm-cpt-archive .nntm-section-pagination,
+	.nntm-cpt-archive .nntm-section-pagination__numbers {
+		gap: 16px;
+	}
+
+	.nntm-cpt-archive .nntm-section-pagination__arrow {
+		width: 48px;
+		height: 48px;
+	}
+}

@@ -2,6 +2,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
+if ( function_exists( 'nntm_is_cpt_archive_listing' ) && nntm_is_cpt_archive_listing() ) {
+	get_template_part( 'template-parts/archive/cpt-listing' );
+	return;
+}
+
 get_header();
 ?>
 

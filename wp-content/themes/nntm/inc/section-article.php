@@ -76,6 +76,7 @@ function nntm_render_section_article_row( WP_Post $post, int $index, array $args
 		'show_favorite' => true,
 		'cta_label'     => __( 'Xem thêm', 'nntm' ),
 		'start_side'    => 'left',
+		'permalink'     => '',
 	);
 	$args = wp_parse_args( $args, $defaults );
 
@@ -87,7 +88,7 @@ function nntm_render_section_article_row( WP_Post $post, int $index, array $args
 		$classes[] = 'nntm-article-rows__row--reversed';
 	}
 
-	$permalink = get_permalink( $post );
+	$permalink = '' !== trim( (string) $args['permalink'] ) ? (string) $args['permalink'] : get_permalink( $post );
 	$title     = get_the_title( $post );
 	$thumbnail = get_the_post_thumbnail(
 		$post,
@@ -208,3 +209,4 @@ function nntm_render_section_pagination( int $current, int $total, string $base_
 	<?php
 	return trim( (string) ob_get_clean() );
 }
+require_once __DIR__ . '/cpt-archive.php';
