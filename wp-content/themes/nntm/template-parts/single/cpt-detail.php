@@ -55,7 +55,15 @@ while ( have_posts() ) :
 						echo nntm_section_render_favorite_button( $post_id, 'nntm-cpt-detail__favorite-button' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					}
 					?>
-
+					<button
+							type="button"
+							class="nntm-bai-hanh-gia__dang-ky nntm-sao-link"
+							data-nntm-sao-link="<?php echo esc_url( get_permalink() ); ?>"
+							data-nntm-sao-link-xong="<?php esc_attr_e( 'Đã copy link', 'nntm' ); ?>"
+							data-nntm-sao-link-loi="<?php esc_attr_e( 'Không copy được', 'nntm' ); ?>"
+						>
+							<span class="nntm-sao-link__nhan"><?php esc_html_e( 'Chia sẻ', 'nntm' ); ?></span>
+						</button>
 				</div>
 			</div>
 
