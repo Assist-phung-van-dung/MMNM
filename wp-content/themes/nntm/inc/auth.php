@@ -92,6 +92,34 @@ function nntm_enqueue_auth_assets(): void {
 			true
 		);
 	}
+
+	if ( is_page( 'dang-ky' ) && $is_guest ) {
+		$register_js_path = NNTM_THEME_DIR . '/assets/js/auth-register.js';
+		wp_enqueue_script(
+			'nntm-auth-register',
+			NNTM_THEME_URI . '/assets/js/auth-register.js',
+			array(),
+			nntm_asset_version( $register_js_path ),
+			true
+		);
+
+		wp_localize_script(
+			'nntm-auth-register',
+			'nntmAuthRegister',
+			array(
+				'requiredName'     => __( 'Vui lòng nhập Họ và Tên.', 'nntm' ),
+				'requiredEmail'    => __( 'Vui lòng nhập Email.', 'nntm' ),
+				'invalidEmail'     => __( 'Email không hợp lệ. Vui lòng kiểm tra lại.', 'nntm' ),
+				'requiredDharma'   => __( 'Vui lòng nhập Pháp danh.', 'nntm' ),
+				'shortDharma'      => __( 'Pháp danh phải có ít nhất 2 ký tự.', 'nntm' ),
+				'requiredPassword' => __( 'Vui lòng nhập mật khẩu.', 'nntm' ),
+				'shortPassword'    => __( 'Mật khẩu phải có ít nhất 8 ký tự.', 'nntm' ),
+				'requiredConfirm'  => __( 'Vui lòng nhập lại mật khẩu.', 'nntm' ),
+				'passwordMismatch' => __( 'Hai mật khẩu không khớp.', 'nntm' ),
+				'requiredTerms'     => __( 'Vui lòng đồng ý với Điều khoản sử dụng.', 'nntm' ),
+			)
+		);
+	}
 }
 add_action( 'wp_enqueue_scripts', 'nntm_enqueue_auth_assets' );
 
@@ -280,8 +308,8 @@ function nntm_handle_register_post(): void {
 	$vung_mien    = array_key_exists( $vung_mien_tho, nntm_vung_mien_options() ) ? $vung_mien_tho : '';
 	$dia_chi      = isset( $_POST['nntm_dia_chi'] ) ? sanitize_text_field( wp_unslash( $_POST['nntm_dia_chi'] ) ) : '';
 	$dien_thoai   = isset( $_POST['nntm_dien_thoai'] ) ? sanitize_text_field( wp_unslash( $_POST['nntm_dien_thoai'] ) ) : '';
-	$nhan_ban_tin = ! empty( $_POST['nntm_nhan_ban_tin'] );
-	$dong_y       = ! empty( $_POST['nntm_dong_y_dieu_khoan'] );
+	$dong_y_dieu_khoan = ! empty( $_POST['nntm_dong_y_dieu_khoan'] );
+	$nhan_ban_tin       = ! empty( $_POST['nntm_nhan_ban_tin'] );
 
 	$GLOBALS['nntm_auth_values'] = array(
 		'ho_ten'            => $ho_ten,
@@ -314,14 +342,14 @@ function nntm_handle_register_post(): void {
 	}
 
 	if ( '' === $password || '' === $password_2 ) {
-		$errors->add( 'password', __( 'Vui lòng nhập đủ Password và Re-type password.', 'nntm' ) );
+		$errors->add( 'password', __( 'Vui lòng nhập đầy đủ mật khẩu và mật khẩu xác nhận.', 'nntm' ) );
 	} elseif ( $password !== $password_2 ) {
 		$errors->add( 'password', __( 'Hai mật khẩu không khớp.', 'nntm' ) );
 	} elseif ( strlen( $password ) < 8 ) {
 		$errors->add( 'password', __( 'Mật khẩu phải có ít nhất 8 ký tự.', 'nntm' ) );
 	}
 
-	if ( ! $dong_y ) {
+	if ( ! $dong_y_dieu_khoan ) {
 		$errors->add( 'dieu_khoan', __( 'Vui lòng đồng ý với Điều khoản sử dụng.', 'nntm' ) );
 	}
 
