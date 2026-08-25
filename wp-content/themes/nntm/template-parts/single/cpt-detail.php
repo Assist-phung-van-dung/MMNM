@@ -42,12 +42,23 @@ while ( have_posts() ) :
 					<?php the_content(); ?>
 				</div>
 
+				<?php
+				$retreat_archive_url = get_post_type_archive_link( 'nntm_retreat' );
+				if ( ! is_string( $retreat_archive_url ) || '' === trim( $retreat_archive_url ) ) {
+					$retreat_archive_url = home_url( '/khoa-tu/' );
+				}
+				?>
+
 				<div class="nntm-cpt-detail__actions">
 					<?php
 					if ( function_exists( 'nntm_section_render_favorite_button' ) ) {
 						echo nntm_section_render_favorite_button( $post_id, 'nntm-cpt-detail__favorite-button' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					}
 					?>
+
+					<a class="nntm-cpt-detail__retreat-register" href="<?php echo esc_url( $retreat_archive_url ); ?>">
+						<?php esc_html_e( 'Đăng ký Khóa Tu', 'nntm' ); ?>
+					</a>
 				</div>
 			</div>
 
