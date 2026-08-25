@@ -9,7 +9,10 @@
 	"textdomain": "nntm",
 	"supports": {
 		"html": false,
-		"align": [ "wide", "full" ],
+		"align": [
+			"wide",
+			"full"
+		],
 		"customClassName": true
 	},
 	"attributes": {
@@ -35,7 +38,10 @@
 		},
 		"layout": {
 			"type": "string",
-			"enum": [ "overlay", "phap-toa" ],
+			"enum": [
+				"overlay",
+				"phap-toa"
+			],
 			"default": "overlay"
 		},
 		"autoplay": {
@@ -45,6 +51,10 @@
 		"interval": {
 			"type": "number",
 			"default": 5
+		},
+		"loopDelay": {
+			"type": "number",
+			"default": 0
 		}
 	},
 	"editorScript": "file:./editor.js",

@@ -1,6 +1,8 @@
 
 
 .nntm-hero-slider {
+	--nntm-hero-transition: 1100ms;
+	--nntm-hero-ease: cubic-bezier(0.22, 1, 0.36, 1);
 	display: block;
 }
 
@@ -23,14 +25,20 @@
 	inset: 0;
 	opacity: 0;
 	visibility: hidden;
+	pointer-events: none;
 
-	transition: opacity calc( var(--nntm-dur) * 3 ) var(--nntm-ease);
+	/* Keep the outgoing slide visible until its fade-out finishes. */
+	transition:
+		opacity var(--nntm-hero-transition) var(--nntm-hero-ease),
+		visibility 0s linear var(--nntm-hero-transition);
 }
 
 .nntm-hero-slider__slide.is-active {
 	opacity: 1;
 	visibility: visible;
 	z-index: 1;
+	pointer-events: auto;
+	transition-delay: 0s;
 }
 
 .nntm-hero-slider__img,
@@ -45,6 +53,12 @@
 .nntm-hero-slider__img {
 	object-fit: cover;
 	object-position: center;
+	transform: scale(1.025);
+	transition: transform 7s ease-out;
+}
+
+.nntm-hero-slider__slide.is-active .nntm-hero-slider__img {
+	transform: scale(1.07);
 }
 
 .nntm-hero-slider__overlay {
@@ -69,6 +83,13 @@
 	flex-direction: column;
 	gap: var(--nntm-sp-4);
 	max-width: 620px;
+	transition:
+		opacity 680ms var(--nntm-hero-ease),
+		transform 860ms var(--nntm-hero-ease);
+}
+
+.nntm-hero-slider__slide.is-active .nntm-hero-slider__content {
+	transition-delay: 220ms;
 }
 
 .nntm-hero-slider__heading {
@@ -311,6 +332,29 @@
 	display: block;
 }
 
+.nntm-hero-slider--entrance-pending .nntm-hero-slider__entrance-item {
+	opacity: 0;
+	transform: translateY(-26px);
+}
+
+.nntm-hero-slider--entrance-running .nntm-hero-slider__entrance-item {
+	animation: nntm-hero-slider-entrance 700ms var(--nntm-hero-ease) both;
+	animation-delay: calc(var(--nntm-hero-entrance-order, 0) * 110ms);
+	will-change: opacity, transform;
+}
+
+@keyframes nntm-hero-slider-entrance {
+	from {
+		opacity: 0;
+		transform: translateY(-26px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
 .nntm-hero-slider__empty-notice {
 	margin: 0;
 	padding: var(--nntm-sp-8);
@@ -469,12 +513,24 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+	.nntm-hero-slider--entrance-pending .nntm-hero-slider__entrance-item,
+	.nntm-hero-slider--entrance-running .nntm-hero-slider__entrance-item {
+		opacity: 1;
+		transform: none;
+		animation: none;
+	}
+
 	.nntm-hero-slider__slide,
 	.nntm-hero-slider__dot,
 	.nntm-hero-slider__nav,
 	.nntm-hero-slider__cta,
 	.nntm-hero-slider__quicklink,
 	.nntm-hero-slider__sidecard-cta {
+		transition: none;
+	}
+
+	.nntm-hero-slider__img {
+		transform: none;
 		transition: none;
 	}
 }

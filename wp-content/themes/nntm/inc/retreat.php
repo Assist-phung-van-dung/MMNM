@@ -70,8 +70,6 @@ function nntm_enqueue_retreat_assets(): void {
 			'nntmRetreat',
 			array(
 				'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
-				'shareCopied'   => __( 'Đã sao chép liên kết.', 'nntm' ),
-				'shareError'    => __( 'Không thể chia sẻ lúc này.', 'nntm' ),
 				'signupError'   => __( 'Không thể gửi đăng ký. Vui lòng thử lại.', 'nntm' ),
 			)
 		);

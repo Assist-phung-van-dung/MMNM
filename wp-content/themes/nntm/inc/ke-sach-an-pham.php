@@ -44,11 +44,7 @@ function nntm_ke_sach_chot_bo_cuc( array $parsed_block ): array {
 
 	$class_name = isset( $attrs['className'] ) ? (string) $attrs['className'] : '';
 
-	if ( false === strpos( $class_name, NNTM_KE_SACH_LOP ) ) {
-		$class_name = trim( $class_name . ' ' . NNTM_KE_SACH_LOP );
-	}
-
-	$parsed_block['attrs']['className']    = $class_name;
+	$parsed_block['attrs']['className']    = trim( (string) preg_replace( '/(^|\\s)' . preg_quote( NNTM_KE_SACH_LOP, '/' ) . '(?=\\s|$)/', ' ', $class_name ) );
 	$parsed_block['attrs']['layout']       = 'marquee';
 	$parsed_block['attrs']['variant']      = 'books';
 	$parsed_block['attrs']['showPaging']   = false;

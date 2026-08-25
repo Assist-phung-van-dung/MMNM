@@ -22,6 +22,7 @@ function nntm_hk_chot_bo_cuc_dai_an_pham( array $parsed_block ): array {
 
 	$parsed_block['attrs']['layout']  = 'marquee';
 	$parsed_block['attrs']['variant'] = 'books';
+	$parsed_block['attrs']['className'] = trim( (string) preg_replace( '/(^|\\s)' . preg_quote( NNTM_HK_LOP_DAI_AN_PHAM, '/' ) . '(?=\\s|$)/', ' ', $class_name ) );
 
 	return $parsed_block;
 }

@@ -26,11 +26,42 @@ $render_image = static function ( array $item, string $class ): string {
 	return '<img class="' . esc_attr( $class ) . '" src="' . esc_url( $url ) . '" alt="' . esc_attr( $alt ) . '" loading="lazy">';
 };
 
+$render_video = static function ( array $item, string $class, string $label ): string {
+	$id         = isset( $item['videoId'] ) ? absint( $item['videoId'] ) : 0;
+	$url        = $id ? wp_get_attachment_url( $id ) : '';
+	$url        = $url ? $url : esc_url_raw( (string) ( $item['videoUrl'] ?? '' ) );
+	$poster_id  = isset( $item['videoPosterId'] ) ? absint( $item['videoPosterId'] ) : 0;
+	$poster_url = $poster_id ? wp_get_attachment_image_url( $poster_id, 'full' ) : '';
+	$poster_url = $poster_url ? $poster_url : esc_url_raw( (string) ( $item['videoPosterUrl'] ?? '' ) );
+
+	if ( ! $url ) {
+		return '';
+	}
+
+	$poster_attr = $poster_url ? ' poster="' . esc_url( $poster_url ) . '"' : '';
+
+	return '<video class="' . esc_attr( $class ) . '" src="' . esc_url( $url ) . '" controls muted playsinline preload="metadata" data-fc-video aria-label="' . esc_attr( $label ) . '"' . $poster_attr . '></video>';
+};
+
+$slide_media_type = static function ( array $slide ): string {
+	return 'video' === ( $slide['mediaType'] ?? 'image' ) ? 'video' : 'image';
+};
+
 $slides = isset( $attributes['slides'] ) && is_array( $attributes['slides'] ) ? $attributes['slides'] : array();
 $slides = array_values(
 	array_filter(
 		$slides,
-		static fn( $slide ): bool => is_array( $slide ) && ( ! empty( $slide['imageId'] ) || ! empty( $slide['imageUrl'] ) )
+		static function ( $slide ) use ( $slide_media_type ): bool {
+			if ( ! is_array( $slide ) ) {
+				return false;
+			}
+
+			if ( 'video' === $slide_media_type( $slide ) ) {
+				return ! empty( $slide['videoId'] ) || ! empty( $slide['videoUrl'] );
+			}
+
+			return ! empty( $slide['imageId'] ) || ! empty( $slide['imageUrl'] );
+		}
 	)
 );
 
@@ -89,10 +120,14 @@ $wrapper = get_block_wrapper_attributes(
 					$slide_text    = sanitize_textarea_field( (string) ( $slide['text'] ?? '' ) );
 					$cta_label     = sanitize_text_field( (string) ( $slide['ctaLabel'] ?? '' ) );
 					$cta_url       = esc_url( (string) ( $slide['ctaUrl'] ?? '' ) );
+					$media_type    = $slide_media_type( $slide );
+					$media_html    = 'video' === $media_type
+						? $render_video( $slide, 'nntm-feature-carousel__video', $slide_heading ?: __( 'Video nổi bật', 'nntm' ) )
+						: $render_image( $slide, 'nntm-feature-carousel__image' );
 					?>
-					<article class="nntm-feature-carousel__slide" data-fc-slide data-index="<?php echo esc_attr( (string) $index ); ?>">
+					<article class="nntm-feature-carousel__slide nntm-feature-carousel__slide--<?php echo esc_attr( $media_type ); ?>" data-fc-slide data-index="<?php echo esc_attr( (string) $index ); ?>">
 						<div class="nntm-feature-carousel__media">
-							<?php echo wp_kses_post( $render_image( $slide, 'nntm-feature-carousel__image' ) ); ?>
+							<?php echo wp_kses_post( $media_html ); ?>
 						</div>
 						<?php if ( $slide_heading || $slide_text || ( $cta_label && $cta_url ) ) : ?>
 							<div class="nntm-feature-carousel__copy">

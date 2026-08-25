@@ -3,6 +3,7 @@
 	'use strict';
 
 	var el = wp.element.createElement;
+	var Fragment = wp.element.Fragment;
 	var useState = wp.element.useState;
 	var useEffect = wp.element.useEffect;
 	var __ = wp.i18n.__;
@@ -55,6 +56,47 @@
 				} )
 			);
 
+			function videoMediaControl( mediaId, mediaUrl, idKey, urlKey ) {
+				return el(
+					Fragment,
+					{},
+					el(
+						MediaUploadCheck,
+						{},
+						el( MediaUpload, {
+							allowedTypes: [ 'video' ],
+							multiple: false,
+							value: mediaId || 0,
+							onSelect: function ( media ) {
+								var patch = {};
+								patch[ idKey ] = media.id || 0;
+								patch[ urlKey ] = media.url || '';
+								setAttributes( patch );
+							},
+							render: function ( mediaProps ) {
+								return el(
+									Button,
+									{ variant: 'secondary', onClick: mediaProps.open },
+									mediaId || mediaUrl ? __( 'Đổi video', 'nntm' ) : __( 'Chọn video từ Thư viện', 'nntm' )
+								);
+							},
+						} )
+					),
+					mediaId || mediaUrl
+						? el( Button, {
+							variant: 'tertiary',
+							isDestructive: true,
+							onClick: function () {
+								var patch = {};
+								patch[ idKey ] = 0;
+								patch[ urlKey ] = '';
+								setAttributes( patch );
+							},
+						}, __( 'Bỏ video', 'nntm' ) )
+						: null
+				);
+			}
+
 			return el(
 				'div',
 				blockProps,
@@ -95,23 +137,50 @@
 					),
 					el(
 						PanelBody,
-						{ title: __( 'Video (D1 — dán link YouTube)', 'nntm' ), initialOpen: true },
+						{ title: __( 'Nguồn video', 'nntm' ), initialOpen: true },
 						el(
 							'p',
 							{ className: 'components-base-control__help' },
-							__( 'Anh Úy chốt: dán link/ID YouTube trực tiếp, KHÔNG dùng YouTube Data API. Ảnh giữ chỗ lấy trực tiếp từ YouTube, không cần tải ảnh lên.', 'nntm' )
+							__( 'Mỗi vị trí có thể dùng link/ID YouTube hoặc chọn một file video trong Media Library.', 'nntm' )
 						),
-						el( TextControl, {
+						el( SelectControl, {
+							label: __( 'Nguồn video chính', 'nntm' ),
+							value: 'media' === attributes.mainVideoSource ? 'media' : 'link',
+							options: [
+								{ label: __( 'Dán link YouTube', 'nntm' ), value: 'link' },
+								{ label: __( 'Video từ Media Library', 'nntm' ), value: 'media' },
+							],
+							onChange: function ( value ) {
+								setAttributes( { mainVideoSource: value } );
+							},
+						} ),
+						'media' === attributes.mainVideoSource
+							? videoMediaControl( attributes.mainVideoMediaId, attributes.mainVideoMediaUrl, 'mainVideoMediaId', 'mainVideoMediaUrl' )
+							: el( TextControl, {
 							label: __( 'Video chính (khung media lớn)', 'nntm' ),
-							help: __( 'Dán link dạng youtube.com/watch?v=…, youtu.be/… hoặc chỉ ID video. Chưa dán thì khung lớn hiện ảnh dự phòng ở panel bên dưới.', 'nntm' ),
+							help: __( 'Dán link dạng youtube.com/watch?v=…, youtu.be/… hoặc chỉ ID video.', 'nntm' ),
 							value: attributes.mainVideoUrl || '',
 							onChange: function ( value ) {
 								setAttributes( { mainVideoUrl: value } );
 							},
 						} ),
-						el( TextControl, {
-							label: __( 'Video nền (thẻ nhỏ tràn mép, nhấp để đổi làm video chính)', 'nntm' ),
-							help: __( 'Cùng định dạng như trên. Video chỉ phát nền; nhấp vào thẻ sẽ mở bài viết video bên dưới.', 'nntm' ),
+						el( 'hr', { style: { margin: '18px 0' } } ),
+						el( SelectControl, {
+							label: __( 'Nguồn video nền / thẻ nhỏ', 'nntm' ),
+							value: 'media' === attributes.bgVideoSource ? 'media' : 'link',
+							options: [
+								{ label: __( 'Dán link YouTube', 'nntm' ), value: 'link' },
+								{ label: __( 'Video từ Media Library', 'nntm' ), value: 'media' },
+							],
+							onChange: function ( value ) {
+								setAttributes( { bgVideoSource: value } );
+							},
+						} ),
+						'media' === attributes.bgVideoSource
+							? videoMediaControl( attributes.bgVideoMediaId, attributes.bgVideoMediaUrl, 'bgVideoMediaId', 'bgVideoMediaUrl' )
+							: el( TextControl, {
+							label: __( 'Video nền / thẻ nhỏ', 'nntm' ),
+							help: __( 'Cùng định dạng YouTube như video chính.', 'nntm' ),
 							value: attributes.bgVideoUrl || '',
 							onChange: function ( value ) {
 								setAttributes( { bgVideoUrl: value } );
@@ -133,7 +202,7 @@
 						el(
 							'p',
 							{ className: 'components-base-control__help' },
-							__( 'Chỉ hiện khi CHƯA dán "Video chính" ở panel trên — tránh khung media lớn trống trơn trước khi có link YouTube.', 'nntm' )
+							__( 'Hiện làm ảnh giữ chỗ khi video chính chưa sẵn sàng hoặc chưa được chọn.', 'nntm' )
 						),
 						el(
 							MediaUploadCheck,

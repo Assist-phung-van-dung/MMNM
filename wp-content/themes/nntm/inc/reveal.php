@@ -3,7 +3,7 @@
 defined( 'ABSPATH' ) || exit;
 
 function nntm_reveal_bo_qua(): array {
-	return (array) apply_filters( 'nntm_reveal_bo_qua', array( 'nntm/floating-video', 'nntm/floating-bar' ) );
+	return (array) apply_filters( 'nntm_reveal_bo_qua', array( 'nntm/floating-video', 'nntm/floating-bar', 'nntm/hero-slider' ) );
 }
 
 function nntm_reveal_head_script(): void {

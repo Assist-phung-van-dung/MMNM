@@ -1,6 +1,7 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
+	"version": "1.1.0",
 	"name": "nntm/engineering-earth",
 	"title": "Dải phim (Engineering Earth)",
 	"category": "nntm",
@@ -38,10 +39,36 @@
 			"default": "https://www.youtube.com/watch?v=gJAbDSse5WM&list=RDgJAbDSse5WM&start_radio=1",
 			"description": "LINK TAM (mau) do anh Uy chot 13/08/2026 - se thay khi khach gui link that. Video chinh mac dinh cho khoi engineering-earth moi chen vao."
 		},
+		"mainVideoSource": {
+			"type": "string",
+			"enum": [ "link", "media" ],
+			"default": "link"
+		},
+		"mainVideoMediaId": {
+			"type": "number",
+			"default": 0
+		},
+		"mainVideoMediaUrl": {
+			"type": "string",
+			"default": ""
+		},
 		"bgVideoUrl": {
 			"type": "string",
 			"default": "https://www.youtube.com/watch?v=gJAbDSse5WM&list=RDgJAbDSse5WM&start_radio=1",
 			"description": "LINK TAM (mau) do anh Uy chot 13/08/2026 - se thay khi khach gui link that. Video nen mac dinh cho khoi engineering-earth moi chen vao."
+		},
+		"bgVideoSource": {
+			"type": "string",
+			"enum": [ "link", "media" ],
+			"default": "link"
+		},
+		"bgVideoMediaId": {
+			"type": "number",
+			"default": 0
+		},
+		"bgVideoMediaUrl": {
+			"type": "string",
+			"default": ""
 		},
 		"videoId": {
 			"type": "number",

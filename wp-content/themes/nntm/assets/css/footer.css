@@ -25,7 +25,7 @@
 
 .nntm-footer--inner {
 	background-color: var(--nntm-den);
-	padding: calc(var(--nntm-sp-5) * var(--nntm-footer-ty-le));
+	padding: 0 10px;
 	box-sizing: border-box;
 }
 

@@ -10,8 +10,29 @@ $band_title    = isset( $attributes['bandTitle'] ) ? (string) $attributes['bandT
 $band_subtitle = isset( $attributes['bandSubtitle'] ) ? (string) $attributes['bandSubtitle'] : '';
 $caption       = isset( $attributes['caption'] ) ? (string) $attributes['caption'] : '';
 
-$main_video_url = isset( $attributes['mainVideoUrl'] ) ? (string) $attributes['mainVideoUrl'] : '';
-$bg_video_url   = isset( $attributes['bgVideoUrl'] ) ? (string) $attributes['bgVideoUrl'] : '';
+$main_video_source = 'media' === ( $attributes['mainVideoSource'] ?? 'link' ) ? 'media' : 'link';
+$bg_video_source   = 'media' === ( $attributes['bgVideoSource'] ?? 'link' ) ? 'media' : 'link';
+$main_video_url    = 'link' === $main_video_source && isset( $attributes['mainVideoUrl'] ) ? (string) $attributes['mainVideoUrl'] : '';
+$bg_video_url      = 'link' === $bg_video_source && isset( $attributes['bgVideoUrl'] ) ? (string) $attributes['bgVideoUrl'] : '';
+
+$resolve_media_video = static function ( int $attachment_id, string $fallback_url ): string {
+	if ( $attachment_id > 0 ) {
+		$mime_type = (string) get_post_mime_type( $attachment_id );
+		$media_url = wp_get_attachment_url( $attachment_id );
+		if ( 0 === strpos( $mime_type, 'video/' ) && $media_url ) {
+			return esc_url_raw( $media_url );
+		}
+	}
+
+	return esc_url_raw( $fallback_url );
+};
+
+$main_media_video_url = 'media' === $main_video_source
+	? $resolve_media_video( absint( $attributes['mainVideoMediaId'] ?? 0 ), (string) ( $attributes['mainVideoMediaUrl'] ?? '' ) )
+	: '';
+$bg_media_video_url = 'media' === $bg_video_source
+	? $resolve_media_video( absint( $attributes['bgVideoMediaId'] ?? 0 ), (string) ( $attributes['bgVideoMediaUrl'] ?? '' ) )
+	: '';
 $video_post_id  = isset( $attributes['videoId'] ) ? absint( $attributes['videoId'] ) : 0;
 $video_post_url = ( $video_post_id > 0 && 'nntm_video' === get_post_type( $video_post_id ) )
 	? get_permalink( $video_post_id )
@@ -62,7 +83,9 @@ $main_video_id    = nntm_engineering_earth_extract_youtube_id( $main_video_url )
 						aria-label="<?php echo esc_attr( wp_strip_all_tags( $band_title ) ); ?>"
 					>
 						<img class="nntm-engineering-earth__video-poster" src="<?php echo esc_url( $figma_main_image ); ?>" alt="<?php echo esc_attr( wp_strip_all_tags( $band_title ) ); ?>">
-						<div class="nntm-engineering-earth__video-embed" aria-hidden="true"></div>
+						<div class="nntm-engineering-earth__video-embed" aria-hidden="true">
+							<?php echo wp_kses_post( nntm_engineering_earth_render_media_video( $main_media_video_url, wp_strip_all_tags( $band_title ) ) ); ?>
+						</div>
 						<?php if ( '' !== $video_post_url ) : ?>
 							<a class="nntm-engineering-earth__video-link" href="<?php echo esc_url( $video_post_url ); ?>">
 								<span class="nntm-sr-only"><?php esc_html_e( 'Xem bài viết video', 'nntm' ); ?></span>
@@ -105,7 +128,9 @@ $main_video_id    = nntm_engineering_earth_extract_youtube_id( $main_video_url )
 					<img class="nntm-engineering-earth__video-poster" src="<?php echo esc_url( $figma_pip_image ); ?>" alt="" loading="lazy" decoding="async" />
 				<?php endif; ?>
 
-				<div class="nntm-engineering-earth__video-embed" aria-hidden="true"></div>
+				<div class="nntm-engineering-earth__video-embed" aria-hidden="true">
+					<?php echo wp_kses_post( nntm_engineering_earth_render_media_video( $bg_media_video_url, __( 'Video Engineering Earth', 'nntm' ) ) ); ?>
+				</div>
 
 				<?php if ( '' !== $video_post_url ) : ?>
 					<a class="nntm-engineering-earth__video-link" href="<?php echo esc_url( $video_post_url ); ?>">
@@ -118,7 +143,7 @@ $main_video_id    = nntm_engineering_earth_extract_youtube_id( $main_video_url )
 		<?php   ?>
 		<div class="nntm-engineering-earth__band">
 			<div class="nntm-engineering-earth__band-inner">
-				<?php echo nntm_engineering_earth_render_video_stage( $main_video_url, $bg_video_url, $main_image_id, $main_image_url, $main_image_alt, $video_post_url );  ?>
+				<?php echo nntm_engineering_earth_render_video_stage( $main_video_url, $bg_video_url, $main_image_id, $main_image_url, $main_image_alt, $video_post_url, $main_media_video_url, $bg_media_video_url );  ?>
 
 				<?php if ( '' !== trim( $band_title ) || '' !== trim( $band_subtitle ) ) : ?>
 					<div class="nntm-engineering-earth__band-text">

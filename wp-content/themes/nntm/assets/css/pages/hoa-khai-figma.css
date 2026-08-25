@@ -3,7 +3,7 @@
 
 @media (min-width:1152px) {
    
-  .nntm-hk-news { height:811px; min-height:811px; background:#fff; overflow:hidden; }
+  .nntm-hk-news { min-height:811px; background:#fff; overflow:hidden; }
   .nntm-hk-news .nntm-article-mosaic__inner {
     height:811px; max-width:1366px; padding:30px 93px 40px; gap:25px; box-sizing:border-box; background:#fff;
   }

@@ -47,6 +47,7 @@ if ( ! in_array( $layout, array( 'grid', 'carousel', 'marquee' ), true ) ) {
 }
 $is_carousel = ( 'carousel' === $layout );
 $is_marquee  = ( 'marquee' === $layout );
+$is_books_marquee = $is_marquee && ( 'books' === $variant );
 
  
  
@@ -170,7 +171,9 @@ $card_cta_label  = isset( $attributes['cardCtaLabel'] ) ? (string) $attributes['
 
 $wrapper_attributes = get_block_wrapper_attributes(
 	array(
-		'class' => 'nntm-card-list' . ( 'none' !== $background ? ' nntm-card-list--nen-' . $background : '' ),
+		'class' => 'nntm-card-list'
+			. ( 'none' !== $background ? ' nntm-card-list--nen-' . $background : '' )
+			. ( $is_books_marquee ? ' nntm-card-list--books-marquee' : '' ),
 	)
 );
 ?>
@@ -185,12 +188,12 @@ $wrapper_attributes = get_block_wrapper_attributes(
 	?>
 	<div class="nntm-card-list__band">
 	<div class="nntm-container">
-		<?php if ( '' !== $heading || ( $show_view_all && $view_all_url ) ) : ?>
+		<?php if ( '' !== $heading || ( ! $is_books_marquee && $show_view_all && $view_all_url ) ) : ?>
 			<div class="nntm-card-list__header-row">
 				<?php if ( '' !== $heading ) : ?>
 					<h2 class="nntm-card-list__heading<?php echo $has_subheading ? ' nntm-card-list__heading--with-sub' : ''; ?>"><?php echo wp_kses_post( $heading ); ?></h2>
 				<?php endif; ?>
-				<?php if ( $show_view_all && $view_all_url ) : ?>
+				<?php if ( ! $is_books_marquee && $show_view_all && $view_all_url ) : ?>
 					<a class="nntm-card-list__view-all" href="<?php echo esc_url( $view_all_url ); ?>"><?php echo esc_html( $view_all_label ); ?></a>
 				<?php endif; ?>
 			</div>
@@ -323,6 +326,12 @@ $wrapper_attributes = get_block_wrapper_attributes(
 
 		<?php else : ?>
 			<p class="nntm-card-list__empty"><?php esc_html_e( 'Chưa có nội dung nào phù hợp.', 'nntm' ); ?></p>
+		<?php endif; ?>
+
+		<?php if ( $is_books_marquee && $show_view_all && $view_all_url ) : ?>
+			<div class="nntm-card-list__view-all-wrap">
+				<a class="nntm-card-list__view-all" href="<?php echo esc_url( $view_all_url ); ?>"><?php echo esc_html( $view_all_label ); ?></a>
+			</div>
 		<?php endif; ?>
 
 		<?php

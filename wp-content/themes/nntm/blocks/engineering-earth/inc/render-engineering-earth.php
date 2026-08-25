@@ -20,7 +20,19 @@ function nntm_engineering_earth_extract_youtube_id( string $raw ): string {
 	return '';
 }
 
-function nntm_engineering_earth_render_slot_media( string $video_id, string $fallback_image_html ): string {
+function nntm_engineering_earth_render_media_video( string $video_url, string $label ): string {
+	if ( '' === $video_url ) {
+		return '';
+	}
+
+	return sprintf(
+		'<video class="nntm-engineering-earth__video-file" src="%1$s" muted loop playsinline preload="metadata" tabindex="-1" aria-label="%2$s" data-nntm-ee-media-video></video>',
+		esc_url( $video_url ),
+		esc_attr( $label )
+	);
+}
+
+function nntm_engineering_earth_render_slot_media( string $video_id, string $fallback_image_html, string $media_video_url = '', string $label = '' ): string {
 	$poster_url = '' !== $video_id ? esc_url( 'https://img.youtube.com/vi/' . $video_id . '/hqdefault.jpg' ) : '';
 
 	ob_start();
@@ -37,12 +49,14 @@ function nntm_engineering_earth_render_slot_media( string $video_id, string $fal
 			</svg>
 		</span>
 	<?php endif; ?>
-	<div class="nntm-engineering-earth__video-embed" aria-hidden="true"></div>
+	<div class="nntm-engineering-earth__video-embed" aria-hidden="true">
+		<?php echo wp_kses_post( nntm_engineering_earth_render_media_video( $media_video_url, $label ) ); ?>
+	</div>
 	<?php
 	return trim( (string) ob_get_clean() );
 }
 
-function nntm_engineering_earth_render_video_slot( string $video_id, string $role, string $label, string $fallback_image_html = '', string $link_url = '' ): string {
+function nntm_engineering_earth_render_video_slot( string $video_id, string $role, string $label, string $fallback_image_html = '', string $link_url = '', string $media_video_url = '' ): string {
 	$is_main    = ( 'main' === $role );
 	$role_class = $is_main ? 'nntm-engineering-earth__video-slot--main' : 'nntm-engineering-earth__video-slot--bg';
 
@@ -54,7 +68,7 @@ function nntm_engineering_earth_render_video_slot( string $video_id, string $rol
 		data-video-id="<?php echo esc_attr( $video_id ); ?>"
 		aria-label="<?php echo esc_attr( $label ); ?>"
 	>
-		<?php echo nntm_engineering_earth_render_slot_media( $video_id, $is_main ? $fallback_image_html : '' );  ?>
+		<?php echo nntm_engineering_earth_render_slot_media( $video_id, $is_main ? $fallback_image_html : '', $media_video_url, $label );  ?>
 		<?php if ( '' !== $link_url ) : ?>
 			<a class="nntm-engineering-earth__video-link" href="<?php echo esc_url( $link_url ); ?>">
 				<span class="nntm-sr-only"><?php esc_html_e( 'Xem bài viết video', 'nntm' ); ?></span>
@@ -93,7 +107,7 @@ function nntm_engineering_earth_render_main_fallback_image( int $image_id, strin
 	return '';
 }
 
-function nntm_engineering_earth_render_video_stage( string $main_video_url_or_id, string $bg_video_url_or_id, int $main_image_id, string $main_image_url, string $main_image_alt, string $video_link_url = '' ): string {
+function nntm_engineering_earth_render_video_stage( string $main_video_url_or_id, string $bg_video_url_or_id, int $main_image_id, string $main_image_url, string $main_image_alt, string $video_link_url = '', string $main_media_video_url = '', string $bg_media_video_url = '' ): string {
 	$main_id = nntm_engineering_earth_extract_youtube_id( $main_video_url_or_id );
 	$bg_id   = nntm_engineering_earth_extract_youtube_id( $bg_video_url_or_id );
 
@@ -104,8 +118,8 @@ function nntm_engineering_earth_render_video_stage( string $main_video_url_or_id
 	ob_start();
 	?>
 	<div class="nntm-engineering-earth__video-stage" data-nntm-ee-stage="1">
-		<?php echo nntm_engineering_earth_render_video_slot( $main_id, 'main', __( 'Video chính', 'nntm' ), $main_fallback_image, $video_link_url );  ?>
-		<!-- <?php echo nntm_engineering_earth_render_video_slot( $bg_id, 'bg', __( 'Video nền', 'nntm' ), '', $video_link_url );  ?> -->
+		<?php echo nntm_engineering_earth_render_video_slot( $main_id, 'main', __( 'Video chính', 'nntm' ), $main_fallback_image, $video_link_url, $main_media_video_url );  ?>
+		<!-- <?php echo nntm_engineering_earth_render_video_slot( $bg_id, 'bg', __( 'Video nền', 'nntm' ), '', $video_link_url, $bg_media_video_url );  ?> -->
 	</div>
 	<?php
 	return trim( (string) ob_get_clean() );

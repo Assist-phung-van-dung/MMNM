@@ -16,7 +16,29 @@
 		var videoId = slot.getAttribute( 'data-video-id' );
 		var embedHost = slot.querySelector( '.nntm-engineering-earth__video-embed' );
 
-		if ( ! videoId || ! embedHost || embedHost.firstChild ) {
+		if ( ! embedHost ) {
+			return;
+		}
+
+		var mediaVideo = embedHost.querySelector( '[data-nntm-ee-media-video]' );
+		if ( mediaVideo ) {
+			if ( mediaVideo.getAttribute( 'data-nntm-ee-initialized' ) === '1' ) {
+				return;
+			}
+
+			mediaVideo.setAttribute( 'data-nntm-ee-initialized', '1' );
+			mediaVideo.addEventListener( 'playing', function () {
+				slot.classList.add( 'is-loaded' );
+			}, { once: true } );
+
+			var playPromise = mediaVideo.play();
+			if ( playPromise && 'function' === typeof playPromise.catch ) {
+				playPromise.catch( function () {} );
+			}
+			return;
+		}
+
+		if ( ! videoId || embedHost.children.length ) {
 			return;
 		}
 

@@ -1266,6 +1266,182 @@ a.nntm-card-list__paging-so:focus-visible {
 	color: var(--nntm-trang);
 }
 
+/* Chuẩn hiển thị chung cho Card List sách chạy tự động, dùng ở mọi trang. */
+.nntm-card-list--books-marquee .nntm-card-list__marquee {
+	perspective: 800px;
+	perspective-origin: 50% 50%;
+}
+
+.nntm-card-list--books-marquee .nntm-card-list__marquee-track,
+.nntm-card-list--books-marquee .nntm-card-list__marquee-item {
+	transform-style: preserve-3d;
+}
+
+.nntm-card-list--books-marquee {
+	--nntm-tilt-scale: 1;
+}
+
+.nntm-card-list--books-marquee .nntm-card-list__marquee-item:nth-child(odd) .nntm-card--books {
+	--nntm-tilt-y: -15deg;
+	box-shadow: -8px 8px 18px rgb(0 0 0 / 35%);
+	border-radius: 4px 6px 6px 4px;
+}
+
+.nntm-card-list--books-marquee .nntm-card-list__marquee-item:nth-child(even) .nntm-card--books {
+	--nntm-tilt-y: -15deg;
+	box-shadow: 8px 8px 18px rgb(0 0 0 / 35%);
+	border-radius: 6px 4px 4px 6px;
+}
+
+.nntm-card-list--books-marquee .nntm-card-list__marquee-item:hover .nntm-card--books,
+.nntm-card-list--books-marquee .nntm-card-list__marquee-item:focus-within .nntm-card--books {
+	transform: rotateY(0deg) rotateX(0deg);
+	box-shadow: 0 24px 40px rgb(0 0 0 / 45%);
+}
+
+.nntm-card-list--books-marquee .nntm-card-list__marquee-item {
+	position: relative;
+	transition: transform 320ms cubic-bezier(.22, 1, .36, 1);
+}
+
+.nntm-card-list--books-marquee .nntm-card-list__marquee-item:hover,
+.nntm-card-list--books-marquee .nntm-card-list__marquee-item:focus-within {
+	z-index: 5;
+	transform: translateZ(80px) scale(1.06);
+}
+
+.nntm-card-list--books-marquee .nntm-card--books {
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	padding: 0;
+	border: 0;
+	background: none;
+	backdrop-filter: none;
+	--nntm-tilt-y: 0deg;
+	backface-visibility: hidden;
+	transform: rotateY(calc(var(--nntm-tilt-y) * var(--nntm-tilt-scale))) rotateX(calc(1deg * var(--nntm-tilt-scale)));
+	transition: transform 400ms cubic-bezier(.25, .8, .25, 1), box-shadow 400ms;
+}
+
+.nntm-card-list--books-marquee .nntm-card--books .nntm-card__img {
+	width: 100%;
+	aspect-ratio: 3 / 4;
+	box-shadow: none;
+	overflow: hidden;
+	background-color: transparent;
+}
+
+.nntm-card-list--books-marquee .nntm-card--books .nntm-card__img-el {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 5px;
+}
+
+.nntm-card-list--books-marquee .nntm-card--books .nntm-card__body {
+	display: none;
+}
+
+.nntm-card-list--books-marquee .nntm-card-list__view-all-wrap {
+	display: flex;
+	justify-content: center;
+	margin-top: 35px;
+}
+
+.nntm-card-list--books-marquee .nntm-card-list__view-all {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 107px;
+	height: 46px;
+	padding-inline: 16px;
+	border: 1px solid var(--nntm-duong-vien);
+	border-radius: 0;
+	background-color: var(--nntm-nen-noi);
+	color: var(--nntm-chu);
+	font-weight: 400;
+	text-decoration: none;
+}
+
+.nntm-card-list--books-marquee .nntm-card-list__view-all:hover,
+.nntm-card-list--books-marquee .nntm-card-list__view-all:focus-visible {
+	background-color: var(--nntm-nen);
+	border-color: var(--nntm-chu);
+}
+
+@media (min-width: 1152px) {
+	.nntm-card-list--books-marquee > .nntm-card-list__band {
+	min-height: 650px;
+	padding-block: 30px;
+	overflow: hidden;
+	}
+
+	.nntm-card-list--books-marquee > .nntm-card-list__band > .nntm-container {
+	max-width: 1366px;
+	padding-inline: 0;
+	}
+
+	.nntm-card-list--books-marquee .nntm-card-list__header-row {
+	justify-content: center;
+	margin-bottom: 30px;
+	}
+
+	.nntm-card-list--books-marquee .nntm-card-list__heading {
+	margin: 0;
+	font-size: 52px;
+	font-weight: 600;
+	line-height: 60px;
+	}
+
+	.nntm-card-list--books-marquee .nntm-card-list__marquee {
+	min-height: 420px;
+	mask-image: linear-gradient(to right, transparent 0, #000 80px, #000 calc(100% - 80px), transparent 100%);
+	}
+
+	.nntm-card-list--books-marquee .nntm-card-list__marquee-track {
+	min-height: 420px;
+	align-items: center;
+	}
+
+	.nntm-card-list--books-marquee .nntm-card--books,
+	.nntm-card-list--books-marquee .nntm-card--books .nntm-card__img {
+	height: 420px;
+	}
+
+	.nntm-card-list--books-marquee .nntm-card-list__marquee-item {
+	flex: 0 0 270px;
+	width: 270px;
+	margin-right: -90px;
+	}
+}
+
+@media (max-width: 1151px) {
+	.nntm-card-list--books-marquee > .nntm-card-list__band {
+	padding-block: 40px;
+	overflow: hidden;
+	}
+
+	.nntm-card-list--books-marquee .nntm-card-list__marquee-track {
+	padding-block: 20px;
+	}
+
+	.nntm-card-list--books-marquee .nntm-card-list__marquee-item {
+	flex: 0 0 clamp(120px, 34vw, 190px);
+	width: clamp(120px, 34vw, 190px);
+	margin-right: clamp(-70px, -16vw, -40px);
+	}
+}
+
+@media (max-width: 767px) {
+	.nntm-card-list--books-marquee .nntm-card-list__marquee-item {
+	--nntm-books-cover: clamp(128px, 40vw, 180px);
+	flex-basis: var(--nntm-books-cover);
+	width: var(--nntm-books-cover);
+	margin-right: calc(var(--nntm-books-cover) * -0.26 - var(--nntm-sp-5));
+	}
+}
+
 .nntm-kc-nghi-quy > .nntm-card-list__band {
 	padding-block-start: 60px;  
 }

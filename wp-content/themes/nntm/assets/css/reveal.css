@@ -17,11 +17,95 @@ html.nntm-co-js .nntm-reveal.is-hien {
 	transform: none;
 }
 
+html.nntm-co-js .nntm-reveal--chi-tiet {
+	--nntm-reveal-dich: 0px;
+	--nntm-reveal-dur: 850ms;
+}
+
+html.nntm-co-js .nntm-reveal:not(.is-hien) .nntm-reveal-item {
+	opacity: 0;
+}
+
+html.nntm-co-js .nntm-reveal.is-hien .nntm-reveal-item {
+	animation-duration: 900ms;
+	animation-timing-function: var(--nntm-reveal-ease);
+	animation-delay: var(--nntm-reveal-item-delay, 0ms);
+	animation-fill-mode: backwards;
+	will-change: opacity, transform;
+}
+
+html.nntm-co-js .nntm-reveal.is-hien .nntm-reveal-item--tu-trai {
+	animation-name: nntm-reveal-tu-trai;
+}
+
+html.nntm-co-js .nntm-reveal.is-hien .nntm-reveal-item--tu-phai {
+	animation-name: nntm-reveal-tu-phai;
+}
+
+html.nntm-co-js .nntm-reveal.is-hien .nntm-reveal-item--tu-tren {
+	animation-name: nntm-reveal-tu-tren;
+}
+
+html.nntm-co-js .nntm-reveal.is-hien .nntm-reveal-item--tu-duoi,
+html.nntm-co-js .nntm-reveal.is-hien .nntm-reveal-item--nhich-len {
+	animation-name: nntm-reveal-tu-duoi;
+}
+
+html.nntm-co-js .nntm-reveal.is-hien .nntm-reveal-item--phong-to {
+	animation-name: nntm-reveal-phong-to;
+}
+
+html.nntm-co-js .nntm-reveal.is-hien .nntm-reveal-item--nghieng-trai {
+	animation-name: nntm-reveal-nghieng-trai;
+}
+
+html.nntm-co-js .nntm-reveal.is-hien .nntm-reveal-item--nghieng-phai {
+	animation-name: nntm-reveal-nghieng-phai;
+}
+
+@keyframes nntm-reveal-tu-trai {
+	from { opacity: 0; transform: translate3d(-72px, 0, 0) scale(0.98); }
+	to { opacity: 1; transform: none; }
+}
+
+@keyframes nntm-reveal-tu-phai {
+	from { opacity: 0; transform: translate3d(72px, 0, 0) scale(0.98); }
+	to { opacity: 1; transform: none; }
+}
+
+@keyframes nntm-reveal-tu-tren {
+	from { opacity: 0; transform: translate3d(0, -42px, 0); }
+	to { opacity: 1; transform: none; }
+}
+
+@keyframes nntm-reveal-tu-duoi {
+	from { opacity: 0; transform: translate3d(0, 34px, 0); }
+	to { opacity: 1; transform: none; }
+}
+
+@keyframes nntm-reveal-phong-to {
+	from { opacity: 0; transform: scale(0.9); }
+	to { opacity: 1; transform: none; }
+}
+
+@keyframes nntm-reveal-nghieng-trai {
+	from { opacity: 0; transform: translate3d(-24px, 36px, 0) rotate(-3deg) scale(0.98); }
+	to { opacity: 1; transform: none; }
+}
+
+@keyframes nntm-reveal-nghieng-phai {
+	from { opacity: 0; transform: translate3d(24px, 36px, 0) rotate(3deg) scale(0.98); }
+	to { opacity: 1; transform: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
 	html.nntm-co-js .nntm-reveal,
-	html.nntm-co-js .nntm-reveal.is-hien {
+	html.nntm-co-js .nntm-reveal.is-hien,
+	html.nntm-co-js .nntm-reveal .nntm-reveal-item {
 		opacity: 1;
 		transform: none;
 		transition: none;
+		animation: none !important;
+		will-change: auto;
 	}
 }

@@ -42,12 +42,6 @@ function nntm_kchg_semantic_block_classes( array $parsed_block ): array {
 			return nntm_kchg_add_block_class( $parsed_block, 'nntm-kchg-articles' );
 		}
 
-		if (
-			false !== strpos( $class_name, 'nntm-kc-nghi-quy' ) ||
-			( isset( $attrs['heading'] ) && 'Nghi Quỹ' === trim( (string) $attrs['heading'] ) )
-		) {
-			return nntm_kchg_add_block_class( $parsed_block, 'nntm-kchg-nghi-quy' );
-		}
 	}
 
 	if ( 'nntm/cong-tu' === $parsed_block['blockName'] ) {

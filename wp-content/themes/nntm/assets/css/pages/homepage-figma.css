@@ -1231,8 +1231,8 @@
 
 	.home .nntm-footer {
 		height: auto;
-		min-height: calc(299.25px * var(--nntm-footer-ty-le));
-		padding: calc(20px * var(--nntm-footer-ty-le));
+		/* min-height: calc(299.25px * var(--nntm-footer-ty-le)); */
+		padding: 0;
 		box-sizing: border-box;
 		background: var(--nntm-muc-nhat);
 		margin-top: 0;
@@ -1260,12 +1260,12 @@
 		padding: 0;
 		display: flex;
 		flex-direction: column;
-		gap: calc(50px * var(--nntm-footer-ty-le));
+		/* gap: calc(50px * var(--nntm-footer-ty-le)); */
 	}
 
 	.home .nntm-footer__share-row {
 		width: 100%;
-		padding-top: calc(30px * var(--nntm-footer-ty-le));
+		/* padding-top: calc(30px * var(--nntm-footer-ty-le)); */
 		box-sizing: border-box;
 		display: flex;
 		align-items: flex-start;
@@ -1353,8 +1353,8 @@
 	}
 
 	.home .nntm-footer__logo {
-		flex: 0 0 143px;
-		width: 143px;
+		/* flex: 0 0 143px; */
+		/* width: 143px; */
 		height: 46.25px;
 		min-height: 46.25px;
 		justify-content: center;

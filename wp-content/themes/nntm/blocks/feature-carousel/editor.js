@@ -21,9 +21,14 @@
 
 	function emptySlide() {
 		return {
+			mediaType: 'image',
 			imageId: 0,
 			imageUrl: '',
 			imageAlt: '',
+			videoId: 0,
+			videoUrl: '',
+			videoPosterId: 0,
+			videoPosterUrl: '',
 			heading: 'Tiêu đề banner',
 			text: '',
 			ctaLabel: '',
@@ -31,12 +36,12 @@
 		};
 	}
 
-	function mediaButton( label, value, onSelect ) {
+	function mediaButton( label, value, allowedTypes, onSelect ) {
 		return el(
 			MediaUploadCheck,
 			{},
 			el( MediaUpload, {
-				allowedTypes: [ 'image' ],
+				allowedTypes: allowedTypes,
 				multiple: false,
 				value: value || 0,
 				onSelect: onSelect,
@@ -78,16 +83,55 @@
 			}
 
 			var slidePanels = slides.map( function ( slide, index ) {
-				return el(
-					PanelBody,
-					{ title: __( 'Slide ', 'nntm' ) + ( index + 1 ), initialOpen: index === 0, key: 'slide-' + index },
-					mediaButton( __( 'Chọn / đổi ảnh', 'nntm' ), slide.imageId, function ( media ) {
+				var mediaType = 'video' === slide.mediaType ? 'video' : 'image';
+				var mediaControls = 'video' === mediaType
+					? el(
+						Fragment,
+						{},
+						mediaButton( slide.videoUrl ? __( 'Đổi video', 'nntm' ) : __( 'Chọn video', 'nntm' ), slide.videoId, [ 'video' ], function ( media ) {
+							updateSlide( index, {
+								videoId: media.id || 0,
+								videoUrl: media.url || '',
+							} );
+						} ),
+						slide.videoUrl ? el( Button, {
+							variant: 'link',
+							isDestructive: true,
+							onClick: function () { updateSlide( index, { videoId: 0, videoUrl: '' } ); },
+						}, __( 'Xóa video', 'nntm' ) ) : null,
+						mediaButton( slide.videoPosterUrl ? __( 'Đổi ảnh poster', 'nntm' ) : __( 'Chọn ảnh poster (không bắt buộc)', 'nntm' ), slide.videoPosterId, [ 'image' ], function ( media ) {
+							updateSlide( index, {
+								videoPosterId: media.id || 0,
+								videoPosterUrl: media.url || '',
+							} );
+						} ),
+						slide.videoPosterUrl ? el( Button, {
+							variant: 'link',
+							isDestructive: true,
+							onClick: function () { updateSlide( index, { videoPosterId: 0, videoPosterUrl: '' } ); },
+						}, __( 'Xóa ảnh poster', 'nntm' ) ) : null
+					)
+					: mediaButton( slide.imageUrl ? __( 'Đổi ảnh', 'nntm' ) : __( 'Chọn ảnh', 'nntm' ), slide.imageId, [ 'image' ], function ( media ) {
 						updateSlide( index, {
 							imageId: media.id || 0,
 							imageUrl: media.url || '',
 							imageAlt: media.alt || '',
 						} );
+					} );
+
+				return el(
+					PanelBody,
+					{ title: __( 'Slide ', 'nntm' ) + ( index + 1 ), initialOpen: index === 0, key: 'slide-' + index },
+					el( SelectControl, {
+						label: __( 'Loại media', 'nntm' ),
+						value: mediaType,
+						options: [
+							{ label: __( 'Ảnh', 'nntm' ), value: 'image' },
+							{ label: __( 'Video', 'nntm' ), value: 'video' },
+						],
+						onChange: function ( value ) { updateSlide( index, { mediaType: value } ); },
 					} ),
+					mediaControls,
 					el( TextControl, {
 						label: __( 'Tiêu đề slide', 'nntm' ),
 						value: slide.heading || '',

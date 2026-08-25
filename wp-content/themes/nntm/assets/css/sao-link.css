@@ -1,0 +1,30 @@
+.nntm-sao-link {
+	appearance: none;
+	-webkit-appearance: none;
+	background: transparent;
+	border: 0;
+	padding: 0;
+	line-height: inherit;
+	text-align: inherit;
+	cursor: pointer;
+}
+
+.nntm-sao-link__nhan {
+	display: inline-block;
+	transition: opacity 220ms ease;
+}
+
+.nntm-sao-link.is-xong .nntm-sao-link__nhan,
+.nntm-sao-link.is-loi .nntm-sao-link__nhan {
+	opacity: 0.72;
+}
+
+.nntm-sao-link.is-xong {
+	text-decoration: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-sao-link__nhan {
+		transition: none;
+	}
+}

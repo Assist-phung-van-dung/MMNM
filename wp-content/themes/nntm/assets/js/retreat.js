@@ -1,49 +1,7 @@
 (function () {
 	'use strict';
 
-	function copyText(text) {
-		if (navigator.clipboard && navigator.clipboard.writeText) {
-			return navigator.clipboard.writeText(text);
-		}
-		return new Promise(function (resolve, reject) {
-			var input = document.createElement('textarea');
-			input.value = text;
-			input.setAttribute('readonly', '');
-			input.style.position = 'fixed';
-			input.style.opacity = '0';
-			document.body.appendChild(input);
-			input.select();
-			try {
-				document.execCommand('copy') ? resolve() : reject(new Error('copy failed'));
-			} catch (error) {
-				reject(error);
-			}
-			document.body.removeChild(input);
-		});
-	}
-
 	document.addEventListener('click', function (event) {
-		var share = event.target.closest('[data-nntm-share]');
-		if (share) {
-			var title = share.getAttribute('data-title') || document.title;
-			var url = share.getAttribute('data-url') || window.location.href;
-			var status = document.querySelector('[data-nntm-share-status]');
-
-			if (navigator.share) {
-				navigator.share({ title: title, url: url }).catch(function (error) {
-					if (error && error.name === 'AbortError') return;
-					if (status) status.textContent = (window.nntmRetreat && nntmRetreat.shareError) || 'Không thể chia sẻ.';
-				});
-			} else {
-				copyText(url).then(function () {
-					if (status) status.textContent = (window.nntmRetreat && nntmRetreat.shareCopied) || 'Đã sao chép liên kết.';
-				}).catch(function () {
-					if (status) status.textContent = (window.nntmRetreat && nntmRetreat.shareError) || 'Không thể chia sẻ.';
-				});
-			}
-			return;
-		}
-
 		var open = event.target.closest('[data-nntm-retreat-open-register]');
 		if (open) {
 			var modal = document.querySelector('[data-nntm-retreat-modal]');

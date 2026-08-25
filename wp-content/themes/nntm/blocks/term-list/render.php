@@ -20,12 +20,14 @@ $max_items = max( 1, min( 20, $max_items ) );
 $layout = isset( $attributes['layout'] ) && 'phap-toa' === $attributes['layout'] ? 'phap-toa' : 'overlay';
 $autoplay = ! isset( $attributes['autoplay'] ) || ! empty( $attributes['autoplay'] );
 $interval = max( 2, min( 20, absint( $attributes['interval'] ?? 5 ) ) );
+$loop_delay = max( 0, min( 60, absint( $attributes['loopDelay'] ?? 0 ) ) );
 
 $wrapper_attributes = get_block_wrapper_attributes(
 	array(
 		'class'         => 'nntm-term-list nntm-term-list--' . $layout,
 		'data-autoplay' => $autoplay ? '1' : '0',
 		'data-interval' => (string) $interval,
+		'data-loop-delay' => (string) $loop_delay,
 	)
 );
 

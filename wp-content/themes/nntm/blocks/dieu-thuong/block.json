@@ -1,117 +1,137 @@
 {
-  "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 3,
-  "name": "nntm/dieu-thuong",
-  "title": "Diệu Thượng",
-  "category": "nntm",
-  "icon": "format-image",
-  "description": "Phần câu chuyện của trang Diệu Thượng: banner ảnh tự chạy không control, ảnh tròn, nội dung, gallery và CTA.",
-  "textdomain": "nntm",
-  "supports": {
-    "html": false,
-    "align": [
-      "full"
-    ],
-    "customClassName": true
-  },
-  "attributes": {
-    "bannerImages": {
-      "type": "array",
-      "default": [],
-      "items": {
-        "type": "object",
-        "properties": {
-          "imageId": {
-            "type": "number"
-          },
-          "imageUrl": {
-            "type": "string"
-          },
-          "imageAlt": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "bannerAutoplay": {
-      "type": "boolean",
-      "default": true
-    },
-    "bannerInterval": {
-      "type": "number",
-      "default": 6
-    },
-    "bannerImageId": {
-      "type": "number",
-      "default": 0
-    },
-    "bannerImageUrl": {
-      "type": "string",
-      "default": ""
-    },
-    "portraitImageId": {
-      "type": "number",
-      "default": 0
-    },
-    "portraitImageUrl": {
-      "type": "string",
-      "default": ""
-    },
-    "storyHeading": {
-      "type": "string",
-      "default": "Title"
-    },
-    "storyTextTop": {
-      "type": "string",
-      "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ac laoreet lectus. Pellentesque maximus varius congue."
-    },
-    "gallery": {
-      "type": "array",
-      "default": []
-    },
-    "storyTextBottom": {
-      "type": "string",
-      "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ac laoreet lectus. Pellentesque maximus varius congue."
-    },
-    "ctaLabel": {
-      "type": "string",
-      "default": "Chuyện Về Thầy Tôi"
-    },
-    "ctaUrl": {
-      "type": "string",
-      "default": ""
-    },
-    "heading": {
-      "type": "string",
-      "default": "Tông Chỉ"
-    },
-    "introTitle": {
-      "type": "string",
-      "default": "Phát Bồ Đề Tâm"
-    },
-    "introText": {
-      "type": "string",
-      "default": "Trên Sáu Xúc Xứ/ Ngũ Thủ Uẩn Tu Tứ Chánh Cần, Lấy Bát Chánh Đạo Làm Nền Tảng."
-    },
-    "slides": {
-      "type": "array",
-      "default": []
-    },
-    "autoplay": {
-      "type": "boolean",
-      "default": true
-    },
-    "interval": {
-      "type": "number",
-      "default": 6
-    },
-    "legacyCarouselMigrated": {
-      "type": "boolean",
-      "default": false
-    }
-  },
-  "editorScript": "file:./editor.js",
-  "viewScript": "file:./view.js",
-  "style": "file:./style.css",
-  "render": "file:./render.php"
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "nntm/dieu-thuong",
+	"title": "Diệu Thượng",
+	"category": "nntm",
+	"icon": "format-image",
+	"description": "Phần câu chuyện của trang Diệu Thượng: banner ảnh tự chạy không control, ảnh tròn, nội dung, gallery và CTA.",
+	"textdomain": "nntm",
+	"supports": {
+		"html": false,
+		"align": [
+			"full"
+		],
+		"customClassName": true
+	},
+	"attributes": {
+		"bannerImages": {
+			"type": "array",
+			"default": [],
+			"items": {
+				"type": "object",
+				"properties": {
+					"imageId": {
+						"type": "number"
+					},
+					"imageUrl": {
+						"type": "string"
+					},
+					"imageAlt": {
+						"type": "string"
+					}
+				}
+			}
+		},
+		"bannerAutoplay": {
+			"type": "boolean",
+			"default": true
+		},
+		"bannerInterval": {
+			"type": "number",
+			"default": 6
+		},
+		"bannerImageId": {
+			"type": "number",
+			"default": 0
+		},
+		"bannerImageUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"portraitImageId": {
+			"type": "number",
+			"default": 0
+		},
+		"portraitImageUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"storyHeading": {
+			"type": "string",
+			"default": "Title"
+		},
+		"storyTextTop": {
+			"type": "string",
+			"default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ac laoreet lectus. Pellentesque maximus varius congue."
+		},
+		"gallery": {
+			"type": "array",
+			"default": []
+		},
+		"storyTextBottom": {
+			"type": "string",
+			"default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ac laoreet lectus. Pellentesque maximus varius congue."
+		},
+		"ctaLabel": {
+			"type": "string",
+			"default": "Chuyện Về Thầy Tôi"
+		},
+		"ctaUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"heading": {
+			"type": "string",
+			"default": "Tông Chỉ"
+		},
+		"introTitle": {
+			"type": "string",
+			"default": "Phát Bồ Đề Tâm"
+		},
+		"introText": {
+			"type": "string",
+			"default": "Trên Sáu Xúc Xứ/ Ngũ Thủ Uẩn Tu Tứ Chánh Cần, Lấy Bát Chánh Đạo Làm Nền Tảng."
+		},
+		"slides": {
+			"type": "array",
+			"default": []
+		},
+		"autoplay": {
+			"type": "boolean",
+			"default": true
+		},
+		"interval": {
+			"type": "number",
+			"default": 6
+		},
+		"legacyCarouselMigrated": {
+			"type": "boolean",
+			"default": false
+		},
+		"galleryTermId": {
+			"type": "number",
+			"default": 0
+		},
+		"galleryMax": {
+			"type": "number",
+			"default": 3
+		},
+		"galleryAutoplay": {
+			"type": "boolean",
+			"default": true
+		},
+		"galleryInterval": {
+			"type": "number",
+			"default": 5
+		},
+		"galleryLoopDelay": {
+			"type": "number",
+			"default": 0
+		}
+	},
+	"editorScript": "file:./editor.js",
+	"viewScript": "file:./view.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
 }

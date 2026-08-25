@@ -165,11 +165,22 @@
 	background: var(--nntm-xam);
 }
 
-.nntm-feature-carousel__image {
+.nntm-feature-carousel__image,
+.nntm-feature-carousel__video {
+	display: block;
 	width: 100%;
 	height: 100%;
 	max-width: none;
 	object-fit: cover;
+}
+
+.nntm-feature-carousel__video {
+	background: #000;
+	pointer-events: none;
+}
+
+.nntm-feature-carousel__slide[data-position="0"] .nntm-feature-carousel__video {
+	pointer-events: auto;
 }
 
 .nntm-feature-carousel {

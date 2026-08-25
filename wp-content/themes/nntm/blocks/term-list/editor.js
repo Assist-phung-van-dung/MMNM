@@ -142,6 +142,14 @@
 							min: 2,
 							max: 20,
 							onChange: function ( value ) { setAttributes( { interval: value || 5 } ); },
+						} ),
+						el( RangeControl, {
+							label: __( 'Tới cuối, chờ mấy giây rồi quay lại đầu', 'nntm' ),
+							help: __( '0 = dừng hẳn ở thẻ cuối, không quay lại.', 'nntm' ),
+							value: attributes.loopDelay || 0,
+							min: 0,
+							max: 60,
+							onChange: function ( value ) { setAttributes( { loopDelay: value || 0 } ); },
 						} )
 					)
 					: null

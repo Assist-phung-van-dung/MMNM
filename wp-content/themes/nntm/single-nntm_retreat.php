@@ -61,14 +61,13 @@ while ( have_posts() ) :
 
 					<button
 						type="button"
-						class="nntm-retreat-detail__share"
-						data-nntm-share
-						data-title="<?php echo esc_attr( get_the_title() ); ?>"
-						data-url="<?php echo esc_url( get_permalink() ); ?>"
+						class="nntm-retreat-detail__share nntm-sao-link"
+						data-nntm-sao-link="<?php echo esc_url( get_permalink() ); ?>"
+						data-nntm-sao-link-xong="<?php esc_attr_e( 'Đã copy link', 'nntm' ); ?>"
+						data-nntm-sao-link-loi="<?php esc_attr_e( 'Không copy được', 'nntm' ); ?>"
 					>
-						<?php esc_html_e( 'Chia sẻ', 'nntm' ); ?>
+						<span class="nntm-sao-link__nhan"><?php esc_html_e( 'Chia sẻ', 'nntm' ); ?></span>
 					</button>
-					<span class="nntm-sr-only" data-nntm-share-status aria-live="polite"></span>
 				</div>
 			</div>
 

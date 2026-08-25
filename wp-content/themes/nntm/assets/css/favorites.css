@@ -26,7 +26,10 @@
 	position: relative;
 	top: -1px;  
 }
-
+.nntm-bai-hanh-gia__hang-nut .nntm-bai-hanh-gia__dang-ky,
+.nntm-bai-hanh-gia__hang-nut .nntm-favorite-button__label{
+	color: #fff;
+}
 .nntm-favorite-button__label {
 	display: inline-flex;
 	align-items: center;

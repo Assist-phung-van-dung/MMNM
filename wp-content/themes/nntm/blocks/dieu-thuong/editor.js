@@ -17,6 +17,10 @@
 	var Notice = wp.components.Notice;
 	var ServerSideRender = wp.serverSideRender && wp.serverSideRender.default ? wp.serverSideRender.default : wp.serverSideRender;
 	var createBlock = wp.blocks.createBlock;
+	var SelectControl = wp.components.SelectControl;
+	var useState = wp.element.useState;
+	var useEffect = wp.element.useEffect;
+	var apiFetch = wp.apiFetch;
 	var dataSelect = wp.data.select;
 	var dataDispatch = wp.data.dispatch;
 
@@ -130,6 +134,26 @@
 				);
 			} );
 
+			var phanMucState = useState( [] );
+			var phanMuc = phanMucState[ 0 ];
+			var setPhanMuc = phanMucState[ 1 ];
+
+			useEffect( function () {
+				var conHieuLuc = true;
+
+				apiFetch( { path: '/wp/v2/nntm_section?per_page=100&orderby=name&order=asc&_fields=id,name,parent' } )
+					.then( function ( kq ) { if ( conHieuLuc ) { setPhanMuc( kq || [] ); } } )
+					.catch( function () { if ( conHieuLuc ) { setPhanMuc( [] ); } } );
+
+				return function () { conHieuLuc = false; };
+			}, [] );
+
+			var luaChonPhanMuc = [ { label: __( '— Dùng ảnh tự chọn bên dưới —', 'nntm' ), value: 0 } ].concat(
+				phanMuc.map( function ( t ) {
+					return { label: ( t.parent ? '— ' : '' ) + t.name, value: t.id };
+				} )
+			);
+
 			var hasLegacyCarousel = Array.isArray( attributes.slides ) && attributes.slides.length > 0 && ! attributes.legacyCarouselMigrated;
 
 			return el(
@@ -160,8 +184,43 @@
 						singleMediaButton( __( 'Chọn ảnh tròn', 'nntm' ), attributes.portraitImageId, function ( media ) { setAttributes( { portraitImageId: media.id || 0, portraitImageUrl: media.url || '' } ); } ),
 						el( TextControl, { label: __( 'Tiêu đề', 'nntm' ), value: attributes.storyHeading || '', onChange: function ( value ) { setAttributes( { storyHeading: value } ); } } ),
 						el( TextareaControl, { label: __( 'Đoạn trên', 'nntm' ), value: attributes.storyTextTop || '', onChange: function ( value ) { setAttributes( { storyTextTop: value } ); } } ),
-						galleryPanels,
-						gallery.length < 3 ? el( Button, { variant: 'secondary', onClick: function () { setAttributes( { gallery: gallery.concat( [ { imageId: 0, imageUrl: '', imageAlt: '' } ] ) } ); } }, __( 'Thêm ảnh nội dung', 'nntm' ) ) : null,
+						el( SelectControl, {
+							label: __( 'Dải giữa: lấy từ phân mục', 'nntm' ),
+							help: __( 'Chọn một phân mục cha để hiện các phân mục con dạng thẻ trượt (giống block Danh sách phân mục con). Để "— Dùng ảnh tự chọn —" thì giữ 3 ảnh như cũ.', 'nntm' ),
+							value: attributes.galleryTermId || 0,
+							options: luaChonPhanMuc,
+							onChange: function ( v ) { setAttributes( { galleryTermId: parseInt( v, 10 ) || 0 } ); }
+						} ),
+						attributes.galleryTermId ? el( RangeControl, {
+							label: __( 'Số thẻ hiện cùng lúc', 'nntm' ),
+							help: __( 'Các thẻ còn lại vẫn xem được bằng hai nút mũi tên.', 'nntm' ),
+							min: 1,
+							max: 6,
+							value: attributes.galleryMax || 3,
+							onChange: function ( v ) { setAttributes( { galleryMax: v } ); }
+						} ) : null,
+						attributes.galleryTermId ? el( ToggleControl, {
+							label: __( 'Thẻ tự chạy', 'nntm' ),
+							checked: attributes.galleryAutoplay !== false,
+							onChange: function ( v ) { setAttributes( { galleryAutoplay: v } ); }
+						} ) : null,
+						attributes.galleryTermId ? el( RangeControl, {
+							label: __( 'Chu kỳ thẻ (giây)', 'nntm' ),
+							min: 2,
+							max: 20,
+							value: attributes.galleryInterval || 5,
+							onChange: function ( v ) { setAttributes( { galleryInterval: v } ); }
+						} ) : null,
+						attributes.galleryTermId ? el( RangeControl, {
+							label: __( 'Tới cuối, chờ mấy giây rồi quay lại đầu', 'nntm' ),
+							help: __( '0 = dừng hẳn ở thẻ cuối, không quay lại.', 'nntm' ),
+							min: 0,
+							max: 60,
+							value: attributes.galleryLoopDelay || 0,
+							onChange: function ( v ) { setAttributes( { galleryLoopDelay: v } ); }
+						} ) : null,
+						attributes.galleryTermId ? null : galleryPanels,
+						( ! attributes.galleryTermId && gallery.length < 3 ) ? el( Button, { variant: 'secondary', onClick: function () { setAttributes( { gallery: gallery.concat( [ { imageId: 0, imageUrl: '', imageAlt: '' } ] ) } ); } }, __( 'Thêm ảnh nội dung', 'nntm' ) ) : null,
 						el( TextareaControl, { label: __( 'Đoạn dưới', 'nntm' ), value: attributes.storyTextBottom || '', onChange: function ( value ) { setAttributes( { storyTextBottom: value } ); } } ),
 						el( TextControl, { label: __( 'Nhãn nút', 'nntm' ), value: attributes.ctaLabel || '', onChange: function ( value ) { setAttributes( { ctaLabel: value } ); } } ),
 						el( TextControl, { label: __( 'Liên kết nút', 'nntm' ), type: 'url', value: attributes.ctaUrl || '', onChange: function ( value ) { setAttributes( { ctaUrl: value } ); } } )

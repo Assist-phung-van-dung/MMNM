@@ -1,55 +1,167 @@
 ( function () {
 	'use strict';
+
 	document.querySelectorAll( '.nntm-term-list--phap-toa' ).forEach( function ( root ) {
 		var track = root.querySelector( '[data-term-track]' );
 		var prev = root.querySelector( '[data-term-prev]' );
 		var next = root.querySelector( '[data-term-next]' );
-		if ( ! track || ! prev || ! next ) return;
-		var timer = null;
-		var originals = Array.from( track.querySelectorAll( '.nntm-term-card' ) );
-		var current = 0;
-		originals.forEach( function ( card ) {
-			var clone = card.cloneNode( true );
-			clone.setAttribute( 'aria-hidden', 'true' );
-			clone.setAttribute( 'tabindex', '-1' );
-			clone.classList.add( 'is-clone' );
-			track.appendChild( clone );
-		} );
-		function stepSize() {
-			var card = originals[ 0 ];
-			var gap = parseFloat( window.getComputedStyle( track ).gap ) || 20;
 
-			return ( card ? card.offsetWidth : 350 ) + gap;
+		if ( ! track || ! prev || ! next ) {
+			return;
 		}
-		function move( direction ) {
-			var step = stepSize();
-			if ( direction < 0 && current === 0 ) {
-				current = originals.length;
-				track.scrollTo( { left: current * step, behavior: 'auto' } );
+
+		var timer = null;
+		var henQuayLai = null;
+		var cards = Array.prototype.slice.call( track.querySelectorAll( '.nntm-term-card' ) );
+
+		if ( ! cards.length ) {
+			return;
+		}
+
+		function buoc() {
+			var khe = parseFloat( window.getComputedStyle( track ).gap ) || 20;
+
+			return cards[ 0 ].offsetWidth + khe;
+		}
+
+		function toiDa() {
+			return Math.max( 0, track.scrollWidth - track.clientWidth );
+		}
+
+		function tranKhung() {
+			return toiDa() > 1;
+		}
+
+		function dongBoNut() {
+			var co = tranKhung();
+
+			prev.hidden = ! co;
+			next.hidden = ! co;
+
+			if ( ! co ) {
+				return;
 			}
-			current += direction;
-			track.scrollTo( { left: current * step, behavior: 'smooth' } );
-			if ( current >= originals.length ) {
-				window.setTimeout( function () {
-					current = 0;
-					track.scrollTo( { left: 0, behavior: 'auto' } );
-				}, 650 );
+
+			prev.disabled = track.scrollLeft <= 1;
+			next.disabled = track.scrollLeft >= toiDa() - 1;
+		}
+
+		function di( huong ) {
+			var dich = Math.max( 0, Math.min( toiDa(), track.scrollLeft + huong * buoc() ) );
+			var muot = ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
+
+			track.scrollTo( { left: dich, behavior: muot ? 'smooth' : 'auto' } );
+		}
+
+		function dung() {
+			if ( timer ) {
+				window.clearInterval( timer );
+				timer = null;
+			}
+
+			if ( henQuayLai ) {
+				window.clearTimeout( henQuayLai );
+				henQuayLai = null;
 			}
 		}
-		function stop() { if ( timer ) { window.clearInterval( timer ); timer = null; } }
-		function start() {
-			stop();
-			if ( root.dataset.autoplay !== '1' || window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) return;
-			var seconds = Math.max( 2, Math.min( 20, parseInt( root.dataset.interval, 10 ) || 5 ) );
-			timer = window.setInterval( function () { move( 1 ); }, seconds * 1000 );
+
+		function giayQuayLai() {
+			return Math.max( 0, Math.min( 60, parseInt( root.dataset.loopDelay, 10 ) || 0 ) );
 		}
-		prev.addEventListener( 'click', function () { move( -1 ); start(); } );
-		next.addEventListener( 'click', function () { move( 1 ); start(); } );
-		root.addEventListener( 'mouseenter', stop );
-		root.addEventListener( 'mouseleave', start );
-		root.addEventListener( 'focusin', stop );
-		root.addEventListener( 'focusout', function ( event ) { if ( ! event.relatedTarget || ! root.contains( event.relatedTarget ) ) start(); } );
-		document.addEventListener( 'visibilitychange', function () { if ( document.hidden ) stop(); else start(); } );
-		start();
+
+		function toiCuoi() {
+			var giay = giayQuayLai();
+
+			if ( giay <= 0 || henQuayLai ) {
+				return;
+			}
+
+			henQuayLai = window.setTimeout( function () {
+				henQuayLai = null;
+
+				var muot = ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
+				track.scrollTo( { left: 0, behavior: muot ? 'smooth' : 'auto' } );
+				chay();
+			}, giay * 1000 );
+		}
+
+		function chay() {
+			dung();
+
+			if ( '1' !== root.dataset.autoplay || window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+				return;
+			}
+
+			if ( ! tranKhung() || track.scrollLeft >= toiDa() - 1 ) {
+				return;
+			}
+
+			var giay = Math.max( 2, Math.min( 20, parseInt( root.dataset.interval, 10 ) || 5 ) );
+
+			timer = window.setInterval( function () {
+				if ( track.scrollLeft >= toiDa() - 1 ) {
+					dung();
+					toiCuoi();
+					return;
+				}
+
+				di( 1 );
+			}, giay * 1000 );
+		}
+
+		var dangCho = false;
+
+		track.addEventListener( 'scroll', function () {
+			if ( dangCho ) {
+				return;
+			}
+
+			dangCho = true;
+			window.requestAnimationFrame( function () {
+				dongBoNut();
+
+				if ( track.scrollLeft >= toiDa() - 1 ) {
+					toiCuoi();
+				}
+
+				dangCho = false;
+			} );
+		}, { passive: true } );
+
+		prev.addEventListener( 'click', function () {
+			di( -1 );
+			dung();
+		} );
+
+		next.addEventListener( 'click', function () {
+			di( 1 );
+			chay();
+		} );
+
+		root.addEventListener( 'mouseenter', dung );
+		root.addEventListener( 'mouseleave', chay );
+		root.addEventListener( 'focusin', dung );
+		root.addEventListener( 'focusout', function ( event ) {
+			if ( ! event.relatedTarget || ! root.contains( event.relatedTarget ) ) {
+				chay();
+			}
+		} );
+
+		document.addEventListener( 'visibilitychange', function () {
+			if ( document.hidden ) {
+				dung();
+			} else {
+				chay();
+			}
+		} );
+
+		if ( window.ResizeObserver ) {
+			new window.ResizeObserver( dongBoNut ).observe( track );
+		} else {
+			window.addEventListener( 'resize', dongBoNut );
+		}
+
+		dongBoNut();
+		chay();
 	} );
 } )();

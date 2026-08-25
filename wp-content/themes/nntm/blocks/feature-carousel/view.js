@@ -16,6 +16,8 @@
 		var timer = null;
 		var pointerStartX = null;
 		var reducedMotion = window.matchMedia( '(prefers-reduced-motion: reduce)' );
+		var pendingVideo = null;
+		var loadingObserver = null;
 
 		function signedDistance( index ) {
 			var total = slides.length;
@@ -24,6 +26,44 @@
 				distance -= total;
 			}
 			return distance;
+		}
+
+		function playVideo( video ) {
+			if ( reducedMotion.matches ) {
+				return;
+			}
+
+			if ( document.documentElement.classList.contains( 'is-loading' ) ) {
+				pendingVideo = video;
+
+				if ( ! loadingObserver && window.MutationObserver ) {
+					loadingObserver = new window.MutationObserver( function () {
+						if ( document.documentElement.classList.contains( 'is-loading' ) ) {
+							return;
+						}
+
+						loadingObserver.disconnect();
+						loadingObserver = null;
+						var videoCho = pendingVideo;
+						pendingVideo = null;
+
+						if ( videoCho && videoCho.closest( '[data-fc-slide]' ).getAttribute( 'data-position' ) === '0' ) {
+							playVideo( videoCho );
+						}
+					} );
+					loadingObserver.observe( document.documentElement, { attributes: true, attributeFilter: [ 'class' ] } );
+				}
+				return;
+			}
+
+			if ( video.ended ) {
+				video.currentTime = 0;
+			}
+
+			var playPromise = video.play();
+			if ( playPromise && 'function' === typeof playPromise.catch ) {
+				playPromise.catch( function () {} );
+			}
 		}
 
 		function paint() {
@@ -40,6 +80,25 @@
 
 				slide.setAttribute( 'data-position', String( visibleDistance ) );
 				slide.setAttribute( 'aria-hidden', distance === 0 ? 'false' : 'true' );
+
+				var video = slide.querySelector( '[data-fc-video]' );
+				if ( video ) {
+					if ( distance === 0 ) {
+						video.removeAttribute( 'tabindex' );
+						window.requestAnimationFrame( function () { playVideo( video ); } );
+					} else {
+						if ( pendingVideo === video ) {
+							pendingVideo = null;
+						}
+						video.setAttribute( 'tabindex', '-1' );
+						if ( ! video.paused ) {
+							video.pause();
+						}
+						if ( video.currentTime > 0 ) {
+							video.currentTime = 0;
+						}
+					}
+				}
 
 				if ( vongQuaBia ) {
 					 
@@ -61,9 +120,15 @@
 
 		function start() {
 			stop();
-			if ( slides.length < 2 || root.dataset.autoplay !== '1' || reducedMotion.matches ) {
+			if ( slides.length < 2 || root.dataset.autoplay !== '1' || reducedMotion.matches || pendingVideo ) {
 				return;
 			}
+
+			var activeVideo = slides[ current ].querySelector( '[data-fc-video]' );
+			if ( activeVideo && ! activeVideo.paused && ! activeVideo.ended ) {
+				return;
+			}
+
 			var seconds = parseInt( root.dataset.interval || '6', 10 );
 			seconds = Number.isFinite( seconds ) ? Math.max( 3, Math.min( 20, seconds ) ) : 6;
 			timer = window.setInterval( function () { go( 1, false ); }, seconds * 1000 );
@@ -93,7 +158,13 @@
 			} );
 		}
 
-		slider.addEventListener( 'pointerdown', function ( event ) { pointerStartX = event.clientX; } );
+		slider.addEventListener( 'pointerdown', function ( event ) {
+			if ( event.target.closest( 'video, button, a, input, select, textarea' ) ) {
+				pointerStartX = null;
+				return;
+			}
+			pointerStartX = event.clientX;
+		} );
 		slider.addEventListener( 'pointerup', function ( event ) {
 			if ( pointerStartX === null ) { return; }
 			var delta = event.clientX - pointerStartX;
@@ -106,6 +177,37 @@
 		slider.addEventListener( 'focusin', stop );
 		slider.addEventListener( 'focusout', function ( event ) {
 			if ( ! slider.contains( event.relatedTarget ) ) { start(); }
+		} );
+
+		slides.forEach( function ( slide ) {
+			var video = slide.querySelector( '[data-fc-video]' );
+			if ( ! video ) {
+				return;
+			}
+
+			video.addEventListener( 'play', function () {
+				if ( slide.getAttribute( 'data-position' ) === '0' ) {
+					stop();
+				}
+			} );
+			video.addEventListener( 'pause', function () {
+				if (
+					slide.getAttribute( 'data-position' ) === '0' &&
+					! slider.matches( ':hover' ) &&
+					! slider.contains( document.activeElement )
+				) {
+					start();
+				}
+			} );
+			video.addEventListener( 'ended', function () {
+				if ( slide.getAttribute( 'data-position' ) !== '0' ) {
+					return;
+				}
+
+				if ( slides.length > 1 && root.dataset.autoplay === '1' && ! reducedMotion.matches ) {
+					go( 1, true );
+				}
+			} );
 		} );
 
 		paint();
