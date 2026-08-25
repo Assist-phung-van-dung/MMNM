@@ -18,7 +18,7 @@ if ( ! $nntm_is_home && $nntm_front_id && function_exists( 'pll_get_post_transla
 					<div class="nntm-footer__share-row">
 						<div class="nntm-footer__share">
 							<span><?php echo esc_html( $nntm_footer_en ? 'Share your' : 'Hãy chia sẻ' ); ?></span>
-							<a class="nntm-footer__share-link" href="<?php echo esc_url( home_url( '/lien-he/' ) ); ?>">
+							<a class="nntm-footer__share-link" href="<?php echo esc_url( home_url( '/y-kien/' ) ); ?>">
 								<?php echo esc_html( $nntm_footer_en ? 'Feedback' : 'Ý kiến' ); ?>
 							</a>
 							<span><?php echo esc_html( $nntm_footer_en ? 'with us' : 'của bạn' ); ?></span>

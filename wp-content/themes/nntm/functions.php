@@ -16,6 +16,7 @@ require NNTM_THEME_DIR . '/inc/patterns.php';
 require NNTM_THEME_DIR . '/inc/cleanup.php';
 require NNTM_THEME_DIR . '/inc/language-switcher.php';
 require NNTM_THEME_DIR . '/inc/auth.php';
+require NNTM_THEME_DIR . '/inc/contact.php';
 require NNTM_THEME_DIR . '/inc/favorites.php';
 require_once NNTM_THEME_DIR . '/inc/section-article.php';
 require_once NNTM_THEME_DIR . '/inc/retreat.php';
