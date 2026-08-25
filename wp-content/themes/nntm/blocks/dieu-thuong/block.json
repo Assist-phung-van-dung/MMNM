@@ -12,7 +12,8 @@
 		"align": [
 			"full"
 		],
-		"customClassName": true
+		"customClassName": true,
+		"anchor": true
 	},
 	"attributes": {
 		"bannerImages": {

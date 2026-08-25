@@ -9,8 +9,12 @@
 	"textdomain": "nntm",
 	"supports": {
 		"html": false,
-		"align": [ "wide", "full" ],
-		"customClassName": true
+		"align": [
+			"wide",
+			"full"
+		],
+		"customClassName": true,
+		"anchor": true
 	},
 	"attributes": {
 		"slides": {
@@ -19,13 +23,27 @@
 			"items": {
 				"type": "object",
 				"properties": {
-					"imageId": { "type": "number" },
-					"imageUrl": { "type": "string" },
-					"imageAlt": { "type": "string" },
-					"heading": { "type": "string" },
-					"text": { "type": "string" },
-					"ctaLabel": { "type": "string" },
-					"ctaUrl": { "type": "string" }
+					"imageId": {
+						"type": "number"
+					},
+					"imageUrl": {
+						"type": "string"
+					},
+					"imageAlt": {
+						"type": "string"
+					},
+					"heading": {
+						"type": "string"
+					},
+					"text": {
+						"type": "string"
+					},
+					"ctaLabel": {
+						"type": "string"
+					},
+					"ctaUrl": {
+						"type": "string"
+					}
 				}
 			}
 		},
@@ -47,7 +65,13 @@
 		},
 		"sideCardPostType": {
 			"type": "string",
-			"enum": [ "post", "nntm_article", "nntm_publication", "nntm_talk", "nntm_video" ],
+			"enum": [
+				"post",
+				"nntm_article",
+				"nntm_publication",
+				"nntm_talk",
+				"nntm_video"
+			],
 			"default": "nntm_article"
 		},
 		"sideCardTaxonomy": {

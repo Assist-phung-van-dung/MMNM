@@ -13,7 +13,8 @@
 			"wide",
 			"full"
 		],
-		"customClassName": true
+		"customClassName": true,
+		"anchor": true
 	},
 	"attributes": {
 		"heading": {

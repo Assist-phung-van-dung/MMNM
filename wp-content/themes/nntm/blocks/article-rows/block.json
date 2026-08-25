@@ -9,8 +9,12 @@
 	"textdomain": "nntm",
 	"supports": {
 		"html": false,
-		"align": [ "wide", "full" ],
-		"customClassName": true
+		"align": [
+			"wide",
+			"full"
+		],
+		"customClassName": true,
+		"anchor": true
 	},
 	"attributes": {
 		"heading": {
@@ -19,7 +23,13 @@
 		},
 		"postType": {
 			"type": "string",
-			"enum": [ "nntm_article", "nntm_publication", "nntm_talk", "nntm_video", "post" ],
+			"enum": [
+				"nntm_article",
+				"nntm_publication",
+				"nntm_talk",
+				"nntm_video",
+				"post"
+			],
 			"default": "nntm_article"
 		},
 		"taxonomy": {
@@ -36,12 +46,19 @@
 		},
 		"orderBy": {
 			"type": "string",
-			"enum": [ "newest", "oldest", "title" ],
+			"enum": [
+				"newest",
+				"oldest",
+				"title"
+			],
 			"default": "newest"
 		},
 		"startSide": {
 			"type": "string",
-			"enum": [ "left", "right" ],
+			"enum": [
+				"left",
+				"right"
+			],
 			"default": "left"
 		},
 		"showCategory": {

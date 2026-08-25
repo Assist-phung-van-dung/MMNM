@@ -10,12 +10,18 @@
 	"supports": {
 		"html": false,
 		"align": false,
-		"customClassName": true
+		"customClassName": true,
+		"anchor": true
 	},
 	"attributes": {
 		"variant": {
 			"type": "string",
-			"enum": [ "default", "ghost", "cta-text", "fav-button" ],
+			"enum": [
+				"default",
+				"ghost",
+				"cta-text",
+				"fav-button"
+			],
 			"default": "default"
 		},
 		"text": {

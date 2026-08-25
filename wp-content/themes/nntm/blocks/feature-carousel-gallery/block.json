@@ -1,57 +1,110 @@
 {
-  "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 3,
-  "name": "nntm/feature-carousel-gallery",
-  "title": "Feature Carousel - Gallery",
-  "category": "nntm",
-  "icon": "format-gallery",
-  "description": "Carousel 5 lớp ảnh. Mỗi slide có tiêu đề riêng và popup photo slider riêng với số lượng ảnh/nội dung không giới hạn.",
-  "textdomain": "nntm",
-  "supports": {
-    "html": false,
-    "align": ["full"],
-    "customClassName": true
-  },
-  "attributes": {
-    "heading": { "type": "string", "default": "Hư Không và Vỏ Ốc" },
-    "slides": {
-      "type": "array",
-      "default": [],
-      "items": {
-        "type": "object",
-        "properties": {
-          "imageId": { "type": "number" },
-          "imageUrl": { "type": "string" },
-          "imageAlt": { "type": "string" },
-          "title": { "type": "string" },
-          "detailLabel": { "type": "string" },
-          "popupTitle": { "type": "string" },
-          "popupIntro": { "type": "string" },
-          "details": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "imageId": { "type": "number" },
-                "imageUrl": { "type": "string" },
-                "imageAlt": { "type": "string" },
-                "title": { "type": "string" },
-                "text": { "type": "string" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "autoplay": { "type": "boolean", "default": true },
-    "interval": { "type": "number", "default": 6 },
-    "showArrows": { "type": "boolean", "default": true },
-    "backgroundStyle": { "type": "string", "enum": ["white", "cream"], "default": "white" },
-    "arrowStyle": { "type": "string", "enum": ["plain", "boxed"], "default": "plain" }
-  },
-  "editorScript": "file:./editor.js",
-  "editorStyle": "file:./editor.css",
-  "viewScript": "file:./view.js",
-  "style": "file:./style.css",
-  "render": "file:./render.php"
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "nntm/feature-carousel-gallery",
+	"title": "Feature Carousel - Gallery",
+	"category": "nntm",
+	"icon": "format-gallery",
+	"description": "Carousel 5 lớp ảnh. Mỗi slide có tiêu đề riêng và popup photo slider riêng với số lượng ảnh/nội dung không giới hạn.",
+	"textdomain": "nntm",
+	"supports": {
+		"html": false,
+		"align": [
+			"full"
+		],
+		"customClassName": true,
+		"anchor": true
+	},
+	"attributes": {
+		"heading": {
+			"type": "string",
+			"default": "Hư Không và Vỏ Ốc"
+		},
+		"slides": {
+			"type": "array",
+			"default": [],
+			"items": {
+				"type": "object",
+				"properties": {
+					"imageId": {
+						"type": "number"
+					},
+					"imageUrl": {
+						"type": "string"
+					},
+					"imageAlt": {
+						"type": "string"
+					},
+					"title": {
+						"type": "string"
+					},
+					"detailLabel": {
+						"type": "string"
+					},
+					"popupTitle": {
+						"type": "string"
+					},
+					"popupIntro": {
+						"type": "string"
+					},
+					"details": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"imageId": {
+									"type": "number"
+								},
+								"imageUrl": {
+									"type": "string"
+								},
+								"imageAlt": {
+									"type": "string"
+								},
+								"title": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"autoplay": {
+			"type": "boolean",
+			"default": true
+		},
+		"interval": {
+			"type": "number",
+			"default": 6
+		},
+		"showArrows": {
+			"type": "boolean",
+			"default": true
+		},
+		"backgroundStyle": {
+			"type": "string",
+			"enum": [
+				"white",
+				"cream"
+			],
+			"default": "white"
+		},
+		"arrowStyle": {
+			"type": "string",
+			"enum": [
+				"plain",
+				"boxed"
+			],
+			"default": "plain"
+		}
+	},
+	"editorScript": "file:./editor.js",
+	"editorStyle": "file:./editor.css",
+	"viewScript": "file:./view.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
 }

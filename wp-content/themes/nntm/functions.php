@@ -11,6 +11,7 @@ require NNTM_THEME_DIR . '/inc/page-settings.php';
 require NNTM_THEME_DIR . '/inc/enqueue.php';
 require NNTM_THEME_DIR . '/inc/preloader.php';
 require NNTM_THEME_DIR . '/inc/blocks.php';
+require NNTM_THEME_DIR . '/inc/block-anchor.php';
 require NNTM_THEME_DIR . '/inc/patterns.php';
 require NNTM_THEME_DIR . '/inc/cleanup.php';
 require NNTM_THEME_DIR . '/inc/language-switcher.php';

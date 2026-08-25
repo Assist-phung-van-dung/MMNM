@@ -10,12 +10,23 @@
 	"supports": {
 		"html": false,
 		"align": false,
-		"customClassName": true
+		"customClassName": true,
+		"anchor": true
 	},
 	"attributes": {
 		"variant": {
 			"type": "string",
-			"enum": [ "article", "small", "xs", "dai-si", "kim-cuong", "article-hover", "video", "khoa-tu", "books" ],
+			"enum": [
+				"article",
+				"small",
+				"xs",
+				"dai-si",
+				"kim-cuong",
+				"article-hover",
+				"video",
+				"khoa-tu",
+				"books"
+			],
 			"default": "article"
 		},
 		"postId": {

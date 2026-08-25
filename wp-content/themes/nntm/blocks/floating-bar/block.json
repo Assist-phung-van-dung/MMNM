@@ -11,23 +11,45 @@
 		"html": false,
 		"align": false,
 		"customClassName": true,
-		"multiple": false
+		"multiple": false,
+		"anchor": true
 	},
 	"attributes": {
 		"items": {
 			"type": "array",
 			"default": [
-				{ "label": "Chuyện về Thầy tôi", "url": "" },
-				{ "label": "Lời Thầy Dạy", "url": "" },
-				{ "label": "Gót Son Xuyên Vạn Kiếp", "url": "" },
-				{ "label": "The Drum of the True Dharma", "url": "" },
-				{ "label": "Hoạt Động & Sự Kiện", "url": "" },
-				{ "label": "Cộng Đồng", "url": "" }
+				{
+					"label": "Chuyện về Thầy tôi",
+					"url": ""
+				},
+				{
+					"label": "Lời Thầy Dạy",
+					"url": ""
+				},
+				{
+					"label": "Gót Son Xuyên Vạn Kiếp",
+					"url": ""
+				},
+				{
+					"label": "The Drum of the True Dharma",
+					"url": ""
+				},
+				{
+					"label": "Hoạt Động & Sự Kiện",
+					"url": ""
+				},
+				{
+					"label": "Cộng Đồng",
+					"url": ""
+				}
 			]
 		},
 		"moKhi": {
 			"type": "string",
-			"enum": [ "qua-banner", "cuon-ngay" ],
+			"enum": [
+				"qua-banner",
+				"cuon-ngay"
+			],
 			"default": "qua-banner"
 		}
 	},

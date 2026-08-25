@@ -17,7 +17,7 @@
   position: fixed;
   top: var(--nntm-sp-5);
   left: var(--nntm-sp-5);
-  color: var(--nntm-trang);
+  color: #000;
   font-family: var(--nntm-font-sans);
   font-size: var(--nntm-fs-sm);
   text-decoration: none;

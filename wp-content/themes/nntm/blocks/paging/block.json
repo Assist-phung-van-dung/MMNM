@@ -10,12 +10,17 @@
 	"supports": {
 		"html": false,
 		"align": false,
-		"customClassName": true
+		"customClassName": true,
+		"anchor": true
 	},
 	"attributes": {
 		"alignment": {
 			"type": "string",
-			"enum": [ "left", "center", "right" ],
+			"enum": [
+				"left",
+				"center",
+				"right"
+			],
 			"default": "center"
 		},
 		"labelPrev": {

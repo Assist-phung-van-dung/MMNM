@@ -9,8 +9,12 @@
 	"textdomain": "nntm",
 	"supports": {
 		"html": false,
-		"align": [ "wide", "full" ],
-		"customClassName": true
+		"align": [
+			"wide",
+			"full"
+		],
+		"customClassName": true,
+		"anchor": true
 	},
 	"attributes": {
 		"heading": {
@@ -19,7 +23,16 @@
 		},
 		"postType": {
 			"type": "string",
-			"enum": [ "nntm_article", "nntm_publication", "nntm_talk", "nntm_retreat", "nntm_abode", "nntm_video", "nntm_zen_track", "post" ],
+			"enum": [
+				"nntm_article",
+				"nntm_publication",
+				"nntm_talk",
+				"nntm_retreat",
+				"nntm_abode",
+				"nntm_video",
+				"nntm_zen_track",
+				"post"
+			],
 			"default": "nntm_article"
 		},
 		"taxonomy": {
@@ -32,12 +45,26 @@
 		},
 		"variant": {
 			"type": "string",
-			"enum": [ "article", "small", "xs", "dai-si", "kim-cuong", "article-hover", "video", "khoa-tu", "books" ],
+			"enum": [
+				"article",
+				"small",
+				"xs",
+				"dai-si",
+				"kim-cuong",
+				"article-hover",
+				"video",
+				"khoa-tu",
+				"books"
+			],
 			"default": "article"
 		},
 		"columns": {
 			"type": "number",
-			"enum": [ 2, 3, 4 ],
+			"enum": [
+				2,
+				3,
+				4
+			],
 			"default": 3
 		},
 		"postsPerPage": {
@@ -46,7 +73,12 @@
 		},
 		"orderBy": {
 			"type": "string",
-			"enum": [ "newest", "oldest", "title", "manual" ],
+			"enum": [
+				"newest",
+				"oldest",
+				"title",
+				"manual"
+			],
 			"default": "newest"
 		},
 		"manualOrderIds": {
@@ -81,7 +113,11 @@
 		},
 		"layout": {
 			"type": "string",
-			"enum": [ "grid", "carousel", "marquee" ],
+			"enum": [
+				"grid",
+				"carousel",
+				"marquee"
+			],
 			"default": "grid",
 			"description": "grid = luoi (cu, mac dinh). carousel = bang the cuon co nut mui ten + thanh cuon (dung cho noi khac, KHONG duoc doi hanh vi). marquee = bang TU CHAY lien tuc, KHONG nut bam, KHONG thanh cuon (them 14/08/2026 cho dai Nghi Quy trang Kim Cuong Hanh Gia — xem inc/render-card-list-marquee.php)."
 		},
@@ -97,7 +133,14 @@
 		},
 		"background": {
 			"type": "string",
-			"enum": [ "none", "kem", "cam", "toi", "cham", "vang" ],
+			"enum": [
+				"none",
+				"kem",
+				"cam",
+				"toi",
+				"cham",
+				"vang"
+			],
 			"default": "none"
 		},
 		"showDate": {
@@ -134,7 +177,10 @@
 		},
 		"videoSource": {
 			"type": "string",
-			"enum": [ "posts", "youtube" ],
+			"enum": [
+				"posts",
+				"youtube"
+			],
 			"default": "posts"
 		},
 		"youtubeItems": {
@@ -144,7 +190,14 @@
 		}
 	},
 	"editorScript": "file:./editor.js",
-	"viewScript": [ "file:./view.js", "file:./view-paging.js", "file:./view-marquee-nav.js" ],
-	"style": [ "file:./style.css", "file:../card/style.css" ],
+	"viewScript": [
+		"file:./view.js",
+		"file:./view-paging.js",
+		"file:./view-marquee-nav.js"
+	],
+	"style": [
+		"file:./style.css",
+		"file:../card/style.css"
+	],
 	"render": "file:./render.php"
 }

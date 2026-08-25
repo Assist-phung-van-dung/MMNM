@@ -9,8 +9,12 @@
 	"textdomain": "nntm",
 	"supports": {
 		"html": false,
-		"align": [ "wide", "full" ],
-		"customClassName": true
+		"align": [
+			"wide",
+			"full"
+		],
+		"customClassName": true,
+		"anchor": true
 	},
 	"attributes": {
 		"heading": {
@@ -23,12 +27,19 @@
 		},
 		"orderBy": {
 			"type": "string",
-			"enum": [ "newest", "oldest", "title" ],
+			"enum": [
+				"newest",
+				"oldest",
+				"title"
+			],
 			"default": "newest"
 		},
 		"displayMode": {
 			"type": "string",
-			"enum": [ "cards", "list" ],
+			"enum": [
+				"cards",
+				"list"
+			],
 			"default": "cards"
 		}
 	},

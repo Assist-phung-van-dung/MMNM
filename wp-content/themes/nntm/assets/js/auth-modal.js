@@ -1,4 +1,3 @@
- 
 ( function () {
 	'use strict';
 
@@ -6,14 +5,40 @@
 	var lastFocusedEl = null;
 
 	document.addEventListener( 'click', function ( event ) {
-		var trigger = event.target.closest ? event.target.closest( '[data-nntm-auth-modal]' ) : null;
-		if ( ! trigger ) {
+		var modal = document.getElementById( MODAL_ID );
+		if ( ! modal ) {
 			return;
 		}
 
-		var modal = document.getElementById( MODAL_ID );
-		if ( ! modal ) {
+		/*
+		 * Close controls must work even when PHP renders the modal already open
+		 * after a failed login attempt.
+		 */
+		var closeButton = event.target.closest
+			? event.target.closest( '[data-nntm-auth-modal-close]' )
+			: null;
 
+		if ( closeButton && modal.contains( closeButton ) ) {
+			event.preventDefault();
+			closeModal( modal );
+			return;
+		}
+
+		var overlay = event.target.closest
+			? event.target.closest( '[data-nntm-auth-modal-overlay]' )
+			: null;
+
+		if ( overlay && modal.contains( overlay ) ) {
+			event.preventDefault();
+			closeModal( modal );
+			return;
+		}
+
+		var trigger = event.target.closest
+			? event.target.closest( '[data-nntm-auth-modal]' )
+			: null;
+
+		if ( ! trigger ) {
 			return;
 		}
 
@@ -21,13 +46,12 @@
 		openModal( modal, trigger );
 	} );
 
-
-
 	document.addEventListener( 'DOMContentLoaded', function () {
 		var modal = document.getElementById( MODAL_ID );
 		if ( ! modal || modal.hidden ) {
 			return;
 		}
+
 		var focusable = getFocusable( modal );
 		if ( focusable.length ) {
 			focusable[ 0 ].focus();
@@ -41,6 +65,7 @@
 		}
 
 		if ( 'Escape' === event.key ) {
+			event.preventDefault();
 			closeModal( modal );
 			return;
 		}
@@ -53,31 +78,16 @@
 	function openModal( modal, trigger ) {
 		lastFocusedEl = document.activeElement;
 
-
-
 		var redirectInput = modal.querySelector( 'input[name="redirect_to"]' );
 		var redirectTo = trigger && trigger.getAttribute
 			? trigger.getAttribute( 'data-nntm-auth-redirect' )
 			: '';
+
 		if ( redirectInput && redirectTo ) {
 			redirectInput.value = redirectTo;
 		}
 
 		modal.hidden = false;
-
-		var closeButtons = modal.querySelectorAll( '[data-nntm-auth-modal-close]' );
-		for ( var i = 0; i < closeButtons.length; i++ ) {
-			closeButtons[ i ].addEventListener( 'click', function () {
-				closeModal( modal );
-			} );
-		}
-
-		var overlay = modal.querySelector( '[data-nntm-auth-modal-overlay]' );
-		if ( overlay ) {
-			overlay.addEventListener( 'click', function () {
-				closeModal( modal );
-			} );
-		}
 
 		var focusable = getFocusable( modal );
 		if ( focusable.length ) {
@@ -88,9 +98,14 @@
 	function closeModal( modal ) {
 		modal.hidden = true;
 
-		if ( lastFocusedEl && typeof lastFocusedEl.focus === 'function' ) {
+		if (
+			lastFocusedEl &&
+			typeof lastFocusedEl.focus === 'function' &&
+			document.contains( lastFocusedEl )
+		) {
 			lastFocusedEl.focus();
 		}
+
 		lastFocusedEl = null;
 	}
 

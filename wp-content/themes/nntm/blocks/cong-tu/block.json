@@ -9,8 +9,12 @@
 	"textdomain": "nntm",
 	"supports": {
 		"html": false,
-		"align": [ "wide", "full" ],
-		"customClassName": true
+		"align": [
+			"wide",
+			"full"
+		],
+		"customClassName": true,
+		"anchor": true
 	},
 	"attributes": {
 		"programId": {
@@ -39,7 +43,11 @@
 		},
 		"background": {
 			"type": "string",
-			"enum": [ "vang", "kem", "none" ],
+			"enum": [
+				"vang",
+				"kem",
+				"none"
+			],
 			"default": "kem"
 		}
 	},
