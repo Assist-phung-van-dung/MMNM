@@ -400,46 +400,15 @@ body.nntm-dau-trang-de-len .nntm-header {
 	font-size: var(--nntm-fs-sm);
 	font-weight: 500;
 	color: var(--nntm-kem);
+	text-decoration: none;
 	cursor: pointer;
 	list-style: none;
 }
 
-.nntm-lang-select__toggle::-webkit-details-marker {
-	display: none;
-}
-
-.nntm-lang-select[open] .nntm-lang-select__toggle svg {
-	transform: rotate(180deg);
-}
-
-.nntm-lang-select__options {
-	position: absolute;
-	top: calc(100% + var(--nntm-sp-1));
-	right: 0;
-	display: flex;
-	flex-direction: column;
-	min-width: 70px;
-	padding: var(--nntm-sp-1);
-	border: 1px solid var(--nntm-vien);
-	border-radius: var(--nntm-r-sm);
-	background-color: var(--nntm-trang);
-	box-shadow: var(--nntm-sh-card);
-}
-
-.nntm-lang-select__option {
-	display: block;
-	padding: var(--nntm-sp-1) var(--nntm-sp-2);
-	font-family: var(--nntm-font-sans);
-	font-size: var(--nntm-fs-sm);
-	color: var(--nntm-than);
-	text-decoration: none;
-}
-
-.nntm-lang-select__option:hover,
-.nntm-lang-select__option:focus-visible,
-.nntm-lang-select__option.is-active {
-	background-color: var(--nntm-kem);
-	color: var(--nntm-chinh-hover);
+.nntm-lang-select__toggle:hover,
+.nntm-lang-select__toggle:focus-visible {
+	background-color: var(--nntm-chinh-hover);
+	color: var(--nntm-kem);
 }
 
 .nntm-header__account {
