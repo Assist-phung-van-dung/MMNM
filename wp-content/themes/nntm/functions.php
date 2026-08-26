@@ -24,6 +24,7 @@ require NNTM_THEME_DIR . '/inc/hanh-gia.php';
 require NNTM_THEME_DIR . '/inc/hoa-khai.php';
 require NNTM_THEME_DIR . '/inc/an-pham.php';
 require NNTM_THEME_DIR . '/inc/doc-sach.php';
+require NNTM_THEME_DIR . '/inc/quay-lai.php';
 require NNTM_THEME_DIR . '/inc/cong-tu.php';
 require NNTM_THEME_DIR . '/inc/kim-cuong-hanh-gia.php';
 require NNTM_THEME_DIR . '/inc/card-list-ajax.php';

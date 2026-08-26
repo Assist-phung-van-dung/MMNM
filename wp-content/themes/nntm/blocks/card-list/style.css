@@ -2,6 +2,7 @@
 
 .nntm-card-list {
 	display: block;
+	scroll-margin-top: calc( var(--nntm-header-h-that, var(--nntm-header-h, 76px)) + var(--nntm-sp-4, 16px) );
 }
 .page-id-242 .nntm-card-list__header-row {
 	display: flex;

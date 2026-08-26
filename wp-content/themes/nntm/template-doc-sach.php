@@ -34,7 +34,7 @@ $nntm_gioi_thieu = has_excerpt( $nntm_pub )
 <div class="nntm-doc__app">
 
 	<header class="nntm-doc__bar">
-		<a class="nntm-doc__icon nntm-doc__icon--back" href="<?php echo esc_url( $nntm_kho_sach ); ?>" title="<?php esc_attr_e( 'Thoát', 'nntm' ); ?>">
+		<a class="nntm-doc__icon nntm-doc__icon--back" data-nntm-doc="quay-lai" href="<?php echo esc_url( $nntm_kho_sach ); ?>" title="<?php esc_attr_e( 'Thoát', 'nntm' ); ?>">
 			<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
 			<span class="nntm-doc__sr"><?php esc_html_e( 'Thoát', 'nntm' ); ?></span>
 		</a>
