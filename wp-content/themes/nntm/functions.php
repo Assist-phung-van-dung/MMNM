@@ -31,6 +31,7 @@ require NNTM_THEME_DIR . '/inc/card-list-ajax.php';
 require NNTM_THEME_DIR . '/inc/video-lightbox.php';
 require NNTM_THEME_DIR . '/inc/reveal.php';
 require NNTM_THEME_DIR . '/inc/header-trong.php';
+require NNTM_THEME_DIR . '/inc/menu-active.php';
 require NNTM_THEME_DIR . '/inc/do-nhay.php';
 require NNTM_THEME_DIR . '/inc/admin-bar.php';
 require NNTM_THEME_DIR . '/inc/len-dau-trang.php';
