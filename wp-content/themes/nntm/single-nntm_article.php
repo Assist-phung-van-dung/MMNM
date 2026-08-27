@@ -28,6 +28,8 @@ if ( null === $nntm_cap_hanh_gia ) {
 			);
 			$nntm_term_id_hien_tai = (int) $nntm_terms_hien_tai[0]->term_id;
 		}
+
+		$nntm_lien_quan = nntm_bai_lien_quan_nguon( (int) $nntm_post_id, $nntm_term_id_hien_tai );
 		?>
 		<main id="nntm-noi-dung-chinh" class="nntm-article-detail">
 			<article <?php post_class( 'nntm-article-detail__article' ); ?>>
@@ -79,10 +81,10 @@ if ( null === $nntm_cap_hanh_gia ) {
 						array(
 							'blockName'    => 'nntm/card-list',
 							'attrs'        => array(
-								'heading'          => __( 'Bài Viết Liên Quan', 'nntm' ),
+								'heading'          => $nntm_lien_quan['heading'],
 								'postType'         => 'nntm_article',
-								'taxonomy'         => 'nntm_section',
-								'termId'           => $nntm_term_id_hien_tai,
+								'taxonomy'         => $nntm_lien_quan['taxonomy'],
+								'termId'           => $nntm_lien_quan['term_id'],
 								'variant'          => 'article',
 								'layout'           => 'carousel',
 								'postsPerPage'     => 8,
@@ -120,6 +122,8 @@ if ( null === $nntm_cap_hanh_gia ) {
 		$nntm_term_id_hien_tai = ( is_array( $nntm_terms_hien_tai ) && ! empty( $nntm_terms_hien_tai ) )
 			? (int) $nntm_terms_hien_tai[0]->term_id
 			: 0;
+
+		$nntm_lien_quan = nntm_bai_lien_quan_nguon( (int) get_the_ID(), $nntm_term_id_hien_tai );
 		?>
 		<main id="nntm-noi-dung-chinh">
 			<section class="nntm-bai-hanh-gia__than <?php echo esc_attr( $nntm_class_bien_the ); ?>">
@@ -162,10 +166,10 @@ if ( null === $nntm_cap_hanh_gia ) {
 					array(
 						'blockName'    => 'nntm/card-list',
 						'attrs'        => array(
-							'heading'          => __( 'Bài viết liên quan', 'nntm' ),
+							'heading'          => $nntm_lien_quan['heading'],
 							'postType'         => 'nntm_article',
-							'taxonomy'         => 'nntm_section',
-							'termId'           => $nntm_term_id_hien_tai,
+							'taxonomy'         => $nntm_lien_quan['taxonomy'],
+							'termId'           => $nntm_lien_quan['term_id'],
 							'variant'          => 'article',
 							'layout'           => 'carousel',
 							'postsPerPage'     => 8,

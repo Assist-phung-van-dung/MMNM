@@ -152,6 +152,42 @@ function nntm_section_pagination_url( int $page, string $base_url = '' ): string
 /**
  * Số bài mỗi trang cho trang lưu trữ chuyên mục.
  */
+/**
+ * Nguồn cho khối "Bài viết liên quan" ở trang chi tiết bài viết.
+ *
+ * Ưu tiên Chủ đề (nntm_topic) của chính bài đó, tiêu đề khối lấy luôn tên chủ đề.
+ * Bài chưa gắn chủ đề thì lui về Phân mục như cũ, để khối không bị rỗng.
+ *
+ * @param int $post_id         Bài đang xem.
+ * @param int $section_term_id Term Phân mục dùng khi bài chưa có chủ đề.
+ * @return array{taxonomy:string,term_id:int,heading:string}
+ */
+function nntm_bai_lien_quan_nguon( int $post_id, int $section_term_id = 0 ): array {
+	$chu_de = get_the_terms( $post_id, 'nntm_topic' );
+
+	if ( ! empty( $chu_de ) && ! is_wp_error( $chu_de ) ) {
+		$term = $chu_de[0];
+
+		if ( $term instanceof WP_Term ) {
+			return array(
+				'taxonomy' => 'nntm_topic',
+				'term_id'  => (int) $term->term_id,
+				'heading'  => sprintf(
+					/* translators: %s là tên chủ đề của bài viết. */
+					__( '%s liên quan', 'nntm' ),
+					$term->name
+				),
+			);
+		}
+	}
+
+	return array(
+		'taxonomy' => 'nntm_section',
+		'term_id'  => $section_term_id,
+		'heading'  => __( 'Bài Viết Liên Quan', 'nntm' ),
+	);
+}
+
 function nntm_category_so_bai_moi_trang(): int {
 	return max( 1, (int) apply_filters( 'nntm_category_so_bai_moi_trang', 5 ) );
 }
