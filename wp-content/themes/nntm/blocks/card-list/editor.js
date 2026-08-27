@@ -39,7 +39,7 @@
 		{ label: __( 'Trú Xứ', 'nntm' ), value: 'nntm_abode' },
 		{ label: __( 'Video', 'nntm' ), value: 'nntm_video' },
 		{ label: __( 'Nhạc thiền', 'nntm' ), value: 'nntm_zen_track' },
-		{ label: __( 'Chuyện Thầy Tôi', 'nntm' ), value: 'nntm_chuyen_thay_toi' },
+		{ label: __( 'Chuyện về Thầy Tôi', 'nntm' ), value: 'nntm_chuyen_thay_toi' },
 		{ label: __( 'Tin Tức / Hoằng Pháp', 'nntm' ), value: 'post' },
 	];
 

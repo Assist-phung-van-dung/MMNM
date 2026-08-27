@@ -34,6 +34,10 @@ function nntm_menu_ban_do(): array {
 			'post_type:nntm_publication' => 'hoa-khai',
 			'archive:nntm_publication'   => 'hoa-khai',
 
+			// Chuyện Thầy Tôi nằm trong Vườn Xoài.
+			'archive:nntm_chuyen_thay_toi'   => 'vuon-xoai',
+			'post_type:nntm_chuyen_thay_toi' => 'vuon-xoai',
+
 			// Khoá Tu / Lịch Tu — cả trang chủ đề lẫn trang danh sách khoá tu.
 			'term:nntm_topic:khoa-tu'    => 'lien-dan',
 			'term:nntm_topic:lich-tu'    => 'lien-dan',

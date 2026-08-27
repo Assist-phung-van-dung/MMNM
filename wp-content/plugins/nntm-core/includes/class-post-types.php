@@ -282,7 +282,7 @@ class Post_Types {
 	 */
 	private function args_chuyen_thay_toi(): array {
 		return array(
-			'labels'             => $this->labels( __( 'Chuyện Thầy Tôi', 'nntm' ) ),
+			'labels'             => $this->labels( __( 'Chuyện về Thầy Tôi', 'nntm' ) ),
 			'public'             => true,
 			'show_in_rest'       => true,
 			'menu_icon'          => 'dashicons-book-alt',
