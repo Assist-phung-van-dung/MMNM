@@ -71,7 +71,7 @@ while ( have_posts() ) :
 						'attrs'        => array(
 							'heading'          => sprintf(
 								/* translators: %s: post type label. */
-								__( 'Bài viết liên quan', 'nntm' ),
+								__( '%s liên quan', 'nntm' ),
 								$type_name
 							),
 							'postType'         => $post_type,
