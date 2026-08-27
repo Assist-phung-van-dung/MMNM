@@ -134,6 +134,24 @@
 	cursor: pointer;
 }
 
+.nntm-an-pham__hang-nut .nntm-chia-se {
+	margin-left: var(--nntm-sp-7);
+}
+
+.nntm-an-pham__chia-se {
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-xs);
+	font-weight: 700;
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-muc);
+	text-decoration: none;
+}
+
+.nntm-an-pham__chia-se:hover,
+.nntm-an-pham__chia-se:focus-visible {
+	text-decoration: underline;
+}
+
 .nntm-an-pham__tim {
 	display: block;
 	width: 20px;

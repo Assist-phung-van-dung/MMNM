@@ -1590,3 +1590,30 @@
 		transform: none;
 	}
 }
+
+
+/* Khung Figma của hero được ghim theo khổ 1366. Dưới 1366 thì --nntm-cot-le về 0,
+   nên thẻ bên phải (left 958px + width 388px = 1346px) tràn ra ngoài sân khấu và bị
+   overflow:hidden cắt mất — tại 1152px mất tới 194px. Dải này neo thẻ theo mép phải,
+   cho bề ngang co theo tỉ lệ gốc, và thắt cột chữ lại để không đè lên nhau. */
+@media (min-width: 1152px) and (max-width: 1365.98px) {
+	.home .nntm-hero-slider__sidecard {
+		left: auto;
+		right: 20px;
+		width: min(388px, 28.4%);
+	}
+
+	.home .nntm-hero-slider__content {
+		max-width: min(809px, calc(71.6% - 153px));
+	}
+
+	.home .nntm-hero-slider__heading {
+		font-size: clamp(46px, 4.25vw, 58px);
+		line-height: 1.17;
+		max-width: none;
+	}
+
+	.home .nntm-hero-slider__text {
+		max-width: none;
+	}
+}

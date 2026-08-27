@@ -97,6 +97,12 @@ while ( have_posts() ) :
 						<?php endif; ?>
 
 						<?php
+						if ( function_exists( 'nntm_render_chia_se' ) ) {
+							echo nntm_render_chia_se( (int) $post_id, array( 'class_nut' => 'nntm-an-pham__chia-se' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						}
+						?>
+
+						<?php
 						 
 						?>
 						<?php if ( $duoc_xem ) : ?>

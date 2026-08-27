@@ -28,6 +28,10 @@
 .nntm-post-detail__content > * + * { margin-top:var(--nntm-sp-2); }
 .nntm-post-detail__content img, .nntm-post-detail__content figure { max-width:100%; }
 .nntm-post-detail__favorite { margin-top:30px; }
+.nntm-post-detail__actions { display:flex; align-items:center; flex-wrap:wrap; gap:24px; }
+.nntm-post-detail__share { font-family:var(--nntm-font-sans); font-size:var(--nntm-fs-xs); font-weight:700; line-height:var(--nntm-lh-vua); color:var(--nntm-chu); text-decoration:none; }
+.nntm-post-detail__share:hover,
+.nntm-post-detail__share:focus-visible { text-decoration:underline; }
 
 .nntm-post-detail__related { padding:58px 0 76px; background:var(--nntm-kem); overflow:hidden; }
 .nntm-post-detail__related .nntm-card-list,

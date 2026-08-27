@@ -31,7 +31,10 @@ while ( have_posts() ) :
 				<?php if ( '' !== trim( $excerpt ) ) : ?><p class="nntm-post-detail__intro"><?php echo esc_html( $excerpt ); ?></p><?php endif; ?>
 				<?php if ( has_post_thumbnail() ) : ?><figure class="nntm-post-detail__media"><?php the_post_thumbnail( 'full' ); ?></figure><?php endif; ?>
 				<div class="nntm-post-detail__content"><?php the_content(); ?></div>
-				<?php if ( function_exists( 'nntm_section_render_favorite_button' ) ) : ?><div class="nntm-post-detail__favorite"><?php echo nntm_section_render_favorite_button( get_the_ID(), 'nntm-post-detail__favorite-button' );  ?></div><?php endif; ?>
+				<div class="nntm-post-detail__favorite nntm-post-detail__actions">
+					<?php if ( function_exists( 'nntm_section_render_favorite_button' ) ) { echo nntm_section_render_favorite_button( get_the_ID(), 'nntm-post-detail__favorite-button' ); } ?>
+					<?php if ( function_exists( 'nntm_render_chia_se' ) ) { echo nntm_render_chia_se( (int) get_the_ID(), array( 'class_nut' => 'nntm-post-detail__share' ) ); } ?>
+				</div>
 			</div>
 		</article>
 

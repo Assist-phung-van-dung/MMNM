@@ -150,14 +150,27 @@ function nntm_handle_contact_submit(): void {
 
 	set_transient( $rate_key, time(), 30 );
 
-	$recipient = sanitize_email( (string) apply_filters( 'nntm_contact_recipient', get_option( 'admin_email' ) ) );
-	if ( ! is_email( $recipient ) ) {
+	// Lưu vào cơ sở dữ liệu TRƯỚC. Đây mới là nơi giữ lời nhắn; email chỉ là báo tin.
+	$lh_id = function_exists( 'nntm_lh_luu' )
+		? nntm_lh_luu(
+			array(
+				'ho_ten'     => $name,
+				'email'      => $email,
+				'dien_thoai' => $phone,
+				'cau_hoi'    => $question,
+			)
+		)
+		: 0;
+
+	if ( $lh_id < 1 ) {
 		delete_transient( $rate_key );
 		wp_send_json_error(
-			array( 'message' => __( 'Hệ thống chưa cấu hình email nhận liên hệ. Vui lòng liên hệ quản trị viên.', 'nntm' ) ),
+			array( 'message' => __( 'Không lưu được liên hệ lúc này. Vui lòng thử lại sau.', 'nntm' ) ),
 			500
 		);
 	}
+
+	$recipient = sanitize_email( (string) apply_filters( 'nntm_contact_recipient', get_option( 'admin_email' ) ) );
 
 	$site_name = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
 	$subject   = sprintf( '[%s] Liên hệ mới từ %s', $site_name, $name );
@@ -182,15 +195,29 @@ function nntm_handle_contact_submit(): void {
 		'Reply-To: ' . $name . ' <' . $email . '>',
 	);
 
-	$sent = wp_mail( $recipient, $subject, $message, $headers );
+	$sent   = false;
+	$loi    = '';
+	$bat_loi = static function ( $err ) use ( &$loi ): void {
+		if ( $err instanceof WP_Error ) {
+			$loi = $err->get_error_message();
+		}
+	};
+
+	if ( is_email( $recipient ) ) {
+		add_action( 'wp_mail_failed', $bat_loi );
+		$sent = (bool) wp_mail( $recipient, $subject, $message, $headers );
+		remove_action( 'wp_mail_failed', $bat_loi );
+	} else {
+		$loi = __( 'Chưa cấu hình email nhận liên hệ.', 'nntm' );
+	}
+
+	update_post_meta( $lh_id, '_nntm_lh_da_gui_mail', $sent ? '1' : '0' );
 
 	if ( ! $sent ) {
-		delete_transient( $rate_key );
-		error_log( 'NNTM contact form: wp_mail() returned false.' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-		wp_send_json_error(
-			array( 'message' => __( 'Không thể gửi liên hệ lúc này. Vui lòng thử lại sau.', 'nntm' ) ),
-			500
-		);
+		update_post_meta( $lh_id, '_nntm_lh_loi_mail', $loi );
+
+		// Email hỏng không phải lỗi của người gửi — lời nhắn đã nằm an toàn trong admin.
+		error_log( 'NNTM contact form: khong gui duoc email bao. ' . $loi ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 	}
 
 	wp_send_json_success(

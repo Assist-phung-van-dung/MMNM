@@ -59,10 +59,15 @@ if ( null === $nntm_cap_hanh_gia ) {
 						<?php the_content(); ?>
 					</div>
 
-					<div class="nntm-article-detail__favorite">
+					<div class="nntm-article-detail__favorite nntm-article-detail__actions">
 						<?php
 						if ( function_exists( 'nntm_section_render_favorite_button' ) ) {
 							echo nntm_section_render_favorite_button( $nntm_post_id, 'nntm-article-detail__favorite-button' );  
+						}
+						?>
+						<?php
+						if ( function_exists( 'nntm_render_chia_se' ) ) {
+							echo nntm_render_chia_se( (int) $nntm_post_id, array( 'class_nut' => 'nntm-article-detail__share' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						}
 						?>
 					</div>
@@ -142,15 +147,11 @@ if ( null === $nntm_cap_hanh_gia ) {
 							echo nntm_section_render_favorite_button( get_the_ID(), 'nntm-bai-hanh-gia__yeu-thich' );  
 						}
 						?>
-						<button
-							type="button"
-							class="nntm-bai-hanh-gia__dang-ky nntm-sao-link"
-							data-nntm-sao-link="<?php echo esc_url( get_permalink() ); ?>"
-							data-nntm-sao-link-xong="<?php esc_attr_e( 'Đã copy link', 'nntm' ); ?>"
-							data-nntm-sao-link-loi="<?php esc_attr_e( 'Không copy được', 'nntm' ); ?>"
-						>
-							<span class="nntm-sao-link__nhan"><?php esc_html_e( 'Chia sẻ', 'nntm' ); ?></span>
-						</button>
+						<?php
+						if ( function_exists( 'nntm_render_chia_se' ) ) {
+							echo nntm_render_chia_se( (int) get_the_ID(), array( 'class_nut' => 'nntm-bai-hanh-gia__dang-ky' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						}
+						?>
 					</div>
 				</div>
 			</section>

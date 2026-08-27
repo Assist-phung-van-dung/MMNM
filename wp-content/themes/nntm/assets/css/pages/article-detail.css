@@ -91,6 +91,27 @@
 	margin-top: 30px;
 }
 
+.nntm-article-detail__actions {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 24px;
+}
+
+.nntm-article-detail__share {
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-xs);
+	font-weight: 700;
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-chu);
+	text-decoration: none;
+}
+
+.nntm-article-detail__share:hover,
+.nntm-article-detail__share:focus-visible {
+	text-decoration: underline;
+}
+
 .nntm-article-detail__related {
 	width: 100%;
 	max-width: var(--nntm-w-rong);

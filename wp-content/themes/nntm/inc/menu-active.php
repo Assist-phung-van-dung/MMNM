@@ -27,8 +27,17 @@ function nntm_menu_ban_do(): array {
 			'page:nghi-quy'              => 'nhap-phap-gioi',
 			'term:nntm_topic:nghi-quy'   => 'nhap-phap-gioi',
 
+			// Chuyên mục của bài viết thường.
+			'term:category:tin-tuc'      => 'hoa-khai',
+			'term:category:hoang-phap'   => 'hoa-khai',
+
 			'post_type:nntm_publication' => 'hoa-khai',
 			'archive:nntm_publication'   => 'hoa-khai',
+
+			// Khoá Tu / Lịch Tu — cả trang chủ đề lẫn trang danh sách khoá tu.
+			'term:nntm_topic:khoa-tu'    => 'lien-dan',
+			'term:nntm_topic:lich-tu'    => 'lien-dan',
+			'archive:nntm_retreat'       => 'lien-dan',
 
 			'post_type:nntm_video'       => 'nhap-phap-gioi',
 			'archive:nntm_video'         => 'nhap-phap-gioi',

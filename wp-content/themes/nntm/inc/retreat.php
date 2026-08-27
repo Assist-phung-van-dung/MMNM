@@ -71,6 +71,8 @@ function nntm_enqueue_retreat_assets(): void {
 			array(
 				'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
 				'signupError'   => __( 'Không thể gửi đăng ký. Vui lòng thử lại.', 'nntm' ),
+				'daDangKy'      => function_exists( 'nntm_dkkt_loi_nhan' ) ? nntm_dkkt_loi_nhan( 'pending' ) : '',
+				'nhanDaDangKy'  => function_exists( 'nntm_dkkt_nhan_nut' ) ? nntm_dkkt_nhan_nut( 'pending' ) : '',
 			)
 		);
 	}
@@ -159,6 +161,10 @@ function nntm_ajax_retreat_signup(): void {
 	$retreat    = $retreat_id > 0 ? get_post( $retreat_id ) : null;
 	if ( ! $retreat instanceof WP_Post || 'nntm_retreat' !== $retreat->post_type || 'publish' !== $retreat->post_status ) {
 		wp_send_json_error( array( 'message' => __( 'Khóa tu không hợp lệ.', 'nntm' ) ), 400 );
+	}
+
+	if ( function_exists( 'nntm_dkkt_duoc_dang_ky' ) && ! nntm_dkkt_duoc_dang_ky( $retreat_id ) ) {
+		wp_send_json_error( array( 'message' => __( 'Mục này không mở đăng ký.', 'nntm' ) ), 403 );
 	}
 
 	$website = isset( $_POST['website'] ) ? trim( (string) wp_unslash( $_POST['website'] ) ) : '';

@@ -149,6 +149,34 @@ function nntm_section_pagination_url( int $page, string $base_url = '' ): string
 	return 1 === $page ? $base_url : trailingslashit( $base_url . 'page/' . $page );
 }
 
+/**
+ * Số bài mỗi trang cho trang lưu trữ chuyên mục.
+ */
+function nntm_category_so_bai_moi_trang(): int {
+	return max( 1, (int) apply_filters( 'nntm_category_so_bai_moi_trang', 5 ) );
+}
+
+/**
+ * category.php chạy một truy vấn riêng 5 bài/trang, trong khi truy vấn chính vẫn
+ * dùng tuỳ chọn "Blog pages show at most" của WordPress (đang là 10). Lệch nhau
+ * khiến thanh phân trang vẽ ra trang 2 nhưng WordPress lại trả 404 cho
+ * /category/<slug>/page/2/. Ép truy vấn chính dùng đúng con số đó.
+ *
+ * @param WP_Query $query Truy vấn đang chạy.
+ */
+function nntm_category_dong_bo_so_bai( $query ): void {
+	if ( is_admin() || ! $query instanceof WP_Query ) {
+		return;
+	}
+
+	if ( ! $query->is_main_query() || ! $query->is_category() || $query->is_feed() ) {
+		return;
+	}
+
+	$query->set( 'posts_per_page', nntm_category_so_bai_moi_trang() );
+}
+add_action( 'pre_get_posts', 'nntm_category_dong_bo_so_bai' );
+
 function nntm_render_section_pagination( int $current, int $total, string $base_url = '' ): string {
 	$current = max( 1, $current );
 	$total   = max( 1, $total );

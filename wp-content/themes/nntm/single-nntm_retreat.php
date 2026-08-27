@@ -14,6 +14,15 @@ while ( have_posts() ) :
 	$is_lich = $topic instanceof WP_Term && 'lich-tu' === $topic->slug;
 	$related_heading = $is_lich ? __( 'Lịch tu liên quan', 'nntm' ) : __( 'Khóa tu liên quan', 'nntm' );
 
+	$nntm_cho_dang_ky  = function_exists( 'nntm_dkkt_duoc_dang_ky' ) && nntm_dkkt_duoc_dang_ky( (int) $post_id );
+	$nntm_dang_ky      = $nntm_cho_dang_ky && function_exists( 'nntm_dkkt_cua_toi' ) ? nntm_dkkt_cua_toi( (int) $post_id ) : null;
+	$nntm_trang_thai   = is_array( $nntm_dang_ky ) ? (string) $nntm_dang_ky['status'] : '';
+	$nntm_da_dang_ky   = '' !== $nntm_trang_thai;
+	$nntm_nhan_nut     = $nntm_da_dang_ky && function_exists( 'nntm_dkkt_nhan_nut' )
+		? nntm_dkkt_nhan_nut( $nntm_trang_thai )
+		: __( 'Đăng ký Khóa Tu', 'nntm' );
+	$nntm_loi_nhan     = function_exists( 'nntm_dkkt_loi_nhan' ) ? nntm_dkkt_loi_nhan( $nntm_trang_thai ) : '';
+
 	$current_user = wp_get_current_user();
 	$full_name    = is_user_logged_in() ? $current_user->display_name : '';
 	$email        = is_user_logged_in() ? $current_user->user_email : '';
@@ -55,19 +64,21 @@ while ( have_posts() ) :
 					}
 					?>
 
-					<button type="button" class="nntm-retreat-detail__register" data-nntm-retreat-open-register>
-						<?php esc_html_e( 'Đăng ký Khóa Tu', 'nntm' ); ?>
-					</button>
-
+					<?php if ( $nntm_cho_dang_ky ) : ?>
 					<button
 						type="button"
-						class="nntm-retreat-detail__share nntm-sao-link"
-						data-nntm-sao-link="<?php echo esc_url( get_permalink() ); ?>"
-						data-nntm-sao-link-xong="<?php esc_attr_e( 'Đã copy link', 'nntm' ); ?>"
-						data-nntm-sao-link-loi="<?php esc_attr_e( 'Không copy được', 'nntm' ); ?>"
+						class="nntm-retreat-detail__register<?php echo $nntm_da_dang_ky ? ' is-da-dang-ky' : ''; ?>"
+						data-nntm-retreat-open-register
 					>
-						<span class="nntm-sao-link__nhan"><?php esc_html_e( 'Chia sẻ', 'nntm' ); ?></span>
+						<span data-nntm-retreat-nhan><?php echo esc_html( $nntm_nhan_nut ); ?></span>
 					</button>
+					<?php endif; ?>
+
+					<?php
+					if ( function_exists( 'nntm_render_chia_se' ) ) {
+						echo nntm_render_chia_se( (int) get_the_ID(), array( 'class_nut' => 'nntm-retreat-detail__share' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					}
+					?>
 				</div>
 			</div>
 
@@ -103,14 +114,20 @@ while ( have_posts() ) :
 		</article>
 	</main>
 
-	<div class="nntm-retreat-modal" data-nntm-retreat-modal hidden>
+	<?php if ( $nntm_cho_dang_ky ) : ?>
+	<div class="nntm-retreat-modal" data-nntm-retreat-modal data-nntm-retreat-id="<?php echo esc_attr( (string) $post_id ); ?>" hidden>
 		<div class="nntm-retreat-modal__backdrop" data-nntm-retreat-close></div>
 		<div class="nntm-retreat-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="nntm-retreat-modal-title">
 			<button type="button" class="nntm-retreat-modal__close" data-nntm-retreat-close aria-label="<?php esc_attr_e( 'Đóng', 'nntm' ); ?>">&times;</button>
 			<h2 id="nntm-retreat-modal-title" class="nntm-retreat-modal__title"><?php esc_html_e( 'Đăng ký Khóa Tu', 'nntm' ); ?></h2>
 			<p class="nntm-retreat-modal__retreat-name"><?php the_title(); ?></p>
 
-			<form class="nntm-retreat-modal__form" data-nntm-retreat-form novalidate>
+			<div class="nntm-retreat-modal__da-dang-ky" data-nntm-retreat-xong <?php echo $nntm_da_dang_ky ? '' : 'hidden'; ?>>
+				<p class="nntm-retreat-modal__da-dang-ky-chu" data-nntm-retreat-xong-chu><?php echo esc_html( $nntm_loi_nhan ); ?></p>
+				<button type="button" class="nntm-retreat-modal__submit" data-nntm-retreat-close><?php esc_html_e( 'Đã hiểu', 'nntm' ); ?></button>
+			</div>
+
+			<form class="nntm-retreat-modal__form" data-nntm-retreat-form novalidate <?php echo $nntm_da_dang_ky ? 'hidden' : ''; ?>>
 				<input type="hidden" name="action" value="nntm_retreat_signup">
 				<input type="hidden" name="retreat_id" value="<?php echo esc_attr( (string) $post_id ); ?>">
 				<?php wp_nonce_field( 'nntm_retreat_signup', 'nonce' ); ?>
@@ -140,6 +157,7 @@ while ( have_posts() ) :
 			</form>
 		</div>
 	</div>
+	<?php endif; ?>
 	<?php
 endwhile;
 

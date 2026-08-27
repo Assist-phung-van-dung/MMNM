@@ -213,6 +213,11 @@
 	color: var(--nntm-chu-phu);
 }
 
+/* Thuộc tính hidden phải thắng display:grid, nếu không form vẫn hiện khi đã đăng ký. */
+.nntm-retreat-modal__form[hidden] {
+	display: none;
+}
+
 .nntm-retreat-modal__form {
 	display: grid;
 	gap: 16px;
@@ -307,4 +312,33 @@
 	.nntm-retreat-modal__dialog {
 		padding: 30px 20px 24px;
 	}
+}
+
+
+/* Đã đăng ký: ẩn form, chỉ còn lời nhắn trạng thái. */
+.nntm-retreat-modal__da-dang-ky[hidden] {
+	display: none;
+}
+
+.nntm-retreat-modal__da-dang-ky {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--nntm-sp-5, 20px);
+	margin-top: var(--nntm-sp-5, 20px);
+}
+
+.nntm-retreat-modal__da-dang-ky-chu {
+	margin: 0;
+	padding: var(--nntm-sp-4, 16px) var(--nntm-sp-5, 20px);
+	border-left: 3px solid var(--nntm-do-tham, #8a2b2b);
+	background: var(--nntm-kem, #f7f1de);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-chu, #2b2b2b);
+}
+
+.nntm-retreat-detail__register.is-da-dang-ky {
+	opacity: 0.72;
 }
