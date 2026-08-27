@@ -132,6 +132,15 @@ $nntm_bn_wrapper = get_block_wrapper_attributes(
 								$nntm_bn_btn_attrs_html .= ' ' . esc_attr( $nntm_bn_attr_key ) . '="' . esc_attr( (string) $nntm_bn_attr_val ) . '"';
 							}
 
+							// Nút phụ (ví dụ "Xem thêm") đứng trước nút chính.
+							$nntm_bn_btn_truoc = (string) apply_filters( 'nntm_banner_btn_truoc', '', $nntm_bn_slide );
+							?>
+							<div class="nntm-banner__btns">
+							<?php
+							if ( '' !== trim( $nntm_bn_btn_truoc ) ) {
+								echo $nntm_bn_btn_truoc;  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							}
+
 							if ( '' !== $nntm_bn_btn_url ) :
 								?>
 								<a class="nntm-banner__btn" href="<?php echo esc_url( $nntm_bn_btn_url ); ?>"<?php echo $nntm_bn_btn_attrs_html;  ?>><?php echo esc_html( $nntm_bn_btn_label ); ?></a>
@@ -146,6 +155,9 @@ $nntm_bn_wrapper = get_block_wrapper_attributes(
 								><?php echo esc_html( $nntm_bn_btn_label ); ?></button>
 								<?php
 							endif;
+							?>
+							</div>
+							<?php
 						endif;
 						?>
 					</div>

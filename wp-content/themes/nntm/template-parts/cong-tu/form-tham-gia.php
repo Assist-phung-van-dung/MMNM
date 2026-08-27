@@ -77,6 +77,23 @@ $nntm_ct_user_id = get_current_user_id();
 		<form class="nntm-auth-form" method="post" data-nntm-congtu-ajax="cam-ket">
 			<?php wp_nonce_field( 'nntm_congtu_cam_ket', 'nntm_congtu_nonce' ); ?>
 			<input type="hidden" name="nntm_congtu_action" value="cam-ket" />
+
+			<div class="nntm-auth-field">
+				<label for="nntm-congtu-so-cam-ket"><?php echo esc_html( $nntm_ct_nhan ); ?></label>
+				<div class="nntm-auth-field__control">
+					<input
+						type="number"
+						min="1"
+						step="1"
+						inputmode="numeric"
+						id="nntm-congtu-so-cam-ket"
+						name="so_chuoi"
+						placeholder="<?php esc_attr_e( 'Vui lòng nhập số', 'nntm' ); ?>"
+						required
+					/>
+				</div>
+			</div>
+
 			<button type="submit" class="nntm-auth-btn nntm-auth-btn--dac nntm-cong-tu__submit">
 				<?php echo esc_html( $nntm_ct_nut ); ?>
 			</button>

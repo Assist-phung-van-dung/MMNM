@@ -122,6 +122,30 @@
 	color: var(--nntm-trang);
 }
 
+/* Hàng nút: nút phụ (Xem thêm) đứng trước nút chính (Tham gia). */
+.nntm-banner__btns {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--nntm-sp-4);
+	margin-top: var(--nntm-sp-2);
+}
+
+.nntm-banner__btns .nntm-banner__btn {
+	margin-top: 0;
+}
+
+.nntm-banner__btn--phu {
+	background-color: transparent;
+	box-shadow: inset 0 0 0 1px var(--nntm-trang);
+}
+
+.nntm-banner__btn--phu:hover,
+.nntm-banner__btn--phu:focus-visible {
+	background-color: var(--nntm-trang);
+	color: var(--nntm-chinh);
+}
+
 .nntm-banner__btn {
 	margin-top: var(--nntm-sp-2);
 	display: inline-flex;

@@ -47,6 +47,43 @@ function nntm_congtu_banner_btn_label( string $label, array $slide ): string {
 }
 add_filter( 'nntm_banner_btn_label', 'nntm_congtu_banner_btn_label', 10, 2 );
 
+/**
+ * Đường dẫn trang giới thiệu của chương trình đang mở, '' nếu chưa có chương trình.
+ */
+function nntm_congtu_url_gioi_thieu(): string {
+	$program = function_exists( 'nntm_program_hien_tai' ) ? nntm_program_hien_tai() : null;
+
+	if ( ! $program instanceof WP_Post ) {
+		return '';
+	}
+
+	return (string) get_permalink( $program );
+}
+
+/**
+ * Nút "Xem thêm" đứng trước nút Tham gia trên banner, dẫn vào trang giới thiệu.
+ *
+ * Khách chưa đăng nhập vẫn thấy nút, nhưng trang giới thiệu sẽ đẩy họ qua đăng
+ * nhập rồi quay lại — đúng như các trang Cộng Tu khác.
+ *
+ * @param string $html  HTML sẵn có.
+ * @param array  $slide Dữ liệu tấm banner.
+ */
+function nntm_congtu_banner_btn_xem_them( string $html, array $slide ): string {
+	$url = nntm_congtu_url_gioi_thieu();
+
+	if ( '' === $url ) {
+		return $html;
+	}
+
+	return $html . sprintf(
+		'<a class="nntm-banner__btn nntm-banner__btn--phu" href="%1$s">%2$s</a>',
+		esc_url( $url ),
+		esc_html__( 'Xem thêm', 'nntm' )
+	);
+}
+add_filter( 'nntm_banner_btn_truoc', 'nntm_congtu_banner_btn_xem_them', 10, 2 );
+
 function nntm_congtu_banner_btn_attrs( array $attrs, array $slide ): array {
 	switch ( nntm_congtu_trang_thai_nut_banner() ) {
 		case 'khach':
@@ -205,7 +242,10 @@ add_action( 'wp_enqueue_scripts', 'nntm_congtu_dequeue_site_chrome', 20 );
 
  
 function nntm_congtu_yeu_cau_dang_nhap(): void {
-	if ( ! is_page( array( 'tham-gia-chuoi-tri', 'khai-bao-chuoi-tri' ) ) ) {
+	$can_gac = is_page( array( 'tham-gia-chuoi-tri', 'khai-bao-chuoi-tri' ) )
+		|| is_singular( 'nntm_program' );
+
+	if ( ! $can_gac ) {
 		return;
 	}
 
@@ -315,7 +355,17 @@ function nntm_congtu_dat_loi( string $modal, WP_Error $error ): void {
 }
 
  
-function nntm_congtu_ghi_cam_ket( $so_chuoi_raw, bool $dong_y, bool $ban_tin ) {
+/**
+ * Ghi cam kết số chuỗi của một người cho chương trình đang mở.
+ *
+ * Tham số $dong_y trước đây nằm giữa nhưng không dùng tới, trong khi cả hai chỗ
+ * gọi đều chỉ truyền 2 đối số — PHP báo ArgumentCountError nên form luôn hỏng.
+ *
+ * @param mixed $so_chuoi_raw Số chuỗi người dùng nhập.
+ * @param bool  $ban_tin      Có nhận bản tin hay không.
+ * @return int|WP_Error ID chương trình, hoặc lỗi.
+ */
+function nntm_congtu_ghi_cam_ket( $so_chuoi_raw, bool $ban_tin ) {
 	$program = function_exists( 'nntm_program_hien_tai' ) ? nntm_program_hien_tai() : null;
 
 	if ( ! $program ) {
@@ -570,3 +620,26 @@ function nntm_congtu_cau_tong_ket( array $tong ): string {
 		(string) max( 0, (int) round( $tien_trinh * 100 ) )
 	);
 }
+
+/**
+ * Giao diện riêng cho trang giới thiệu chương trình trì tụng.
+ */
+function nntm_congtu_enqueue_trang_chuong_trinh(): void {
+	if ( ! is_singular( 'nntm_program' ) ) {
+		return;
+	}
+
+	$css = NNTM_THEME_DIR . '/assets/css/pages/chuong-trinh.css';
+
+	if ( ! is_readable( $css ) ) {
+		return;
+	}
+
+	wp_enqueue_style(
+		'nntm-chuong-trinh',
+		NNTM_THEME_URI . '/assets/css/pages/chuong-trinh.css',
+		array( 'nntm-tokens', 'nntm-base', 'nntm-layout' ),
+		nntm_asset_version( $css )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'nntm_congtu_enqueue_trang_chuong_trinh', 46 );
