@@ -1598,7 +1598,7 @@ a.nntm-card-list__paging-so:focus-visible {
 		height: auto;
 		min-height: 544px;
 		margin-top: calc(var(--nntm-cl-toi-cao-tieu-de) + 4px);
-		margin-bottom: 108px;
+		/* margin-bottom: 108px; */
 	}
 
 	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) > .nntm-card-list__band {
