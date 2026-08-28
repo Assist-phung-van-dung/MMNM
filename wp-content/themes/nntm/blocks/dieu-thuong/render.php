@@ -96,6 +96,21 @@ $story_text_top    = sanitize_textarea_field( (string) ( $attributes['storyTextT
 $story_text_bottom = sanitize_textarea_field( (string) ( $attributes['storyTextBottom'] ?? '' ) );
 $cta_label         = sanitize_text_field( (string) ( $attributes['ctaLabel'] ?? '' ) );
 $cta_url           = esc_url( (string) ( $attributes['ctaUrl'] ?? '' ) );
+
+/*
+ * Cụm dẫn sang bài viết: MỘT ẢNH -> MỘT TIÊU ĐỀ -> rồi mới tới nút bấm.
+ * Trước đây chỗ này chỉ có mỗi cái nút trơ trọi.
+ */
+$cta_title = sanitize_text_field( (string) ( $attributes['ctaTitle'] ?? '' ) );
+$cta_image = $render_image(
+	array(
+		'imageId'  => $attributes['ctaImageId'] ?? 0,
+		'imageUrl' => $attributes['ctaImageUrl'] ?? '',
+		'imageAlt' => $cta_title,
+	),
+	'nntm-dt__cta-anh-el',
+	'large'
+);
 $banner_interval   = max( 3, min( 20, absint( $attributes['bannerInterval'] ?? 6 ) ) );
 $banner_autoplay   = ! array_key_exists( 'bannerAutoplay', $attributes ) || ! empty( $attributes['bannerAutoplay'] );
 
@@ -186,7 +201,28 @@ $wrapper = get_block_wrapper_attributes(
 			<?php endif; ?>
 
 			<?php if ( $story_text_bottom ) : ?><p><?php echo nl2br( esc_html( $story_text_bottom ) ); ?></p><?php endif; ?>
-			<?php if ( $cta_label && $cta_url ) : ?><a class="nntm-dt__cta" href="<?php echo esc_url( $cta_url ); ?>"><?php echo esc_html( $cta_label ); ?></a><?php endif; ?>
+			<?php if ( $cta_url && ( $cta_image || $cta_title || $cta_label ) ) : ?>
+				<div class="nntm-dt__cta-khoi">
+					<?php if ( $cta_image ) : ?>
+						<a class="nntm-dt__cta-anh" href="<?php echo esc_url( $cta_url ); ?>" tabindex="-1" aria-hidden="true">
+							<?php echo wp_kses_post( $cta_image ); ?>
+						</a>
+					<?php endif; ?>
+
+					<?php if ( $cta_title ) : ?>
+						<p class="nntm-dt__cta-tieu-de"><?php echo esc_html( $cta_title ); ?></p>
+					<?php endif; ?>
+
+					<?php if ( $cta_label ) : ?>
+						<a class="nntm-dt__cta" href="<?php echo esc_url( $cta_url ); ?>">
+							<?php echo esc_html( $cta_label ); ?>
+							<?php if ( $cta_title ) : ?>
+								<span class="nntm-sr-only"><?php echo esc_html( ' — ' . $cta_title ); ?></span>
+							<?php endif; ?>
+						</a>
+					<?php endif; ?>
+				</div>
+			<?php endif; ?>
 		</div>
 	</div>
 </section>

@@ -74,9 +74,21 @@
 			"type": "string",
 			"default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ac laoreet lectus. Pellentesque maximus varius congue."
 		},
-		"ctaLabel": {
+		"ctaImageId": {
+			"type": "number",
+			"default": 0
+		},
+		"ctaImageUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"ctaTitle": {
 			"type": "string",
 			"default": "Chuyện Về Thầy Tôi"
+		},
+		"ctaLabel": {
+			"type": "string",
+			"default": "Xem thêm"
 		},
 		"ctaUrl": {
 			"type": "string",

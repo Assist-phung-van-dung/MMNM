@@ -222,8 +222,17 @@
 						attributes.galleryTermId ? null : galleryPanels,
 						( ! attributes.galleryTermId && gallery.length < 3 ) ? el( Button, { variant: 'secondary', onClick: function () { setAttributes( { gallery: gallery.concat( [ { imageId: 0, imageUrl: '', imageAlt: '' } ] ) } ); } }, __( 'Thêm ảnh nội dung', 'nntm' ) ) : null,
 						el( TextareaControl, { label: __( 'Đoạn dưới', 'nntm' ), value: attributes.storyTextBottom || '', onChange: function ( value ) { setAttributes( { storyTextBottom: value } ); } } ),
+						singleMediaButton( __( 'Chọn / đổi ảnh cụm cuối', 'nntm' ), attributes.ctaImageId, function ( media ) {
+							setAttributes( { ctaImageId: media.id || 0, ctaImageUrl: media.url || '' } );
+						} ),
+						el( TextControl, {
+							label: __( 'Tiêu đề dưới ảnh', 'nntm' ),
+							help: __( 'Xếp theo thứ tự: ảnh — tiêu đề — nút bấm. Để trống phần nào thì phần đó không hiện.', 'nntm' ),
+							value: attributes.ctaTitle || '',
+							onChange: function ( value ) { setAttributes( { ctaTitle: value } ); }
+						} ),
 						el( TextControl, { label: __( 'Nhãn nút', 'nntm' ), value: attributes.ctaLabel || '', onChange: function ( value ) { setAttributes( { ctaLabel: value } ); } } ),
-						el( TextControl, { label: __( 'Liên kết nút', 'nntm' ), type: 'url', value: attributes.ctaUrl || '', onChange: function ( value ) { setAttributes( { ctaUrl: value } ); } } )
+						el( TextControl, { label: __( 'Liên kết nút', 'nntm' ), help: __( 'Ảnh và nút cùng trỏ về liên kết này.', 'nntm' ), type: 'url', value: attributes.ctaUrl || '', onChange: function ( value ) { setAttributes( { ctaUrl: value } ); } } )
 					)
 				),
 				hasLegacyCarousel ? el( Notice, { status: 'warning', isDismissible: false, actions: [ { label: __( 'Tách slider cũ thành Feature Carousel', 'nntm' ), onClick: migrateLegacyCarousel } ] }, __( 'Block cũ vẫn đang giữ dữ liệu Tông Chỉ. Bấm nút để chèn Feature Carousel ngay phía trên và chuyển toàn bộ slide/text cũ sang block mới, không phải nhập lại.', 'nntm' ) ) : null,

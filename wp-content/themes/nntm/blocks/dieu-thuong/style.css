@@ -105,12 +105,60 @@
 
 .nntm-dt__gallery figure:hover .nntm-dt__gallery-img { transform: scale(1.025); }
 
+/*
+ * Cụm dẫn sang bài viết: ảnh -> tiêu đề -> nút, xếp dọc và canh giữa.
+ * Ảnh và nút cùng trỏ về một bài; ảnh để aria-hidden + tabindex="-1" nên trình
+ * đọc màn hình và bàn phím chỉ gặp MỘT liên kết, không đọc lặp hai lần.
+ */
+.nntm-dt__cta-khoi {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 14px;
+	margin-top: 34px;
+	text-align: center;
+}
+
+.nntm-dt__cta-anh {
+	display: block;
+	width: 100%;
+	overflow: hidden;
+	border-radius: var(--nntm-r-sm);
+	line-height: 0;
+}
+
+.nntm-dt__cta-anh-el {
+	display: block;
+	width: 50%;
+    margin: 0 auto;
+	height: auto;
+	aspect-ratio: 16 / 9;
+	object-fit: cover;
+	transition: transform var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-dt__cta-khoi:hover .nntm-dt__cta-anh-el {
+	transform: scale(1.03);
+}
+
+.nntm-dt__cta-tieu-de {
+	margin: 0;
+	font-family: var(--nntm-font-display);
+	font-size: var(--nntm-fs-lg);
+	font-weight: 600;
+	line-height: 1.25;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	color: var(--nntm-reu);
+	text-wrap: balance;
+}
+
 .nntm-dt__cta {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	min-height: 54px;
-	margin-top: 26px;
+	margin-top: 0;
 	padding: 10px 22px;
 	border: 1px solid var(--nntm-reu);
 	font-size: var(--nntm-fs-sm);
@@ -328,5 +376,27 @@
 
 	.nntm-dt__gallery-card:hover .nntm-dt__gallery-card-img-el {
 		transform: none;
+	}
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-dt__cta-anh-el {
+		transition: none;
+	}
+
+	.nntm-dt__cta-khoi:hover .nntm-dt__cta-anh-el {
+		transform: none;
+	}
+}
+
+@media (max-width: 767px) {
+	.nntm-dt__cta-khoi {
+		width: 100%;
+		margin-top: 26px;
+	}
+
+	.nntm-dt__cta-tieu-de {
+		font-size: var(--nntm-fs-md);
 	}
 }
