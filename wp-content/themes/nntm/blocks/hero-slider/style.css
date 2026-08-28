@@ -233,7 +233,7 @@
 	position: absolute;
 	z-index: 2;
 	left: 93px;  
-	bottom: var(--nntm-hero-quicklinks-bottom);
+	bottom: 90px;
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--nntm-sp-3);
