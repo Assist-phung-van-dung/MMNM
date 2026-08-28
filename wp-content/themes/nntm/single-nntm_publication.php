@@ -109,6 +109,22 @@ while ( have_posts() ) :
 							<a href="<?php echo esc_url( nntm_doc_url( $post_id ) ); ?>" class="nntm-an-pham__doc-nut">
 								<?php esc_html_e( 'Đọc ấn phẩm', 'nntm' ); ?>
 							</a>
+						<?php elseif ( function_exists( 'nntm_quiz_con_chan' ) && nntm_quiz_con_chan( (int) $post_id ) ) : ?>
+							<?php
+							/*
+							 * Nghi Quỹ khoá bằng bộ câu hỏi. Chưa đăng nhập thì nút mở
+							 * modal đăng nhập (xong quay lại đúng trang này); đã đăng
+							 * nhập thì nút mở popup câu hỏi. Popup còn tự bật khi vừa
+							 * vào trang — xem nntm_quiz_tu_mo().
+							 */
+							?>
+							<button
+								type="button"
+								class="nntm-an-pham__doc-nut nntm-an-pham__doc-nut--quiz"
+								<?php echo nntm_quiz_thuoc_tinh_the( (int) $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- đã escape trong hàm. ?>
+							>
+								<?php esc_html_e( 'Trả lời câu hỏi để xem Nghi Quỹ', 'nntm' ); ?>
+							</button>
 						<?php elseif ( $bi_khoa ) : ?>
 							<p class="nntm-an-pham__khoa">
 								<?php esc_html_e( 'Ấn phẩm này yêu cầu thanh toán mới xem được nội dung đầy đủ.', 'nntm' ); ?>

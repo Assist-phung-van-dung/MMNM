@@ -135,17 +135,6 @@
 	margin-top: 0;
 }
 
-.nntm-banner__btn--phu {
-	background-color: transparent;
-	box-shadow: inset 0 0 0 1px var(--nntm-trang);
-}
-
-.nntm-banner__btn--phu:hover,
-.nntm-banner__btn--phu:focus-visible {
-	background-color: var(--nntm-trang);
-	color: var(--nntm-chinh);
-}
-
 .nntm-banner__btn {
 	margin-top: var(--nntm-sp-2);
 	display: inline-flex;
@@ -167,6 +156,27 @@
 .nntm-banner__btn:hover,
 .nntm-banner__btn:focus-visible {
 	background-color: var(--nntm-chinh-hover);
+}
+
+/*
+ * Nút phụ "Xem thêm" — viền trắng, nền rỗng.
+ *
+ * PHẢI đứng SAU khối .nntm-banner__btn ở trên. Hai selector cùng độ ưu tiên
+ * (đều một lớp), nên cái viết sau thắng. Trước đây khối này nằm phía trên nên
+ * background-color:transparent bị .nntm-banner__btn ghi đè lại thành nền đặc —
+ * nút phụ trông y hệt nút chính, lại thêm viền trắng bên trong; và khi rê chuột
+ * thì nền lấy --nntm-chinh-hover còn chữ lấy --nntm-chinh, tối chồng tối, không
+ * đọc được. Dời xuống đây là cả hai trạng thái trở lại đúng thiết kế.
+ */
+.nntm-banner__btn--phu {
+	background-color: transparent;
+	box-shadow: inset 0 0 0 1px var(--nntm-trang);
+}
+
+.nntm-banner__btn--phu:hover,
+.nntm-banner__btn--phu:focus-visible {
+	background-color: var(--nntm-trang);
+	color: var(--nntm-chinh);
 }
 
 .nntm-banner__btn--tat {

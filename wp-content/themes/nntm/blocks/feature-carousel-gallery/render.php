@@ -34,7 +34,17 @@ $slides = array_values(
 $heading          = sanitize_text_field( (string) ( $attributes['heading'] ?? '' ) );
 $background_style = in_array( $attributes['backgroundStyle'] ?? 'white', array( 'white', 'cream' ), true ) ? (string) $attributes['backgroundStyle'] : 'white';
 $arrow_style      = in_array( $attributes['arrowStyle'] ?? 'plain', array( 'plain', 'boxed' ), true ) ? (string) $attributes['arrowStyle'] : 'plain';
-$interval         = max( 3, min( 20, absint( $attributes['interval'] ?? 6 ) ) );
+$interval         = max( 3, min( 20, absint( $attributes['interval'] ?? 5 ) ) );
+
+/*
+ * Nền của khung xem tác phẩm — quản trị chọn từ bảng màu của dự án, mặc định đen.
+ * Danh sách này phải trùng enum trong block.json và lớp CSS trong style.css.
+ */
+$viewer_bg_allowed = array( 'den', 'muc', 'mem', 'cham', 'reu', 'kem' );
+$viewer_bg         = isset( $attributes['viewerBackground'] ) ? sanitize_key( (string) $attributes['viewerBackground'] ) : 'den';
+if ( ! in_array( $viewer_bg, $viewer_bg_allowed, true ) ) {
+	$viewer_bg = 'den';
+}
 $show_arrows      = ! array_key_exists( 'showArrows', $attributes ) || ! empty( $attributes['showArrows'] );
 $autoplay         = ! empty( $attributes['autoplay'] );
 $uid              = 'nntm-fgc-' . wp_unique_id();
@@ -73,9 +83,23 @@ $wrapper = get_block_wrapper_attributes(
 					$modal_id     = $uid . '-dialog-' . $index;
 					?>
 					<figure class="nntm-feature-gallery-carousel__slide" data-fgc-slide data-index="<?php echo esc_attr( (string) $index ); ?>">
-						<div class="nntm-feature-gallery-carousel__media">
+						<?php
+						/*
+						 * Chính tấm ảnh là nút mở khung xem tác phẩm: bấm thẳng vào ảnh
+						 * là xem được, không bắt phải bấm CTA. Dùng <button> thật nên
+						 * Tab/Enter/Space đều dùng được; view.js gỡ Tab khỏi các ảnh
+						 * không nằm giữa để bàn phím không lạc vào slide đang bị ẩn.
+						 */
+						?>
+						<button
+							class="nntm-feature-gallery-carousel__media"
+							type="button"
+							data-fgc-open="<?php echo esc_attr( $modal_id ); ?>"
+							data-fgc-media
+							aria-label="<?php echo esc_attr( $title ? sprintf( __( 'Xem tác phẩm: %s', 'nntm' ), $title ) : __( 'Xem tác phẩm', 'nntm' ) ); ?>"
+						>
 							<?php echo wp_kses_post( $render_image( $slide, 'nntm-feature-gallery-carousel__image', 0 === $index ) ); ?>
-						</div>
+						</button>
 						<figcaption class="nntm-feature-gallery-carousel__copy">
 							<?php if ( $title ) : ?><h3><?php echo esc_html( $title ); ?></h3><?php endif; ?>
 							<?php if ( $detail_label ) : ?>
@@ -113,9 +137,10 @@ $wrapper = get_block_wrapper_attributes(
 				);
 				$modal_id = $uid . '-dialog-' . $index;
 				?>
-				<div class="nntm-feature-gallery-modal" id="<?php echo esc_attr( $modal_id ); ?>" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="<?php echo esc_attr( $modal_id . '-title' ); ?>" data-fgc-dialog hidden>
+				<div class="nntm-feature-gallery-modal nntm-feature-gallery-modal--nen-<?php echo esc_attr( $viewer_bg ); ?>" id="<?php echo esc_attr( $modal_id ); ?>" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="<?php echo esc_attr( $modal_id . '-title' ); ?>" data-fgc-dialog hidden>
 					<div class="nntm-feature-gallery-modal__backdrop" data-fgc-close></div>
 					<div class="nntm-feature-gallery-modal__panel" role="document">
+						<span class="nntm-feature-gallery-modal__quote" aria-hidden="true">&ldquo;</span>
 						<button class="nntm-feature-gallery-modal__close" type="button" aria-label="<?php esc_attr_e( 'Đóng', 'nntm' ); ?>" data-fgc-close><span aria-hidden="true">×</span></button>
 
 						<header class="nntm-feature-gallery-modal__header">
@@ -134,8 +159,9 @@ $wrapper = get_block_wrapper_attributes(
 										$detail_title = sanitize_text_field( (string) ( $detail['title'] ?? '' ) );
 										$detail_text  = sanitize_textarea_field( (string) ( $detail['text'] ?? '' ) );
 										$detail_image = $render_image( $detail, 'nntm-feature-gallery-modal__image', 0 === $detail_index );
+										$detail_co_chu = ( '' !== $detail_title || '' !== $detail_text );
 										?>
-										<article class="nntm-feature-gallery-modal__slide" data-fgc-popup-slide data-popup-index="<?php echo esc_attr( (string) $detail_index ); ?>" aria-hidden="<?php echo 0 === $detail_index ? 'false' : 'true'; ?>">
+										<article class="nntm-feature-gallery-modal__slide<?php echo $detail_co_chu ? '' : ' nntm-feature-gallery-modal__slide--anh-doc'; ?>" data-fgc-popup-slide data-popup-index="<?php echo esc_attr( (string) $detail_index ); ?>" aria-hidden="<?php echo 0 === $detail_index ? 'false' : 'true'; ?>">
 											<?php if ( $detail_image ) : ?>
 												<div class="nntm-feature-gallery-modal__media"><?php echo wp_kses_post( $detail_image ); ?></div>
 											<?php endif; ?>

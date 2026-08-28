@@ -66,9 +66,19 @@ function nntm_render_card_markup( int $post_id, string $variant, bool $show_date
 	$classes   = array( 'nntm-card', 'nntm-card--' . $variant );
 	$class_attr = esc_attr( implode( ' ', $classes ) );
 
+	/*
+	 * Nghi Quỹ bị khoá bằng bộ câu hỏi thì thẻ mang thêm dấu để JS chặn lại
+	 * (hoặc mở modal đăng nhập nếu khách chưa đăng nhập). Đây chỉ là lớp trải
+	 * nghiệm; chốt chặn thật nằm ở phía máy chủ — xem inc/nghi-quy-quiz.php.
+	 */
+	$thuoc_tinh_them = '';
+	if ( 'nntm_publication' === $post->post_type && function_exists( 'nntm_quiz_thuoc_tinh_the' ) ) {
+		$thuoc_tinh_them = nntm_quiz_thuoc_tinh_the( (int) $post->ID );
+	}
+
 	ob_start();
 	?>
-	<a href="<?php echo esc_url( $permalink ); ?>" class="<?php echo esc_attr( $class_attr ); ?>">
+	<a href="<?php echo esc_url( $permalink ); ?>" class="<?php echo esc_attr( $class_attr ); ?>"<?php echo $thuoc_tinh_them; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- đã escape từng giá trị trong nntm_quiz_thuoc_tinh_the(). ?>>
 		<span class="nntm-card__img">
 			<?php
 			if ( $thumbnail ) {

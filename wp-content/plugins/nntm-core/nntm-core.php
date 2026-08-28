@@ -37,6 +37,7 @@ require_once NNTM_CORE_DIR . 'includes/class-term-meta.php';
 require_once NNTM_CORE_DIR . 'includes/class-roles.php';
 require_once NNTM_CORE_DIR . 'includes/functions.php';
 require_once NNTM_CORE_DIR . 'includes/class-post-meta.php';
+require_once NNTM_CORE_DIR . 'includes/class-nghi-quy-quiz.php';
 require_once NNTM_CORE_DIR . 'includes/class-schema.php';
 require_once NNTM_CORE_DIR . 'includes/class-chuoi-tri.php';
 require_once NNTM_CORE_DIR . 'includes/class-activator.php';
@@ -57,6 +58,7 @@ function nntm_core_bootstrap() {
 	\NNTM\Core\Taxonomies::instance()->hooks();
 	\NNTM\Core\Term_Meta::instance()->hooks();
 	\NNTM\Core\Post_Meta::instance()->hooks();
+	\NNTM\Core\Nghi_Quy_Quiz::instance()->hooks();
 	\NNTM\Core\Roles::instance()->hooks();
 }
 add_action( 'plugins_loaded', 'nntm_core_bootstrap' );

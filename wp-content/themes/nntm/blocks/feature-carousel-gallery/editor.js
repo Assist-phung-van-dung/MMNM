@@ -222,10 +222,26 @@
 					el( PanelBody, { title: __( 'Slides + Popup Slider', 'nntm' ), initialOpen: true }, slidePanels, el( Button, { variant: 'primary', onClick: function () { setSlides( slides.concat( [ emptySlide() ] ) ); setPreviewIndex( slides.length ); } }, __( '+ Thêm slide', 'nntm' ) ) ),
 					el( PanelBody, { title: __( 'Slider chính', 'nntm' ), initialOpen: false },
 						el( ToggleControl, { label: __( 'Tự động chạy', 'nntm' ), checked: !! attributes.autoplay, onChange: function ( value ) { setAttributes( { autoplay: value } ); } } ),
-						el( RangeControl, { label: __( 'Chu kỳ (giây)', 'nntm' ), min: 3, max: 20, value: attributes.interval || 6, onChange: function ( value ) { setAttributes( { interval: value } ); } } ),
+						el( RangeControl, { label: __( 'Chu kỳ (giây)', 'nntm' ), min: 3, max: 20, value: attributes.interval || 5, onChange: function ( value ) { setAttributes( { interval: value } ); } } ),
 						el( ToggleControl, { label: __( 'Hiện mũi tên', 'nntm' ), checked: attributes.showArrows !== false, onChange: function ( value ) { setAttributes( { showArrows: value } ); } } ),
 						el( SelectControl, { label: __( 'Nền section', 'nntm' ), value: attributes.backgroundStyle || 'white', options: [ { label: __( 'Trắng', 'nntm' ), value: 'white' }, { label: __( 'Kem', 'nntm' ), value: 'cream' } ], onChange: function ( value ) { setAttributes( { backgroundStyle: value } ); } } ),
 						el( SelectControl, { label: __( 'Kiểu mũi tên', 'nntm' ), value: attributes.arrowStyle || 'plain', options: [ { label: __( 'Chỉ mũi tên', 'nntm' ), value: 'plain' }, { label: __( 'Ô vuông', 'nntm' ), value: 'boxed' } ], onChange: function ( value ) { setAttributes( { arrowStyle: value } ); } } )
+					),
+					el( PanelBody, { title: __( 'Khung xem tác phẩm', 'nntm' ), initialOpen: false },
+						el( SelectControl, {
+							label: __( 'Màu nền khung xem', 'nntm' ),
+							help: __( 'Nền của popup khi bấm vào ảnh. Mặc định đen.', 'nntm' ),
+							value: attributes.viewerBackground || 'den',
+							options: [
+								{ label: __( 'Đen (mặc định)', 'nntm' ), value: 'den' },
+								{ label: __( 'Mực', 'nntm' ), value: 'muc' },
+								{ label: __( 'Đen mềm', 'nntm' ), value: 'mem' },
+								{ label: __( 'Chàm', 'nntm' ), value: 'cham' },
+								{ label: __( 'Rêu', 'nntm' ), value: 'reu' },
+								{ label: __( 'Kem (nền sáng)', 'nntm' ), value: 'kem' }
+							],
+							onChange: function ( value ) { setAttributes( { viewerBackground: value } ); }
+						} )
 					)
 				),
 				slides.length < 1 ? el( Notice, { status: 'info', isDismissible: false }, __( 'Thêm ít nhất một slide. Ảnh được preview ngay trong editor, không cần lưu trước.', 'nntm' ) ) : null,

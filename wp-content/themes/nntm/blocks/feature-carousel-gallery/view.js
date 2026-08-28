@@ -98,8 +98,33 @@
 		var reducedMotion = window.matchMedia( '(prefers-reduced-motion: reduce)' );
 		var popupCarousels = new Map();
 
-		root.querySelectorAll( '[data-fgc-dialog]' ).forEach( function ( dialog ) {
+		/*
+		 * Khung xem tác phẩm phải phủ kín màn hình, nhưng nó được in ra bên
+		 * trong <section> của khối — mà section này mang lớp .nntm-reveal, tức
+		 * có transform: translateY(...) cho tới khi cuộn tới. Phần tử tổ tiên có
+		 * transform sẽ trở thành khung tham chiếu của position:fixed, nên khung
+		 * xem bị neo vào section thay vì vào màn hình: mở ra là nó nằm lệch hẳn
+		 * xuống dưới, không che kín trang.
+		 *
+		 * Chuyển hẳn các khung xem ra thẳng <body> khi khởi tạo là hết cửa gặp
+		 * lại chuyện này, kể cả sau này có ai thêm transform/filter vào section.
+		 * Đổi lại, sự kiện đóng và phím ESC không còn nổi bọt lên root nữa nên
+		 * phải gắn trực tiếp vào từng khung xem và vào document (xem bên dưới).
+		 */
+		var dialogs = Array.from( root.querySelectorAll( '[data-fgc-dialog]' ) );
+
+		dialogs.forEach( function ( dialog ) {
 			popupCarousels.set( dialog, initPopupCarousel( dialog ) );
+			document.body.appendChild( dialog );
+
+			dialog.addEventListener( 'click', function ( event ) {
+				if ( ! event.target.closest ) { return; }
+				var closer = event.target.closest( '[data-fgc-close]' );
+				if ( closer && dialog.contains( closer ) ) {
+					event.preventDefault();
+					closeDialog( dialog );
+				}
+			} );
 		} );
 
 		function signedDistance( index ) {
@@ -117,6 +142,14 @@
 				slide.setAttribute( 'aria-hidden', distance === 0 ? 'false' : 'true' );
 				if ( distance === 0 ) { slide.setAttribute( 'aria-current', 'true' ); }
 				else { slide.removeAttribute( 'aria-current' ); }
+
+				/*
+				 * Ảnh là nút bấm mở khung xem tác phẩm. Chỉ ảnh ở giữa mới bấm
+				 * và Tab tới được — các slide hai bên đang aria-hidden, để chúng
+				 * nhận Tab thì bàn phím sẽ rơi vào phần đã ẩn với trình đọc màn hình.
+				 */
+				var media = slide.querySelector( '[data-fgc-media]' );
+				if ( media ) { media.tabIndex = distance === 0 ? 0 : -1; }
 			} );
 		}
 
@@ -131,8 +164,8 @@
 		function start() {
 			stop();
 			if ( ! canAutoplay() ) { return; }
-			var seconds = parseInt( root.dataset.interval || '6', 10 );
-			seconds = Number.isFinite( seconds ) ? Math.max( 3, Math.min( 20, seconds ) ) : 6;
+			var seconds = parseInt( root.dataset.interval || '5', 10 );
+			seconds = Number.isFinite( seconds ) ? Math.max( 3, Math.min( 20, seconds ) ) : 5;
 			timer = window.setTimeout( function () { go( 1 ); }, seconds * 1000 );
 		}
 
@@ -211,20 +244,20 @@
 		}
 
 		root.addEventListener( 'click', function ( event ) {
+			if ( ! event.target.closest ) { return; }
 			var opener = event.target.closest( '[data-fgc-open]' );
 			if ( opener && root.contains( opener ) ) {
 				event.preventDefault();
 				openDialog( opener.getAttribute( 'data-fgc-open' ), opener );
-				return;
-			}
-			var closer = event.target.closest( '[data-fgc-close]' );
-			if ( closer ) {
-				var dialog = closer.closest( '[data-fgc-dialog]' );
-				closeDialog( dialog );
 			}
 		} );
 
-		root.addEventListener( 'keydown', function ( event ) {
+		/*
+		 * Khung xem nay nằm ngoài root nên phím bấm trong đó không nổi bọt tới
+		 * root nữa — nghe ở document, và chỉ xử lý khi chính khung xem của
+		 * carousel này đang mở (activeDialog).
+		 */
+		document.addEventListener( 'keydown', function ( event ) {
 			if ( event.key === 'Escape' && activeDialog ) {
 				event.preventDefault();
 				closeDialog( activeDialog );

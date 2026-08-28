@@ -79,7 +79,19 @@
 		},
 		"interval": {
 			"type": "number",
-			"default": 6
+			"default": 5
+		},
+		"viewerBackground": {
+			"type": "string",
+			"enum": [
+				"den",
+				"muc",
+				"mem",
+				"cham",
+				"reu",
+				"kem"
+			],
+			"default": "den"
 		},
 		"showArrows": {
 			"type": "boolean",

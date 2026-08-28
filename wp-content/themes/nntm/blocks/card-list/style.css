@@ -1200,14 +1200,7 @@ a.nntm-card-list__paging-so:focus-visible {
 	text-align: center;
 }
 
-.nntm-nghi-quy-grid .nntm-card--books .nntm-card__img {
-	aspect-ratio: 3 / 4;  
-	width: 100%;
-}
-
-.nntm-nghi-quy-grid .nntm-card--books .nntm-card__img-el {
-	object-fit: cover;
-}
+/* Khung bìa + cách hiện artwork lấy nguyên từ .nntm-card--books dùng chung. */
 
 .nntm-nghi-quy-grid .nntm-card--books .nntm-card__date,
 .nntm-nghi-quy-grid .nntm-card--books .nntm-card__cat,
@@ -1247,7 +1240,49 @@ a.nntm-card-list__paging-so:focus-visible {
 	color: var(--nntm-trang);
 }
 
-/* Chuẩn hiển thị chung cho Card List sách chạy tự động, dùng ở mọi trang. */
+/*
+ * KÍCH THƯỚC BÌA DÙNG CHUNG cho mọi dải/lưới sách — Ấn Phẩm và Nghi Quỹ chung
+ * một con số, sửa ở đây là cả hai cùng đổi. Luật vẽ khung bìa nằm ở
+ * blocks/card/style.css (.nntm-card--books), đây chỉ đặt giá trị.
+ */
+.nntm-card-list--books-marquee,
+.nntm-nghi-quy-grid,
+.nntm-kc-nghi-quy {
+	--nntm-bia-ty-le: 197 / 315;
+	--nntm-bia-rong: 197px;
+	--nntm-bia-cao: calc(var(--nntm-bia-rong) * 315 / 197);
+
+	/* Phần mép bìa sau bị bìa trước che — tạo dáng sách xếp chồng trên kệ. */
+	--nntm-bia-chong: calc(var(--nntm-bia-rong) * -0.33);
+
+	/*
+	 * Màu vệt bóng dưới chân sách. Dải Ấn Phẩm nằm trên nền đen tuyền nên bóng
+	 * tối vô hình; ở đó đổi sang một quầng sáng rất nhạt, đọc ra như mặt bàn có
+	 * ánh sáng hắt lên. Nền sáng thì dùng bóng tối bình thường.
+	 */
+	--nntm-bia-bong: rgb(0 0 0 / 34%);
+}
+
+.nntm-card-list--nen-toi.nntm-card-list--books-marquee,
+.nntm-card-list--nen-cham.nntm-card-list--books-marquee {
+	--nntm-bia-bong: rgb(255 255 255 / 16%);
+}
+
+@media (max-width: 1151px) {
+	.nntm-card-list--books-marquee,
+	.nntm-nghi-quy-grid,
+	.nntm-kc-nghi-quy {
+	--nntm-bia-rong: clamp(150px, 24vw, 197px);
+	}
+}
+
+/*
+ * Chuẩn hiển thị chung cho Card List sách chạy tự động, dùng ở mọi trang.
+ *
+ * Dáng: bìa dọc 197×315, nghiêng nhẹ và chồng mép lên nhau như sách xếp trên
+ * kệ; rê chuột thì cuốn sách được nhấc ra, dựng thẳng lại. Cộng thêm một vệt
+ * bóng mềm dưới chân sách.
+ */
 .nntm-card-list--books-marquee .nntm-card-list__marquee {
 	perspective: 800px;
 	perspective-origin: 50% 50%;
@@ -1256,28 +1291,6 @@ a.nntm-card-list__paging-so:focus-visible {
 .nntm-card-list--books-marquee .nntm-card-list__marquee-track,
 .nntm-card-list--books-marquee .nntm-card-list__marquee-item {
 	transform-style: preserve-3d;
-}
-
-.nntm-card-list--books-marquee {
-	--nntm-tilt-scale: 1;
-}
-
-.nntm-card-list--books-marquee .nntm-card-list__marquee-item:nth-child(odd) .nntm-card--books {
-	--nntm-tilt-y: -15deg;
-	box-shadow: -8px 8px 18px rgb(0 0 0 / 35%);
-	border-radius: 4px 6px 6px 4px;
-}
-
-.nntm-card-list--books-marquee .nntm-card-list__marquee-item:nth-child(even) .nntm-card--books {
-	--nntm-tilt-y: -15deg;
-	box-shadow: 8px 8px 18px rgb(0 0 0 / 35%);
-	border-radius: 6px 4px 4px 6px;
-}
-
-.nntm-card-list--books-marquee .nntm-card-list__marquee-item:hover .nntm-card--books,
-.nntm-card-list--books-marquee .nntm-card-list__marquee-item:focus-within .nntm-card--books {
-	transform: rotateY(0deg) rotateX(0deg);
-	box-shadow: 0 24px 40px rgb(0 0 0 / 45%);
 }
 
 .nntm-card-list--books-marquee .nntm-card-list__marquee-item {
@@ -1292,6 +1305,7 @@ a.nntm-card-list__paging-so:focus-visible {
 }
 
 .nntm-card-list--books-marquee .nntm-card--books {
+	position: relative;
 	display: block;
 	box-sizing: border-box;
 	width: 100%;
@@ -1299,29 +1313,68 @@ a.nntm-card-list__paging-so:focus-visible {
 	border: 0;
 	background: none;
 	backdrop-filter: none;
-	--nntm-tilt-y: 0deg;
+	box-shadow: none;
+	--nntm-bia-nghieng: -15deg;
 	backface-visibility: hidden;
-	transform: rotateY(calc(var(--nntm-tilt-y) * var(--nntm-tilt-scale))) rotateX(calc(1deg * var(--nntm-tilt-scale)));
+	transform: rotateY(var(--nntm-bia-nghieng)) rotateX(1deg);
 	transition: transform 400ms cubic-bezier(.25, .8, .25, 1), box-shadow 400ms;
 }
 
+/* Rê chuột: cuốn sách dựng thẳng lại. */
+.nntm-card-list--books-marquee .nntm-card-list__marquee-item:hover .nntm-card--books,
+.nntm-card-list--books-marquee .nntm-card-list__marquee-item:focus-within .nntm-card--books {
+	transform: rotateY(0deg) rotateX(0deg);
+}
+
 .nntm-card-list--books-marquee .nntm-card--books .nntm-card__img {
-	width: 100%;
-	aspect-ratio: 3 / 4;
-	box-shadow: none;
 	overflow: hidden;
-	background-color: transparent;
+	border-radius: 5px 7px 7px 5px;
+	/* Bóng ôm sát mép bìa, rất nhạt — tách bìa khỏi bìa đứng sau nó. */
+	box-shadow: 6px 6px 14px -8px var(--nntm-bia-bong);
 }
 
 .nntm-card-list--books-marquee .nntm-card--books .nntm-card__img-el {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
 	border-radius: 5px;
+}
+
+/*
+ * Vệt bóng dưới chân sách: một hình bầu dục mờ dần, không phải box-shadow, để
+ * nó vẫn mềm khi artwork có tỉ lệ khác khung (ảnh contain nên hai mép có thể
+ * trống). Nhấc lên khi rê chuột thì bóng loe ra và nhạt đi.
+ */
+.nntm-card-list--books-marquee .nntm-card--books::after {
+	content: "";
+	position: absolute;
+	left: 6%;
+	right: 6%;
+	bottom: -13px;
+	height: 14px;
+	background: radial-gradient(ellipse at center, var(--nntm-bia-bong) 0%, transparent 72%);
+	filter: blur(2px);
+	opacity: .9;
+	pointer-events: none;
+	transition: opacity 320ms ease, transform 320ms cubic-bezier(.22, 1, .36, 1);
+}
+
+.nntm-card-list--books-marquee .nntm-card-list__marquee-item:hover .nntm-card--books::after,
+.nntm-card-list--books-marquee .nntm-card-list__marquee-item:focus-within .nntm-card--books::after {
+	opacity: .55;
+	transform: translateY(6px) scaleX(1.06);
 }
 
 .nntm-card-list--books-marquee .nntm-card--books .nntm-card__body {
 	display: none;
+}
+
+/*
+ * Phụ đề dưới tiêu đề (ô "mô tả phụ" có sẵn của khối — không thêm trường mới).
+ * Tiêu đề dải sách canh giữa nên phụ đề canh giữa theo.
+ */
+.nntm-card-list--books-marquee .nntm-card-list__subheading,
+.nntm-nghi-quy-grid .nntm-card-list__subheading {
+	max-width: 760px;
+	margin-inline: auto;
+	text-align: center;
 }
 
 .nntm-card-list--books-marquee .nntm-card-list__view-all-wrap {
@@ -1353,7 +1406,7 @@ a.nntm-card-list__paging-so:focus-visible {
 
 @media (min-width: 1152px) {
 	.nntm-card-list--books-marquee > .nntm-card-list__band {
-	min-height: 650px;
+	min-height: calc(var(--nntm-bia-cao) + 260px);
 	padding-block: 30px;
 	overflow: hidden;
 	}
@@ -1375,25 +1428,31 @@ a.nntm-card-list__paging-so:focus-visible {
 	line-height: 60px;
 	}
 
+	/* Kéo phụ đề sát lên tiêu đề (hàng tiêu đề đã có margin 30px bên dưới). */
+	.nntm-card-list--books-marquee .nntm-card-list__subheading {
+	margin-block: -18px 26px;
+	font-size: var(--nntm-fs-md);
+	}
+
+	/* Chừa chỗ cho vệt bóng và cú nhấc khi hover, khỏi bị mask cắt cụt. */
 	.nntm-card-list--books-marquee .nntm-card-list__marquee {
-	min-height: 420px;
+	min-height: calc(var(--nntm-bia-cao) + 40px);
 	mask-image: linear-gradient(to right, transparent 0, #000 80px, #000 calc(100% - 80px), transparent 100%);
 	}
 
 	.nntm-card-list--books-marquee .nntm-card-list__marquee-track {
-	min-height: 420px;
+	min-height: calc(var(--nntm-bia-cao) + 40px);
 	align-items: center;
 	}
 
 	.nntm-card-list--books-marquee .nntm-card--books,
 	.nntm-card-list--books-marquee .nntm-card--books .nntm-card__img {
-	height: 420px;
+	height: var(--nntm-bia-cao);
 	}
 
 	.nntm-card-list--books-marquee .nntm-card-list__marquee-item {
-	flex: 0 0 270px;
-	width: 270px;
-	margin-right: -90px;
+	flex: 0 0 var(--nntm-bia-rong);
+	width: var(--nntm-bia-rong);
 	}
 }
 
@@ -1408,18 +1467,16 @@ a.nntm-card-list__paging-so:focus-visible {
 	}
 
 	.nntm-card-list--books-marquee .nntm-card-list__marquee-item {
-	flex: 0 0 clamp(120px, 34vw, 190px);
-	width: clamp(120px, 34vw, 190px);
-	margin-right: clamp(-70px, -16vw, -40px);
+	flex: 0 0 var(--nntm-bia-rong);
+	width: var(--nntm-bia-rong);
 	}
 }
 
 @media (max-width: 767px) {
-	.nntm-card-list--books-marquee .nntm-card-list__marquee-item {
-	--nntm-books-cover: clamp(128px, 40vw, 180px);
-	flex-basis: var(--nntm-books-cover);
-	width: var(--nntm-books-cover);
-	margin-right: calc(var(--nntm-books-cover) * -0.26 - var(--nntm-sp-5));
+	.nntm-card-list--books-marquee,
+	.nntm-nghi-quy-grid,
+	.nntm-kc-nghi-quy {
+	--nntm-bia-rong: clamp(148px, 46vw, 197px);
 	}
 }
 
@@ -1485,8 +1542,8 @@ a.nntm-card-list__paging-so:focus-visible {
 }
 
 .nntm-kc-nghi-quy .nntm-card--books {
-	min-height: 527px;  
-	padding: 24px 0;     
+	min-height: calc(var(--nntm-bia-cao) + 130px);
+	padding: 24px 0;
 	gap: 18px;           
 	box-sizing: border-box;
 	background-color: var(--nntm-nen-noi);  
@@ -1497,15 +1554,7 @@ a.nntm-card-list__paging-so:focus-visible {
 	text-align: center;
 }
 
-.nntm-kc-nghi-quy .nntm-card--books .nntm-card__img {
-	width: 299px;
-	aspect-ratio: 299 / 376;  
-	margin-inline: auto;  
-}
-
-.nntm-kc-nghi-quy .nntm-card--books .nntm-card__img-el {
-	object-fit: cover;
-}
+/* Khung bìa + cách hiện artwork lấy nguyên từ .nntm-card--books dùng chung. */
 
 .nntm-kc-nghi-quy .nntm-card--books .nntm-card__body {
 	gap: 18px;  

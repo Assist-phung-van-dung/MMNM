@@ -39,9 +39,10 @@ function nntm_card_list_repeat_posts_for_width( array $post_ids, int $card_width
 
 function nntm_card_list_estimate_marquee_card_metrics( string $variant ): array {
 	if ( 'books' === $variant ) {
+
 		return array(
-			'width' => 346,
-			'gap'   => 14,
+			'width' => 197,
+			'gap'   => 20,
 		);
 	}
 

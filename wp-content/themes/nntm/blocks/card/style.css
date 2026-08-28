@@ -184,8 +184,28 @@
 	object-fit: contain;  
 }
 
+/*
+ * BÌA SÁCH DÙNG CHUNG — Ấn Phẩm (Hoa Khai) và Nghi Quỹ đều đi qua đây.
+ *
+ * Hình dáng khung bìa chỉ được mô tả MỘT LẦN ở khối này. Nơi dùng (dải sách
+ * chạy, lưới Nghi Quỹ...) chỉ đặt lại hai biến bên dưới, không chép lại luật:
+ *   --nntm-bia-rong  bề rộng bìa
+ *   --nntm-bia-ty-le tỉ lệ khung bìa
+ *
+ * object-fit: contain — bìa sách là artwork, phải thấy trọn vẹn bốn góc;
+ * cover sẽ cắt mất mép trên/dưới của những bìa không đúng tỉ lệ khung.
+ */
 .nntm-card--books .nntm-card__img {
-	aspect-ratio: 1 / 1;  
+	width: 100%;
+	max-width: var(--nntm-bia-rong, 197px);
+	aspect-ratio: var(--nntm-bia-ty-le, 197 / 135);
+	margin-inline: auto;
+	background-color: transparent;
+}
+
+.nntm-card--books .nntm-card__img-el {
+	object-fit: contain;
+	object-position: center;
 }
 
  
