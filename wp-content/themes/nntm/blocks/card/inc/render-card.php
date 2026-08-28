@@ -24,7 +24,7 @@ function nntm_card_get_primary_term( int $post_id ): ?WP_Term {
 	return null;
 }
 
-function nntm_render_card_markup( int $post_id, string $variant, bool $show_date = true, bool $show_excerpt = true, bool $show_category = true, bool $show_cta = false, string $cta_label = 'Xem thêm' ): string {
+function nntm_render_card_markup( int $post_id, string $variant, bool $show_date = true, bool $show_excerpt = true, bool $show_category = true, bool $show_cta = false, string $cta_label = 'Xem thêm', bool $enable_quiz = true ): string {
 	if ( ! in_array( $variant, nntm_card_allowed_variants(), true ) ) {
 		$variant = 'article';
 	}
@@ -72,7 +72,7 @@ function nntm_render_card_markup( int $post_id, string $variant, bool $show_date
 	 * nghiệm; chốt chặn thật nằm ở phía máy chủ — xem inc/nghi-quy-quiz.php.
 	 */
 	$thuoc_tinh_them = '';
-	if ( 'nntm_publication' === $post->post_type && function_exists( 'nntm_quiz_thuoc_tinh_the' ) ) {
+	if ( $enable_quiz && 'nntm_publication' === $post->post_type && function_exists( 'nntm_quiz_thuoc_tinh_the' ) ) {
 		$thuoc_tinh_them = nntm_quiz_thuoc_tinh_the( (int) $post->ID );
 	}
 

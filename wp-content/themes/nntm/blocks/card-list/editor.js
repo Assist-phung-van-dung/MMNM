@@ -293,6 +293,24 @@
 								setAttributes( { background: value } );
 							},
 						} ),
+						el( ToggleControl, {
+							label: __( 'Hiệu ứng sao lấp lánh', 'nntm' ),
+							help: __( 'Phủ các điểm sáng chuyển động nhẹ lên nền của riêng khối này. Hiệu ứng rõ và đẹp nhất với nền tối, chàm hoặc cam.', 'nntm' ),
+							checked: !! attributes.starEffect,
+							onChange: function ( value ) {
+								setAttributes( { starEffect: value } );
+							},
+						} ),
+						'youtube' !== attributes.videoSource && 'nntm_publication' === attributes.postType
+							? el( ToggleControl, {
+									label: __( 'Bật câu hỏi khi bấm vào thẻ', 'nntm' ),
+									help: __( 'Áp dụng cho Ấn phẩm thuộc chủ đề Nghi Quỹ đã đặt “Quiz Required”. Khách chưa đăng nhập sẽ được yêu cầu đăng nhập; người đã đăng nhập sẽ thấy popup câu hỏi.', 'nntm' ),
+									checked: !! attributes.enableQuiz,
+									onChange: function ( value ) {
+										setAttributes( { enableQuiz: value } );
+									},
+							  } )
+							: null,
 
 
 						'youtube' === attributes.videoSource

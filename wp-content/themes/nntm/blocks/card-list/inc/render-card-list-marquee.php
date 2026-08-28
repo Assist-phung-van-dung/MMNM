@@ -63,7 +63,7 @@ function nntm_card_list_wrap_marquee_item( string $card_html, bool $aria_hidden_
 	return '<div class="nntm-card-list__marquee-item"' . $aria_attr . '>' . $card_html . '</div>';  
 }
 
-function nntm_card_list_render_posts_marquee( array $post_ids, string $variant, bool $show_date, bool $show_category, bool $show_card_cta, string $card_cta_label ): string {
+function nntm_card_list_render_posts_marquee( array $post_ids, string $variant, bool $show_date, bool $show_category, bool $show_card_cta, string $card_cta_label, bool $enable_quiz ): string {
 	$post_ids = array_values( array_filter( array_map( 'absint', $post_ids ) ) );
 
 	if ( empty( $post_ids ) ) {
@@ -84,13 +84,13 @@ function nntm_card_list_render_posts_marquee( array $post_ids, string $variant, 
 		<div class="nntm-card-list__marquee-track" style="--nntm-marquee-duration: <?php echo esc_attr( (string) $duration_seconds ); ?>s;">
 			<?php foreach ( $filled_ids as $i => $post_id ) : ?>
 				<?php
-				$card_html = nntm_render_card_markup( $post_id, $variant, $show_date, true, $show_category, $show_card_cta, $card_cta_label );
+				$card_html = nntm_render_card_markup( $post_id, $variant, $show_date, true, $show_category, $show_card_cta, $card_cta_label, $enable_quiz );
 				echo nntm_card_list_wrap_marquee_item( $card_html, $i >= $unique_count );  
 				?>
 			<?php endforeach; ?>
 			<?php foreach ( $filled_ids as $post_id ) : ?>
 				<?php
-				$card_html = nntm_render_card_markup( $post_id, $variant, $show_date, true, $show_category, $show_card_cta, $card_cta_label );
+				$card_html = nntm_render_card_markup( $post_id, $variant, $show_date, true, $show_category, $show_card_cta, $card_cta_label, $enable_quiz );
 				echo nntm_card_list_wrap_marquee_item( $card_html, true );  
 				?>
 			<?php endforeach; ?>

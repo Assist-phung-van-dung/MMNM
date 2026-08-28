@@ -313,9 +313,60 @@
 		}
 	}
 
+	function nntmStarRandom( min, max ) {
+		return Math.random() * ( max - min ) + min;
+	}
+
+	function nntmInitCardListStarField( field ) {
+		if ( 'true' === field.getAttribute( 'data-nntm-stars-ready' ) ) {
+			return;
+		}
+
+		field.setAttribute( 'data-nntm-stars-ready', 'true' );
+
+		var isMobile = window.matchMedia && window.matchMedia( '(max-width: 767px)' ).matches;
+		var starCount = isMobile ? 48 : 84;
+		var fragment = document.createDocumentFragment();
+
+		for ( var i = 0; i < starCount; i++ ) {
+			var star = document.createElement( 'span' );
+			var isSparkle = Math.random() > 0.9;
+			var size = isSparkle ? nntmStarRandom( 3.5, 5.5 ) : nntmStarRandom( 1.6, 3.8 );
+
+			star.className = 'nntm-card-list__star' + ( isSparkle ? ' nntm-card-list__star--sparkle' : '' );
+			star.style.setProperty( '--nntm-star-size', size.toFixed( 2 ) + 'px' );
+			star.style.setProperty( '--nntm-star-left', nntmStarRandom( 0, 100 ).toFixed( 2 ) + '%' );
+			star.style.setProperty( '--nntm-star-top', nntmStarRandom( 0, 100 ).toFixed( 2 ) + '%' );
+			star.style.setProperty( '--nntm-star-duration', nntmStarRandom( 2.2, 6 ).toFixed( 2 ) + 's' );
+			star.style.setProperty( '--nntm-star-delay', nntmStarRandom( -5, 0 ).toFixed( 2 ) + 's' );
+			fragment.appendChild( star );
+		}
+
+		field.appendChild( fragment );
+	}
+
+	function nntmInitAllCardListStarFields( root ) {
+		var scope = root || document;
+		var fields = [];
+
+		if ( scope.matches && scope.matches( '.nntm-card-list__star-field' ) ) {
+			fields.push( scope );
+		}
+
+		var descendants = scope.querySelectorAll( '.nntm-card-list__star-field' );
+		for ( var i = 0; i < descendants.length; i++ ) {
+			fields.push( descendants[ i ] );
+		}
+
+		for ( var j = 0; j < fields.length; j++ ) {
+			nntmInitCardListStarField( fields[ j ] );
+		}
+	}
+
 	function nntmInitCardListView( root ) {
 		nntmInitAllCardListCarousels( root );
 		nntmInitAllYoutubeMarquees( root );
+		nntmInitAllCardListStarFields( root );
 	}
 
 	document.addEventListener( 'nntm-card-list-refresh', function ( event ) {

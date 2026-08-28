@@ -3,8 +3,8 @@
 .nntm-doc {
 	--doc-bg: #16181c;
 	--doc-panel: #1d2024;
-	--doc-ink: #e8eaec;
-	--doc-ink-2: #9ba1a8;
+	--doc-ink: #f4f5f6;
+	--doc-ink-2: #b5bac0;
 	--doc-rule: #2b2f35;
 	--doc-accent: #16a37b;
 	--doc-bar: 60px;
@@ -115,6 +115,7 @@
 	grid-template-columns: var(--doc-side) 1fr;
 	min-block-size: 0;
 	overflow: hidden;
+	text-rendering: optimizeLegibility;
 }
 
 .nntm-doc__side {
@@ -206,7 +207,9 @@
 	margin-inline: auto;
 	font-family: var(--nntm-font-sans, "Segoe UI", system-ui, sans-serif);
 	font-size: var(--doc-co-chu);
+	font-weight: 500;
 	line-height: 1.92;
+	letter-spacing: .005em;
 	text-align: justify;
 	text-justify: inter-word;
 	hyphens: auto;

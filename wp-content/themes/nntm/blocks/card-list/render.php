@@ -168,12 +168,15 @@ $show_category = ! isset( $attributes['showCategory'] ) || ! empty( $attributes[
 
 $show_card_cta   = ! empty( $attributes['showCardCta'] );
 $card_cta_label  = isset( $attributes['cardCtaLabel'] ) ? (string) $attributes['cardCtaLabel'] : __( 'Xem thêm', 'nntm' );
+$star_effect     = ! empty( $attributes['starEffect'] );
+$enable_quiz     = ! empty( $attributes['enableQuiz'] );
 
 $wrapper_attributes = get_block_wrapper_attributes(
 	array(
 		'class' => 'nntm-card-list'
 			. ( 'none' !== $background ? ' nntm-card-list--nen-' . $background : '' )
-			. ( $is_books_marquee ? ' nntm-card-list--books-marquee' : '' ),
+			. ( $is_books_marquee ? ' nntm-card-list--books-marquee' : '' )
+			. ( $star_effect ? ' nntm-card-list--star-effect' : '' ),
 	)
 );
 ?>
@@ -187,6 +190,9 @@ $wrapper_attributes = get_block_wrapper_attributes(
 	 
 	?>
 	<div class="nntm-card-list__band">
+	<?php if ( $star_effect ) : ?>
+		<div class="nntm-card-list__star-field" aria-hidden="true"></div>
+	<?php endif; ?>
 	<div class="nntm-container">
 		<?php if ( '' !== $heading || ( ! $is_books_marquee && $show_view_all && $view_all_url ) ) : ?>
 			<div class="nntm-card-list__header-row">
@@ -221,7 +227,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 
 				<?php
 				 
-				echo nntm_card_list_render_posts_marquee( wp_list_pluck( $query->posts, 'ID' ), $variant, $show_date, $show_category, $show_card_cta, $card_cta_label );  
+				echo nntm_card_list_render_posts_marquee( wp_list_pluck( $query->posts, 'ID' ), $variant, $show_date, $show_category, $show_card_cta, $card_cta_label, $enable_quiz );
 				?>
 
 			<?php elseif ( $is_carousel ) : ?>
@@ -240,7 +246,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 					<div class="nntm-card-list__track" tabindex="0" role="group" aria-label="<?php esc_attr_e( 'Danh sách cuộn ngang, dùng phím mũi tên trái/phải để cuộn', 'nntm' ); ?>">
 						<?php foreach ( $query->posts as $queried_post ) : ?>
 							<div class="nntm-card-list__track-item">
-								<?php echo nntm_render_card_markup( $queried_post->ID, $variant, $show_date, true, $show_category, $show_card_cta, $card_cta_label );  ?>
+								<?php echo nntm_render_card_markup( $queried_post->ID, $variant, $show_date, true, $show_category, $show_card_cta, $card_cta_label, $enable_quiz );  ?>
 							</div>
 						<?php endforeach; ?>
 					</div>
@@ -254,7 +260,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
 
 				<div class="nntm-grid nntm-grid--<?php echo esc_attr( (string) $columns ); ?>">
 					<?php foreach ( $query->posts as $queried_post ) : ?>
-						<?php echo nntm_render_card_markup( $queried_post->ID, $variant, $show_date, true, $show_category, $show_card_cta, $card_cta_label );  ?>
+						<?php echo nntm_render_card_markup( $queried_post->ID, $variant, $show_date, true, $show_category, $show_card_cta, $card_cta_label, $enable_quiz );  ?>
 					<?php endforeach; ?>
 				</div>
 
