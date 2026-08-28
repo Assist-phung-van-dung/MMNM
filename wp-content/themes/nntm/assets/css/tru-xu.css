@@ -1,0 +1,512 @@
+/*
+ * Hai cửa sổ của khối Danh sách Trú Xứ.
+ * Xem inc/tru-xu.php và assets/js/tru-xu.js.
+ */
+
+.nntm-tx-map {
+	position: fixed;
+	inset: 0;
+	z-index: 100100;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	padding: var(--nntm-sp-5);
+}
+
+.nntm-tx-map[hidden] {
+	display: none;
+}
+
+.nntm-tx-map__overlay {
+	position: absolute;
+	inset: 0;
+	background-color: rgba(0, 0, 0, 0.6);
+}
+
+.nntm-tx-map__panel {
+	position: relative;
+	z-index: 1;
+
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-4);
+
+	width: min(920px, 100%);
+	max-height: min(88vh, 760px);
+	padding: var(--nntm-sp-7);
+	box-sizing: border-box;
+
+	border-radius: var(--nntm-r-md);
+	background-color: var(--nntm-nen-noi);
+	box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.nntm-tx-map__head {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: var(--nntm-sp-5);
+}
+
+.nntm-tx-map__ten {
+	margin: 0;
+	font-family: var(--nntm-font-display);
+	font-size: var(--nntm-fs-2xl);
+	font-weight: 600;
+	line-height: var(--nntm-lh-chat);
+	color: var(--nntm-chu);
+}
+
+.nntm-tx-map__dia-chi {
+	margin: var(--nntm-sp-2) 0 0;
+	font-family: var(--nntm-font-serif);
+	font-size: var(--nntm-fs-base);
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-chu-phu);
+}
+
+.nntm-tx-map__dia-chi[hidden] {
+	display: none;
+}
+
+.nntm-tx-map__close {
+	flex: 0 0 auto;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	border: 1px solid var(--nntm-duong-vien);
+	border-radius: 50%;
+
+	background-color: transparent;
+	font-size: 24px;
+	line-height: 1;
+	color: var(--nntm-chu);
+	cursor: pointer;
+
+	transition: background-color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-tx-map__close:hover,
+.nntm-tx-map__close:focus-visible {
+	background-color: var(--nntm-nga);
+}
+
+.nntm-tx-map__close:focus-visible {
+	outline: 2px solid var(--nntm-chinh);
+	outline-offset: 2px;
+}
+
+/* Khung bản đồ — Google vẽ vào đây. */
+.nntm-tx-map__khung {
+	position: relative;
+
+	flex: 1 1 auto;
+	min-height: 320px;
+
+	border-radius: var(--nntm-r-sm);
+	background-color: var(--nntm-xam-nhat);
+	overflow: hidden;
+}
+
+/* Bản đồ nhúng bằng iframe của Maps Embed API. */
+.nntm-tx-map__iframe {
+	display: block;
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+
+.nntm-tx-map__trang-thai {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+
+	display: grid;
+	place-items: center;
+	margin: 0;
+	padding: var(--nntm-sp-7);
+
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-base);
+	line-height: var(--nntm-lh-vua);
+	text-align: center;
+	color: var(--nntm-chu-phu);
+}
+
+.nntm-tx-map__trang-thai[hidden] {
+	display: none;
+}
+
+.nntm-tx-map__chan {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--nntm-sp-4);
+}
+
+.nntm-tx-map__chi-duong {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	min-height: 44px;
+	padding: var(--nntm-sp-2) var(--nntm-sp-7);
+	border: 1px solid var(--nntm-chinh);
+	border-radius: var(--nntm-r-pill);
+
+	background-color: var(--nntm-chinh);
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+	font-weight: 700;
+	color: var(--nntm-kem);
+	cursor: pointer;
+
+	transition:
+		background-color var(--nntm-dur) var(--nntm-ease),
+		color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-tx-map__chi-duong:hover,
+.nntm-tx-map__chi-duong:focus-visible {
+	background-color: transparent;
+	color: var(--nntm-chinh);
+}
+
+.nntm-tx-map__chi-duong:focus-visible {
+	outline: 2px solid var(--nntm-chinh);
+	outline-offset: 2px;
+}
+
+.nntm-tx-map__chi-duong[disabled] {
+	opacity: 0.6;
+	cursor: progress;
+}
+
+.nntm-tx-map__chi-duong[hidden] {
+	display: none;
+}
+
+.nntm-tx-map__nhan {
+	margin: 0;
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-sm);
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-chu-phu);
+}
+
+/* Khoá cuộn nền khi cửa sổ đang mở. */
+body.nntm-tx-dang-mo {
+	overflow: hidden;
+}
+
+@media (max-width: 767px) {
+	.nntm-tx-map {
+		padding: var(--nntm-sp-3);
+	}
+
+	.nntm-tx-map__panel {
+		max-height: 92vh;
+		padding: var(--nntm-sp-5);
+	}
+
+	.nntm-tx-map__ten {
+		font-size: var(--nntm-fs-lg);
+	}
+
+	.nntm-tx-map__khung {
+		min-height: 260px;
+	}
+
+	.nntm-tx-map__chi-duong {
+		width: 100%;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-tx-map__close,
+	.nntm-tx-map__chi-duong {
+		transition: none;
+	}
+}
+
+
+/* =============================================================================
+   CỬA SỔ BỘ ẢNH TRÚ XỨ
+   -----------------------------------------------------------------------------
+   Bấm tên Trú Xứ mở cửa sổ này: một ảnh lớn ở giữa, hai nút qua lại hai bên,
+   dải ảnh nhỏ bên dưới. Đi lại được bằng phím mũi tên trái/phải, ESC để đóng.
+   ========================================================================== */
+
+.nntm-tx-anh {
+	position: fixed;
+	inset: 0;
+	z-index: 100100;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	padding: var(--nntm-sp-5);
+}
+
+.nntm-tx-anh[hidden] {
+	display: none;
+}
+
+.nntm-tx-anh__overlay {
+	position: absolute;
+	inset: 0;
+	background-color: rgba(0, 0, 0, 0.78);
+}
+
+.nntm-tx-anh__panel {
+	position: relative;
+	z-index: 1;
+
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-4);
+
+	width: min(1180px, 100%);
+	max-height: min(92vh, 900px);
+	padding: var(--nntm-sp-7);
+	box-sizing: border-box;
+
+	border-radius: var(--nntm-r-md);
+	background-color: var(--nntm-nen-noi);
+	box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+.nntm-tx-anh__head {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: var(--nntm-sp-5);
+}
+
+.nntm-tx-anh__ten {
+	margin: 0;
+	font-family: var(--nntm-font-display);
+	font-size: var(--nntm-fs-2xl);
+	font-weight: 600;
+	line-height: var(--nntm-lh-chat);
+	color: var(--nntm-chu);
+}
+
+.nntm-tx-anh__close {
+	flex: 0 0 auto;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	border: 1px solid var(--nntm-duong-vien);
+	border-radius: 50%;
+
+	background-color: transparent;
+	font-size: 24px;
+	line-height: 1;
+	color: var(--nntm-chu);
+	cursor: pointer;
+
+	transition: background-color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-tx-anh__close:hover,
+.nntm-tx-anh__close:focus-visible {
+	background-color: var(--nntm-nga);
+}
+
+.nntm-tx-anh__close:focus-visible,
+.nntm-tx-anh__nav:focus-visible,
+.nntm-tx-anh__nho:focus-visible {
+	outline: 2px solid var(--nntm-chinh);
+	outline-offset: 2px;
+}
+
+/* Sảnh giữa: nút trái — ảnh lớn — nút phải. */
+.nntm-tx-anh__sanh {
+	position: relative;
+
+	display: flex;
+	align-items: center;
+	gap: var(--nntm-sp-4);
+
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+.nntm-tx-anh__nav {
+	flex: 0 0 auto;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	width: 44px;
+	height: 44px;
+	padding: 0;
+	border: 1px solid var(--nntm-duong-vien);
+	border-radius: 50%;
+
+	background-color: var(--nntm-nen-noi);
+	font-size: 20px;
+	line-height: 1;
+	color: var(--nntm-chu);
+	cursor: pointer;
+
+	transition:
+		background-color var(--nntm-dur) var(--nntm-ease),
+		color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-tx-anh__nav:hover,
+.nntm-tx-anh__nav:focus-visible {
+	background-color: var(--nntm-chinh);
+	color: var(--nntm-kem);
+}
+
+.nntm-tx-anh__nav[hidden] {
+	display: none;
+}
+
+.nntm-tx-anh__khung {
+	flex: 1 1 auto;
+	min-width: 0;
+	min-height: 0;
+	margin: 0;
+
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-3);
+	align-items: center;
+}
+
+.nntm-tx-anh__lon {
+	display: block;
+	width: 100%;
+	max-height: 60vh;
+	object-fit: contain;
+
+	border-radius: var(--nntm-r-sm);
+	background-color: var(--nntm-xam-nhat);
+}
+
+.nntm-tx-anh__chu-thich {
+	margin: 0;
+	font-family: var(--nntm-font-serif);
+	font-size: var(--nntm-fs-sm);
+	font-style: italic;
+	line-height: var(--nntm-lh-vua);
+	text-align: center;
+	color: var(--nntm-chu-phu);
+}
+
+.nntm-tx-anh__chu-thich[hidden] {
+	display: none;
+}
+
+.nntm-tx-anh__dem {
+	margin: 0;
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-xs);
+	text-align: center;
+	color: var(--nntm-chu-phu);
+}
+
+/* Dải ảnh nhỏ. */
+.nntm-tx-anh__dai {
+	display: flex;
+	gap: var(--nntm-sp-3);
+	overflow-x: auto;
+	padding-bottom: var(--nntm-sp-2);
+	scrollbar-width: thin;
+}
+
+.nntm-tx-anh__dai[hidden] {
+	display: none;
+}
+
+.nntm-tx-anh__nho {
+	flex: 0 0 auto;
+
+	width: 92px;
+	height: 62px;
+	padding: 0;
+	border: 2px solid transparent;
+	border-radius: var(--nntm-r-sm);
+
+	background: none;
+	overflow: hidden;
+	cursor: pointer;
+	opacity: 0.65;
+
+	transition: opacity var(--nntm-dur) var(--nntm-ease), border-color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-tx-anh__nho img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.nntm-tx-anh__nho:hover,
+.nntm-tx-anh__nho.la-dang-xem {
+	opacity: 1;
+}
+
+.nntm-tx-anh__nho.la-dang-xem {
+	border-color: var(--nntm-chinh);
+}
+
+@media (max-width: 767px) {
+	.nntm-tx-anh {
+		padding: var(--nntm-sp-3);
+	}
+
+	.nntm-tx-anh__panel {
+		max-height: 94vh;
+		padding: var(--nntm-sp-5);
+	}
+
+	.nntm-tx-anh__ten {
+		font-size: var(--nntm-fs-lg);
+	}
+
+	.nntm-tx-anh__sanh {
+		gap: var(--nntm-sp-2);
+	}
+
+	.nntm-tx-anh__nav {
+		width: 36px;
+		height: 36px;
+	}
+
+	.nntm-tx-anh__lon {
+		max-height: 48vh;
+	}
+
+	.nntm-tx-anh__nho {
+		width: 68px;
+		height: 46px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-tx-anh__close,
+	.nntm-tx-anh__nav,
+	.nntm-tx-anh__nho {
+		transition: none;
+	}
+}

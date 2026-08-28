@@ -55,7 +55,9 @@ class Post_Meta {
 		add_action( 'save_post_nntm_publication', array( $this, 'save_publication_meta_box' ) );
 
 		add_action( 'add_meta_boxes_nntm_abode', array( $this, 'add_abode_meta_box' ) );
+		add_action( 'add_meta_boxes_nntm_abode', array( $this, 'add_abode_gallery_meta_box' ) );
 		add_action( 'save_post_nntm_abode', array( $this, 'save_abode_meta_box' ) );
+		add_action( 'save_post_nntm_abode', array( $this, 'save_abode_gallery_meta_box' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_publication_admin_assets' ) );
 	}
 
@@ -351,6 +353,21 @@ class Post_Meta {
 
 		$screen = get_current_screen();
 
+		if ( $screen && 'nntm_abode' === $screen->post_type ) {
+			wp_enqueue_media();
+
+			$abode_js = NNTM_CORE_DIR . 'assets/js/tru-xu-meta-box.js';
+			wp_enqueue_script(
+				'nntm-tru-xu-meta-box',
+				NNTM_CORE_URL . 'assets/js/tru-xu-meta-box.js',
+				array(),
+				file_exists( $abode_js ) ? (string) filemtime( $abode_js ) : NNTM_CORE_VERSION,
+				true
+			);
+
+			return;
+		}
+
 		if ( ! $screen || 'nntm_publication' !== $screen->post_type ) {
 			return;
 		}
@@ -389,6 +406,29 @@ class Post_Meta {
 				'sanitize_callback' => 'sanitize_text_field',
 				'auth_callback'     => $chi_nguoi_sua,
 				'description'       => __( 'Địa chỉ đầy đủ của Trú Xứ, hiện trong cửa sổ bản đồ.', 'nntm' ),
+			)
+		);
+
+		/*
+		 * Bộ ảnh của Trú Xứ. Bấm tên Trú Xứ trên trang sẽ mở cửa sổ xem bộ ảnh
+		 * này (xem theme inc/tru-xu.php). Lưu mảng ID tệp đính kèm.
+		 */
+		register_post_meta(
+			'nntm_abode',
+			'_nntm_abode_gallery',
+			array(
+				'type'              => 'array',
+				'single'            => true,
+				'default'           => array(),
+				'show_in_rest'      => array(
+					'schema' => array(
+						'type'  => 'array',
+						'items' => array( 'type' => 'integer' ),
+					),
+				),
+				'sanitize_callback' => array( $this, 'sanitize_bo_anh' ),
+				'auth_callback'     => $chi_nguoi_sua,
+				'description'       => __( 'Danh sách ID ảnh trong bộ ảnh của Trú Xứ.', 'nntm' ),
 			)
 		);
 
@@ -443,6 +483,81 @@ class Post_Meta {
 		}
 
 		return (string) $so;
+	}
+
+	/**
+	 * Lọc danh sách ID ảnh: chỉ giữ số dương, bỏ trùng, giới hạn 40 ảnh.
+	 *
+	 * @param mixed $gia_tri Giá trị thô từ form hoặc REST.
+	 */
+	public function sanitize_bo_anh( $gia_tri ): array {
+		if ( is_string( $gia_tri ) ) {
+			$gia_tri = explode( ',', $gia_tri );
+		}
+
+		if ( ! is_array( $gia_tri ) ) {
+			return array();
+		}
+
+		$sach = array();
+
+		foreach ( $gia_tri as $id ) {
+			/*
+			 * Không dùng absint(): nó lấy trị tuyệt đối nên -5 lại thành 5, tức
+			 * một giá trị rác lọt qua thành ID hợp lệ. Ở đây đòi đúng số nguyên
+			 * dương, còn lại bỏ hết.
+			 */
+			$tho = trim( (string) $id );
+
+			if ( ! ctype_digit( $tho ) ) {
+				continue;
+			}
+
+			$id = (int) $tho;
+
+			if ( $id < 1 || in_array( $id, $sach, true ) ) {
+				continue;
+			}
+
+			$sach[] = $id;
+
+			if ( count( $sach ) >= 40 ) {
+				break;
+			}
+		}
+
+		return $sach;
+	}
+
+	/**
+	 * Lưu bộ ảnh Trú Xứ.
+	 *
+	 * @param int $post_id ID Trú Xứ.
+	 */
+	public function save_abode_gallery_meta_box( int $post_id ): void {
+		if ( ! isset( $_POST['nntm_tru_xu_bo_anh_nonce'] )
+			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nntm_tru_xu_bo_anh_nonce'] ) ), 'nntm_tru_xu_bo_anh' )
+		) {
+			return;
+		}
+
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		if ( ! isset( $_POST['nntm_abode_gallery'] ) ) {
+			return;
+		}
+
+		update_post_meta(
+			$post_id,
+			'_nntm_abode_gallery',
+			$this->sanitize_bo_anh( wp_unslash( $_POST['nntm_abode_gallery'] ) )
+		);
 	}
 
 	/** Thêm meta box "Vị trí trên bản đồ" vào màn sửa Trú Xứ. */
@@ -509,8 +624,58 @@ class Post_Meta {
 		<p class="description">
 			<?php esc_html_e( 'Lấy toạ độ: mở Google Maps, bấm chuột phải đúng vị trí Trú Xứ, dòng số đầu tiên hiện ra chính là vĩ độ và kinh độ. Bấm vào đó là chép được.', 'nntm' ); ?>
 			<br />
-			<?php esc_html_e( 'Chưa nhập toạ độ thì nút "Địa chỉ" không hiện trên thẻ Trú Xứ.', 'nntm' ); ?>
+			<?php esc_html_e( 'Chưa nhập toạ độ thì nút biểu tượng địa chỉ không hiện trên thẻ Trú Xứ.', 'nntm' ); ?>
 		</p>
+		<?php
+	}
+
+	/**
+	 * Meta box RIÊNG cho bộ ảnh Trú Xứ.
+	 *
+	 * Để riêng chứ không nhét vào hộp "Vị trí trên bản đồ": người dùng đi tìm
+	 * chỗ thêm ảnh sẽ đọc tiêu đề hộp, mà tiêu đề kia nói về bản đồ nên không
+	 * ai đoán được ảnh nằm trong đó.
+	 */
+	public function add_abode_gallery_meta_box(): void {
+		add_meta_box(
+			'nntm_tru_xu_bo_anh',
+			__( 'Bộ ảnh Trú Xứ', 'nntm' ),
+			array( $this, 'render_abode_gallery_meta_box' ),
+			'nntm_abode',
+			'normal',
+			'high'
+		);
+	}
+
+	/**
+	 * Vẽ meta box bộ ảnh Trú Xứ.
+	 *
+	 * @param \WP_Post $post Trú Xứ đang sửa.
+	 */
+	public function render_abode_gallery_meta_box( $post ): void {
+		wp_nonce_field( 'nntm_tru_xu_bo_anh', 'nntm_tru_xu_bo_anh_nonce' );
+
+		$bo_anh = get_post_meta( $post->ID, '_nntm_abode_gallery', true );
+		$bo_anh = is_array( $bo_anh ) ? array_map( 'absint', $bo_anh ) : array();
+		?>
+		<p class="description" style="margin-top:0;">
+			<?php esc_html_e( 'Khách bấm vào TÊN Trú Xứ trên trang sẽ mở cửa sổ xem bộ ảnh này. Chưa chọn ảnh nào thì tên chỉ là chữ thường, bấm vào không mở gì.', 'nntm' ); ?>
+		</p>
+
+		<input type="hidden" id="nntm_abode_gallery" name="nntm_abode_gallery"
+			value="<?php echo esc_attr( implode( ',', $bo_anh ) ); ?>" />
+
+		<div id="nntm-abode-gallery-xem" class="nntm-abode-gallery-xem"></div>
+
+		<p>
+			<button type="button" class="button button-primary" id="nntm-abode-gallery-chon"><?php esc_html_e( 'Chọn / thêm ảnh', 'nntm' ); ?></button>
+			<button type="button" class="button" id="nntm-abode-gallery-xoa" <?php echo $bo_anh ? '' : 'style="display:none"'; ?>><?php esc_html_e( 'Bỏ hết ảnh', 'nntm' ); ?></button>
+		</p>
+
+		<style>
+			.nntm-abode-gallery-xem { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+			.nntm-abode-gallery-xem img { width: 92px; height: 62px; object-fit: cover; border: 1px solid #c3c4c7; border-radius: 3px; }
+		</style>
 		<?php
 	}
 

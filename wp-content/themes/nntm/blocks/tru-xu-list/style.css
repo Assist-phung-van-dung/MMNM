@@ -191,7 +191,7 @@
 	display: block;
 }
 
-.nntm-tru-xu-card__dia-chi {
+.nntm-tru-xu-dia-chi {
 	position: absolute;
 	right: var(--nntm-sp-3);
 	bottom: var(--nntm-sp-3);
@@ -199,12 +199,13 @@
 
 	display: inline-flex;
 	align-items: center;
-	gap: var(--nntm-sp-1);
+	justify-content: center;
 
-	min-height: 34px;
-	padding: var(--nntm-sp-1) var(--nntm-sp-4);
+	width: 36px;
+	height: 36px;
+	padding: 0;
 	border: 1px solid transparent;
-	border-radius: var(--nntm-r-pill);
+	border-radius: 50%;
 
 	background-color: color-mix(in srgb, var(--nntm-trang) 88%, transparent);
 	-webkit-backdrop-filter: blur(4px);
@@ -223,18 +224,18 @@
 		transform var(--nntm-dur) var(--nntm-ease);
 }
 
-.nntm-tru-xu-card__dia-chi-icon {
+.nntm-tru-xu-dia-chi__icon {
 	display: inline-flex;
 }
 
-.nntm-tru-xu-card__dia-chi:hover,
-.nntm-tru-xu-card__dia-chi:focus-visible {
+.nntm-tru-xu-dia-chi:hover,
+.nntm-tru-xu-dia-chi:focus-visible {
 	transform: translateY(-1px);
 	background-color: var(--nntm-chinh);
 	color: var(--nntm-kem);
 }
 
-.nntm-tru-xu-card__dia-chi:focus-visible {
+.nntm-tru-xu-dia-chi:focus-visible {
 	outline: 2px solid var(--nntm-trang);
 	outline-offset: 2px;
 }
@@ -249,28 +250,79 @@
 	gap: var(--nntm-sp-3);
 }
 
-.nntm-tru-xu-list__plain-list .nntm-tru-xu-card__dia-chi {
+.nntm-tru-xu-list__plain-list .nntm-tru-xu-dia-chi {
 	position: static;
+	width: 32px;
+	height: 32px;
 	background-color: transparent;
 	border-color: var(--nntm-duong-vien);
 	-webkit-backdrop-filter: none;
 	backdrop-filter: none;
 }
 
+/*
+ * Tên Trú Xứ: bấm vào mở bộ ảnh chứ không sang bài viết. Trú Xứ chưa có ảnh
+ * thì tên là <span>, không bấm được — nên chỉ tô kiểu "bấm được" cho biến thể
+ * có ảnh.
+ */
+.nntm-tru-xu-ten {
+	padding: 0;
+	border: 0;
+	background: none;
+	font: inherit;
+	color: inherit;
+	text-align: left;
+}
+
+.nntm-tru-xu-ten--co-anh {
+	cursor: pointer;
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
+	transition: color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-tru-xu-ten--co-anh:hover,
+.nntm-tru-xu-ten--co-anh:focus-visible {
+	color: var(--nntm-chinh);
+}
+
+.nntm-tru-xu-ten--co-anh:focus-visible,
+.nntm-tru-xu-dia-chi:focus-visible {
+	outline: 2px solid var(--nntm-chinh);
+	outline-offset: 2px;
+}
+
+.nntm-tru-xu-noi {
+	color: var(--nntm-chu-phu);
+}
+
+/* Biến thể thẻ ảnh: cả thẻ là một nút mở bộ ảnh. */
+.nntm-tru-xu-card--bam-duoc {
+	width: 100%;
+	padding: 0;
+	border: 0;
+	background: none;
+	font: inherit;
+	color: inherit;
+	text-align: left;
+	cursor: pointer;
+}
+
 @media (max-width: 767px) {
-	.nntm-tru-xu-card__dia-chi {
+	.nntm-tru-xu-dia-chi {
 		right: var(--nntm-sp-2);
 		bottom: var(--nntm-sp-2);
 	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.nntm-tru-xu-card__dia-chi {
+	.nntm-tru-xu-dia-chi {
 		transition: none;
 	}
 
-	.nntm-tru-xu-card__dia-chi:hover,
-	.nntm-tru-xu-card__dia-chi:focus-visible {
+	.nntm-tru-xu-dia-chi:hover,
+	.nntm-tru-xu-dia-chi:focus-visible {
 		transform: none;
 	}
 }

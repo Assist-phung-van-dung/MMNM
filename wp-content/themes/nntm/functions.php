@@ -33,7 +33,7 @@ require NNTM_THEME_DIR . '/inc/cong-tu.php';
 require NNTM_THEME_DIR . '/inc/kim-cuong-hanh-gia.php';
 require NNTM_THEME_DIR . '/inc/card-list-ajax.php';
 require NNTM_THEME_DIR . '/inc/video-lightbox.php';
-require NNTM_THEME_DIR . '/inc/tru-xu-map.php';
+require NNTM_THEME_DIR . '/inc/tru-xu.php';
 require NNTM_THEME_DIR . '/inc/reveal.php';
 require NNTM_THEME_DIR . '/inc/header-trong.php';
 require NNTM_THEME_DIR . '/inc/menu-active.php';

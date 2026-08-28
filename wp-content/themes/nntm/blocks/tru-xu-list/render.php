@@ -60,9 +60,22 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'nntm-tru-
 				<?php foreach ( $query->posts as $index => $abode ) : ?>
 					<?php $location = (string) get_post_meta( $abode->ID, '_nntm_abode_location', true ); ?>
 					<li style="--nntm-item-index: <?php echo esc_attr( (string) $index ); ?>">
-						<a href="<?php echo esc_url( get_permalink( $abode ) ); ?>">
-							<?php echo esc_html( get_the_title( $abode ) ); ?><?php echo '' !== trim( $location ) ? ' (' . esc_html( $location ) . ')' : ''; ?>
-						</a>
+						<?php
+						/*
+						 * Tên KHÔNG còn là liên kết sang bài viết: bấm vào tên mở
+						 * cửa sổ bộ ảnh của chính Trú Xứ đó. Trú Xứ chưa có ảnh thì
+						 * tên chỉ là chữ. Xem inc/tru-xu.php.
+						 */
+						if ( function_exists( 'nntm_tru_xu_ten' ) ) {
+							echo nntm_tru_xu_ten( (int) $abode->ID );  
+						} else {
+							echo '<span class="nntm-tru-xu-ten">' . esc_html( get_the_title( $abode ) ) . '</span>';
+						}
+						?>
+
+						<?php if ( '' !== trim( $location ) ) : ?>
+							<span class="nntm-tru-xu-noi">(<?php echo esc_html( $location ); ?>)</span>
+						<?php endif; ?>
 
 						<?php
 						// Trú Xứ chưa nhập toạ độ thì hàm trả về rỗng, không hiện nút.
@@ -77,8 +90,7 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'nntm-tru-
 			<div class="nntm-tru-xu-list__grid">
 				<?php
 				foreach ( $query->posts as $abode ) :
-					$permalink = get_permalink( $abode );
-					$title     = get_the_title( $abode );
+					$title = get_the_title( $abode );
 
 					$location = get_post_meta( $abode->ID, '_nntm_abode_location', true );
 					if ( ! is_string( $location ) || '' === trim( $location ) ) {
@@ -97,18 +109,32 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'nntm-tru-
 					);
 					?>
 					<?php
-					/*
-					 * Thẻ Trú Xứ vốn là một liên kết bọc toàn bộ. Nút "Địa chỉ"
-					 * KHÔNG được nằm trong liên kết đó (button trong a là HTML
-					 * sai và bấm vào sẽ chuyển trang), nên bọc thêm một lớp
-					 * ngoài để đặt nút cạnh liên kết.
-					 */
 					$nut_dia_chi = function_exists( 'nntm_tru_xu_nut_dia_chi' )
 						? nntm_tru_xu_nut_dia_chi( (int) $abode->ID )
 						: '';
+
+					$bo_anh = function_exists( 'nntm_tru_xu_bo_anh' )
+						? nntm_tru_xu_bo_anh( (int) $abode->ID )
+						: array();
 					?>
 					<div class="nntm-tru-xu-o">
-					<a href="<?php echo esc_url( $permalink ); ?>" class="nntm-tru-xu-card">
+					<?php
+					/*
+					 * Thẻ mở cửa sổ bộ ảnh chứ không sang bài viết nữa. Thẻ nào
+					 * chưa có ảnh thì chỉ là một khung tĩnh, không bấm được.
+					 */
+					?>
+					<?php if ( ! empty( $bo_anh ) ) : ?>
+					<button
+						type="button"
+						class="nntm-tru-xu-card nntm-tru-xu-card--bam-duoc"
+						data-nntm-tru-xu-anh
+						data-ten="<?php echo esc_attr( $title ); ?>"
+						data-anh="<?php echo esc_attr( (string) wp_json_encode( $bo_anh, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) ); ?>"
+					>
+					<?php else : ?>
+					<div class="nntm-tru-xu-card">
+					<?php endif; ?>
 						<span class="nntm-tru-xu-card__img">
 							<?php
 							if ( $thumbnail ) {
@@ -124,7 +150,11 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'nntm-tru-
 								<span class="nntm-tru-xu-card__location"><?php echo esc_html( $location ); ?></span>
 							<?php endif; ?>
 						</span>
-					</a>
+					<?php if ( ! empty( $bo_anh ) ) : ?>
+					</button>
+					<?php else : ?>
+					</div>
+					<?php endif; ?>
 
 					<?php
 					// Trú Xứ chưa nhập toạ độ thì hàm trả về rỗng, không hiện nút.
