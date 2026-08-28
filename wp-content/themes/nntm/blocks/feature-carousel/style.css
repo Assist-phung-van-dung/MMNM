@@ -19,12 +19,25 @@
 	color: var(--nntm-reu);
 }
 
+/*
+ * Video o day la lop trinh bay: an het thanh dieu khien mac dinh cua trinh
+ * duyet (ke ca phan WebKit ve rieng) va khong nhan thao tac chuot/cham.
+ */
+.nntm-feature-carousel__video::-webkit-media-controls,
+.nntm-feature-carousel__video::-webkit-media-controls-enclosure,
+.nntm-feature-carousel__video::-webkit-media-controls-panel,
+.nntm-feature-carousel__video::-webkit-media-controls-start-playback-button {
+	display: none !important;
+	-webkit-appearance: none;
+}
+
 .nntm-feature-carousel--bg-cream { background: var(--nntm-kem); }
 .nntm-feature-carousel--bg-white { background: var(--nntm-trang); }
 
 .nntm-feature-carousel__header {
 	width: min(100% - 40px, 980px);
-	margin: 0 auto 34px;
+	/* Hạ cụm tiêu đề xuống thấp hơn thay vì dính sát mép trên của section. */
+	margin: clamp(28px, 4.5vw, 64px) auto 34px;
 	text-align: center;
 }
 
@@ -179,8 +192,13 @@
 	pointer-events: none;
 }
 
+/*
+ * Truoc day slide dang xem mo pointer-events de bam duoc thanh dieu khien cua
+ * trinh duyet. Nay video la lop trinh bay, khong con thanh dieu khien, nen mo
+ * ra chi to lo menu chuot phai (Luu video). Giu dong luon.
+ */
 .nntm-feature-carousel__slide[data-position="0"] .nntm-feature-carousel__video {
-	pointer-events: auto;
+	pointer-events: none;
 }
 
 .nntm-feature-carousel {
@@ -350,7 +368,7 @@
 		min-height: 0;
 		padding: 46px 0 58px;
 	}
-	.nntm-feature-carousel__header { width: min(100% - 40px, 720px); margin-bottom: 28px; }
+	.nntm-feature-carousel__header { width: min(100% - 40px, 720px); margin-top: clamp(20px, 5vw, 40px); margin-bottom: 28px; }
 	.nntm-feature-carousel__heading { margin-bottom: 14px; font-size: var(--nntm-fs-3xl); }
 	.nntm-feature-carousel__intro-title { font-size: var(--nntm-fs-md); }
 	.nntm-feature-carousel__intro-text { font-size: var(--nntm-fs-sm); }

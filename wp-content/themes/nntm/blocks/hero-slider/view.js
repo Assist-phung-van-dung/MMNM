@@ -124,7 +124,7 @@
 		var autoplayEnabled = 'true' === String( root.getAttribute( 'data-nntm-autoplay' ) ) || '1' === root.getAttribute( 'data-nntm-autoplay' );
 		var intervalSeconds = parseFloat( root.getAttribute( 'data-nntm-interval' ) );
 		if ( ! isFinite( intervalSeconds ) || intervalSeconds <= 0 ) {
-			intervalSeconds = 6;
+			intervalSeconds = 5;
 		}
 		intervalSeconds = Math.max( 2, Math.min( 30, intervalSeconds ) );
 

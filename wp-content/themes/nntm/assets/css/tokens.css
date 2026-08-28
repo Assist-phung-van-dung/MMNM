@@ -140,7 +140,22 @@
   --nntm-sh-nut:  0 5px 30px rgba(85,110,158,0.20);   
 
   --nntm-w-noi-dung: 1220px;   
+
   --nntm-w-rong:     1366px;   
+
+  /*
+   * KHUNG GIAN THEO MAN HINH.
+   *
+   * Ban ve goc o kho 1366. Nhung phan la nen/dai chay suot (thanh dau trang,
+   * bang chuyen dau trang, dai Got Son, dai GITA, chan trang) dung token nay de
+   * an het be ngang man hinh thay vi dung yen o 1366 va thua hai ben.
+   *
+   * Cac khoi co bo cuc rieng — Bo cuc tap chi, Bai noi bat toan van, Dai phim
+   * (Engineering Earth) — VAN dung --nntm-w-rong, tuc giu nguyen khung 1366.
+   *
+   * Doi so 1920px neu muon cho gian rong hon nua tren man sieu rong.
+   */
+  --nntm-w-man: min(100%, 1920px);   
 
   --nntm-header-h:   76px;
 

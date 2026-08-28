@@ -23,72 +23,26 @@
 	padding: 0;
 }
 
-.nntm-footer--inner {
+.nntm-footer--chung {
 	background-color: var(--nntm-den);
 	padding: 0 10px;
 	box-sizing: border-box;
 }
 
-.nntm-footer--inner .nntm-footer__bar {
+.nntm-footer--chung .nntm-footer__bar {
 	min-height: calc(107px * var(--nntm-footer-ty-le));
 	display: flex;
 	align-items: center;
 	box-sizing: border-box;
 }
 
-.nntm-footer--inner .nntm-footer__inner { width: 100%; }
+.nntm-footer--chung .nntm-footer__inner { width: 100%; }
 
-.nntm-footer--inner .nntm-footer-nav a,
-.nntm-footer--inner .nntm-footer__copyright {
+.nntm-footer--chung .nntm-footer-nav a,
+.nntm-footer--chung .nntm-footer__copyright {
 	line-height: 22px;
 }
 
-.nntm-footer__share {
-	display: flex;
-	align-items: center;
-	flex-wrap: wrap;
-	gap: calc(var(--nntm-sp-3) * var(--nntm-footer-ty-le));
-	margin-bottom: calc(var(--nntm-sp-8) * var(--nntm-footer-ty-le));
-	font-family: var(--nntm-font-display);
-	font-size: calc(var(--nntm-fs-3xl) * var(--nntm-footer-ty-le-chu));
-	font-weight: 600;
-	line-height: calc(44px * var(--nntm-footer-ty-le-chu));
-	color: var(--nntm-kem);
-}
-
-.nntm-footer__share-link {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	min-height: calc(var(--nntm-sp-9) * var(--nntm-footer-ty-le));
-	padding: calc(var(--nntm-sp-1) * var(--nntm-footer-ty-le)) calc(var(--nntm-sp-5) * var(--nntm-footer-ty-le));
-	border-radius: var(--nntm-r-sm);
-	background-color: var(--nntm-vien);
-	font-family: var(--nntm-font-serif);
-	font-size: calc(var(--nntm-fs-md) * var(--nntm-footer-ty-le-chu));
-	font-style: italic;
-	font-weight: 400;
-	line-height: var(--nntm-lh-vua);
-	color: var(--nntm-muc-nhat);
-	text-decoration: none;
-}
-
-.nntm-footer__share-link:hover,
-.nntm-footer__share-link:focus-visible {
-	background-color: var(--nntm-trang);
-}
-
-.nntm-footer__share-link:focus-visible {
-	outline: 2px solid var(--nntm-kem);
-	outline-offset: var(--nntm-sp-1);
-}
-
-.nntm-footer__rule {
-	width: 100%;
-	margin: 0 0 var(--nntm-sp-4) 0;  
-	border: 0;
-	border-top: 1px solid var(--nntm-reu-dam);  
-}
 
 .nntm-footer__row {
 	display: flex;
@@ -185,7 +139,6 @@
 }
 
 
-
 @media (max-width: 1151px) {
 	.nntm-footer {
 		padding-inline: var(--nntm-sp-3);
@@ -215,11 +168,6 @@
 }
 
 @media (max-width: 767px) {
-	.home .nntm-footer__share {
-		font-size: var(--nntm-fs-2xl);
-		line-height: var(--nntm-lh-chat);
-	}
-
 	.nntm-footer-nav {
 		flex-direction: column;
 		align-items: flex-start;
@@ -230,19 +178,29 @@
 	}
 }
 
-.nntm-footer--home {
-	--nntm-footer-ty-le: 0.4;
-	--nntm-footer-ty-le-chu: 0.6;
-	background-color: var(--nntm-muc-nhat);
-}
 
-.nntm-footer--inner {
+.nntm-footer--chung {
 	--nntm-footer-ty-le: 0.45;
 	--nntm-footer-ty-le-chu: 1;
 	background-color: var(--nntm-muc-nhat);
 }
 
-.nntm-footer--home .nntm-footer__bar,
-.nntm-footer--inner .nntm-footer__bar {
+.nntm-footer--chung .nntm-footer__bar {
 	background-color: var(--nntm-muc-nhat);
+}
+
+
+/*
+ * Man hinh rong hon kho ban ve (1366): chan trang gian theo man hinh cho khop
+ * voi thanh dau trang, thay vi dung yen thanh mot dai 1326 canh giua.
+ * Tu 1366 tro xuong khong doi gi.
+ */
+@media (min-width: 1367px) {
+	.nntm-footer__bar {
+		max-width: min(100%, 1920px);
+	}
+
+	.nntm-footer__inner {
+		max-width: min(100%, 1880px);
+	}
 }

@@ -11,6 +11,14 @@ html {
 	-webkit-text-size-adjust: 100%;
 	text-size-adjust: 100%;
 	scroll-behavior: smooth;
+
+	/*
+	 * Luon chua cho thanh cuon doc. Nho vay be rong kha dung khong doi giua
+	 * trang ngan va trang dai (het giat khi chuyen trang), va quan trong hon:
+	 * --nntm-vw do duoc dung ngay tu lan do dau trong <head>, nen khung thiet
+	 * ke gian theo man hinh (--nntm-dv) khong bao gio rong hon man hinh.
+	 */
+	scrollbar-gutter: stable;
 }
 
 @media (prefers-reduced-motion: reduce) {

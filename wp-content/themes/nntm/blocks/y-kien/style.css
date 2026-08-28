@@ -1,0 +1,151 @@
+/*
+ * Khối "Mời góp ý (Ý kiến)".
+ *
+ * Toàn bộ nội dung căn giữa: một nét mảnh nhỏ làm điểm nhấn, một dòng lời mời
+ * cỡ lớn với nhãn nổi lên thành nút, và một dòng phụ chữ nghiêng.
+ */
+
+.nntm-y-kien {
+	--nntm-yk-chu: var(--nntm-kem);
+	--nntm-yk-chu-phu: color-mix(in srgb, var(--nntm-kem) 68%, transparent);
+	--nntm-yk-nut-nen: var(--nntm-kem);
+	--nntm-yk-nut-chu: var(--nntm-muc-nhat);
+	--nntm-yk-net: color-mix(in srgb, var(--nntm-kem) 35%, transparent);
+	padding-block: 0 10px;
+}
+
+.nntm-y-kien--nen-toi {
+	background-color: var(--nntm-muc-nhat);
+}
+
+.nntm-y-kien--nen-kem {
+	--nntm-yk-chu: var(--nntm-muc);
+	--nntm-yk-chu-phu: var(--nntm-muc-nhat);
+	--nntm-yk-nut-nen: var(--nntm-muc-nhat);
+	--nntm-yk-nut-chu: var(--nntm-kem);
+	--nntm-yk-net: color-mix(in srgb, var(--nntm-muc) 30%, transparent);
+
+	background-color: var(--nntm-kem);
+}
+
+.nntm-y-kien--nen-trong {
+	--nntm-yk-chu: var(--nntm-chu);
+	--nntm-yk-chu-phu: var(--nntm-chu-phu);
+	--nntm-yk-nut-nen: var(--nntm-chinh);
+	--nntm-yk-nut-chu: var(--nntm-kem);
+	--nntm-yk-net: color-mix(in srgb, var(--nntm-chu) 25%, transparent);
+
+	background-color: transparent;
+}
+
+.nntm-y-kien__inner {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--nntm-sp-4);
+
+	text-align: center;
+}
+
+/* Nét mảnh phía trên, mờ dần về hai đầu. */
+.nntm-y-kien__net {
+	width: min(140px, 40%);
+	height: 1px;
+	margin-bottom: var(--nntm-sp-2);
+
+	background-image: linear-gradient(90deg, transparent, var(--nntm-yk-net), transparent);
+}
+
+.nntm-y-kien__loi {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: var(--nntm-sp-3) var(--nntm-sp-4);
+
+	margin: 0;
+
+	font-family: var(--nntm-font-display);
+	font-size: clamp(var(--nntm-fs-2xl), 3.4vw, var(--nntm-fs-3xl));
+	font-weight: 600;
+	line-height: 1.25;
+	color: var(--nntm-yk-chu);
+}
+
+.nntm-y-kien__chu {
+	color: inherit;
+}
+
+.nntm-y-kien__nut {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	min-height: var(--nntm-sp-9);
+	padding: var(--nntm-sp-2) var(--nntm-sp-7);
+	border: 1px solid transparent;
+	border-radius: var(--nntm-r-pill);
+
+	background-color: var(--nntm-yk-nut-nen);
+
+	font-family: var(--nntm-font-serif);
+	font-size: clamp(var(--nntm-fs-base), 1.4vw, var(--nntm-fs-md));
+	font-style: italic;
+	font-weight: 400;
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-yk-nut-chu);
+	text-decoration: none;
+	white-space: nowrap;
+
+	transition:
+		background-color var(--nntm-dur) var(--nntm-ease),
+		color var(--nntm-dur) var(--nntm-ease),
+		border-color var(--nntm-dur) var(--nntm-ease),
+		transform var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-y-kien__nut:hover,
+.nntm-y-kien__nut:focus-visible {
+	transform: translateY(-2px);
+	border-color: var(--nntm-yk-nut-nen);
+	background-color: transparent;
+	color: var(--nntm-yk-nut-nen);
+}
+
+.nntm-y-kien__nut:focus-visible {
+	outline: 2px solid var(--nntm-yk-nut-nen);
+	outline-offset: 3px;
+}
+
+.nntm-y-kien__mo-ta {
+	max-width: 46em;
+	margin: 0;
+
+	font-family: var(--nntm-font-serif);
+	font-size: var(--nntm-fs-md);
+	font-style: italic;
+	line-height: var(--nntm-lh-vua);
+	color: var(--nntm-yk-chu-phu);
+	text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-y-kien__nut {
+		transition: none;
+	}
+
+	.nntm-y-kien__nut:hover,
+	.nntm-y-kien__nut:focus-visible {
+		transform: none;
+	}
+}
+
+@media (max-width: 767px) {
+	.nntm-y-kien__loi {
+		gap: var(--nntm-sp-3);
+	}
+
+	.nntm-y-kien__mo-ta {
+		font-size: var(--nntm-fs-base);
+	}
+}

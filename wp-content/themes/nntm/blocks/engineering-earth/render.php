@@ -91,6 +91,21 @@ $main_video_id    = nntm_engineering_earth_extract_youtube_id( $main_video_url )
 								<span class="nntm-sr-only"><?php esc_html_e( 'Xem bài viết video', 'nntm' ); ?></span>
 							</a>
 						<?php endif; ?>
+
+						<?php
+						/*
+						 * Chỉ hiện khi khung video đang trôi nổi ở góc màn hình
+						 * (xem view.js + .la-noi trong style.css).
+						 */
+						?>
+						<button
+							type="button"
+							class="nntm-engineering-earth__video-dong"
+							data-nntm-ee-dong
+						>
+							<span class="nntm-sr-only"><?php esc_html_e( 'Đóng khung video nổi', 'nntm' ); ?></span>
+							<span aria-hidden="true">&times;</span>
+						</button>
 					</div>
 				</div>
 

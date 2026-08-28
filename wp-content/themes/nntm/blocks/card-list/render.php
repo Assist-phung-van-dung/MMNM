@@ -338,8 +338,9 @@ $wrapper_attributes = get_block_wrapper_attributes(
 		 
 		$nntm_cl_spotify = isset( $attributes['spotifyUrl'] ) ? esc_url_raw( (string) $attributes['spotifyUrl'] ) : '';
 		$nntm_cl_youtube = isset( $attributes['youtubeUrl'] ) ? esc_url_raw( (string) $attributes['youtubeUrl'] ) : '';
+		$nntm_cl_apple   = isset( $attributes['appleMusicUrl'] ) ? esc_url_raw( (string) $attributes['appleMusicUrl'] ) : '';
 
-		if ( '' !== $nntm_cl_spotify || '' !== $nntm_cl_youtube ) :
+		if ( '' !== $nntm_cl_spotify || '' !== $nntm_cl_youtube || '' !== $nntm_cl_apple ) :
 			?>
 			<div class="nntm-card-list__icons">
 				<?php if ( '' !== $nntm_cl_spotify ) : ?>
@@ -362,14 +363,39 @@ $wrapper_attributes = get_block_wrapper_attributes(
 						</svg>
 					</a>
 				<?php endif; ?>
+
+				<?php
+
+				?>
+				<?php if ( '' !== $nntm_cl_apple ) : ?>
+					<a class="nntm-card-list__icon nntm-card-list__icon--apple" href="<?php echo esc_url( $nntm_cl_apple ); ?>" target="_blank" rel="noopener noreferrer nofollow">
+						<span class="nntm-sr-only"><?php esc_html_e( 'Nghe trên Apple Music (mở tab mới)', 'nntm' ); ?></span>
+						<svg viewBox="0 0 50 50" width="50" height="50" aria-hidden="true" focusable="false">
+							<rect x="0" y="0" width="50" height="50" rx="11" fill="currentColor" />
+							<g fill="var(--nntm-cl-icon-nen)">
+								<ellipse cx="18.4" cy="33.6" rx="4.2" ry="3.6" />
+								<ellipse cx="31.6" cy="30.8" rx="4.2" ry="3.6" />
+							</g>
+							<path d="M22.6 33.6 V16.6 L35.8 13.9 V30.8 M22.6 22.4 L35.8 19.7"
+								stroke="var(--nntm-cl-icon-nen)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+						</svg>
+					</a>
+				<?php endif; ?>
 			</div>
 			<?php
 		endif;
 		?>
-	</div>
-	</div>
 
-	<?php if ( '' !== trim( $caption_below ) ) : ?>
-		<p class="nntm-card-list__caption-below"><?php echo wp_kses_post( $caption_below ); ?></p>
-	<?php endif; ?>
+		<?php
+		/*
+		 * Phần mô tả nằm NGAY TRONG dải nền của chính section (trước đây nó là
+		 * thẻ anh em đặt sau dải nền, lại position:absolute nên rơi hẳn xuống
+		 * vùng nền của section kế tiếp).
+		 */
+		?>
+		<?php if ( '' !== trim( $caption_below ) ) : ?>
+			<p class="nntm-card-list__caption-below"><?php echo wp_kses_post( $caption_below ); ?></p>
+		<?php endif; ?>
+	</div>
+	</div>
 </section>

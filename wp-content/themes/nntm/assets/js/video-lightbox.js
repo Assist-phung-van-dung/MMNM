@@ -80,6 +80,14 @@
 			return;
 		}
 
+		/*
+		 * Nút đóng khung video nổi nằm NGAY TRONG khung video, nên nếu không
+		 * chừa ra thì cú bấm đó cũng bị hiểu là "mở trình phát video".
+		 */
+		if ( event.target.closest( '[data-nntm-ee-dong]' ) ) {
+			return;
+		}
+
 		var the = event.target.closest( '.nntm-card-list__yt-item' ) ||
 			event.target.closest( '.nntm-engineering-earth__video-slot' );
 

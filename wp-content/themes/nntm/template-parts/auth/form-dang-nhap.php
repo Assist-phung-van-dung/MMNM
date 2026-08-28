@@ -34,7 +34,7 @@ $google_url = apply_filters( 'nntm_google_login_url', '' );
 		<input type="hidden" name="redirect_to" value="<?php echo esc_attr( $redirect_to ); ?>" />
 
 		<div class="nntm-auth-field">
-			<label for="nntm-login-user"><?php esc_html_e( 'Username', 'nntm' ); ?></label>
+			<label for="nntm-login-user"><?php esc_html_e( 'Email hoặc Tên đăng nhập', 'nntm' ); ?></label>
 			<div class="nntm-auth-field__control nntm-auth-field__control--icon">
 				<svg class="nntm-auth-field__icon" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
 					<circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.4" />
@@ -44,7 +44,7 @@ $google_url = apply_filters( 'nntm_google_login_url', '' );
 					type="text"
 					id="nntm-login-user"
 					name="user_login"
-					placeholder="<?php esc_attr_e( 'Tên đăng nhập/ Pháp danh', 'nntm' ); ?>"
+					placeholder="<?php esc_attr_e( 'Email hoặc Tên đăng nhập', 'nntm' ); ?>"
 					autocomplete="username"
 					required
 				/>
@@ -70,7 +70,7 @@ $google_url = apply_filters( 'nntm_google_login_url', '' );
 		</div>
 
 		<p class="nntm-auth-form__forgot">
-			<a href="<?php echo esc_url( nntm_lostpassword_url( $redirect_to ) ); ?>">
+			<a href="<?php echo esc_url( nntm_lostpassword_url( $redirect_to ) ); ?>" data-nntm-auth-link>
 				<?php esc_html_e( 'Quên mật khẩu?', 'nntm' ); ?>
 			</a>
 		</p>
@@ -81,7 +81,7 @@ $google_url = apply_filters( 'nntm_google_login_url', '' );
 
 		<p class="nntm-auth-form__switch">
 			<?php esc_html_e( 'Chưa có tài khoản?', 'nntm' ); ?>
-			<a href="<?php echo esc_url( nntm_register_url( $redirect_to ) ); ?>">
+			<a href="<?php echo esc_url( nntm_register_url( $redirect_to ) ); ?>" data-nntm-auth-link>
 				<strong><?php esc_html_e( 'Đăng ký ngay', 'nntm' ); ?></strong>
 			</a>
 		</p>

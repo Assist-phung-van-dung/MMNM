@@ -5,20 +5,16 @@ defined( 'ABSPATH' ) || exit;
 function nntm_preloader_effects(): array {
 	return array(
 		'halo'    => array(
-			'title'    => __( 'Tịnh Tâm', 'nntm' ),
-			'subtitle' => __( 'An nhiên trong từng khoảnh khắc', 'nntm' ),
+			'title' => __( 'Tịnh Tâm', 'nntm' ),
 		),
 		'mandala' => array(
-			'title'    => __( 'Tĩnh Niệm', 'nntm' ),
-			'subtitle' => __( 'Tĩnh lặng để nhìn sâu hơn', 'nntm' ),
+			'title' => __( 'Tĩnh Niệm', 'nntm' ),
 		),
 		'moon'    => array(
-			'title'    => __( 'Nguyệt Tĩnh', 'nntm' ),
-			'subtitle' => __( 'Ánh sáng dẫn lối trong tĩnh lặng', 'nntm' ),
+			'title' => __( 'Nguyệt Tĩnh', 'nntm' ),
 		),
 		'sun'     => array(
-			'title'    => __( 'Nhật Quang', 'nntm' ),
-			'subtitle' => __( 'Khai mở nguồn sinh khí an lành', 'nntm' ),
+			'title' => __( 'Nhật Quang', 'nntm' ),
 		),
 	);
 }
@@ -36,31 +32,52 @@ function nntm_preloader_head_script(): void {
 		return;
 	}
 
-	$keys = wp_json_encode( array_keys( nntm_preloader_effects() ) );
+	$keys   = wp_json_encode( array_keys( nntm_preloader_effects() ) );
+	$quotes = wp_json_encode( array_values( nntm_preloader_quotes() ), JSON_UNESCAPED_UNICODE );
 
 	?>
 	<script>
 		(function () {
 			var EFFECTS = <?php echo $keys;  ?>;
+			var QUOTES = <?php echo $quotes;  ?>;
 			var KEY = 'nntm-preloader-last';
-			var last = null;
+			var KEY_QUOTE = 'nntm-preloader-last-quote';
 
-			try {
-				last = window.sessionStorage.getItem(KEY);
-			} catch (error) {
-				last = null;
+			/* Bốc ngẫu nhiên một phần tử, tránh đúng phần tử của lần tải trước. */
+			function boc( danhSach, khoaNho ) {
+				if ( ! danhSach || ! danhSach.length ) {
+					return null;
+				}
+
+				var truoc = null;
+
+				try {
+					truoc = window.sessionStorage.getItem( khoaNho );
+				} catch ( error ) {
+					truoc = null;
+				}
+
+				var con = danhSach.filter( function ( item ) {
+					return String( item ) !== truoc;
+				} );
+
+				if ( ! con.length ) {
+					con = danhSach;
+				}
+
+				var chon = con[ Math.floor( Math.random() * con.length ) ];
+
+				try {
+					window.sessionStorage.setItem( khoaNho, String( chon ) );
+				} catch ( error ) {
+				}
+
+				return chon;
 			}
 
-			var pool = EFFECTS.filter(function (name) {
-				return name !== last;
-			});
+			var picked = boc( EFFECTS, KEY );
 
-			var picked = pool[Math.floor(Math.random() * pool.length)];
-
-			try {
-				window.sessionStorage.setItem(KEY, picked);
-			} catch (error) {
-			}
+			window.NNTM_TAI_QUOTE = boc( QUOTES, KEY_QUOTE );
 
 			var root = document.documentElement;
 
@@ -83,6 +100,11 @@ function nntm_preloader_markup(): void {
 	}
 
 	$effects = nntm_preloader_effects();
+
+
+
+	$quotes    = nntm_preloader_quotes();
+	$quote_dau = $quotes ? (string) $quotes[ wp_rand( 0, count( $quotes ) - 1 ) ] : '';
 	?>
 	<div class="nntm-tai" aria-hidden="true">
 
@@ -121,12 +143,32 @@ function nntm_preloader_markup(): void {
 		<?php foreach ( $effects as $key => $copy ) : ?>
 			<div class="nntm-tai__copy nntm-tai__copy--<?php echo esc_attr( $key ); ?>">
 				<p class="nntm-tai__tieu-de"><?php echo esc_html( $copy['title'] ); ?></p>
-				<p class="nntm-tai__phu"><?php echo esc_html( $copy['subtitle'] ); ?></p>
+				<p class="nntm-tai__phu" data-nntm-quote><?php echo esc_html( $quote_dau ); ?></p>
 				<span class="nntm-tai__vach"></span>
 			</div>
 		<?php endforeach; ?>
 
 	</div>
+	<?php
+
+
+	?>
+	<script>
+		(function () {
+			var quote = window.NNTM_TAI_QUOTE;
+
+			if ( ! quote ) {
+				return;
+			}
+
+			var o = document.querySelectorAll( '[data-nntm-quote]' );
+
+			for ( var i = 0; i < o.length; i++ ) {
+
+				o[ i ].textContent = quote;
+			}
+		})();
+	</script>
 	<?php
 }
 add_action( 'wp_body_open', 'nntm_preloader_markup', 1 );

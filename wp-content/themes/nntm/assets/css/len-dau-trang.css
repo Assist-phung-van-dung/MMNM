@@ -1,8 +1,16 @@
-.nntm-len-dau {
+/*
+ * Kich thuoc va le cua nut nay dat o :root vi khoi khac con phai xep canh no
+ * (vd khung video noi cua Dai phim, xem blocks/engineering-earth/style.css).
+ */
+:root {
 	--nntm-len-dau-canh: 52px;
+	--nntm-len-dau-le: var(--nntm-sp-5);
+}
+
+.nntm-len-dau {
 	position: fixed;
-	right: var(--nntm-sp-5);
-	bottom: var(--nntm-sp-5);
+	right: var(--nntm-len-dau-le);
+	bottom: var(--nntm-len-dau-le);
 	z-index: 900;
 	display: inline-flex;
 	align-items: center;
@@ -53,10 +61,9 @@
 }
 
 @media (max-width: 767px) {
-	.nntm-len-dau {
+	:root {
 		--nntm-len-dau-canh: 44px;
-		right: var(--nntm-sp-3);
-		bottom: var(--nntm-sp-3);
+		--nntm-len-dau-le: var(--nntm-sp-3);
 	}
 }
 
@@ -67,12 +74,24 @@
 	}
 }
 
-body:has(.nntm-floating-bar.is-hien) .nntm-len-dau {
-	bottom: calc(var(--nntm-sp-7) + 65px + var(--nntm-sp-3));
+/*
+ * Co thanh noi thi nang cao len khoi thanh do. Dat thanh bien de khung video
+ * noi cua Dai phim nang theo dung cung mot muc.
+ */
+:root {
+	--nntm-day-noi: var(--nntm-len-dau-le);
+}
+
+body:has(.nntm-floating-bar.is-hien) {
+	--nntm-day-noi: calc(var(--nntm-sp-7) + 65px + var(--nntm-sp-3));
 }
 
 @media (max-width: 1023px) {
-	body:has(.nntm-floating-bar.is-hien) .nntm-len-dau {
-		bottom: calc(var(--nntm-sp-4) + 58px + var(--nntm-sp-3));
+	body:has(.nntm-floating-bar.is-hien) {
+		--nntm-day-noi: calc(var(--nntm-sp-4) + 58px + var(--nntm-sp-3));
 	}
+}
+
+.nntm-len-dau {
+	bottom: var(--nntm-day-noi);
 }

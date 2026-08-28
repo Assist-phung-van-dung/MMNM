@@ -74,6 +74,18 @@ function nntm_engineering_earth_render_video_slot( string $video_id, string $rol
 				<span class="nntm-sr-only"><?php esc_html_e( 'Xem bài viết video', 'nntm' ); ?></span>
 			</a>
 		<?php endif; ?>
+
+		<?php if ( $is_main ) : ?>
+			<?php   ?>
+			<button
+				type="button"
+				class="nntm-engineering-earth__video-dong"
+				data-nntm-ee-dong
+			>
+				<span class="nntm-sr-only"><?php esc_html_e( 'Đóng khung video nổi', 'nntm' ); ?></span>
+				<span aria-hidden="true">&times;</span>
+			</button>
+		<?php endif; ?>
 	</div>
 	<?php
 	return trim( (string) ob_get_clean() );

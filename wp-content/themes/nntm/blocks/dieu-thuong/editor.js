@@ -186,7 +186,7 @@
 						el( TextareaControl, { label: __( 'Đoạn trên', 'nntm' ), value: attributes.storyTextTop || '', onChange: function ( value ) { setAttributes( { storyTextTop: value } ); } } ),
 						el( SelectControl, {
 							label: __( 'Dải giữa: lấy từ phân mục', 'nntm' ),
-							help: __( 'Chọn một phân mục cha để hiện các phân mục con dạng thẻ trượt (giống block Danh sách phân mục con). Để "— Dùng ảnh tự chọn —" thì giữ 3 ảnh như cũ.', 'nntm' ),
+							help: __( 'Chọn một phân mục cha để hiện các phân mục con dạng thẻ trượt, BẤM VÀO THẺ SẼ CHUYỂN TRANG. Để "— Dùng ảnh tự chọn —" thì dùng 3 ảnh tĩnh bên dưới, bấm vào ảnh không chuyển đi đâu — chỉ nút CTA cuối khối mới điều hướng.', 'nntm' ),
 							value: attributes.galleryTermId || 0,
 							options: luaChonPhanMuc,
 							onChange: function ( v ) { setAttributes( { galleryTermId: parseInt( v, 10 ) || 0 } ); }

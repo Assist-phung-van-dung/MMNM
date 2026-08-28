@@ -3,6 +3,19 @@
 .nntm-hero-slider {
 	--nntm-hero-transition: 1100ms;
 	--nntm-hero-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+	/*
+	 * Ba mốc dọc của sân khấu, tính theo PHẦN TRĂM chiều cao sân khấu nên tự co
+	 * giãn theo mọi độ phân giải, không ghim px cho riêng một khổ màn hình.
+	 *
+	 * - cụm chữ (tiêu đề + mô tả + nút) hạ thấp xuống so với bản cũ (19%)
+	 * - cụm chấm chuyển tấm đi theo cụm chữ để giữ nguyên khoảng hở
+	 * - dải liên kết nhanh ở đáy được nâng lên khỏi mép dưới
+	 */
+	--nntm-hero-content-top: 30%;
+	--nntm-hero-dots-top: 70%;
+	--nntm-hero-quicklinks-bottom: clamp(28px, 7.5%, 72px);
+
 	display: block;
 }
 
@@ -78,7 +91,7 @@
 	left: 93px;  
 	right: 420px;  
 
-	top: 19%;  
+	top: var(--nntm-hero-content-top);
 	display: flex;
 	flex-direction: column;
 	gap: var(--nntm-sp-4);
@@ -180,7 +193,7 @@
 	z-index: 2;
 	left: 93px;  
 
-	top: 63%;  
+	top: var(--nntm-hero-dots-top);
 	display: flex;
 	align-items: center;
 	gap: var(--nntm-sp-2);
@@ -220,7 +233,7 @@
 	position: absolute;
 	z-index: 2;
 	left: 93px;  
-	bottom: var(--nntm-sp-9);  
+	bottom: var(--nntm-hero-quicklinks-bottom);
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--nntm-sp-3);
@@ -389,13 +402,13 @@
 		left: var(--nntm-sp-8);
 		top: auto;
 
-		bottom: calc(var(--nntm-sp-9) + 45px + var(--nntm-sp-5));
+		bottom: calc(var(--nntm-hero-quicklinks-bottom) + 45px + var(--nntm-sp-5));
 	}
 
 	.nntm-hero-slider__quicklinks {
 		left: var(--nntm-sp-8);
 		right: 36%;
-		bottom: var(--nntm-sp-9);
+		bottom: var(--nntm-hero-quicklinks-bottom);
 		max-width: none;
 		flex-wrap: nowrap;
 		overflow-x: auto;

@@ -146,6 +146,10 @@
 
 .nntm-article-feature__cta {
 	align-self: flex-start;
+	/* Bề ngang chạy theo nội dung + padding; không để nhãn rớt xuống hai dòng. */
+	width: fit-content;
+	max-width: 100%;
+	white-space: nowrap;
 	margin-top: var(--nntm-sp-3);  
 	font-family: var(--nntm-font-sans);  
 	font-size: var(--nntm-fs-xs);        

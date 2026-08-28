@@ -391,6 +391,16 @@
 								setAttributes( { youtubeUrl: value } );
 							},
 						} ),
+						el( TextControl, {
+							label: __( 'Đường dẫn Apple Music', 'nntm' ),
+							help: __( 'Để trống thì không hiện biểu tượng Apple Music.', 'nntm' ),
+							type: 'url',
+							placeholder: 'https://music.apple.com/…',
+							value: attributes.appleMusicUrl || '',
+							onChange: function ( value ) {
+								setAttributes( { appleMusicUrl: value } );
+							},
+						} ),
 
 
 

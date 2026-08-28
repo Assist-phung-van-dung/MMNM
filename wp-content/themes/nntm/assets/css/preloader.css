@@ -1,12 +1,18 @@
 
 
 
-html.is-loading {
-	overflow: hidden;
-	scrollbar-gutter: stable;
-}
-
+/*
+ * Khoá cuộn trong lúc chờ.
+ *
+ * Trước đây khoá bằng overflow: hidden trên <html>. Nhưng khi <html> bị
+ * overflow: hidden thì trình duyệt bỏ luôn máng thanh cuộn, nên bề rộng khả
+ * dụng đo được ở <head> lớn hơn thực tế đúng bằng bề rộng thanh cuộn — khung
+ * thiết kế giãn theo màn hình (--nntm-dv) vì thế bị lệch. Nay khoá bằng cách
+ * ghim chiều cao <body> đúng một màn hình: vẫn không cuộn được, mà máng thanh
+ * cuộn (base.css: scrollbar-gutter: stable) vẫn còn nguyên.
+ */
 html.is-loading body {
+	height: 100vh;
 	overflow: hidden;
 }
 
@@ -69,14 +75,17 @@ html[data-effect="sun"] .nntm-tai__copy--sun {
 	color: color-mix(in srgb, var(--nntm-kem) 92%, transparent);
 }
 
+/* Câu trích dẫn ngẫu nhiên — nội dung do JS ghi vào, xem inc/preloader.php. */
 .nntm-tai__phu {
 	margin-top: var(--nntm-sp-3);
 
 	font-family: var(--nntm-font-serif);
-	font-size: var(--nntm-fs-xs);
+	font-size: var(--nntm-fs-sm);
 	font-style: italic;
+	line-height: 1.55;
 	letter-spacing: 0.035em;
-	color: color-mix(in srgb, var(--nntm-kem) 42%, transparent);
+	text-wrap: balance;
+	color: color-mix(in srgb, var(--nntm-kem) 62%, transparent);
 }
 
 .nntm-tai__vach {

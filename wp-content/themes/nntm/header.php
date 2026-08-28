@@ -203,7 +203,11 @@ $nntm_panel_id = 'nntm-header-panel';
 				<?php else : ?>
 
 					<?php
-					$nntm_login_redirect = is_singular() ? get_permalink() : home_url( '/' );
+					$nntm_login_redirect = function_exists( 'nntm_auth_current_url' ) ? nntm_auth_current_url() : '';
+
+					if ( '' === $nntm_login_redirect ) {
+						$nntm_login_redirect = is_singular() ? (string) get_permalink() : home_url( '/' );
+					}
 					$nntm_header_login_url = function_exists( 'nntm_login_url' )
 						? nntm_login_url( $nntm_login_redirect ?: home_url( '/' ) )
 						: wp_login_url( $nntm_login_redirect ?: home_url( '/' ) );

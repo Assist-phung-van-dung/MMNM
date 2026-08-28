@@ -1,0 +1,53 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "nntm/y-kien",
+	"title": "Mời góp ý (Ý kiến)",
+	"category": "nntm",
+	"icon": "format-chat",
+	"description": "Dải mời khách gửi ý kiến, chữ căn giữa. Trước đây phần này nằm cứng trong chân trang của riêng trang chủ; nay là khối riêng nên đặt được ở bất kỳ trang nào và tự chỉnh nội dung, đường dẫn.",
+	"textdomain": "nntm",
+	"supports": {
+		"html": false,
+		"align": [
+			"wide",
+			"full"
+		],
+		"customClassName": true,
+		"anchor": true
+	},
+	"attributes": {
+		"textTruoc": {
+			"type": "string",
+			"default": "Hãy chia sẻ"
+		},
+		"nhan": {
+			"type": "string",
+			"default": "Ý kiến"
+		},
+		"textSau": {
+			"type": "string",
+			"default": "của bạn"
+		},
+		"url": {
+			"type": "string",
+			"default": ""
+		},
+		"moTa": {
+			"type": "string",
+			"default": "Mỗi lời góp ý của bạn đều được đọc và trân trọng."
+		},
+		"nen": {
+			"type": "string",
+			"enum": [
+				"toi",
+				"kem",
+				"trong"
+			],
+			"default": "toi"
+		}
+	},
+	"editorScript": "file:./editor.js",
+	"style": "file:./style.css",
+	"render": "file:./render.php"
+}

@@ -86,7 +86,8 @@ body.nntm-dau-trang-de-len .nntm-header {
 	align-items: center;
 
 	width: 100%;
-	max-width: var(--nntm-w-rong);
+	/* Gian theo man hinh, xem --nntm-w-man trong tokens.css. */
+	max-width: var(--nntm-w-man);
 	margin-inline: auto;
 	padding-inline: var(--nntm-sp-5);
 	min-width: 0;

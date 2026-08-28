@@ -176,6 +176,11 @@
 			"type": "string",
 			"default": ""
 		},
+		"appleMusicUrl": {
+			"type": "string",
+			"default": "",
+			"description": "Duong dan Apple Music. Chi hien bieu tuong Apple Music khi o nay co gia tri."
+		},
 		"videoSource": {
 			"type": "string",
 			"enum": [

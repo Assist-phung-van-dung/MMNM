@@ -53,6 +53,9 @@ class Post_Meta {
 
 		add_action( 'add_meta_boxes_nntm_publication', array( $this, 'add_publication_meta_box' ) );
 		add_action( 'save_post_nntm_publication', array( $this, 'save_publication_meta_box' ) );
+
+		add_action( 'add_meta_boxes_nntm_abode', array( $this, 'add_abode_meta_box' ) );
+		add_action( 'save_post_nntm_abode', array( $this, 'save_abode_meta_box' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_publication_admin_assets' ) );
 	}
 
@@ -131,6 +134,8 @@ class Post_Meta {
 				'description'       => __( 'Địa điểm hiển thị trên thẻ Trú Xứ, ví dụ "Việt Nam - Nha Trang".', 'nntm' ),
 			)
 		);
+
+		$this->register_abode_map_meta();
 
 		/*
 		 * Post meta của nntm_program (Cộng Tu "chuỗi trì") — xem
@@ -360,5 +365,195 @@ class Post_Meta {
 			file_exists( $js_path ) ? (string) filemtime( $js_path ) : NNTM_CORE_VERSION,
 			true
 		);
+	}
+
+	/**
+	 * Đăng ký vị trí bản đồ cho Trú Xứ: địa chỉ + toạ độ.
+	 *
+	 * Dữ liệu nên nằm ở plugin (docs/04-kien-truc.md mục 1) để đổi theme không
+	 * mất. Phần giao diện bản đồ nằm ở theme: inc/tru-xu-map.php.
+	 */
+	private function register_abode_map_meta(): void {
+		$chi_nguoi_sua = function () {
+			return current_user_can( 'edit_posts' );
+		};
+
+		register_post_meta(
+			'nntm_abode',
+			'_nntm_abode_address',
+			array(
+				'type'              => 'string',
+				'single'            => true,
+				'default'           => '',
+				'show_in_rest'      => true,
+				'sanitize_callback' => 'sanitize_text_field',
+				'auth_callback'     => $chi_nguoi_sua,
+				'description'       => __( 'Địa chỉ đầy đủ của Trú Xứ, hiện trong cửa sổ bản đồ.', 'nntm' ),
+			)
+		);
+
+		/*
+		 * Toạ độ lưu dạng chuỗi chứ không phải số: để trống là "chưa nhập", còn
+		 * kiểu number thì ô trống bị hiểu thành 0,0 — một điểm ngoài khơi châu Phi.
+		 */
+		foreach ( array(
+			'_nntm_abode_lat' => __( 'Vĩ độ (latitude) của Trú Xứ, ví dụ 12.238791.', 'nntm' ),
+			'_nntm_abode_lng' => __( 'Kinh độ (longitude) của Trú Xứ, ví dụ 109.196749.', 'nntm' ),
+		) as $khoa => $mo_ta ) {
+			register_post_meta(
+				'nntm_abode',
+				$khoa,
+				array(
+					'type'              => 'string',
+					'single'            => true,
+					'default'           => '',
+					'show_in_rest'      => true,
+					'sanitize_callback' => array( $this, 'sanitize_toa_do' ),
+					'auth_callback'     => $chi_nguoi_sua,
+					'description'       => $mo_ta,
+				)
+			);
+		}
+	}
+
+	/**
+	 * Lọc một giá trị toạ độ: chỉ nhận số thực trong khoảng hợp lệ của kinh/vĩ độ.
+	 *
+	 * @param mixed $gia_tri Giá trị thô từ form hoặc REST.
+	 */
+	public function sanitize_toa_do( $gia_tri ): string {
+		$chuoi = trim( (string) $gia_tri );
+
+		if ( '' === $chuoi ) {
+			return '';
+		}
+
+		// Đổi dấu phẩy thập phân kiểu Việt Nam sang dấu chấm.
+		$chuoi = str_replace( ',', '.', $chuoi );
+
+		if ( ! is_numeric( $chuoi ) ) {
+			return '';
+		}
+
+		$so = (float) $chuoi;
+
+		// Vĩ độ tối đa 90, kinh độ tối đa 180 — lấy mức rộng hơn rồi chặn ở đây.
+		if ( $so < -180 || $so > 180 ) {
+			return '';
+		}
+
+		return (string) $so;
+	}
+
+	/** Thêm meta box "Vị trí trên bản đồ" vào màn sửa Trú Xứ. */
+	public function add_abode_meta_box(): void {
+		add_meta_box(
+			'nntm_tru_xu_vi_tri',
+			__( 'Vị trí trên bản đồ', 'nntm' ),
+			array( $this, 'render_abode_meta_box' ),
+			'nntm_abode',
+			'normal',
+			'default'
+		);
+	}
+
+	/**
+	 * Vẽ meta box vị trí Trú Xứ.
+	 *
+	 * @param \WP_Post $post Trú Xứ đang sửa.
+	 */
+	public function render_abode_meta_box( $post ): void {
+		wp_nonce_field( 'nntm_tru_xu_vi_tri', 'nntm_tru_xu_vi_tri_nonce' );
+
+		$dia_diem = (string) get_post_meta( $post->ID, '_nntm_abode_location', true );
+		$dia_chi  = (string) get_post_meta( $post->ID, '_nntm_abode_address', true );
+		$lat      = (string) get_post_meta( $post->ID, '_nntm_abode_lat', true );
+		$lng      = (string) get_post_meta( $post->ID, '_nntm_abode_lng', true );
+		?>
+		<style>
+			.nntm-vi-tri-o { margin-bottom: 12px; }
+			.nntm-vi-tri-o label { display: block; font-weight: 600; margin-bottom: 4px; }
+			.nntm-vi-tri-o input[type="text"] { width: 100%; max-width: 560px; }
+			.nntm-vi-tri-doi { display: flex; gap: 16px; flex-wrap: wrap; }
+			.nntm-vi-tri-doi .nntm-vi-tri-o { flex: 1 1 220px; }
+		</style>
+
+		<div class="nntm-vi-tri-o">
+			<label for="nntm_abode_location"><?php esc_html_e( 'Địa điểm ngắn (hiện trên thẻ)', 'nntm' ); ?></label>
+			<input type="text" id="nntm_abode_location" name="nntm_abode_location"
+				value="<?php echo esc_attr( $dia_diem ); ?>"
+				placeholder="<?php esc_attr_e( 'Việt Nam - Nha Trang', 'nntm' ); ?>" />
+		</div>
+
+		<div class="nntm-vi-tri-o">
+			<label for="nntm_abode_address"><?php esc_html_e( 'Địa chỉ đầy đủ', 'nntm' ); ?></label>
+			<input type="text" id="nntm_abode_address" name="nntm_abode_address"
+				value="<?php echo esc_attr( $dia_chi ); ?>"
+				placeholder="<?php esc_attr_e( 'Số nhà, đường, phường, tỉnh/thành', 'nntm' ); ?>" />
+			<p class="description"><?php esc_html_e( 'Hiện trong cửa sổ bản đồ khi khách bấm nút "Địa chỉ".', 'nntm' ); ?></p>
+		</div>
+
+		<div class="nntm-vi-tri-doi">
+			<div class="nntm-vi-tri-o">
+				<label for="nntm_abode_lat"><?php esc_html_e( 'Vĩ độ (latitude)', 'nntm' ); ?></label>
+				<input type="text" id="nntm_abode_lat" name="nntm_abode_lat"
+					value="<?php echo esc_attr( $lat ); ?>" placeholder="12.238791" />
+			</div>
+			<div class="nntm-vi-tri-o">
+				<label for="nntm_abode_lng"><?php esc_html_e( 'Kinh độ (longitude)', 'nntm' ); ?></label>
+				<input type="text" id="nntm_abode_lng" name="nntm_abode_lng"
+					value="<?php echo esc_attr( $lng ); ?>" placeholder="109.196749" />
+			</div>
+		</div>
+
+		<p class="description">
+			<?php esc_html_e( 'Lấy toạ độ: mở Google Maps, bấm chuột phải đúng vị trí Trú Xứ, dòng số đầu tiên hiện ra chính là vĩ độ và kinh độ. Bấm vào đó là chép được.', 'nntm' ); ?>
+			<br />
+			<?php esc_html_e( 'Chưa nhập toạ độ thì nút "Địa chỉ" không hiện trên thẻ Trú Xứ.', 'nntm' ); ?>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Lưu meta box vị trí Trú Xứ.
+	 *
+	 * @param int $post_id ID Trú Xứ.
+	 */
+	public function save_abode_meta_box( int $post_id ): void {
+		if ( ! isset( $_POST['nntm_tru_xu_vi_tri_nonce'] )
+			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nntm_tru_xu_vi_tri_nonce'] ) ), 'nntm_tru_xu_vi_tri' )
+		) {
+			return;
+		}
+
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		if ( isset( $_POST['nntm_abode_location'] ) ) {
+			update_post_meta( $post_id, '_nntm_abode_location', sanitize_text_field( wp_unslash( $_POST['nntm_abode_location'] ) ) );
+		}
+
+		if ( isset( $_POST['nntm_abode_address'] ) ) {
+			update_post_meta( $post_id, '_nntm_abode_address', sanitize_text_field( wp_unslash( $_POST['nntm_abode_address'] ) ) );
+		}
+
+		foreach ( array( 'lat', 'lng' ) as $truc ) {
+			$o = 'nntm_abode_' . $truc;
+
+			if ( ! isset( $_POST[ $o ] ) ) {
+				continue;
+			}
+
+			update_post_meta(
+				$post_id,
+				'_nntm_abode_' . $truc,
+				$this->sanitize_toa_do( wp_unslash( $_POST[ $o ] ) )
+			);
+		}
 	}
 }

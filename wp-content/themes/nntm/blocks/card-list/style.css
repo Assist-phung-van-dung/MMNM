@@ -439,7 +439,7 @@
 	bottom: 100%;
 	left: 0;
 	right: 0;
-	max-width: var(--nntm-w-rong);  
+	/* max-width: var(--nntm-w-rong);   */
 	margin: 0 auto;
 	background-color: white;
 	padding-inline: 93px;                   
@@ -457,22 +457,9 @@
 	color: var(--nntm-trang-lanh);     
 }
 
-.nntm-card-list__caption-below {
-	 
-	position: absolute;
-	top: calc(100% + var(--nntm-sp-3));
-	left: 0;
-	right: 0;
-	max-width: 1082px;  
-	margin-inline: auto;
-	background-color: var(--nntm-trang);  
-	font-family: var(--nntm-font-serif);  
-	font-size: var(--nntm-fs-md);         
-	font-style: italic;                   
-	line-height: var(--nntm-lh-vua);      
-	color: var(--nntm-chu);               
-	text-align: center;
-}
+ 
+ 
+/* Mô tả dưới dải: xem phần "Mô tả dưới dải" ở cuối tệp — nay nằm trong dải nền. */
 
 .nntm-card-list:has(> .nntm-card-list__heading-above) > .nntm-card-list__band > .nntm-container,
 .nntm-card-list--nen-cam > .nntm-card-list__band > .nntm-container {
@@ -484,7 +471,8 @@
 
  
 .nntm-card-list:has(> .nntm-card-list__heading-above) > .nntm-card-list__band {
-	padding-block: 0 190px;
+	 
+	padding-block: 0 var(--nntm-sp-8);
 }
 
 .nntm-card-list:has(> .nntm-card-list__heading-above) .nntm-card-list__heading {
@@ -583,21 +571,13 @@
 		padding-inline: var(--nntm-sp-5);
 	}
 
-	.nntm-card-list__heading-above,
-	.nntm-card-list__caption-below {
+	.nntm-card-list__heading-above {
 		position: static;
 		top: auto;
 		bottom: auto;
 		left: auto;
 		right: auto;
-	}
-
-	.nntm-card-list__heading-above {
 		margin-block-end: var(--nntm-sp-5);
-	}
-
-	.nntm-card-list__caption-below {
-		margin-block-start: var(--nntm-sp-5);
 	}
 }
 
@@ -1568,4 +1548,565 @@ a.nntm-card-list__paging-so:focus-visible {
 
 .nntm-card-list .nntm-grid:focus {
 	outline: none;
+}
+
+
+/* =============================================================================
+   GÓT SON (nền tối) & GITA (nền cam) — BẢN DÙNG CHUNG
+   -----------------------------------------------------------------------------
+   Trước đây toàn bộ phần này bị chép hai lần: một bản khoá theo .home trong
+   pages/homepage-figma.css và một bản gần y hệt trong pages/nhap-phap-gioi-figma.css.
+   Hai bản lệch nhau (chiều cao tiêu đề, lề trên/dưới, chỗ đặt mô tả) nên cùng một
+   khối lại hiện khác nhau ở hai trang. Nay dồn về đúng một chỗ là style của chính
+   block, không khoá theo trang nào, trang nào chèn khối cũng ra cùng một kết quả.
+   ========================================================================== */
+
+.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above),
+.nntm-card-list--nen-cam {
+	/* Kích thước thẻ video theo thiết kế gốc. */
+	--nntm-cl-yt-the-rong: 388px;
+	--nntm-cl-yt-the-cao: 360px;
+	--nntm-cl-yt-hinh-rong: 348px;
+	--nntm-cl-yt-hinh-cao: 203px;
+	--nntm-cl-yt-khe: 20px;
+
+	/* Nửa khe hở, để vòng lặp băng chạy nối liền không bị giật một nhịp. */
+	--nntm-cl-yt-bu: 10px;
+
+	/* Mức phóng khi rê chuột / đưa tiêu điểm vào một video. */
+	--nntm-cl-phong: 1.12;
+}
+
+@keyframes nntm-cl-yt-chay {
+	from {
+		transform: translate3d(0, 0, 0);
+	}
+	to {
+		transform: translate3d(calc(-50% - var(--nntm-cl-yt-bu, 0px)), 0, 0);
+	}
+}
+
+@media (min-width: 1152px) {
+
+	/* ---------- Gót Son: dải nền tối, tiêu đề lớn nổi lên phía trên ---------- */
+
+	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) {
+		--nntm-cl-toi-cao-tieu-de: 95px;
+
+		position: relative;
+		z-index: 2;
+		height: auto;
+		min-height: 544px;
+		margin-top: calc(var(--nntm-cl-toi-cao-tieu-de) + 4px);
+		margin-bottom: 108px;
+	}
+
+	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) > .nntm-card-list__band {
+		height: auto;
+		min-height: 544px;
+		/*
+		 * Chừa đáy để phần mô tả có khoảng thở bên trong nền đen, thay vì phải
+		 * tràn xuống nền của section kế tiếp như bản cũ.
+		 */
+		padding: 0 0 50px;
+		box-sizing: border-box;
+		background: var(--nntm-den);
+
+		/*
+		 * Chặn theo chiều ngang thôi. Nếu dùng overflow: hidden thì video phóng
+		 * lên khi rê chuột sẽ bị chính dải nền cắt mất phần nhô ra.
+		 */
+		overflow-x: clip;
+		overflow-y: visible;
+	}
+
+	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) > .nntm-card-list__band > .nntm-container {
+		position: relative;
+		width: 100%;
+		/* Giãn theo màn hình, xem --nntm-w-man trong tokens.css. */
+		max-width: var(--nntm-cl-noi-dung-rong, var(--nntm-w-man));
+		margin-inline: auto;
+		padding: 0;
+	}
+
+	.nntm-card-list__heading-above {
+		height: var(--nntm-cl-toi-cao-tieu-de, 95px);
+		padding-inline: 93px;
+		font-family: var(--nntm-font-display);
+		font-size: 58px;
+		font-weight: 600;
+		line-height: 68px;
+		color: var(--nntm-den);
+		background: transparent;
+	}
+
+	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) .nntm-card-list__header-row {
+		height: 68px;
+	}
+
+	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) .nntm-card-list__heading {
+		height: 68px;
+		margin: 0;
+		padding-left: 200px;
+		font-family: var(--nntm-font-display);
+		font-size: 58px;
+		font-weight: 600;
+		line-height: 68px;
+		color: var(--nntm-trang-lanh);
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-marquee {
+		margin-top: 45px;
+		padding-left: 73px;
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-track {
+		gap: var(--nntm-cl-yt-khe);
+		animation: nntm-cl-yt-chay var(--nntm-yt-duration, 40s) linear infinite;
+		animation-delay: 600ms;
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-cell {
+		display: flex;
+		flex: 0 0 var(--nntm-cl-yt-the-rong);
+		flex-direction: column;
+		gap: 15px;
+		width: var(--nntm-cl-yt-the-rong);
+		height: var(--nntm-cl-yt-the-cao);
+		padding: 20px;
+		box-sizing: border-box;
+		background: rgba(0, 0, 0, 0.5);
+		-webkit-backdrop-filter: blur(5px);
+		backdrop-filter: blur(5px);
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-item {
+		flex: 0 0 var(--nntm-cl-yt-hinh-cao);
+		width: var(--nntm-cl-yt-hinh-rong);
+		height: var(--nntm-cl-yt-hinh-cao);
+		border-radius: 0;
+		box-shadow: none;
+		background: transparent;
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-media {
+		width: var(--nntm-cl-yt-hinh-rong);
+		height: var(--nntm-cl-yt-hinh-cao);
+		aspect-ratio: auto;
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-title {
+		max-width: var(--nntm-cl-yt-hinh-rong);
+		font-family: var(--nntm-font-sans);
+		font-size: 18px;
+		font-weight: 700;
+		line-height: 30px;
+		letter-spacing: 0;
+		text-transform: none;
+		color: var(--nntm-trang);
+		-webkit-line-clamp: 2;
+	}
+
+	/* ---------- GITA: dải nền cam, chữ căn giữa ---------- */
+
+	.nntm-card-list--nen-cam {
+		height: auto;
+		min-height: 666px;
+		/* margin-bottom: 21px; */
+		box-sizing: border-box;
+	}
+
+	.nntm-card-list--nen-cam > .nntm-card-list__band {
+		height: auto;
+		min-height: 666px;
+		padding: 50px;
+		box-sizing: border-box;
+		background: var(--nntm-cam);
+
+		overflow-x: clip;
+		overflow-y: visible;
+	}
+
+	.nntm-card-list--nen-cam > .nntm-card-list__band > .nntm-container {
+		position: relative;
+		width: 100%;
+		/* Giãn theo màn hình thay vì ghim 1266px của bản vẽ 1366. */
+		max-width: var(--nntm-cl-noi-dung-rong, var(--nntm-w-man));
+		margin-inline: auto;
+		padding: 0;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__header-row {
+		width: 100%;
+		justify-content: center;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__heading,
+	.nntm-card-list--nen-cam .nntm-card-list__subheading {
+		width: 100%;
+		padding: 0;
+		box-sizing: border-box;
+		text-align: center;
+		color: var(--nntm-kem);
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__heading {
+		margin: 0 0 10px;
+		font-family: var(--nntm-font-display);
+		font-size: 52px;
+		font-weight: 600;
+		line-height: 60px;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__subheading {
+		margin: 0 0 30px;
+		font-family: var(--nntm-font-serif);
+		font-size: 18px;
+		font-weight: 400;
+		line-height: 26px;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-marquee {
+		width: calc(100% + 100px);
+		margin-left: -50px;
+		padding-left: 90px;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-track {
+		gap: var(--nntm-cl-yt-khe);
+		animation: nntm-cl-yt-chay var(--nntm-yt-duration, 40s) linear infinite;
+		animation-delay: 600ms;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-cell--framed {
+		flex: 0 0 var(--nntm-cl-yt-the-rong);
+		width: var(--nntm-cl-yt-the-rong);
+		height: var(--nntm-cl-yt-the-cao);
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-item--framed {
+		width: var(--nntm-cl-yt-the-rong);
+		height: var(--nntm-cl-yt-the-cao);
+		min-height: var(--nntm-cl-yt-the-cao);
+		padding: 20px;
+		gap: 15px;
+		box-sizing: border-box;
+		border-radius: 0;
+		background: var(--nntm-den);
+		box-shadow: none;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-cell--framed:first-child .nntm-card-list__yt-item--framed {
+		background: rgba(0, 0, 0, 0.7);
+		-webkit-backdrop-filter: blur(5px);
+		backdrop-filter: blur(5px);
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-media {
+		width: var(--nntm-cl-yt-hinh-rong);
+		height: var(--nntm-cl-yt-hinh-cao);
+		aspect-ratio: auto;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-title {
+		max-width: var(--nntm-cl-yt-hinh-rong);
+		font-family: var(--nntm-font-sans);
+		font-size: 18px;
+		font-weight: 700;
+		line-height: 30px;
+		letter-spacing: 0;
+		text-transform: none;
+		color: var(--nntm-trang);
+		-webkit-line-clamp: 3;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__icons {
+		height: 50px;
+		min-height: 50px;
+		margin-top: 30px;
+		gap: 30px;
+	}
+
+	/* Ảnh nhỏ và nút play trong thẻ, dùng chung cho cả hai dải. */
+	.nntm-card-list__yt-thumb {
+		object-fit: cover;
+	}
+
+	.nntm-card-list__yt-play {
+		inset: 0;
+		z-index: 2;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: auto;
+		height: auto;
+		pointer-events: none;
+	}
+
+	.nntm-card-list__yt-play svg {
+		width: 75px;
+		height: 75px;
+		filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.18));
+	}
+
+	.nntm-card-list__yt-frame {
+		z-index: 1;
+	}
+}
+
+/* -----------------------------------------------------------------------------
+   Mô tả dưới dải — nằm HẲN trong nền của chính section
+   ----------------------------------------------------------------------------- */
+
+.nntm-card-list__caption-below {
+	position: static;
+	max-width: 1082px;
+	margin: 40px auto 0;
+	padding-inline: 24px;
+	box-sizing: border-box;
+
+	font-family: var(--nntm-font-serif);
+	font-size: var(--nntm-fs-md);
+	font-style: italic;
+	font-weight: 400;
+	line-height: var(--nntm-lh-vua);
+	letter-spacing: 0;
+	text-align: center;
+	background: transparent;
+	color: var(--nntm-chu);
+}
+
+.nntm-card-list--nen-toi .nntm-card-list__caption-below,
+.nntm-card-list--nen-cam .nntm-card-list__caption-below {
+	color: var(--nntm-kem);
+}
+
+/* -----------------------------------------------------------------------------
+   Rê chuột / tiêu điểm bàn phím vào một video
+   -----------------------------------------------------------------------------
+   Yêu cầu: video phóng to rõ, đè lên các video xung quanh, không bị khung cha
+   cắt mất, và không làm xô lệch bố cục (chỉ dùng transform, không đổi kích thước
+   thật). Chuột và bàn phím cho kết quả như nhau nhờ cặp :hover / :focus-visible.
+   ----------------------------------------------------------------------------- */
+
+.nntm-card-list__yt-marquee {
+	/*
+	 * Cắt theo chiều ngang (băng chạy vô tận) nhưng để hở chiều dọc, nếu không
+	 * phần nhô ra khi phóng to sẽ bị chính khung băng cắt cụt.
+	 */
+	overflow: visible;
+	overflow-x: clip;
+	overflow-y: visible;
+	overflow-clip-margin: 40px;
+}
+
+.nntm-card-list__yt-cell {
+	position: relative;
+	/* Thẻ không được cắt phần video nhô ra khi phóng. */
+	overflow: visible;
+}
+
+.nntm-card-list__yt-media {
+	/* Ảnh và iframe vẫn phải nằm gọn trong khung ảnh của thẻ. */
+	overflow: hidden;
+}
+
+.nntm-card-list__yt-cell:has(.nntm-card-list__yt-item:hover),
+.nntm-card-list__yt-cell:has(.nntm-card-list__yt-item:focus-visible),
+.nntm-card-list__yt-cell:has(.nntm-card-list__yt-item.is-playing) {
+	z-index: 6;
+}
+
+.nntm-card-list__yt-item:hover,
+.nntm-card-list__yt-item:focus-visible,
+.nntm-card-list__yt-item.is-playing {
+	transform: scale(var(--nntm-cl-phong, 1.06));
+	z-index: 6;
+	box-shadow: 0 18px 42px rgba(0, 0, 0, 0.32);
+}
+
+@media (min-width: 1152px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+	.nntm-card-list__yt-cell {
+		transition:
+			transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+			box-shadow 420ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.nntm-card-list__yt-item {
+		transform-origin: center;
+		backface-visibility: hidden;
+		will-change: transform;
+		transition:
+			transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+			box-shadow 420ms cubic-bezier(0.22, 1, 0.36, 1),
+			background-color 320ms ease;
+	}
+
+	.nntm-card-list__yt-thumb {
+		transition:
+			opacity 320ms ease,
+			transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+			filter 420ms ease;
+	}
+
+	.nntm-card-list__yt-play svg {
+		transform: scale(1);
+		transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1), opacity 280ms ease;
+	}
+
+	.nntm-card-list__yt-cell:has(.nntm-card-list__yt-item:hover),
+	.nntm-card-list__yt-cell:has(.nntm-card-list__yt-item:focus-visible) {
+		transform: translateY(-5px);
+	}
+
+	.nntm-card-list__yt-item:hover .nntm-card-list__yt-thumb,
+	.nntm-card-list__yt-item:focus-visible .nntm-card-list__yt-thumb {
+		transform: scale(1.04);
+		filter: saturate(1.035) contrast(1.02);
+	}
+
+	.nntm-card-list__yt-item:hover .nntm-card-list__yt-play svg,
+	.nntm-card-list__yt-item:focus-visible .nntm-card-list__yt-play svg {
+		transform: scale(1.045);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-card-list--nen-toi .nntm-card-list__yt-track,
+	.nntm-card-list--nen-cam .nntm-card-list__yt-track {
+		animation: none;
+	}
+
+	.nntm-card-list__yt-cell,
+	.nntm-card-list__yt-item,
+	.nntm-card-list__yt-thumb,
+	.nntm-card-list__yt-play svg {
+		transition: none;
+		transform: none;
+	}
+}
+
+/* -----------------------------------------------------------------------------
+   Biểu tượng nghe nhạc
+   ----------------------------------------------------------------------------- */
+
+.nntm-card-list__icon--apple {
+	color: var(--nntm-den);
+}
+
+.nntm-card-list--nen-cam .nntm-card-list__icon--spotify,
+.nntm-card-list--nen-cam .nntm-card-list__icon--spotify svg,
+.nntm-card-list--nen-cam .nntm-card-list__icon--apple,
+.nntm-card-list--nen-cam .nntm-card-list__icon--apple svg {
+	width: 50px;
+	height: 50px;
+}
+
+.nntm-card-list--nen-cam .nntm-card-list__icon--youtube,
+.nntm-card-list--nen-cam .nntm-card-list__icon--youtube svg {
+	width: 60px;
+	height: 47px;
+}
+
+/* -----------------------------------------------------------------------------
+   Full Width — xem assets/css/block-style.css
+   ----------------------------------------------------------------------------- */
+
+.nntm-block--full.nntm-card-list {
+	/* Nền trải hết màn hình thì nội dung bên trong cũng được nới ra theo. */
+	--nntm-cl-noi-dung-rong: min(100%, var(--nntm-block-w-full, 1920px));
+}
+
+/* -----------------------------------------------------------------------------
+   Máy tính bảng / điện thoại
+   ----------------------------------------------------------------------------- */
+
+@media (max-width: 1151px) {
+	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) {
+		height: auto;
+		min-height: 0;
+		margin-block: var(--nntm-sp-10);
+	}
+
+	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) > .nntm-card-list__band,
+	.nntm-card-list--nen-cam,
+	.nntm-card-list--nen-cam > .nntm-card-list__band {
+		height: auto;
+		min-height: 0;
+	}
+
+	.nntm-card-list__heading-above,
+	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) .nntm-card-list__heading,
+	.nntm-card-list--nen-cam .nntm-card-list__heading {
+		height: auto;
+		font-size: clamp(28px, 7vw, var(--nntm-fs-4xl));
+		line-height: 1.15;
+	}
+
+	.nntm-card-list__heading-above {
+		padding-inline: var(--nntm-sp-6);
+	}
+
+	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) .nntm-card-list__heading {
+		padding-left: var(--nntm-sp-6);
+	}
+
+	.nntm-card-list--nen-cam > .nntm-card-list__band {
+		padding: var(--nntm-sp-8) 0;
+	}
+
+	.nntm-card-list--nen-cam > .nntm-card-list__band > .nntm-container,
+	.nntm-card-list--nen-cam .nntm-card-list__header-row,
+	.nntm-card-list--nen-cam .nntm-card-list__heading,
+	.nntm-card-list--nen-cam .nntm-card-list__subheading {
+		width: 100%;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__heading,
+	.nntm-card-list--nen-cam .nntm-card-list__subheading {
+		padding-inline: var(--nntm-sp-5);
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-marquee {
+		width: 100%;
+		margin-left: 0;
+		padding-left: var(--nntm-sp-5);
+	}
+
+	.nntm-card-list__caption-below {
+		width: min(100% - 40px, 1082px);
+		margin-top: var(--nntm-sp-7);
+		padding-inline: 0;
+		font-size: var(--nntm-fs-base);
+	}
+}
+
+@media (max-width: 767px) {
+	.nntm-card-list--nen-toi .nntm-card-list__yt-cell,
+	.nntm-card-list--nen-cam .nntm-card-list__yt-cell--framed {
+		flex-basis: min(88vw, 388px);
+		width: min(88vw, 388px);
+		height: auto;
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-item,
+	.nntm-card-list--nen-toi .nntm-card-list__yt-media,
+	.nntm-card-list--nen-cam .nntm-card-list__yt-media {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 348 / 203;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-item--framed {
+		width: 100%;
+		height: auto;
+		min-height: 0;
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-title,
+	.nntm-card-list--nen-cam .nntm-card-list__yt-title {
+		max-width: 100%;
+		font-size: var(--nntm-fs-base);
+		line-height: 1.5;
+	}
 }

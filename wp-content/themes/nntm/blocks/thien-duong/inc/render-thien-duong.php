@@ -127,7 +127,7 @@ if ( ! function_exists( 'nntm_thien_duong_render_guest_preview' ) ) {
 		<div class="nntm-thien-duong__spotify-preview">
 			<div class="nntm-thien-duong__spotify-hero">
 				<span class="nntm-thien-duong__spotify-avatar" aria-hidden="true">N</span>
-				<div><span class="nntm-thien-duong__spotify-type"><?php esc_html_e( 'Playlist', 'nntm' ); ?></span><strong>Năng Nhân Tịch Mặc</strong><small><?php echo esc_html( sprintf( __( '%d bản thiền ca', 'nntm' ), count( $posts ) ) ); ?></small></div>
+				<div><span class="nntm-thien-duong__spotify-type"><?php esc_html_e( 'Playlist', 'nntm' ); ?></span><strong>Năng Nhân Tịch Mặc</strong></div>
 			</div>
 			<div class="nntm-thien-duong__spotify-toolbar"><a href="<?php echo esc_url( $login_url ); ?>" aria-label="<?php esc_attr_e( 'Đăng nhập để nghe', 'nntm' ); ?>">&#9654;</a><span><?php esc_html_e( 'Danh sách phổ biến', 'nntm' ); ?></span></div>
 			<ol class="nntm-thien-duong__spotify-list">
@@ -204,7 +204,6 @@ if ( ! function_exists( 'nntm_thien_duong_render_player' ) ) {
 				<div>
 					<span class="nntm-thien-duong__spotify-type"><?php esc_html_e( 'Playlist', 'nntm' ); ?></span>
 					<strong>Năng Nhân Tịch Mặc</strong>
-					<small><?php echo esc_html( sprintf( __( '%d bản thiền ca', 'nntm' ), count( $tracks ) ) ); ?></small>
 				</div>
 			</div>
 

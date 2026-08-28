@@ -384,7 +384,7 @@
 							min: 2,
 							max: 30,
 							onChange: function ( value ) {
-								setAttributes( { interval: value || 6 } );
+								setAttributes( { interval: value || 5 } );
 							},
 						} ),
 						el( ToggleControl, {

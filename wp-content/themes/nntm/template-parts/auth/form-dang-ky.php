@@ -14,6 +14,7 @@ $values = wp_parse_args(
 		'ho_ten'            => '',
 		'user_email'        => '',
 		'user_login'        => '',
+		'nntm_phap_danh'    => '',
 		'nntm_vung_mien'    => '',
 		'nntm_dia_chi'      => '',
 		'nntm_dien_thoai'   => '',
@@ -72,19 +73,38 @@ $nntm_chinh_sach_url = $nntm_chinh_sach ? get_permalink( $nntm_chinh_sach ) : ho
 		</div>
 
 		<div class="nntm-auth-field">
-			<label for="nntm-reg-login"><?php esc_html_e( 'Pháp danh', 'nntm' ); ?></label>
+			<label for="nntm-reg-login"><?php esc_html_e( 'Tên đăng nhập', 'nntm' ); ?></label>
 			<div class="nntm-auth-field__control">
 				<input
 					type="text"
 					id="nntm-reg-login"
 					name="user_login"
-					placeholder="<?php esc_attr_e( 'Tên đăng nhập', 'nntm' ); ?>"
+					placeholder="<?php esc_attr_e( 'vd: nguyen-van-a', 'nntm' ); ?>"
 					value="<?php echo esc_attr( $values['user_login'] ); ?>"
 					autocomplete="username"
+					minlength="4"
 					required
 				/>
 				<p class="nntm-auth-hint">
-					<?php esc_html_e( 'Pháp danh hiển thị công khai; hệ thống tự tạo thêm một tên đăng nhập không dấu cho bạn.', 'nntm' ); ?>
+					<?php esc_html_e( 'Dùng để đăng nhập, không được trùng với người khác. Chữ không dấu, số, dấu chấm, gạch ngang hoặc gạch dưới.', 'nntm' ); ?>
+				</p>
+			</div>
+		</div>
+
+		<div class="nntm-auth-field">
+			<label for="nntm-reg-phapdanh"><?php esc_html_e( 'Pháp danh', 'nntm' ); ?></label>
+			<div class="nntm-auth-field__control">
+				<input
+					type="text"
+					id="nntm-reg-phapdanh"
+					name="nntm_phap_danh"
+					placeholder="<?php esc_attr_e( 'Pháp danh của bạn', 'nntm' ); ?>"
+					value="<?php echo esc_attr( $values['nntm_phap_danh'] ); ?>"
+					minlength="2"
+					required
+				/>
+				<p class="nntm-auth-hint">
+					<?php esc_html_e( 'Chỉ là tên hiển thị công khai. Nhiều người có thể cùng một Pháp danh, và Pháp danh không dùng để đăng nhập.', 'nntm' ); ?>
 				</p>
 			</div>
 		</div>

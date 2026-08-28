@@ -176,3 +176,101 @@
 	.nntm-tru-xu-card:hover .nntm-tru-xu-card__img-el { transform: none; }
 	.nntm-tru-xu-list__plain-list li { opacity: 1; animation: none; }
 }
+
+
+/* =============================================================================
+   NÚT "ĐỊA CHỈ" TRÊN THẺ TRÚ XỨ (PROMPT 08)
+   -----------------------------------------------------------------------------
+   Thẻ Trú Xứ là một liên kết bọc kín, nên nút này phải là phần tử ANH EM của
+   liên kết (không lồng vào trong), nằm đè lên góc dưới thẻ. Xem render.php và
+   inc/tru-xu-map.php.
+   ========================================================================== */
+
+.nntm-tru-xu-o {
+	position: relative;
+	display: block;
+}
+
+.nntm-tru-xu-card__dia-chi {
+	position: absolute;
+	right: var(--nntm-sp-3);
+	bottom: var(--nntm-sp-3);
+	z-index: 2;
+
+	display: inline-flex;
+	align-items: center;
+	gap: var(--nntm-sp-1);
+
+	min-height: 34px;
+	padding: var(--nntm-sp-1) var(--nntm-sp-4);
+	border: 1px solid transparent;
+	border-radius: var(--nntm-r-pill);
+
+	background-color: color-mix(in srgb, var(--nntm-trang) 88%, transparent);
+	-webkit-backdrop-filter: blur(4px);
+	backdrop-filter: blur(4px);
+
+	font-family: var(--nntm-font-sans);
+	font-size: var(--nntm-fs-xs);
+	font-weight: 700;
+	line-height: 1;
+	color: var(--nntm-chu);
+	cursor: pointer;
+
+	transition:
+		background-color var(--nntm-dur) var(--nntm-ease),
+		color var(--nntm-dur) var(--nntm-ease),
+		transform var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-tru-xu-card__dia-chi-icon {
+	display: inline-flex;
+}
+
+.nntm-tru-xu-card__dia-chi:hover,
+.nntm-tru-xu-card__dia-chi:focus-visible {
+	transform: translateY(-1px);
+	background-color: var(--nntm-chinh);
+	color: var(--nntm-kem);
+}
+
+.nntm-tru-xu-card__dia-chi:focus-visible {
+	outline: 2px solid var(--nntm-trang);
+	outline-offset: 2px;
+}
+
+/*
+ * Biến thể danh sách phẳng: nút nằm ngay sau tên, trên cùng một dòng.
+ */
+.nntm-tru-xu-list__plain-list li {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--nntm-sp-3);
+}
+
+.nntm-tru-xu-list__plain-list .nntm-tru-xu-card__dia-chi {
+	position: static;
+	background-color: transparent;
+	border-color: var(--nntm-duong-vien);
+	-webkit-backdrop-filter: none;
+	backdrop-filter: none;
+}
+
+@media (max-width: 767px) {
+	.nntm-tru-xu-card__dia-chi {
+		right: var(--nntm-sp-2);
+		bottom: var(--nntm-sp-2);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-tru-xu-card__dia-chi {
+		transition: none;
+	}
+
+	.nntm-tru-xu-card__dia-chi:hover,
+	.nntm-tru-xu-card__dia-chi:focus-visible {
+		transform: none;
+	}
+}

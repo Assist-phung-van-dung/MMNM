@@ -40,7 +40,7 @@ $nntm_hs_autoplay = $nntm_hs_has_multiple && ( ! isset( $attributes['autoplay'] 
 
  
  
-$nntm_hs_interval = isset( $attributes['interval'] ) ? (float) $attributes['interval'] : 6;
+$nntm_hs_interval = isset( $attributes['interval'] ) ? (float) $attributes['interval'] : 5;
 $nntm_hs_interval = max( 2, min( 30, $nntm_hs_interval ) );
 
  

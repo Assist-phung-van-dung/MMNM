@@ -32,6 +32,30 @@ function nntm_register_blocks(): void
 }
 add_action('init', 'nntm_register_blocks');
 
+/**
+ * Cho phep vai thuoc tinh cua the <video> di qua wp_kses_post.
+ *
+ * Cac block render video bang chinh code cua theme roi loc lai qua wp_kses_post
+ * cho an toan. Nhung danh sach mac dinh cua WordPress khong biet ba thuoc tinh
+ * duoi day nen chung bi cat mat — trong khi day chinh la thu tat menu tai
+ * xuong, tat cua so noi (Picture in Picture) va tat phat tu xa cho nhung video
+ * chi dung de trinh bay hinh anh. Ca ba deu chi dieu khien giao dien phat, khong
+ * mang duoc ma nao vao trang.
+ */
+function nntm_kses_cho_phep_thuoc_tinh_video(array $tags, $context): array
+{
+	if ('post' !== $context || ! isset($tags['video'])) {
+		return $tags;
+	}
+
+	$tags['video']['controlslist']            = true;
+	$tags['video']['disablepictureinpicture'] = true;
+	$tags['video']['disableremoteplayback']   = true;
+
+	return $tags;
+}
+add_filter('wp_kses_allowed_html', 'nntm_kses_cho_phep_thuoc_tinh_video', 10, 2);
+
 function nntm_home_block_pattern_content(string $name, array $attributes = array()): string
 {
 	$encoded = empty($attributes)
@@ -72,7 +96,7 @@ function nntm_register_homepage_patterns(): void
 					),
 				),
 				'autoplay' => true,
-				'interval' => 6,
+				'interval' => 5,
 			),
 		),
 		'featured-articles' => array(

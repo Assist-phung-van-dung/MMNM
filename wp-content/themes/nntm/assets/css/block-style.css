@@ -1,0 +1,107 @@
+/*
+ * Hệ thống style dùng chung cho block nntm/* (PROMPT 01).
+ *
+ * Class do inc/block-style.php gắn vào thẻ ngoài cùng của block khi render:
+ *   .nntm-block--full        chiều rộng bằng đúng viewport
+ *   .nntm-block--contained   giữ nguyên khung giới hạn hiện tại
+ *   .nntm-block--co-nen      admin đã chọn màu nền  -> --nntm-block-nen
+ *   .nntm-block--co-chu      admin đã chọn màu chữ  -> --nntm-block-chu
+ *   .nntm-block--co-tieu-de  admin đã chọn màu tiêu đề -> --nntm-block-tieu-de
+ *   .nntm-block--co-font     admin đã chọn font     -> --nntm-block-font
+ *
+ * Không chọn gì thì không có class nào, block giữ nguyên mặc định.
+ */
+
+/*
+ * FULL WIDTH
+ *
+ * --nntm-vw là bề ngang viewport KHÔNG tính thanh cuộn, do một đoạn script nhỏ
+ * trong <head> đo bằng documentElement.clientWidth. Dùng 100vw thẳng sẽ rộng
+ * hơn viewport đúng bằng bề rộng thanh cuộn (Windows ~15px) -> lệch tâm và sinh
+ * thanh cuộn ngang. Fallback 100vw dành cho trường hợp JS chưa chạy.
+ *
+ * margin-inline âm: phần trăm của margin tính theo bề ngang phần tử cha, nên
+ * 50% - 50vw kéo mỗi bên ra tới mép màn hình dù cha đang bị giới hạn 1220px.
+ * Không dùng transform: scale(), không dùng position: fixed.
+ */
+.nntm-block-style.nntm-block--full {
+	width: auto;
+	max-width: none;
+	margin-inline: calc(50% - var(--nntm-vw, 100vw) / 2);
+}
+
+/*
+ * Khi block full width thì khung .nntm-container bên trong nó cũng phải nới ra,
+ * nếu không nền trải hết màn hình nhưng nội dung vẫn kẹt trong 1220px.
+ * Vẫn chặn trần ở --nntm-block-w-full để trên màn siêu rộng dòng chữ không dài quá.
+ */
+.nntm-block--full {
+	--nntm-block-w-full: 1920px;
+}
+
+.nntm-block--full .nntm-container {
+	max-width: min(100%, var(--nntm-block-w-full));
+	padding-inline: clamp(20px, 4vw, 93px);
+}
+
+/* Contained = giữ đúng hành vi cũ, chỉ là một điểm neo để CSS block bám vào. */
+.nntm-block-style.nntm-block--contained {
+	margin-inline: auto;
+}
+
+/* MÀU NỀN */
+.nntm-block-style.nntm-block--co-nen {
+	background-color: var(--nntm-block-nen);
+}
+
+/*
+ * Block nào có dải nền riêng (card-list) thì dải đó phải trong suốt lại,
+ * nếu không nền do admin chọn bị dải nền mặc định phủ lên.
+ */
+.nntm-block--co-nen > .nntm-card-list__band {
+	background-color: transparent;
+}
+
+/* MÀU CHỮ */
+.nntm-block-style.nntm-block--co-chu {
+	color: var(--nntm-block-chu);
+}
+
+.nntm-block--co-chu :is(p, li, dd, dt, figcaption, blockquote, span:not([class*="icon"])) {
+	color: inherit;
+}
+
+/* MÀU TIÊU ĐỀ (ghi đè màu chữ chung ở trên) */
+.nntm-block--co-tieu-de :is(h1, h2, h3, h4, h5, h6) {
+	color: var(--nntm-block-tieu-de);
+}
+
+/* FONT — chuỗi font luôn lấy từ theme.json nên đã có fallback an toàn sẵn. */
+.nntm-block--co-font,
+.nntm-block--co-font :is(h1, h2, h3, h4, h5, h6, p, li, a, button, input, select, textarea) {
+	font-family: var(--nntm-block-font);
+}
+
+/*
+ * MOBILE / TABLET
+ * Full width vẫn full viewport; chỉ thắt lại phần đệm trong để chữ không dính mép.
+ */
+@media (max-width: 1151px) {
+	.nntm-block--full .nntm-container {
+		padding-inline: clamp(16px, 5vw, 40px);
+	}
+}
+
+@media (max-width: 767px) {
+	.nntm-block--full .nntm-container {
+		padding-inline: 16px;
+	}
+}
+
+/*
+ * Chặn tràn ngang: nội dung bên trong block full width không được đẩy rộng hơn
+ * chính nó (ảnh, bảng, iframe dán cứng kích thước).
+ */
+.nntm-block--full :is(img, video, iframe, table) {
+	max-width: 100%;
+}

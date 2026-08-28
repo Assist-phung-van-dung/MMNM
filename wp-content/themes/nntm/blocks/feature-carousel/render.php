@@ -40,7 +40,18 @@ $render_video = static function ( array $item, string $class, string $label ): s
 
 	$poster_attr = $poster_url ? ' poster="' . esc_url( $poster_url ) . '"' : '';
 
-	return '<video class="' . esc_attr( $class ) . '" src="' . esc_url( $url ) . '" controls muted playsinline preload="metadata" data-fc-video aria-label="' . esc_attr( $label ) . '"' . $poster_attr . '></video>';
+	/*
+	 * Video o day chi de TRINH BAY hinh anh, khong phai de nguoi xem dieu khien:
+	 *   - bo "controls"          -> khong co nut chay/dung, thanh tien do
+	 *   - disablepictureinpicture -> khong cho tach ra cua so noi
+	 *   - controlslist            -> chan menu tai xuong, doi toc do, phat tu xa
+	 *   - muted + playsinline     -> trinh duyet cho tu chay, khong bung toan man
+	 *   - loop                    -> chay lien tuc nhu mot anh dong
+	 * Viec chay/dung theo slide dang xem van do view.js lo, khong doi.
+	 */
+	return '<video class="' . esc_attr( $class ) . '" src="' . esc_url( $url ) . '" muted loop playsinline preload="metadata"'
+		. ' disablepictureinpicture disableremoteplayback controlslist="nodownload noplaybackrate noremoteplayback"'
+		. ' data-fc-video aria-label="' . esc_attr( $label ) . '"' . $poster_attr . '></video>';
 };
 
 $slide_media_type = static function ( array $slide ): string {

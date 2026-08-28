@@ -1,7 +1,11 @@
  
 
 .home {
-	--nntm-home-w: 1366px;
+	/*
+	 * Khung trang chu gian theo man hinh thay vi ghim cung 1366px. Moi kich
+	 * thuoc ben trong (co chu, co the, chieu cao) giu nguyen nhu ban ve.
+	 */
+	--nntm-home-w: var(--nntm-w-man);
 	 
 	background-color: var(--nntm-trang);
 }
@@ -10,12 +14,6 @@
 	background-color: var(--nntm-trang);
 }
 
-.home .nntm-footer__share-row,
-.home .nntm-footer__sub,
-.home .nntm-footer__sub-content,
-.home .nntm-footer__left {
-	display: contents;
-}
 
 @media (min-width: 1152px) {
 
@@ -167,7 +165,15 @@
 	}
 
 	.home .nntm-hero-slider__stage {
+		/*
+		 * Bản vẽ để 768px cứng. Trên laptop 1366x768 thì vùng nhìn thấy chỉ còn
+		 * khoảng 620-660px sau thanh trình duyệt, nên cụm chấm và dải liên kết
+		 * nằm dưới đáy sân khấu bị khuất, phải cuộn mới thấy. Nay sân khấu cao
+		 * tối đa bằng đúng phần màn hình còn lại dưới thanh đầu trang.
+		 */
 		height: 768px;
+		height: min(768px, calc(100svh - var(--nntm-header-h)));
+		min-height: 520px;
 		aspect-ratio: auto;
 		background: var(--nntm-xam);
 	}
@@ -186,10 +192,20 @@
 		display: none;
 	}
 
+	.home .nntm-hero-slider {
+		/*
+		 * Cụm chữ hạ xuống thấp hơn, cụm chấm đi theo, dải liên kết nhanh dưới
+		 * đáy nâng lên. Tất cả tính theo % chiều cao sân khấu nên co giãn theo
+		 * màn hình, không ghim riêng cho khổ 1366x768.
+		 */
+		--nntm-hero-content-top: 30%;
+		--nntm-hero-dots-top: 72%;
+		--nntm-hero-quicklinks-bottom: clamp(20px, 5%, 58px);
+	}
+
 	.home .nntm-hero-slider__content {
 		left: calc(var(--nntm-cot-le) + 93px);
 		right: auto;
-		top: 232px;
 		width: 100%;
 		max-width: 809px;
 		max-width: 809px;
@@ -220,10 +236,17 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 66px;
+		/*
+		 * Cụm chữ là flex cột nên phần tử con mặc định bị kéo rộng bằng cả cột,
+		 * khiến nhãn nằm giữa. Neo về đầu dòng và chỉ rộng bằng nội dung.
+		 */
+		align-self: flex-start;
+		width: fit-content;
+		min-width: 66px;
 		height: 43px;
-		padding: 0;
+		padding: 0 4px;
 		box-sizing: border-box;
+		white-space: nowrap;
 		font-family: var(--nntm-font-sans);
 		font-size: 13px;
 		font-weight: 700;
@@ -234,7 +257,6 @@
 
 	.home .nntm-hero-slider__dots {
 		left: calc(var(--nntm-cot-le) + 93px);
-		top: 525px;
 		height: 12px;
 		gap: 8px;
 	}
@@ -256,7 +278,6 @@
 
 	.home .nntm-hero-slider__quicklinks {
 		left: calc(var(--nntm-cot-le) + 83px);
-		bottom: 20px;
 		gap: 10px;
 		max-width: 855px;
 	}
@@ -279,10 +300,19 @@
 	.home .nntm-hero-slider__quicklink:nth-child(4) { width: 87px; }
 
 	.home .nntm-hero-slider__sidecard {
-		left: calc(var(--nntm-cot-le) + 958px);
-		right: auto;
-		top: 577px;
-		bottom: auto;
+		/*
+		 * Neo theo mep phai. Ban ve 1366 dat the o left 958 (tuc cach mep phai
+		 * 20px); do tu mep trai thi tren man rong hon the bi bo lai giua man.
+		 */
+		left: auto;
+		right: 20px;
+		/*
+		 * Neo theo đáy sân khấu. Bản vẽ đặt top 577 trên sân khấu cao 768, tức
+		 * cách đáy 29px; đo từ đỉnh thì khi sân khấu ngắn lại theo màn hình,
+		 * thẻ thò ra ngoài và bị cắt mất.
+		 */
+		top: auto;
+		bottom: clamp(20px, 3.8%, 34px);
 		width: 388px;
 		height: 162px;
 		box-sizing: border-box;
@@ -594,23 +624,37 @@
 		overflow: hidden;
 	}
 
+	/*
+	 * Nút "Xem thêm" nằm trong hộp nền kem. Bản cũ ghim width 58px + màu
+	 * --nntm-trang-lanh (gần như trắng) nên chữ vừa tràn xuống hai dòng vừa
+	 * chìm vào nền. Nay bề ngang chạy theo nội dung + padding, cấm xuống dòng,
+	 * và dùng màu mực để đọc rõ trên nền kem.
+	 */
 	.home .nntm-article-feature__cta {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 58px;
+		align-self: flex-start;
+		width: auto;
+		max-width: 100%;
 		height: 43px;
-		flex: 0 0 43px;
+		flex: 0 0 auto;
 		margin-top: 0;
-		padding: 0;
+		padding: 0 2px;
 		box-sizing: border-box;
+		white-space: nowrap;
 		font-family: var(--nntm-font-sans);
 		font-size: 13px;
 		font-weight: 700;
 		line-height: normal;
-		color: var(--nntm-trang-lanh);
+		color: var(--nntm-muc);
 		text-decoration: underline;
 		text-underline-offset: 2px;
+	}
+
+	.home .nntm-article-feature__cta:hover,
+	.home .nntm-article-feature__cta:focus-visible {
+		color: var(--nntm-chinh-hover);
 	}
 
 	.home .nntm-article-feature__media-link {
@@ -636,151 +680,6 @@
 		width: 100%;
 		height: 819px;
 		object-fit: cover;
-	}
-
-	.home .nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) {
-		height: 544px;
-		margin-top: 56px;
-		position: relative;
-		z-index: 2;
-	}
-
-	.home .nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) > .nntm-card-list__band {
-		height: 544px;
-		padding: 0;
-		box-sizing: border-box;
-		background: var(--nntm-den);
-	}
-
-	.home .nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) > .nntm-card-list__band > .nntm-container {
-		 
-		width: 100%;
-		max-width: var(--nntm-w-rong);
-		margin-inline: auto;
-		height: 544px;
-		padding: 0;
-		position: relative;
-	}
-
-	.home .nntm-card-list__heading-above {
-		height: 68px;
-		padding-inline: 93px;
-		font-size: 58px;
-		font-weight: 600;
-		line-height: 68px;
-		color: var(--nntm-den);
-		background: transparent;
-	}
-
-	.home .nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) .nntm-card-list__header-row {
-		height: 68px;
-	}
-
-	.home .nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) .nntm-card-list__heading {
-		height: 68px;
-		margin: 0;
-		padding-left: 200px;
-		font-size: 58px;
-		font-weight: 600;
-		line-height: 68px;
-		color: var(--nntm-trang-lanh);
-	}
-
-	.home .nntm-card-list--nen-toi .nntm-card-list__yt-marquee {
-		padding-left: 73px;
-		margin-top: 45px;
-		overflow: hidden;
-	}
-
-	.home .nntm-card-list--nen-toi .nntm-card-list__yt-track {
-		gap: 20px;
-		--nntm-home-yt-loop-offset: 10px;
-		animation: nntm-home-yt-marquee var(--nntm-yt-duration, 40s) linear infinite;
-		animation-delay: 600ms;
-	}
-
-	.home .nntm-card-list--nen-toi .nntm-card-list__yt-cell {
-		flex: 0 0 388px;
-		width: 388px;
-		height: 360px;
-		padding: 20px;
-		box-sizing: border-box;
-		display: flex;
-		flex-direction: column;
-		gap: 15px;
-		background: rgba(0, 0, 0, 0.5);
-		backdrop-filter: blur(5px);
-		-webkit-backdrop-filter: blur(5px);
-		overflow: hidden;
-	}
-
-	.home .nntm-card-list--nen-toi .nntm-card-list__yt-item {
-		flex: 0 0 203px;
-		width: 348px;
-		height: 203px;
-		border-radius: 0;
-		box-shadow: none;
-		background: transparent;
-	}
-
-	.home .nntm-card-list--nen-toi .nntm-card-list__yt-media {
-		width: 348px;
-		height: 203px;
-		aspect-ratio: auto;
-	}
-
-	.home .nntm-card-list__yt-thumb {
-		object-fit: cover;
-	}
-
-	.home .nntm-card-list__yt-play {
-		inset: 0;
-		width: auto;
-		height: auto;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		z-index: 2;
-		pointer-events: none;
-	}
-
-	.home .nntm-card-list__yt-play svg {
-		width: 75px;
-		height: 75px;
-		filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.18));
-	}
-
-	.home .nntm-card-list__yt-frame {
-		z-index: 1;
-	}
-
-	.home .nntm-card-list--nen-toi .nntm-card-list__yt-title {
-		font-family: var(--nntm-font-sans);
-		font-size: 18px;
-		font-weight: 700;
-		line-height: 30px;
-		letter-spacing: 0;
-		text-transform: none;
-		color: var(--nntm-trang);
-		max-width: 348px;
-		-webkit-line-clamp: 2;
-	}
-
-	.home .nntm-card-list__caption-below {
-		top: calc(100% + 10px);
-		width: 100%;
-		max-width: 1082px;
-		max-width: 1082px;
-		padding: 0 134px;
-		box-sizing: border-box;
-		font-family: var(--nntm-font-serif);
-		font-size: 18px;
-		font-style: italic;
-		font-weight: 400;
-		line-height: 26px;
-		letter-spacing: 0;
-		color: var(--nntm-muc);  
-		background: var(--nntm-trang);
 	}
 
 	.home .nntm-engineering-earth--homepage-figma {
@@ -841,23 +740,39 @@
 		left: 50%;
 		top: 174px;
 		 
-		width: min(1366px, 100vw);
+		width: min(1366px, var(--nntm-vw, 100vw));
 		height: 418px;
 		 
 		padding-block: 60px;
 		padding-inline: clamp(var(--nntm-sp-5), 10.25vw, 140px) clamp(var(--nntm-sp-3), 5.12vw, 70px);
 		box-sizing: border-box;
-		transform: translateX(-50%);
+		/*
+		 * Canh giua bang le am chu KHONG dung transform: translateX(-50%): mot
+		 * to tien co transform se tro thanh khung bao cho moi con position:
+		 * fixed, khien khung video noi bam theo dai nay thay vi bam theo man
+		 * hinh. Dai nay rong hon khung chua no nen khong dung duoc cach
+		 * left:0 + right:0 + margin auto.
+		 */
+		left: 50%;
+		right: auto;
+		margin-left: calc(min(1366px, var(--nntm-vw, 100vw)) * -0.5);
 		background: none;
 	}
 
 	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__band::before {
 		content: "";
 		position: absolute;
-		z-index: -1;
+		/*
+		 * KHONG dat z-index am. ::before von duoc ve truoc .__band-inner (ca hai
+		 * cung la phan tu da dinh vi, z-index auto nen ve theo thu tu DOM), nen
+		 * dai den van nam duoi noi dung ma dai phim khong phai tao lop xep rieng.
+		 * Lop xep rieng se nhot khung video noi lai ben trong, khien no chui
+		 * xuong duoi cac section phia sau khi cuon.
+		 */
 		inset-block: 0;
 		left: 50%;
-		width: 100vw;
+		/* --nntm-vw da tru thanh cuon; dung 100vw se tran ra 7px moi ben. */
+		width: var(--nntm-vw, 100vw);
 		transform: translateX(-50%);
 		background: var(--nntm-den);
 	}
@@ -1097,294 +1012,7 @@
 		margin-top: 0;
 	}
 
-	.home .nntm-card-list--nen-cam {
-		height: 666px;
-		box-sizing: border-box;
-	}
 
-	.home .nntm-card-list--nen-cam > .nntm-card-list__band {
-		height: 666px;
-		padding: 50px;
-		box-sizing: border-box;
-		background: var(--nntm-cam);
-	}
-
-	.home .nntm-card-list--nen-cam > .nntm-card-list__band > .nntm-container {
-		width: 100%;
-		max-width: 1266px;
-		height: 566px;
-		max-width: 1266px;
-		padding: 0;
-		position: relative;
-	}
-
-	.home .nntm-card-list--nen-cam .nntm-card-list__header-row {
-		width: 100%;
-		max-width: 1266px;
-		justify-content: center;
-	}
-
-	.home .nntm-card-list--nen-cam .nntm-card-list__heading,
-	.home .nntm-card-list--nen-cam .nntm-card-list__subheading {
-		width: 100%;
-		max-width: 1266px;
-		padding: 0;
-		text-align: center;
-		color: var(--nntm-kem);
-		box-sizing: border-box;
-	}
-
-	.home .nntm-card-list--nen-cam .nntm-card-list__heading {
-		margin: 0 0 10px;
-		font-size: 52px;
-		font-weight: 600;
-		line-height: 60px;
-	}
-
-	.home .nntm-card-list--nen-cam .nntm-card-list__subheading {
-		margin: 0 0 30px;
-		font-family: var(--nntm-font-serif);
-		font-size: 18px;
-		font-weight: 400;
-		line-height: 26px;
-	}
-
-	.home .nntm-card-list--nen-cam .nntm-card-list__yt-marquee {
-		width: calc(100% + 100px);
-		margin-left: -50px;
-		padding-left: 90px;
-		overflow: hidden;
-	}
-
-	.home .nntm-card-list--nen-cam .nntm-card-list__yt-track {
-		gap: 20px;
-		--nntm-home-yt-loop-offset: 10px;
-		animation: nntm-home-yt-marquee var(--nntm-yt-duration, 40s) linear infinite;
-		animation-delay: 600ms;
-	}
-
-	.home .nntm-card-list__yt-marquee:hover > .nntm-card-list__yt-track,
-	.home .nntm-card-list__yt-marquee:focus-within > .nntm-card-list__yt-track {
-		animation-play-state: paused;
-	}
-
-	.home .nntm-card-list--nen-cam .nntm-card-list__yt-cell--framed {
-		flex: 0 0 388px;
-		width: 388px;
-		height: 360px;
-	}
-
-	.home .nntm-card-list--nen-cam .nntm-card-list__yt-item--framed {
-		width: 388px;
-		height: 360px;
-		min-height: 360px;
-		padding: 20px;
-		gap: 15px;
-		box-sizing: border-box;
-		border-radius: 0;
-		background: var(--nntm-den);
-		box-shadow: none;
-	}
-
-	.home .nntm-card-list--nen-cam .nntm-card-list__yt-cell--framed:first-child .nntm-card-list__yt-item--framed {
-		background: rgba(0, 0, 0, 0.7);
-		backdrop-filter: blur(5px);
-		-webkit-backdrop-filter: blur(5px);
-	}
-
-	.home .nntm-card-list--nen-cam .nntm-card-list__yt-media {
-		width: 348px;
-		height: 203px;
-		aspect-ratio: auto;
-	}
-
-	.home .nntm-card-list--nen-cam .nntm-card-list__yt-title {
-		font-family: var(--nntm-font-sans);
-		font-size: 18px;
-		font-weight: 700;
-		line-height: 30px;
-		letter-spacing: 0;
-		text-transform: none;
-		color: var(--nntm-trang);
-		max-width: 348px;
-		-webkit-line-clamp: 3;
-	}
-
-	.home .nntm-card-list--nen-cam .nntm-card-list__icons {
-		height: 50px;
-		min-height: 50px;
-		margin-top: 30px;
-		gap: 30px;
-	}
-
-	.home .nntm-card-list--nen-cam .nntm-card-list__icon--spotify,
-	.home .nntm-card-list--nen-cam .nntm-card-list__icon--spotify svg {
-		width: 50px;
-		height: 50px;
-	}
-
-	.home .nntm-card-list--nen-cam .nntm-card-list__icon--youtube,
-	.home .nntm-card-list--nen-cam .nntm-card-list__icon--youtube svg {
-		width: 60px;
-		height: 47px;
-	}
-
-	.home .nntm-footer {
-		height: auto;
-		/* min-height: calc(299.25px * var(--nntm-footer-ty-le)); */
-		padding: 0;
-		box-sizing: border-box;
-		background: var(--nntm-muc-nhat);
-		margin-top: 0;
-	}
-
-	.home .nntm-footer__bar {
-		 
-		width: 100%;
-		max-width: 1326px;
-		height: auto;
-		min-height: calc(259.25px * var(--nntm-footer-ty-le));
-		margin-inline: auto;
-		margin-block: 0;
-		padding: calc(20px * var(--nntm-footer-ty-le));
-		box-sizing: border-box;
-		background: var(--nntm-muc-nhat);
-	}
-
-	.home .nntm-footer__inner {
-		width: 100%;
-		max-width: 1286px;
-		height: auto;
-		margin-inline: auto;
-		margin-block: 0;
-		padding: 0;
-		display: flex;
-		flex-direction: column;
-		/* gap: calc(50px * var(--nntm-footer-ty-le)); */
-	}
-
-	.home .nntm-footer__share-row {
-		width: 100%;
-		/* padding-top: calc(30px * var(--nntm-footer-ty-le)); */
-		box-sizing: border-box;
-		display: flex;
-		align-items: flex-start;
-	}
-
-	.home .nntm-footer__share {
-		min-height: calc(44px * var(--nntm-footer-ty-le));
-		margin: 0;
-		padding: 0;
-		gap: calc(10px * var(--nntm-footer-ty-le));
-		flex-wrap: nowrap;
-		font-family: var(--nntm-font-display);
-		font-size: calc(38px * var(--nntm-footer-ty-le-chu));
-		font-weight: 600;
-		line-height: calc(44px * var(--nntm-footer-ty-le-chu));
-		color: var(--nntm-vien);
-	}
-
-	.home .nntm-footer__share-link {
-		min-height: 0;
-		padding: calc(5px * var(--nntm-footer-ty-le)) calc(20px * var(--nntm-footer-ty-le));
-		border-radius: 5px;
-		background: var(--nntm-vien);
-		box-shadow: 0 5px 30px rgba(116, 119, 102, 0.2);
-		font-family: var(--nntm-font-sans);
-		font-size: calc(23px * var(--nntm-footer-ty-le-chu));
-		font-style: normal;
-		font-weight: 700;
-		line-height: normal;
-		color: var(--nntm-reu);
-	}
-
-	.home .nntm-footer__sub {
-		width: 100%;
-		padding: calc(10px * var(--nntm-footer-ty-le));
-		box-sizing: border-box;
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-	}
-
-	.home .nntm-footer__sub-content {
-		width: 100%;
-		display: flex;
-		flex-wrap: wrap;
-		align-content: center;
-		align-items: center;
-		justify-content: space-between;
-		 
-		row-gap: calc(20px * var(--nntm-footer-ty-le));
-	}
-
-	.home .nntm-footer__rule {
-		flex: 0 0 1225px;
-		width: 100%;
-		max-width: 1225px;
-		height: 0;
-		margin: 0;
-		border: 0;
-		border-top: 1px solid var(--nntm-reu-dam);
-	}
-
-	.home .nntm-footer__row {
-		 
-		flex: 0 1 1226px;
-		min-width: 0;
-		width: 100%;
-		max-width: 1226px;
-		height: auto;
-		min-height: calc(46.25px * var(--nntm-footer-ty-le));
-		margin: 0;
-		gap: 0;
-		align-items: center;
-		justify-content: space-between;
-	}
-
-	.home .nntm-footer__left {
-		flex: 0 1 667.5px;
-		min-width: 0;
-		width: 100%;
-		max-width: 667.5px;
-		display: flex;
-		align-items: center;
-		gap: 20px;
-	}
-
-	.home .nntm-footer__logo {
-		/* flex: 0 0 143px; */
-		/* width: 143px; */
-		height: 46.25px;
-		min-height: 46.25px;
-		justify-content: center;
-		font-size: 20px;
-		line-height: 1.05;
-	}
-
-	.home .nntm-footer__logo-line {
-        text-align: center;
-	}
-
-	.home .nntm-footer__nav {
-		flex: 0 0 auto;
-		min-width: 0;
-	}
-
-	.home .nntm-footer-nav {
-		gap: 10px;
-		 
-		flex-wrap: wrap;
-	}
-
-	.home .nntm-footer-nav a,
-	.home .nntm-footer__copyright {
-		font-family: var(--nntm-font-sans);
-		font-size: 16px;
-		font-weight: 400;
-		line-height: 22px;
-		color: var(--nntm-vien);
-	}
 }
 
 @media (max-width: 1151px) {
@@ -1447,81 +1075,27 @@
 	.home .nntm-engineering-earth__caption {
 		padding: 24px 0 0;
 	}
-
-	.home .nntm-card-list__caption-below {
-		box-sizing: border-box;
-	}
-}
-
- 
-@keyframes nntm-home-yt-marquee {
-	from {
-		transform: translate3d(0, 0, 0);
-	}
-	to {
-		transform: translate3d(calc(-50% - var(--nntm-home-yt-loop-offset, 0px)), 0, 0);
-	}
 }
 
 @media (min-width: 1152px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
-	.home .nntm-card-list__yt-cell,
 	.home .nntm-article-mosaic__lead,
-	.home .nntm-article-mosaic__medium-card,
-	.home .nntm-article-mosaic__small-card,
-	.home .nntm-engineering-earth__figma-main,
-	.home .nntm-engineering-earth__figma-pip {
+.home .nntm-article-mosaic__medium-card,
+.home .nntm-article-mosaic__small-card,
+.home .nntm-engineering-earth__figma-main,
+.home .nntm-engineering-earth__figma-pip{
 		transition:
 			transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
 			box-shadow 420ms cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
-	.home .nntm-card-list__yt-item {
-		transform-origin: center;
-		backface-visibility: hidden;
-		will-change: transform;
-		transition:
-			transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
-			box-shadow 420ms cubic-bezier(0.22, 1, 0.36, 1),
-			background-color 320ms ease;
-	}
-
-	.home .nntm-card-list__yt-thumb,
 	.home .nntm-article-mosaic__img-el,
-	.home .nntm-article-feature__img-el,
-	.home .nntm-engineering-earth__figma-main img,
-	.home .nntm-engineering-earth__figma-pip img {
+.home .nntm-article-feature__img-el,
+.home .nntm-engineering-earth__figma-main img,
+.home .nntm-engineering-earth__figma-pip img{
 		transition:
 			opacity 320ms ease,
 			transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
 			filter 420ms ease;
-	}
-
-	.home .nntm-card-list__yt-play svg {
-		transform: scale(1);
-		transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1), opacity 280ms ease;
-	}
-
-	.home .nntm-card-list__yt-cell:has(.nntm-card-list__yt-item:hover),
-	.home .nntm-card-list__yt-cell:has(.nntm-card-list__yt-item:focus-visible) {
-		transform: translateY(-5px);
-	}
-
-	.home .nntm-card-list__yt-item:hover,
-	.home .nntm-card-list__yt-item:focus-visible,
-	.home .nntm-card-list__yt-item.is-playing {
-		transform: scale(1.025);
-		box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
-	}
-
-	.home .nntm-card-list__yt-item:hover .nntm-card-list__yt-thumb,
-	.home .nntm-card-list__yt-item:focus-visible .nntm-card-list__yt-thumb {
-		transform: scale(1.04);
-		filter: saturate(1.035) contrast(1.02);
-	}
-
-	.home .nntm-card-list__yt-item:hover .nntm-card-list__yt-play svg,
-	.home .nntm-card-list__yt-item:focus-visible .nntm-card-list__yt-play svg {
-		transform: scale(1.045);
 	}
 
 	.home .nntm-article-mosaic__lead:hover,
@@ -1547,9 +1121,8 @@
 	}
 
 	.home .nntm-article-mosaic__viewall,
-	.home .nntm-card-list__view-all,
-	.home .nntm-hero-slider__cta,
-	.home .nntm-hero-slider__sidecard-cta {
+.home .nntm-hero-slider__cta,
+.home .nntm-hero-slider__sidecard-cta{
 		transition:
 			transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
 			background-color 260ms ease,
@@ -1559,9 +1132,7 @@
 	}
 
 	.home .nntm-article-mosaic__viewall:hover,
-	.home .nntm-article-mosaic__viewall:focus-visible,
-	.home .nntm-card-list__view-all:hover,
-	.home .nntm-card-list__view-all:focus-visible {
+.home .nntm-article-mosaic__viewall:focus-visible{
 		transform: translateY(-2px);
 		background: var(--nntm-reu);
 		color: var(--nntm-kem);
@@ -1570,22 +1141,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.home .nntm-card-list--nen-toi .nntm-card-list__yt-track,
-	.home .nntm-card-list--nen-cam .nntm-card-list__yt-track {
-		animation: none;
-	}
 
-	.home .nntm-card-list__yt-cell,
-	.home .nntm-card-list__yt-item,
-	.home .nntm-card-list__yt-thumb,
 	.home .nntm-article-mosaic__lead,
-	.home .nntm-article-mosaic__medium-card,
-	.home .nntm-article-mosaic__small-card,
-	.home .nntm-article-mosaic__img-el,
-	.home .nntm-engineering-earth__figma-main,
-	.home .nntm-engineering-earth__figma-pip,
-	.home .nntm-engineering-earth__figma-main img,
-	.home .nntm-engineering-earth__figma-pip img {
+.home .nntm-article-mosaic__medium-card,
+.home .nntm-article-mosaic__small-card,
+.home .nntm-article-mosaic__img-el,
+.home .nntm-engineering-earth__figma-main,
+.home .nntm-engineering-earth__figma-pip,
+.home .nntm-engineering-earth__figma-main img,
+.home .nntm-engineering-earth__figma-pip img{
 		transition: none;
 		transform: none;
 	}
@@ -1615,5 +1179,18 @@
 
 	.home .nntm-hero-slider__text {
 		max-width: none;
+	}
+}
+
+
+/*
+ * Man hinh thap (laptop 768px tro xuong): san khau ngan lai nhung cum chu van
+ * cao bang do, nen phai keo len cao hon nua thi ba cum chu / cham / lien ket
+ * moi du cho, khong de len nhau.
+ */
+@media (min-width: 1152px) and (max-height: 780px) {
+	.home .nntm-hero-slider {
+		--nntm-hero-content-top: 20%;
+		--nntm-hero-dots-top: 70%;
 	}
 }

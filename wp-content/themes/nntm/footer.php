@@ -1,39 +1,24 @@
 <?php
+/**
+ * Chân trang — DÙNG CHUNG cho mọi trang.
+ *
+ * Trước đây trang chủ có một biến thể riêng (nntm-footer--home) kèm dòng
+ * "Hãy chia sẻ Ý kiến của bạn" và một lớp bọc phụ. Nay chân trang chỉ còn một
+ * kiểu duy nhất; dòng mời góp ý đã tách ra thành khối riêng (nntm/y-kien) để
+ * quản trị viên tự đặt vào bất kỳ trang nào, xem blocks/y-kien/.
+ */
 
 defined( 'ABSPATH' ) || exit;
 
 $nntm_footer_lang = function_exists( 'pll_current_language' ) ? pll_current_language( 'slug' ) : 'vi';
 $nntm_footer_en   = 'en' === $nntm_footer_lang;
-$nntm_front_id    = (int) get_option( 'page_on_front' );
-$nntm_is_home     = is_front_page();
-if ( ! $nntm_is_home && $nntm_front_id && function_exists( 'pll_get_post_translations' ) ) {
-	$nntm_is_home = in_array( get_queried_object_id(), pll_get_post_translations( $nntm_front_id ), true );
-}
 ?>
 
-	<footer id="colophon" class="nntm-footer <?php echo $nntm_is_home ? 'nntm-footer--home' : 'nntm-footer--inner'; ?>">
+	<footer id="colophon" class="nntm-footer nntm-footer--chung">
 		<div class="nntm-footer__bar">
 			<div class="nntm-footer__inner">
-				<?php if ( $nntm_is_home ) : ?>
-					<div class="nntm-footer__share-row">
-						<div class="nntm-footer__share">
-							<span><?php echo esc_html( $nntm_footer_en ? 'Share your' : 'Hãy chia sẻ' ); ?></span>
-							<a class="nntm-footer__share-link" href="<?php echo esc_url( home_url( '/y-kien/' ) ); ?>">
-								<?php echo esc_html( $nntm_footer_en ? 'Feedback' : 'Ý kiến' ); ?>
-							</a>
-							<span><?php echo esc_html( $nntm_footer_en ? 'with us' : 'của bạn' ); ?></span>
-						</div>
-					</div>
-
-					<div class="nntm-footer__sub">
-						<div class="nntm-footer__sub-content">
-							<hr class="nntm-footer__rule">
-				<?php endif; ?>
 
 				<div class="nntm-footer__row">
-					<?php if ( $nntm_is_home ) : ?>
-						<div class="nntm-footer__left">
-					<?php endif; ?>
 
 					<a class="nntm-footer__logo" href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
 						<span class="nntm-footer__logo-line"><?php echo esc_html( $nntm_footer_en ? 'Nang Nhan' : 'Năng Nhân' ); ?></span>
@@ -54,10 +39,6 @@ if ( ! $nntm_is_home && $nntm_front_id && function_exists( 'pll_get_post_transla
 						?>
 					</nav>
 
-					<?php if ( $nntm_is_home ) : ?>
-						</div>
-					<?php endif; ?>
-
 					<p class="nntm-footer__copyright">
 						<?php
 						printf(
@@ -69,10 +50,6 @@ if ( ! $nntm_is_home && $nntm_front_id && function_exists( 'pll_get_post_transla
 					</p>
 				</div>
 
-				<?php if ( $nntm_is_home ) : ?>
-						</div>
-					</div>
-				<?php endif; ?>
 			</div>
 		</div>
 	</footer>

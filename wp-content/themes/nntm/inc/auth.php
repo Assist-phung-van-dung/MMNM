@@ -3,6 +3,106 @@
 defined( 'ABSPATH' ) || exit;
 
 
+/**
+ * Chỉ cho phép chuyển hướng về trong nội bộ website (chống open redirect).
+ *
+ * Trả về '' nếu đường dẫn rỗng / khác host / không hợp lệ, để nơi gọi tự quyết
+ * định dùng đường lui nào.
+ */
+function nntm_auth_safe_redirect( string $url ): string {
+	$url = trim( $url );
+
+	if ( '' === $url ) {
+		return '';
+	}
+
+	$url = esc_url_raw( wp_unslash( $url ) );
+
+	if ( '' === $url ) {
+		return '';
+	}
+
+
+
+	$hop_le = wp_validate_redirect( $url, '' );
+
+	return (string) $hop_le;
+}
+
+/**
+ * Trang mà người dùng đang đứng khi bấm Đăng ký / Đăng nhập.
+ *
+ * Ưu tiên ?redirect_to trên URL, sau đó tới trang vừa rời (referer). Không lấy
+ * chính các trang đăng nhập/đăng ký/quên mật khẩu làm đích, vì như vậy sau khi
+ * đăng ký xong lại quay về đúng form vừa điền.
+ */
+function nntm_auth_redirect_from_request(): string {
+
+	$tho = '';
+
+	if ( isset( $_POST['redirect_to'] ) ) {
+		$tho = (string) $_POST['redirect_to'];
+	} elseif ( isset( $_GET['redirect_to'] ) ) {
+		$tho = (string) $_GET['redirect_to'];
+	}
+
+	$tu_url = '' !== $tho ? nntm_auth_safe_redirect( $tho ) : '';
+
+	if ( '' !== $tu_url && ! nntm_auth_la_trang_auth( $tu_url ) ) {
+		return $tu_url;
+	}
+
+	$referer = wp_get_referer();
+
+	if ( is_string( $referer ) && '' !== $referer ) {
+		$tu_referer = nntm_auth_safe_redirect( $referer );
+
+		if ( '' !== $tu_referer && ! nntm_auth_la_trang_auth( $tu_referer ) ) {
+			return $tu_referer;
+		}
+	}
+
+	return '';
+}
+
+/**
+ * URL của trang đang xem, đã lọc an toàn — dùng làm đích quay về mặc định.
+ */
+function nntm_auth_current_url(): string {
+	$duong = isset( $_SERVER['REQUEST_URI'] ) ? (string) wp_unslash( $_SERVER['REQUEST_URI'] ) : '';
+
+	if ( '' === $duong ) {
+		return '';
+	}
+
+	$url = home_url( $duong );
+
+	if ( nntm_auth_la_trang_auth( $url ) ) {
+		return '';
+	}
+
+	return nntm_auth_safe_redirect( $url );
+}
+
+/**
+ * Đường dẫn này có phải chính trang đăng nhập / đăng ký / quên mật khẩu không?
+ */
+function nntm_auth_la_trang_auth( string $url ): bool {
+	$duong = (string) wp_parse_url( $url, PHP_URL_PATH );
+
+	if ( '' === $duong ) {
+		return false;
+	}
+
+	foreach ( array( 'dang-nhap', 'dang-ky', 'quen-mat-khau' ) as $slug ) {
+		if ( false !== strpos( $duong, '/' . $slug ) ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 function nntm_login_url( string $redirect_to = '' ): string {
 	$page = get_page_by_path( 'dang-nhap' );
 
@@ -110,6 +210,8 @@ function nntm_enqueue_auth_assets(): void {
 				'requiredName'     => __( 'Vui lòng nhập Họ và Tên.', 'nntm' ),
 				'requiredEmail'    => __( 'Vui lòng nhập Email.', 'nntm' ),
 				'invalidEmail'     => __( 'Email không hợp lệ. Vui lòng kiểm tra lại.', 'nntm' ),
+				'requiredLogin'    => __( 'Vui lòng nhập Tên đăng nhập.', 'nntm' ),
+				'shortLogin'       => __( 'Tên đăng nhập phải có ít nhất 4 ký tự.', 'nntm' ),
 				'requiredDharma'   => __( 'Vui lòng nhập Pháp danh.', 'nntm' ),
 				'shortDharma'      => __( 'Pháp danh phải có ít nhất 2 ký tự.', 'nntm' ),
 				'requiredPassword' => __( 'Vui lòng nhập mật khẩu.', 'nntm' ),
@@ -149,6 +251,9 @@ function nntm_render_auth_modal(): void {
 add_action( 'wp_footer', 'nntm_render_auth_modal' );
 
 
+/**
+ * Gợi ý một tên đăng nhập duy nhất, dùng khi người dùng để trống ô Tên đăng nhập.
+ */
 function nntm_tao_ten_dang_nhap( string $phap_danh ): string {
 	$goc = sanitize_title( sanitize_user( remove_accents( $phap_danh ), true ) );
 
@@ -167,40 +272,12 @@ function nntm_tao_ten_dang_nhap( string $phap_danh ): string {
 	return $ten_dang_nhap;
 }
 
-function nntm_tim_user_theo_phap_danh( string $chuoi ): ?WP_User {
-	$chuoi = trim( $chuoi );
-
-	if ( '' === $chuoi ) {
-		return null;
-	}
-
-	$users = get_users(
-		array(
-			'meta_key'     => 'nntm_phap_danh',  
-			'meta_value'   => $chuoi,  
-			'meta_compare' => '=',
-			'number'       => 2,
-		)
-	);
-
-
-
-	$khop        = array();
-	$chuoi_thuong = function_exists( 'mb_strtolower' ) ? mb_strtolower( $chuoi, 'UTF-8' ) : strtolower( $chuoi );
-	foreach ( $users as $user ) {
-		$phap_danh_luu = trim( (string) get_user_meta( $user->ID, 'nntm_phap_danh', true ) );
-		$luu_thuong    = function_exists( 'mb_strtolower' ) ? mb_strtolower( $phap_danh_luu, 'UTF-8' ) : strtolower( $phap_danh_luu );
-		if ( $luu_thuong === $chuoi_thuong ) {
-			$khop[] = $user;
-		}
-	}
-
-	if ( 1 !== count( $khop ) ) {
-		return null;
-	}
-
-	return $khop[0];
-}
+/**
+ * Pháp danh KHÔNG còn là định danh đăng nhập (PROMPT 03).
+ *
+ * Nhiều tài khoản được phép trùng Pháp danh; nó chỉ là tên hiển thị trong hồ sơ.
+ * Đăng nhập chỉ qua email hoặc tên đăng nhập (username) — cả hai đều là duy nhất.
+ */
 
 
 function nntm_handle_auth_post(): void {
@@ -209,6 +286,17 @@ function nntm_handle_auth_post(): void {
 	}
 
 	$action = sanitize_key( wp_unslash( $_POST['nntm_auth_action'] ) );
+
+	/*
+	 * Đã đăng nhập rồi thì không xử lý lại đăng nhập/đăng ký nữa — form gửi lại
+	 * (bấm F5, mở hai tab) chỉ tổ sinh nonce hỏng và chuyển hướng lung tung.
+	 */
+	if ( is_user_logged_in() && in_array( $action, array( 'dang-nhap', 'dang-ky' ), true ) ) {
+		$dich = nntm_auth_redirect_from_request();
+
+		wp_safe_redirect( $dich ? $dich : home_url( '/' ) );
+		exit;
+	}
 
 	switch ( $action ) {
 		case 'dang-nhap':
@@ -232,17 +320,12 @@ function nntm_handle_login_post(): void {
 		return;
 	}
 
-	$redirect_to = isset( $_POST['redirect_to'] ) ? esc_url_raw( wp_unslash( $_POST['redirect_to'] ) ) : '';
+	$redirect_to = isset( $_POST['redirect_to'] ) ? nntm_auth_safe_redirect( (string) $_POST['redirect_to'] ) : '';
 
-	$dang_nhap_tho = isset( $_POST['user_login'] ) ? trim( (string) wp_unslash( $_POST['user_login'] ) ) : '';
-	$user_login    = $dang_nhap_tho;
 
-	if ( '' !== $dang_nhap_tho && ! username_exists( $dang_nhap_tho ) && ! email_exists( $dang_nhap_tho ) ) {
-		$user_theo_phap_danh = nntm_tim_user_theo_phap_danh( $dang_nhap_tho );
-		if ( $user_theo_phap_danh instanceof WP_User ) {
-			$user_login = $user_theo_phap_danh->user_login;
-		}
-	}
+
+
+	$user_login = isset( $_POST['user_login'] ) ? trim( (string) wp_unslash( $_POST['user_login'] ) ) : '';
 
 	$creds = array(
 		'user_login'    => $user_login,
@@ -295,12 +378,14 @@ function nntm_handle_register_post(): void {
 		return;
 	}
 
-	$redirect_to  = isset( $_POST['redirect_to'] ) ? esc_url_raw( wp_unslash( $_POST['redirect_to'] ) ) : '';
+	$redirect_to  = isset( $_POST['redirect_to'] ) ? nntm_auth_safe_redirect( (string) $_POST['redirect_to'] ) : '';
 	$ho_ten       = isset( $_POST['ho_ten'] ) ? sanitize_text_field( wp_unslash( $_POST['ho_ten'] ) ) : '';
 	$email        = isset( $_POST['user_email'] ) ? sanitize_email( wp_unslash( $_POST['user_email'] ) ) : '';
 
-
-	$phap_danh    = isset( $_POST['user_login'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['user_login'] ) ) ) : '';
+	// user_login = TÊN ĐĂNG NHẬP (duy nhất). Pháp danh là ô riêng và ĐƯỢC PHÉP trùng.
+	$ten_dang_nhap = isset( $_POST['user_login'] ) ? sanitize_user( wp_unslash( $_POST['user_login'] ), true ) : '';
+	$ten_dang_nhap = trim( $ten_dang_nhap );
+	$phap_danh    = isset( $_POST['nntm_phap_danh'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['nntm_phap_danh'] ) ) ) : '';
 	$password     = isset( $_POST['user_password'] ) ? (string) wp_unslash( $_POST['user_password'] ) : '';
 	$password_2   = isset( $_POST['user_password_2'] ) ? (string) wp_unslash( $_POST['user_password_2'] ) : '';
 	$vung_mien_tho = isset( $_POST['nntm_vung_mien'] ) ? sanitize_text_field( wp_unslash( $_POST['nntm_vung_mien'] ) ) : '';
@@ -314,7 +399,8 @@ function nntm_handle_register_post(): void {
 	$GLOBALS['nntm_auth_values'] = array(
 		'ho_ten'            => $ho_ten,
 		'user_email'        => $email,
-		'user_login'        => $phap_danh,
+		'user_login'        => $ten_dang_nhap,
+		'nntm_phap_danh'    => $phap_danh,
 		'nntm_vung_mien'    => $vung_mien,
 		'nntm_dia_chi'      => $dia_chi,
 		'nntm_dien_thoai'   => $dien_thoai,
@@ -335,10 +421,20 @@ function nntm_handle_register_post(): void {
 		$errors->add( 'email', __( 'Email này đã được đăng ký.', 'nntm' ) );
 	}
 
+	// Tên đăng nhập: duy nhất, dùng để đăng nhập.
+	if ( '' === $ten_dang_nhap ) {
+		$errors->add( 'user_login', __( 'Vui lòng nhập Tên đăng nhập.', 'nntm' ) );
+	} elseif ( mb_strlen( $ten_dang_nhap ) < 4 ) {
+		$errors->add( 'user_login', __( 'Tên đăng nhập phải có ít nhất 4 ký tự.', 'nntm' ) );
+	} elseif ( ! validate_username( $ten_dang_nhap ) ) {
+		$errors->add( 'user_login', __( 'Tên đăng nhập chứa ký tự không hợp lệ. Chỉ dùng chữ không dấu, số, dấu chấm, gạch ngang và gạch dưới.', 'nntm' ) );
+	} elseif ( username_exists( $ten_dang_nhap ) ) {
+		$errors->add( 'user_login', __( 'Tên đăng nhập này đã có người dùng. Vui lòng chọn tên khác.', 'nntm' ) );
+	}
+
+	// Pháp danh: chỉ là tên hiển thị, ĐƯỢC PHÉP trùng giữa nhiều tài khoản.
 	if ( '' === $phap_danh || mb_strlen( $phap_danh ) < 2 ) {
-		$errors->add( 'user_login', __( 'Vui lòng nhập Pháp danh (ít nhất 2 ký tự).', 'nntm' ) );
-	} elseif ( nntm_tim_user_theo_phap_danh( $phap_danh ) instanceof WP_User ) {
-		$errors->add( 'user_login', __( 'Pháp danh này đã có người dùng.', 'nntm' ) );
+		$errors->add( 'nntm_phap_danh', __( 'Vui lòng nhập Pháp danh (ít nhất 2 ký tự).', 'nntm' ) );
 	}
 
 	if ( '' === $password || '' === $password_2 ) {
@@ -359,7 +455,7 @@ function nntm_handle_register_post(): void {
 	}
 
 
-	$user_login = nntm_tao_ten_dang_nhap( $phap_danh );
+	$user_login = $ten_dang_nhap;
 
 	$user_id = wp_insert_user(
 		array(

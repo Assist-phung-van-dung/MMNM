@@ -7,7 +7,7 @@ if ( is_user_logged_in() ) {
 	exit;
 }
 
-$nntm_redirect_to = isset( $_GET['redirect_to'] ) ? esc_url_raw( wp_unslash( $_GET['redirect_to'] ) ) : '';
+$nntm_redirect_to = nntm_auth_redirect_from_request();
 $nntm_bg_url       = nntm_auth_background_url();
 $nntm_bg_style     = $nntm_bg_url ? sprintf( ' style="--nntm-auth-bg: url(%s)"', esc_url( $nntm_bg_url ) ) : '';
 ?>

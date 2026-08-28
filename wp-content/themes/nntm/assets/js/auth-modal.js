@@ -78,20 +78,63 @@
 	function openModal( modal, trigger ) {
 		lastFocusedEl = document.activeElement;
 
-		var redirectInput = modal.querySelector( 'input[name="redirect_to"]' );
-		var redirectTo = trigger && trigger.getAttribute
+		/*
+		 * Đăng nhập/đăng ký từ modal phải quay lại đúng trang đang đứng.
+		 * Nút nào khai báo data-nntm-auth-redirect thì theo nút đó, còn lại thì
+		 * lấy chính URL hiện tại.
+		 */
+		var redirectTo = ( trigger && trigger.getAttribute
 			? trigger.getAttribute( 'data-nntm-auth-redirect' )
-			: '';
+			: '' ) || window.location.href;
+
+		var redirectInput = modal.querySelector( 'input[name="redirect_to"]' );
 
 		if ( redirectInput && redirectTo ) {
 			redirectInput.value = redirectTo;
 		}
+
+		capNhatLienKet( modal, redirectTo );
 
 		modal.hidden = false;
 
 		var focusable = getFocusable( modal );
 		if ( focusable.length ) {
 			focusable[ 0 ].focus();
+		}
+	}
+
+	/*
+	 * Gắn redirect_to vào các liên kết chuyển từ Đăng nhập sang Đăng ký / Quên
+	 * mật khẩu, để chuỗi Đăng nhập -> Đăng ký -> thành công vẫn quay về đúng
+	 * trang mà người dùng bắt đầu.
+	 */
+	function capNhatLienKet( modal, redirectTo ) {
+		if ( ! redirectTo ) {
+			return;
+		}
+
+		var links = modal.querySelectorAll( '[data-nntm-auth-link]' );
+
+		for ( var i = 0; i < links.length; i++ ) {
+			var href = links[ i ].getAttribute( 'href' );
+
+			if ( ! href ) {
+				continue;
+			}
+
+			try {
+				var url = new URL( href, window.location.href );
+
+				/* Chỉ đổi liên kết nội bộ. */
+				if ( url.origin !== window.location.origin ) {
+					continue;
+				}
+
+				url.searchParams.set( 'redirect_to', redirectTo );
+				links[ i ].setAttribute( 'href', url.toString() );
+			} catch ( error ) {
+				/* URL không hợp lệ thì cứ để nguyên liên kết cũ. */
+			}
 		}
 	}
 

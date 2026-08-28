@@ -23,5 +23,10 @@
 
 
 :root {
-	--nntm-cot-le: max(0px, calc((100% - var(--nntm-w-rong)) / 2));
+	/*
+	 * Le trai/phai cua khung gian theo man hinh. Bang 0 cho toi 1920px, nen cum
+	 * chu va dai lien ket cua bang chuyen dau trang bam dung mep man hinh thay
+	 * vi bam mep cua mot cot 1366 canh giua.
+	 */
+	--nntm-cot-le: max(0px, calc((100% - var(--nntm-w-man)) / 2));
 }

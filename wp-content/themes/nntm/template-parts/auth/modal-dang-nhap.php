@@ -6,6 +6,20 @@ $nntm_modal_has_login_error = ! empty( $GLOBALS['nntm_auth_errors'] )
 	&& is_wp_error( $GLOBALS['nntm_auth_errors'] )
 	&& ! empty( $_POST['nntm_auth_action'] )  
 	&& 'dang-nhap' === sanitize_key( wp_unslash( $_POST['nntm_auth_action'] ) );  
+
+/*
+ * Modal luôn mang theo đích quay về là trang đang đứng, để đăng nhập / đăng ký
+ * từ bất kỳ trang nào cũng trở lại đúng trang đó (PROMPT 03). JS còn cập nhật
+ * lại giá trị này khi mở modal; ở đây lo cho trường hợp PHP dựng sẵn modal sau
+ * một lần đăng nhập lỗi.
+ */
+$nntm_modal_redirect = isset( $_POST['redirect_to'] )  
+	? nntm_auth_safe_redirect( (string) $_POST['redirect_to'] )  
+	: '';
+
+if ( '' === $nntm_modal_redirect ) {
+	$nntm_modal_redirect = nntm_auth_current_url();
+}
 ?>
 <div class="nntm-auth-modal" id="nntm-auth-modal"<?php echo $nntm_modal_has_login_error ? '' : ' hidden';  ?>>
 	<div class="nntm-auth-modal__overlay" data-nntm-auth-modal-overlay></div>
@@ -20,7 +34,10 @@ $nntm_modal_has_login_error = ! empty( $GLOBALS['nntm_auth_errors'] )
 		get_template_part(
 			'template-parts/auth/form-dang-nhap',
 			null,
-			array( 'compact' => true )
+			array(
+				'compact'     => true,
+				'redirect_to' => $nntm_modal_redirect,
+			)
 		);
 		?>
 	</div>

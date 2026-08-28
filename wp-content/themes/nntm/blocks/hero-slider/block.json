@@ -57,7 +57,7 @@
 		},
 		"interval": {
 			"type": "number",
-			"default": 6
+			"default": 5
 		},
 		"sideCardEnabled": {
 			"type": "boolean",

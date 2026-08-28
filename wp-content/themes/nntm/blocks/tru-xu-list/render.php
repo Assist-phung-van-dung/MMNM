@@ -63,6 +63,13 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'nntm-tru-
 						<a href="<?php echo esc_url( get_permalink( $abode ) ); ?>">
 							<?php echo esc_html( get_the_title( $abode ) ); ?><?php echo '' !== trim( $location ) ? ' (' . esc_html( $location ) . ')' : ''; ?>
 						</a>
+
+						<?php
+						// Trú Xứ chưa nhập toạ độ thì hàm trả về rỗng, không hiện nút.
+						if ( function_exists( 'nntm_tru_xu_nut_dia_chi' ) ) {
+							echo nntm_tru_xu_nut_dia_chi( (int) $abode->ID );  
+						}
+						?>
 					</li>
 				<?php endforeach; wp_reset_postdata(); ?>
 			</ul>
@@ -89,6 +96,18 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'nntm-tru-
 						)
 					);
 					?>
+					<?php
+					/*
+					 * Thẻ Trú Xứ vốn là một liên kết bọc toàn bộ. Nút "Địa chỉ"
+					 * KHÔNG được nằm trong liên kết đó (button trong a là HTML
+					 * sai và bấm vào sẽ chuyển trang), nên bọc thêm một lớp
+					 * ngoài để đặt nút cạnh liên kết.
+					 */
+					$nut_dia_chi = function_exists( 'nntm_tru_xu_nut_dia_chi' )
+						? nntm_tru_xu_nut_dia_chi( (int) $abode->ID )
+						: '';
+					?>
+					<div class="nntm-tru-xu-o">
 					<a href="<?php echo esc_url( $permalink ); ?>" class="nntm-tru-xu-card">
 						<span class="nntm-tru-xu-card__img">
 							<?php
@@ -106,6 +125,12 @@ $wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'nntm-tru-
 							<?php endif; ?>
 						</span>
 					</a>
+
+					<?php
+					// Trú Xứ chưa nhập toạ độ thì hàm trả về rỗng, không hiện nút.
+					echo $nut_dia_chi;  
+					?>
+					</div>
 					<?php
 				endforeach;
 				wp_reset_postdata();

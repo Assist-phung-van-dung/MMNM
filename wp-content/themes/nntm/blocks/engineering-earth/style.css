@@ -263,3 +263,135 @@
 		font-size: var(--nntm-fs-3xl);
 	}
 }
+
+
+/* =============================================================================
+   KHUNG VIDEO TRÔI NỔI
+   -----------------------------------------------------------------------------
+   Cuộn qua khỏi dải phim thì khung video chính tách ra, thu nhỏ và nổi ở góc
+   phải dưới màn hình để khách xem tiếp; cuộn ngược lên thì nó trở về đúng chỗ cũ.
+   Chỗ trống nó để lại được giữ nguyên kích thước bằng JS (xem view.js) nên bố
+   cục của dải phim không bị sụp xuống.
+   ========================================================================== */
+
+/*
+ * Thêm class của chính section vào đầu để chắc chắn thắng những dòng CSS ghim
+ * kích thước theo bản vẽ (vd .home .nntm-engineering-earth__figma-main đặt
+ * width/height cứng cho khung video).
+ */
+.nntm-engineering-earth .nntm-engineering-earth__video-slot.la-noi {
+	position: fixed;
+	z-index: 9000;
+
+	top: auto;
+	left: auto;
+
+	/*
+	 * Xep CANH nut "len dau trang" (nut nay o sat goc phai duoi), va nam TREN
+	 * thanh noi. Ca hai moc deu lay tu bien dung chung trong len-dau-trang.css:
+	 *   --nntm-len-dau-le   le goc cua nut
+	 *   --nntm-len-dau-canh be ngang nut
+	 *   --nntm-day-noi      day cua cum noi, tu nang len khi thanh noi hien ra
+	 * Nho vay ba thu khong bao gio de len nhau.
+	 */
+	right: calc(
+		var(--nntm-len-dau-le, 20px)
+		+ var(--nntm-len-dau-canh, 52px)
+		+ var(--nntm-ee-noi-khe, 12px)
+	);
+	bottom: var(--nntm-day-noi, 20px);
+
+	width: min(250px, 34vw);
+	max-width: 250px;
+	height: auto;
+	aspect-ratio: 250 / 218;
+
+	border-radius: var(--nntm-r-md);
+	box-shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
+
+	animation: nntm-ee-noi-vao 320ms var(--nntm-ease) both;
+}
+
+/*
+ * Ảnh chờ trong khung được ghim chiều cao theo bản vẽ (vd 298px ở trang chủ),
+ * vào khung nổi nhỏ hơn thì phải co lại cho vừa, không thì bị cắt mất.
+ */
+.nntm-engineering-earth .nntm-engineering-earth__video-slot.la-noi .nntm-engineering-earth__video-poster,
+.nntm-engineering-earth .nntm-engineering-earth__video-slot.la-noi img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+@keyframes nntm-ee-noi-vao {
+	from {
+		opacity: 0;
+		transform: translateY(20px) scale(0.96);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+/* Nút đóng: chỉ có mặt khi khung đang nổi. */
+.nntm-engineering-earth__video-dong {
+	position: absolute;
+	top: 6px;
+	right: 6px;
+	z-index: 4;
+
+	display: none;
+	align-items: center;
+	justify-content: center;
+
+	width: 30px;
+	height: 30px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+
+	background-color: rgba(0, 0, 0, 0.55);
+	-webkit-backdrop-filter: blur(4px);
+	backdrop-filter: blur(4px);
+
+	font-family: var(--nntm-font-sans);
+	font-size: 20px;
+	line-height: 1;
+	color: var(--nntm-trang);
+	cursor: pointer;
+
+	transition: background-color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-engineering-earth__video-slot.la-noi .nntm-engineering-earth__video-dong {
+	display: inline-flex;
+}
+
+.nntm-engineering-earth__video-dong:hover,
+.nntm-engineering-earth__video-dong:focus-visible {
+	background-color: rgba(0, 0, 0, 0.8);
+}
+
+.nntm-engineering-earth__video-dong:focus-visible {
+	outline: 2px solid var(--nntm-trang);
+	outline-offset: 2px;
+}
+
+@media (max-width: 767px) {
+	.nntm-engineering-earth .nntm-engineering-earth__video-slot.la-noi {
+		--nntm-ee-noi-khe: 8px;
+
+		width: min(220px, 52vw);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-engineering-earth .nntm-engineering-earth__video-slot.la-noi {
+		animation: none;
+	}
+
+	.nntm-engineering-earth__video-dong {
+		transition: none;
+	}
+}
