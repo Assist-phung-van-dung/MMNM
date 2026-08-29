@@ -203,6 +203,19 @@
 							value: attributes.arrowStyle || 'boxed',
 							options: [ { label: __( 'Ô vuông trắng', 'nntm' ), value: 'boxed' }, { label: __( 'Chỉ mũi tên', 'nntm' ), value: 'plain' } ],
 							onChange: function ( value ) { setAttributes( { arrowStyle: value } ); },
+						} ),
+						el( SelectControl, {
+							label: __( 'Slide có video thì xử lý thế nào', 'nntm' ),
+							value: attributes.videoMode || 'anh-dong',
+							options: [
+								{ label: __( 'Ảnh động — carousel vẫn tự chạy đúng chu kỳ', 'nntm' ), value: 'anh-dong' },
+								{ label: __( 'Phát hết video rồi mới chuyển slide', 'nntm' ), value: 'phat-het' },
+							],
+							help: __(
+								'Ảnh động: video lặp lại làm nền, không giữ carousel. Phát hết: carousel dừng chờ video xong — chu kỳ ở trên không áp dụng cho slide video.',
+								'nntm'
+							),
+							onChange: function ( value ) { setAttributes( { videoMode: value } ); },
 						} )
 					)
 				),

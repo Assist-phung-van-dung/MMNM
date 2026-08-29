@@ -277,7 +277,7 @@
 							? null
 							: el( SelectControl, {
 									label: __( 'Kiểu hiển thị', 'nntm' ),
-									help: __( 'Lưới: xếp nhiều hàng, có thể phân trang. Băng cuộn ngang: một hàng duy nhất, khách cuộn bằng nút lùi/tiến hoặc bàn phím. Băng tự chạy: một hàng tự trôi liên tục, không có nút bấm và không có thanh cuộn nào — rê chuột hoặc bấm Tab vào thì băng dừng lại.', 'nntm' ),
+									help: __( 'Lưới: xếp nhiều hàng, có thể phân trang. Băng cuộn ngang: một hàng duy nhất, khách cuộn bằng nút lùi/tiến hoặc bàn phím. Băng tự chạy: một hàng tự trôi liên tục, không có nút bấm và không có thanh cuộn nào — rê chuột hoặc bấm Tab vào thì băng dừng lại. LƯU Ý: riêng trang Nghi Quỹ và Hoa Khai, dải ấn phẩm luôn bị ép về Băng tự chạy bằng mã của trang — chọn kiểu khác ở đây sẽ không có tác dụng ngoài trang.', 'nntm' ),
 									value: attributes.layout || 'grid',
 									options: LAYOUT_OPTIONS,
 									onChange: function ( value ) {
@@ -291,14 +291,6 @@
 							options: BACKGROUND_OPTIONS,
 							onChange: function ( value ) {
 								setAttributes( { background: value } );
-							},
-						} ),
-						el( ToggleControl, {
-							label: __( 'Hiệu ứng sao lấp lánh', 'nntm' ),
-							help: __( 'Phủ các điểm sáng chuyển động nhẹ lên nền của riêng khối này. Hiệu ứng rõ và đẹp nhất với nền tối, chàm hoặc cam.', 'nntm' ),
-							checked: !! attributes.starEffect,
-							onChange: function ( value ) {
-								setAttributes( { starEffect: value } );
 							},
 						} ),
 						'youtube' !== attributes.videoSource && 'nntm_publication' === attributes.postType

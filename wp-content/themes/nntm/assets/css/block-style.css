@@ -4,7 +4,7 @@
  * Class do inc/block-style.php gắn vào thẻ ngoài cùng của block khi render:
  *   .nntm-block--full        chiều rộng bằng đúng viewport
  *   .nntm-block--contained   giữ nguyên khung giới hạn hiện tại
- *   .nntm-block--co-nen      admin đã chọn màu nền  -> --nntm-block-nen
+ *   nntm-s-xxxxxxxx         admin đã đặt nền -> CSS sinh riêng, xem block-style.php
  *   .nntm-block--co-chu      admin đã chọn màu chữ  -> --nntm-block-chu
  *   .nntm-block--co-tieu-de  admin đã chọn màu tiêu đề -> --nntm-block-tieu-de
  *   .nntm-block--co-font     admin đã chọn font     -> --nntm-block-font
@@ -49,38 +49,27 @@
 	margin-inline: auto;
 }
 
-/* MÀU NỀN */
-.nntm-block-style.nntm-block--co-nen {
-	background-color: var(--nntm-block-nen);
-}
+/*
+ * MÀU NỀN — không còn ở tệp này.
+ *
+ * Từ bước 1, nền (màu / gradient / ảnh / lớp phủ) được sinh thành CSS riêng cho
+ * từng khối trong inc/block-style.php, gắn vào một class định danh
+ * `nntm-s-xxxxxxxx` kèm thẻ <style> đặt ngay trước khối. Lý do: một biến CSS
+ * duy nhất không tả nổi gradient hay ảnh nền, và cũng không đủ ưu tiên để gỡ
+ * những lớp con phủ kín nền của một số block.
+ */
 
 /*
- * Block nào có dải nền riêng (card-list) thì dải đó phải trong suốt lại,
- * nếu không nền do admin chọn bị dải nền mặc định phủ lên.
+ * MÀU CHỮ / MÀU TIÊU ĐỀ / FONT — không còn ở tệp này.
+ *
+ * Từ bước 2, chữ được tách thành năm vai trò (Nội dung, Tiêu đề, Tiêu đề phụ,
+ * Nhãn nhỏ, Nút) và sinh thành CSS riêng cho từng khối trong inc/block-style.php.
+ *
+ * Quy tắc cũ ở đây nhắm theo THẺ (h1..h6, p, li, a, button...). Nhưng trong
+ * theme này cùng một vai trò được viết bằng đủ loại thẻ — nhãn và ngày tháng
+ * nằm trong <span>, thân bài nằm trong <div> — nên phần lớn chữ không khớp quy
+ * tắc nào, và một khối hiện ra hai font. Bản mới nhắm theo class nên phủ hết.
  */
-.nntm-block--co-nen > .nntm-card-list__band {
-	background-color: transparent;
-}
-
-/* MÀU CHỮ */
-.nntm-block-style.nntm-block--co-chu {
-	color: var(--nntm-block-chu);
-}
-
-.nntm-block--co-chu :is(p, li, dd, dt, figcaption, blockquote, span:not([class*="icon"])) {
-	color: inherit;
-}
-
-/* MÀU TIÊU ĐỀ (ghi đè màu chữ chung ở trên) */
-.nntm-block--co-tieu-de :is(h1, h2, h3, h4, h5, h6) {
-	color: var(--nntm-block-tieu-de);
-}
-
-/* FONT — chuỗi font luôn lấy từ theme.json nên đã có fallback an toàn sẵn. */
-.nntm-block--co-font,
-.nntm-block--co-font :is(h1, h2, h3, h4, h5, h6, p, li, a, button, input, select, textarea) {
-	font-family: var(--nntm-block-font);
-}
 
 /*
  * MOBILE / TABLET

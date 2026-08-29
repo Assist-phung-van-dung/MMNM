@@ -110,8 +110,37 @@
 							} )
 					)
 				),
+				/*
+				 * Ve dung trai tim nhu render.php.
+				 *
+				 * Truoc day cho nay chi la mot the <span> rong. Ma style.css lai dat
+				 * kich thuoc qua `.nntm-cta__icon svg` — khong co <svg> thi o icon co
+				 * be bang 0: trong admin nut Yeu thich mat hut trai tim, va nut gat
+				 * "Xem truoc trang thai da yeu thich" o thanh ben khong doi gi ca vi
+				 * mau to nam o `[aria-pressed="true"] .nntm-cta__icon svg path`.
+				 */
 				isFav
-					? el( 'span', { className: 'nntm-cta__icon', 'aria-hidden': 'true' } )
+					? el(
+							'span',
+							{ className: 'nntm-cta__icon', 'aria-hidden': 'true' },
+							el(
+								'svg',
+								{
+									viewBox: '0 0 23 21',
+									width: 23,
+									height: 21,
+									xmlns: 'http://www.w3.org/2000/svg',
+									focusable: 'false',
+								},
+								el( 'path', {
+									d: 'M11.5 19.3C7.9 16.6 2 12 2 7.3 2 4.4 4.3 2 7.2 2c1.8 0 3.4.9 4.3 2.3C12.4 2.9 14 2 15.8 2 18.7 2 21 4.4 21 7.3c0 4.7-5.9 9.3-9.5 12z',
+									fill: 'none',
+									stroke: 'currentColor',
+									strokeWidth: '2',
+									strokeLinejoin: 'round',
+								} )
+							)
+					  )
 					: null,
 				el( RichText, {
 					tagName: 'span',

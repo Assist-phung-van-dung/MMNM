@@ -105,15 +105,15 @@ function nntm_enqueue_r1_assets(): void {
 }
 add_action( 'wp_enqueue_scripts', 'nntm_enqueue_r1_assets', 20 );
 
-function nntm_editor_assets(): void {
-	add_editor_style(
-		array(
-			'assets/css/tokens.css',
-			'assets/css/base.css',
-		)
-	);
-}
-add_action( 'after_setup_theme', 'nntm_editor_assets' );
+/*
+ * CSS cho trình soạn thảo đã chuyển sang inc/editor-parity.php.
+ *
+ * Ở đây trước kia chỉ khai báo tokens.css và base.css — thiếu layout.css nên
+ * .nntm-container không tồn tại trong admin và mọi block bị vỡ khung so với
+ * ngoài trang. Danh sách đầy đủ, cùng với CSS riêng theo từng trang, nay nằm
+ * chung một chỗ trong nntm_editor_parity_css_chung() và
+ * nntm_editor_parity_ban_do().
+ */
 
 function nntm_asset_version( string $absolute_path ) {
 	return file_exists( $absolute_path ) ? filemtime( $absolute_path ) : false;
@@ -287,3 +287,111 @@ function nntm_enqueue_kim_cuong_hanh_gia_figma_assets(): void {
 	);
 }
 add_action( 'wp_enqueue_scripts', 'nntm_enqueue_kim_cuong_hanh_gia_figma_assets', 64 );
+
+/**
+ * Trang đang xem có Card List nào dùng băng chạy YouTube không?
+ *
+ * Phải soi vào attribute chứ không dùng has_block() được: has_block() chỉ biết
+ * trang CÓ block nntm/card-list, trong khi 9 trang đều có — thứ cần biết là
+ * trong đó có cái nào đặt videoSource = youtube hay không.
+ */
+function nntm_card_list_co_bang_youtube( array $blocks ): bool {
+	foreach ( $blocks as $block ) {
+		if ( ! is_array( $block ) ) {
+			continue;
+		}
+
+		$attrs = ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) ? $block['attrs'] : array();
+
+		if (
+			isset( $block['blockName'] ) &&
+			'nntm/card-list' === $block['blockName'] &&
+			'youtube' === ( $attrs['videoSource'] ?? '' )
+		) {
+			return true;
+		}
+
+		if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) && nntm_card_list_co_bang_youtube( $block['innerBlocks'] ) ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
+ * CSS của băng chạy YouTube — chỉ nạp đúng trang cần.
+ *
+ * Trước đây khối CSS này nằm chung trong blocks/card-list/style.css, mà tệp đó
+ * nạp trọn gói trên MỌI trang có Card List. Đo thật: 9 trang dùng Card List,
+ * chỉ 2 trang dùng băng chạy YouTube — 7 trang còn lại tải về gần 12KB CSS
+ * không chạm tới một dòng nào.
+ *
+ * Nạp ở wp_enqueue_scripts (không phải lúc render) để thẻ <link> nằm trong
+ * <head>: nạp muộn thì băng video sẽ loé lên một nhịp chưa có định dạng.
+ */
+function nntm_enqueue_card_list_youtube_style(): void {
+	if ( ! is_singular() ) {
+		return;
+	}
+
+	$post = get_queried_object();
+
+	if ( ! $post instanceof WP_Post || ! has_block( 'nntm/card-list', $post ) ) {
+		return;
+	}
+
+	if ( ! nntm_card_list_co_bang_youtube( parse_blocks( $post->post_content ) ) ) {
+		return;
+	}
+
+	$css_path = NNTM_THEME_DIR . '/blocks/card-list/style-youtube.css';
+
+	if ( ! is_file( $css_path ) ) {
+		return;
+	}
+
+	wp_enqueue_style(
+		'nntm-card-list-youtube',
+		NNTM_THEME_URI . '/blocks/card-list/style-youtube.css',
+		/*
+		 * Phụ thuộc vào CSS gốc của block: các biến --nntm-cl-yt-* được khai báo
+		 * ở đó trên một selector dùng chung, băng YouTube chỉ đọc lại.
+		 */
+		array( 'nntm-card-list-style' ),
+		nntm_asset_version( $css_path )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'nntm_enqueue_card_list_youtube_style', 30 );
+
+/**
+ * CSS của hai dải "Khoá tu" / "Lịch tu" — dùng chung cho Liên Đàn và Vườn Xoài.
+ *
+ * Trước đây nằm trong blocks/card-list/style.css, tức CSS của chính block. Đó là
+ * chỗ sai: block dùng chung cho 9 trang, không nên biết tên một trang cụ thể nào.
+ * Hai class .nntm-lien-dan-khoa / .nntm-lien-dan-lich là do quản trị tự đặt ở ô
+ * "class bổ sung", và chỉ hai trang này dùng tới.
+ *
+ * Ưu tiên 50: chạy SAU khi block đăng ký style (phụ thuộc nntm-card-list-style)
+ * và TRƯỚC hai tệp riêng của trang (ưu tiên 60 và 62) — giữ đúng thứ tự tầng như
+ * lúc còn nằm chung, để không quy tắc nào đổi bên thắng thua.
+ */
+function nntm_enqueue_khoa_lich_style(): void {
+	if ( ! is_page( array( 'lien-dan', 'vuon-xoai' ) ) ) {
+		return;
+	}
+
+	$css_path = NNTM_THEME_DIR . '/assets/css/pages/lien-dan-khoa-lich.css';
+
+	if ( ! is_file( $css_path ) ) {
+		return;
+	}
+
+	wp_enqueue_style(
+		'nntm-khoa-lich',
+		NNTM_THEME_URI . '/assets/css/pages/lien-dan-khoa-lich.css',
+		array( 'nntm-tokens', 'nntm-base', 'nntm-layout', 'nntm-card-list-style' ),
+		nntm_asset_version( $css_path )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'nntm_enqueue_khoa_lich_style', 50 );

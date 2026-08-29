@@ -26,7 +26,21 @@ $render_image = static function ( array $item, string $class ): string {
 	return '<img class="' . esc_attr( $class ) . '" src="' . esc_url( $url ) . '" alt="' . esc_attr( $alt ) . '" loading="lazy">';
 };
 
-$render_video = static function ( array $item, string $class, string $label ): string {
+/*
+ * Video trong carousel chay theo MOT trong hai che do:
+ *
+ *   anh-dong (mac dinh) — video lap lai nhu mot anh dong, carousel van tu chay
+ *                         theo dung chu ky da dat.
+ *   phat-het            — carousel dung lai cho video phat het roi moi chuyen.
+ *
+ * Truoc day hai che do nay bi tron lam mot: the <video> luon co "loop", trong
+ * khi view.js lai dung dong ho cho toi khi video ket thuc. Video co "loop" thi
+ * KHONG BAO GIO phat su kien "ended" — nen mot khi slide video vao giua la
+ * carousel dung han, ra khoi vung chuot cung khong chay lai.
+ */
+$video_mode = ( 'phat-het' === ( $attributes['videoMode'] ?? 'anh-dong' ) ) ? 'phat-het' : 'anh-dong';
+
+$render_video = static function ( array $item, string $class, string $label ) use ( $video_mode ): string {
 	$id         = isset( $item['videoId'] ) ? absint( $item['videoId'] ) : 0;
 	$url        = $id ? wp_get_attachment_url( $id ) : '';
 	$url        = $url ? $url : esc_url_raw( (string) ( $item['videoUrl'] ?? '' ) );
@@ -46,10 +60,14 @@ $render_video = static function ( array $item, string $class, string $label ): s
 	 *   - disablepictureinpicture -> khong cho tach ra cua so noi
 	 *   - controlslist            -> chan menu tai xuong, doi toc do, phat tu xa
 	 *   - muted + playsinline     -> trinh duyet cho tu chay, khong bung toan man
-	 *   - loop                    -> chay lien tuc nhu mot anh dong
+	 *   - loop                    -> CHI o che do anh-dong; o che do phat-het thi
+	 *                                phai bo, vi video co loop khong bao gio phat
+	 *                                su kien "ended" de carousel biet ma chuyen.
 	 * Viec chay/dung theo slide dang xem van do view.js lo, khong doi.
 	 */
-	return '<video class="' . esc_attr( $class ) . '" src="' . esc_url( $url ) . '" muted loop playsinline preload="metadata"'
+	$loop_attr = ( 'anh-dong' === $video_mode ) ? ' loop' : '';
+
+	return '<video class="' . esc_attr( $class ) . '" src="' . esc_url( $url ) . '" muted' . $loop_attr . ' playsinline preload="metadata"'
 		. ' disablepictureinpicture disableremoteplayback controlslist="nodownload noplaybackrate noremoteplayback"'
 		. ' data-fc-video aria-label="' . esc_attr( $label ) . '"' . $poster_attr . '></video>';
 };
@@ -100,8 +118,9 @@ if ( ! $intro_title && ! $intro_text ) {
 $wrapper = get_block_wrapper_attributes(
 	array(
 		'class'         => implode( ' ', $classes ),
-		'data-autoplay' => $autoplay ? '1' : '0',
-		'data-interval' => (string) $interval,
+		'data-autoplay'   => $autoplay ? '1' : '0',
+		'data-interval'   => (string) $interval,
+		'data-video-mode' => $video_mode,
 	)
 );
 ?>

@@ -1,0 +1,247 @@
+/*
+ * Rieng hai dai "Khoa tu" va "Lich tu" — dung o trang Lien Dan va Vuon Xoai.
+ *
+ * Truoc day nhung quy tac nay nam trong blocks/card-list/style.css, tuc la CSS
+ * cua chinh block. Do la cho sai: block dung chung cho 9 trang, khong nen biet
+ * ten mot trang cu the nao. Hai class .nntm-lien-dan-khoa / .nntm-lien-dan-lich
+ * la do quan tri tu dat trong o "class bo sung", chi hai trang do dung.
+ *
+ * Tep nay nap SAU CSS cua block va TRUOC CSS rieng cua tung trang
+ * (lien-dan-figma.css, vuon-xoai-figma.css) — dung y thu tu tang nhu truoc khi
+ * tach, de khong quy tac nao doi ben thang thua.
+ */
+.nntm-lien-dan-khoa > .nntm-card-list__band {
+	min-height: 530px;  
+	padding-block: var(--nntm-sp-10);
+	background-color: var(--nntm-kem);
+	overflow: hidden;
+}
+
+.nntm-lien-dan-khoa > .nntm-card-list__band > .nntm-container,
+.nntm-lien-dan-lich > .nntm-card-list__band > .nntm-container {
+	 
+	max-width: var(--nntm-w-rong);
+	margin-inline: auto;
+	padding-inline: 0;
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__header-row {
+	position: absolute;
+	z-index: 2;
+	left: var(--nntm-sp-9);
+	top: 170px;  
+	width: 240px;
+	align-items: flex-start;
+	flex-direction: column;
+	gap: var(--nntm-sp-6);
+}
+
+.nntm-lien-dan-khoa > .nntm-card-list__band {
+	position: relative;
+}
+@media (min-width: 1152px) {
+	 
+	.nntm-lien-dan-khoa .nntm-card-list__carousel {
+		margin-left: 310px;
+		overflow: hidden;
+	}
+
+	.nntm-lien-dan-khoa .nntm-card-list__track-item:first-child {
+		margin-inline-start: 0;
+	}
+
+	.nntm-lien-dan-khoa .nntm-card-list__track-item:last-child {
+		margin-inline-end: var(--nntm-sp-9);
+	}
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__heading,
+.nntm-lien-dan-lich .nntm-card-list__heading {
+	margin: 0;
+	font-size: var(--nntm-fs-4xl);
+	line-height: var(--nntm-lh-chat);
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__carousel {
+	--nntm-carousel-gutter: 0px;
+	--nntm-carousel-per-view: 3.2;
+	--nntm-carousel-gap-count: 3;
+	gap: 0;
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__track-item {
+	flex-basis: 388px;  
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__nav--prev:disabled,
+.nntm-lien-dan-lich .nntm-card-list__nav--prev:disabled {
+	display: none;
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__nav,
+.nntm-lien-dan-lich .nntm-card-list__nav {
+	position: absolute;
+	z-index: 3;
+	border: 0;
+	border-radius: 0;
+	background-color: var(--nntm-trang);
+	box-shadow: var(--nntm-sh-soft);
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__nav-icon,
+.nntm-lien-dan-lich .nntm-card-list__nav-icon {
+	position: relative;
+	width: 20px;
+	height: 2px;
+	margin: 0;
+	border: 0;
+	background-color: currentColor;
+	transform: none;
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__nav--prev .nntm-card-list__nav-icon,
+.nntm-lien-dan-khoa .nntm-card-list__nav--next .nntm-card-list__nav-icon,
+.nntm-lien-dan-lich .nntm-card-list__nav--prev .nntm-card-list__nav-icon,
+.nntm-lien-dan-lich .nntm-card-list__nav--next .nntm-card-list__nav-icon {
+	margin: 0;
+	transform: none;
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__nav-icon::after,
+.nntm-lien-dan-lich .nntm-card-list__nav-icon::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	right: 0;
+	width: 8px;
+	height: 8px;
+	border-style: solid;
+	border-width: 2px 2px 0 0;
+	border-color: currentColor;
+	transform: translateY(-50%) rotate(45deg);
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__nav--prev .nntm-card-list__nav-icon::after,
+.nntm-lien-dan-lich .nntm-card-list__nav--prev .nntm-card-list__nav-icon::after {
+	left: 0;
+	right: auto;
+	transform: translateY(-50%) rotate(-135deg);
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__nav--next {
+	right: var(--nntm-sp-9);
+}
+
+.nntm-lien-dan-khoa .nntm-card--khoa-tu {
+	min-height: 390px;
+}
+
+.nntm-lien-dan-khoa .nntm-card--khoa-tu .nntm-card__img-el {
+	object-fit: cover;
+}
+
+.nntm-lien-dan-lich > .nntm-card-list__band {
+	min-height: 360px;  
+	padding-block: var(--nntm-sp-8) var(--nntm-sp-9);
+	background-color: var(--nntm-trang);
+	overflow: hidden;
+}
+
+.nntm-lien-dan-lich .nntm-card-list__header-row {
+	max-width: var(--nntm-w-noi-dung);
+	margin: 0 auto var(--nntm-sp-6);
+	padding-inline: var(--nntm-sp-9);
+}
+
+.nntm-lien-dan-lich .nntm-card-list__carousel {
+	--nntm-carousel-gutter: 90px;  
+	--nntm-carousel-per-view: 4.15;
+	--nntm-carousel-gap-count: 4;
+	position: relative;
+	gap: 0;
+}
+
+.nntm-lien-dan-lich .nntm-card-list__track-item {
+	flex-basis: 280px;  
+}
+
+.nntm-lien-dan-lich .nntm-card--khoa-tu {
+	position: relative;
+	padding: 0;
+	gap: 0;
+	min-height: 185px;
+	box-shadow: none;
+	backdrop-filter: none;
+}
+
+.nntm-lien-dan-lich .nntm-card--khoa-tu .nntm-card__img {
+	aspect-ratio: 280 / 185;
+}
+
+.nntm-lien-dan-lich .nntm-card--khoa-tu .nntm-card__img-el {
+	object-fit: cover;
+}
+
+.nntm-lien-dan-lich .nntm-card--khoa-tu .nntm-card__body {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	padding: var(--nntm-sp-3);
+	gap: var(--nntm-sp-1);
+	background-color: var(--nntm-trang-60);
+	backdrop-filter: blur(4px);
+}
+
+.nntm-lien-dan-lich .nntm-card__excerpt,
+.nntm-lien-dan-lich .nntm-card__date,
+.nntm-lien-dan-lich .nntm-card__cat {
+	display: none;
+}
+
+.nntm-lien-dan-lich .nntm-card__title,
+.nntm-lien-dan-lich .nntm-card__cta {
+	font-size: var(--nntm-fs-sm);
+}
+
+.nntm-lien-dan-lich .nntm-card-list__nav--next {
+	right: var(--nntm-sp-9);
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__track,
+.nntm-lien-dan-lich .nntm-card-list__track {
+	 
+	scroll-snap-type: none;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+	padding-bottom: 0;
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__track-item,
+.nntm-lien-dan-lich .nntm-card-list__track-item {
+	scroll-snap-align: none;
+}
+
+.nntm-lien-dan-khoa .nntm-card-list__track::-webkit-scrollbar,
+.nntm-lien-dan-lich .nntm-card-list__track::-webkit-scrollbar {
+	display: none;
+	width: 0;
+	height: 0;
+}
+@media (max-width: 1151px) {
+	.nntm-lien-dan-khoa .nntm-card-list__header-row {
+		position: static;
+		width: auto;
+		margin: 0 var(--nntm-sp-5) var(--nntm-sp-6);
+	}
+
+	.nntm-lien-dan-khoa .nntm-card-list__carousel,
+	.nntm-lien-dan-lich .nntm-card-list__carousel {
+		--nntm-carousel-gutter: var(--nntm-sp-5);
+	}
+
+	.nntm-lien-dan-khoa .nntm-card-list__track-item,
+	.nntm-lien-dan-lich .nntm-card-list__track-item {
+		flex-basis: min(82vw, 330px);
+	}
+}

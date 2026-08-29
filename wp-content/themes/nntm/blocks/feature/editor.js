@@ -103,61 +103,71 @@
 						} )
 					)
 				),
+				/*
+				 * .nntm-container la lop bat buoc: render.php bao __content trong no,
+				 * va feature/style.css dat max-width 1324px + flex + gap len chinh no.
+				 * Thieu lop nay thi trong admin khoi noi dung trai het be ngang, khac
+				 * han ngoai trang.
+				 */
 				el(
 					'div',
-					{ className: 'nntm-feature__content' },
+					{ className: 'nntm-container' },
 					el(
 						'div',
-						{ className: 'nntm-feature__text' },
+						{ className: 'nntm-feature__content' },
 						el(
 							'div',
-							{ className: 'nntm-feature__text-inner' },
-							el( RichText, {
-								tagName: 'span',
-								className: 'nntm-feature__eyebrow',
-								value: attributes.eyebrow,
-								placeholder: __( 'Cập nhật 15. 06. 2026', 'nntm' ),
-								allowedFormats: [],
-								onChange: function ( value ) {
-									setAttributes( { eyebrow: value } );
-								},
-							} ),
-							el( RichText, {
-								tagName: 'h2',
-								className: 'nntm-feature__heading',
-								value: attributes.heading,
-								placeholder: __( 'Nhập tiêu đề…', 'nntm' ),
-								onChange: function ( value ) {
-									setAttributes( { heading: value } );
-								},
-							} ),
-							el( RichText, {
-								tagName: 'div',
-								className: 'nntm-feature__body',
-								value: attributes.content,
-								placeholder: __( 'Nhập nội dung…', 'nntm' ),
-								multiline: 'p',
-								onChange: function ( value ) {
-									setAttributes( { content: value } );
-								},
-							} )
+							{ className: 'nntm-feature__text' },
+							el(
+								'div',
+								{ className: 'nntm-feature__text-inner' },
+								el( RichText, {
+									tagName: 'span',
+									className: 'nntm-feature__eyebrow',
+									value: attributes.eyebrow,
+									placeholder: __( 'Cập nhật 15. 06. 2026', 'nntm' ),
+									allowedFormats: [],
+									onChange: function ( value ) {
+										setAttributes( { eyebrow: value } );
+									},
+								} ),
+								el( RichText, {
+									tagName: 'h2',
+									className: 'nntm-feature__heading',
+									value: attributes.heading,
+									placeholder: __( 'Nhập tiêu đề…', 'nntm' ),
+									onChange: function ( value ) {
+										setAttributes( { heading: value } );
+									},
+								} ),
+								el( RichText, {
+									tagName: 'div',
+									className: 'nntm-feature__body',
+									value: attributes.content,
+									placeholder: __( 'Nhập nội dung…', 'nntm' ),
+									multiline: 'p',
+									onChange: function ( value ) {
+										setAttributes( { content: value } );
+									},
+								} )
+							)
+						),
+						el(
+							'div',
+							{ className: 'nntm-feature__media' },
+							attributes.imageUrl
+								? el( 'img', {
+										className: 'nntm-feature__media-img',
+										src: attributes.imageUrl,
+										alt: attributes.imageAlt,
+								  } )
+								: el(
+										'div',
+										{ className: 'nntm-feature__media-placeholder' },
+										__( 'Chưa chọn ảnh — mở bảng cài đặt bên phải để chọn.', 'nntm' )
+								  )
+							)
 						)
-					),
-					el(
-						'div',
-						{ className: 'nntm-feature__media' },
-						attributes.imageUrl
-							? el( 'img', {
-									className: 'nntm-feature__media-img',
-									src: attributes.imageUrl,
-									alt: attributes.imageAlt,
-							  } )
-							: el(
-									'div',
-									{ className: 'nntm-feature__media-placeholder' },
-									__( 'Chưa chọn ảnh — mở bảng cài đặt bên phải để chọn.', 'nntm' )
-							  )
-					)
 				)
 			);
 		},

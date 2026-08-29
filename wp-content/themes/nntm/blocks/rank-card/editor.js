@@ -289,13 +289,30 @@
 									return el(
 										'div',
 										{ className: 'nntm-rank-card__card', key: 'preview-' + index },
-										card.imageUrl
-											? el( 'img', {
-													className: 'nntm-rank-card__card-img',
-													src: card.imageUrl,
-													alt: '',
-											  } )
-											: el( 'div', { className: 'nntm-rank-card__card-img nntm-rank-card__card-img--placeholder' } ),
+										/*
+										 * __card-media la lop bao anh, co trong
+										 * inc/render-rank-card.php nhung truoc day ban editor
+										 * bo qua. style.css dat `display:flex; justify-content:center`
+										 * len chinh no — thieu no thi anh (rong co dinh 304px) dinh
+										 * ve ben trai the thay vi nam giua nhu ngoai trang.
+										 *
+										 * Dung <div> chu khong phai <a>: trong khung soan thao khong
+										 * co dieu huong, va o trang thai tinh hai the hien y het nhau.
+										 */
+										el(
+											'div',
+											{ className: 'nntm-rank-card__card-media' },
+											card.imageUrl
+												? el( 'img', {
+														className: 'nntm-rank-card__card-img',
+														src: card.imageUrl,
+														alt: '',
+												  } )
+												: el( 'span', {
+														className: 'nntm-rank-card__card-img nntm-rank-card__card-img--placeholder',
+														'aria-hidden': 'true',
+												  } )
+										),
 										el(
 											'p',
 											{ className: 'nntm-rank-card__card-title' },

@@ -20,16 +20,11 @@
 		var fields = {
 			name: form.querySelector( '[name="ho_ten"]' ),
 			email: form.querySelector( '[name="user_email"]' ),
-			login: form.querySelector( '[name="user_login"]' ),
 			dharma: form.querySelector( '[name="nntm_phap_danh"]' ),
 			password: form.querySelector( '[name="user_password"]' ),
 			confirm: form.querySelector( '[name="user_password_2"]' ),
 			terms: form.querySelector( '[name="nntm_dong_y_dieu_khoan"]' )
 		};
-
-		if ( fields.login ) {
-			fields.login.minLength = 4;
-		}
 
 		if ( fields.dharma ) {
 			fields.dharma.minLength = 2;
@@ -70,15 +65,6 @@
 					field.setCustomValidity( getMessage( 'requiredEmail', 'Vui lòng nhập Email.' ) );
 				} else if ( field.validity.typeMismatch ) {
 					field.setCustomValidity( getMessage( 'invalidEmail', 'Email không hợp lệ. Vui lòng kiểm tra lại.' ) );
-				}
-				return;
-			}
-
-			if ( field === fields.login ) {
-				if ( field.validity.valueMissing ) {
-					field.setCustomValidity( getMessage( 'requiredLogin', 'Vui lòng nhập Tên đăng nhập.' ) );
-				} else if ( field.validity.tooShort ) {
-					field.setCustomValidity( getMessage( 'shortLogin', 'Tên đăng nhập phải có ít nhất 4 ký tự.' ) );
 				}
 				return;
 			}

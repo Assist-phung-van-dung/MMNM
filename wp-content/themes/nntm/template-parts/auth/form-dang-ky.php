@@ -13,7 +13,6 @@ $values = wp_parse_args(
 	array(
 		'ho_ten'            => '',
 		'user_email'        => '',
-		'user_login'        => '',
 		'nntm_phap_danh'    => '',
 		'nntm_vung_mien'    => '',
 		'nntm_dia_chi'      => '',
@@ -58,6 +57,16 @@ $nntm_chinh_sach_url = $nntm_chinh_sach ? get_permalink( $nntm_chinh_sach ) : ho
 			</div>
 		</div>
 
+		<?php
+		/*
+		 * Email chính là tài khoản đăng nhập.
+		 *
+		 * Ô "Tên đăng nhập" đã bỏ. WordPress vẫn cần một user_login cho mỗi tài
+		 * khoản, nhưng nó được sinh tự động ở phía máy chủ dưới dạng trung tính
+		 * (tv-k7m2xp9q) — không dính gì tới email lẫn Pháp danh. Người đăng ký
+		 * không phải nghĩ ra và cũng không cần biết tới nó.
+		 */
+		?>
 		<div class="nntm-auth-field">
 			<label for="nntm-reg-email"><?php esc_html_e( 'Email', 'nntm' ); ?></label>
 			<div class="nntm-auth-field__control">
@@ -65,28 +74,13 @@ $nntm_chinh_sach_url = $nntm_chinh_sach ? get_permalink( $nntm_chinh_sach ) : ho
 					type="email"
 					id="nntm-reg-email"
 					name="user_email"
+					placeholder="<?php esc_attr_e( 'vd: nguyenvana@gmail.com', 'nntm' ); ?>"
 					value="<?php echo esc_attr( $values['user_email'] ); ?>"
 					autocomplete="email"
 					required
 				/>
-			</div>
-		</div>
-
-		<div class="nntm-auth-field">
-			<label for="nntm-reg-login"><?php esc_html_e( 'Tên đăng nhập', 'nntm' ); ?></label>
-			<div class="nntm-auth-field__control">
-				<input
-					type="text"
-					id="nntm-reg-login"
-					name="user_login"
-					placeholder="<?php esc_attr_e( 'vd: nguyen-van-a', 'nntm' ); ?>"
-					value="<?php echo esc_attr( $values['user_login'] ); ?>"
-					autocomplete="username"
-					minlength="4"
-					required
-				/>
 				<p class="nntm-auth-hint">
-					<?php esc_html_e( 'Dùng để đăng nhập, không được trùng với người khác. Chữ không dấu, số, dấu chấm, gạch ngang hoặc gạch dưới.', 'nntm' ); ?>
+					<?php esc_html_e( 'Đây cũng là tài khoản đăng nhập của bạn. Mỗi email chỉ đăng ký được một lần.', 'nntm' ); ?>
 				</p>
 			</div>
 		</div>

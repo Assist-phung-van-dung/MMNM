@@ -1,0 +1,487 @@
+/*
+ * Bang chay YouTube cua block Card List — TACH RIENG khoi style.css.
+ *
+ * Truoc day nhung quy tac nay nam chung trong style.css cua block, ma tep do
+ * nap tron goi tren MOI trang co Card List. Do that: 9 trang dung Card List
+ * nhung chi 2 trang dung bang chay YouTube — 7 trang con lai tai ve gan 11KB
+ * CSS khong dung toi mot dong nao.
+ *
+ * Tep nay chi duoc nap khi trang that su co mot Card List dat
+ * videoSource = youtube — xem nntm_enqueue_card_list_youtube_style()
+ * trong inc/enqueue.php.
+ */
+
+
+.nntm-card-list__yt-marquee {
+	position: relative;  
+	overflow: hidden;
+	padding-inline-start: 93px;  
+}
+
+.nntm-card-list__yt-marquee--framed {
+	padding-inline-start: 90px;  
+}
+
+.nntm-card-list__yt-track {
+	display: flex;
+	align-items: flex-start;
+	width: max-content;
+	gap: var(--nntm-sp-10);  
+	animation: nntm-yt-marquee linear infinite;
+	animation-duration: var(--nntm-yt-duration, 30s);
+	will-change: transform;
+}
+
+.nntm-card-list__yt-marquee--framed .nntm-card-list__yt-track {
+	gap: var(--nntm-sp-5);  
+}
+
+.nntm-card-list__yt-marquee:hover .nntm-card-list__yt-track,
+.nntm-card-list__yt-marquee:focus-within .nntm-card-list__yt-track {
+	animation-play-state: paused;
+}
+
+.nntm-card-list__yt-track--tay {
+	animation: none;
+	transition: transform 0.45s var(--nntm-ease);
+}
+@media (prefers-reduced-motion: reduce) {
+	.nntm-card-list__yt-track--tay {
+		transition: none;
+	}
+}
+
+.nntm-card-list__yt-cell {
+	flex: 0 0 348px;  
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-2);  
+}
+
+.nntm-card-list__yt-item {
+	position: relative;
+	width: 348px;
+	height: 198px;  
+	overflow: hidden;
+	border-radius: var(--nntm-r-md);
+	cursor: pointer;
+	background-color: var(--nntm-xam);  
+	transition: transform var(--nntm-dur) var(--nntm-ease), box-shadow var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-card-list__yt-cell--framed {
+	flex: 0 0 388px;  
+}
+
+.nntm-card-list__yt-item--framed {
+	width: 388px;
+	height: 360px;  
+	padding: var(--nntm-sp-5);  
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: var(--nntm-sp-3);  
+	 
+	background-color: var(--nntm-den);
+	transition: transform var(--nntm-dur) var(--nntm-ease), box-shadow var(--nntm-dur) var(--nntm-ease), background-color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-card-list__yt-media {
+	position: relative;
+	width: 100%;
+	height: 196px;  
+	overflow: hidden;
+	border-radius: var(--nntm-r-sm);
+	flex: 0 0 auto;
+}
+
+.nntm-card-list__yt-title {
+	margin: 0;
+	max-width: 348px;
+	font-family: var(--nntm-font-display);  
+	font-weight: 700;
+	font-size: var(--nntm-fs-sm);       
+	line-height: var(--nntm-lh-khit);
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	color: var(--nntm-trang);           
+}
+
+.nntm-card-list__yt-title--3-dong {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	overflow: hidden;
+}
+
+.nntm-card-list__yt-item:hover,
+.nntm-card-list__yt-item:focus-visible,
+.nntm-card-list__yt-item.is-playing {
+	 
+	transform: scale(1.06);
+	z-index: 2;
+	box-shadow: var(--nntm-sh-lift);
+}
+
+.nntm-card-list__yt-item--framed:hover,
+.nntm-card-list__yt-item--framed:focus-visible,
+.nntm-card-list__yt-item--framed.is-playing {
+	background-color: color-mix(in srgb, var(--nntm-den) 70%, transparent);
+}
+
+.nntm-card-list__yt-item:focus-visible {
+	outline: 2px solid var(--nntm-trang-lanh);
+	outline-offset: 2px;
+}
+
+.nntm-card-list__yt-thumb {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: opacity var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-card-list__yt-item.is-playing .nntm-card-list__yt-thumb {
+	opacity: 0;
+}
+
+.nntm-card-list__yt-play {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--nntm-trang-lanh);
+	transition: opacity var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-card-list__yt-item.is-playing .nntm-card-list__yt-play {
+	opacity: 0;
+}
+
+.nntm-card-list__yt-frame {
+	position: absolute;
+	inset: 0;
+}
+
+.nntm-card-list__yt-frame iframe {
+	display: block;
+	width: 100%;
+	height: 100%;
+	border: 0;
+	 
+	pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	.nntm-card-list__yt-track {
+		animation: none;
+	}
+
+	.nntm-card-list__yt-item {
+		transition: none;
+	}
+}
+@media (max-width: 1151px) {
+	.nntm-card-list__yt-marquee {
+		padding-inline-start: var(--nntm-sp-7);
+	}
+
+	.nntm-card-list__yt-track {
+		gap: var(--nntm-sp-7);  
+	}
+}
+@media (min-width: 1152px) {
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-marquee {
+		margin-top: 45px;
+		padding-left: 73px;
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-track {
+		gap: var(--nntm-cl-yt-khe);
+		animation: nntm-cl-yt-chay var(--nntm-yt-duration, 40s) linear infinite;
+		animation-delay: 600ms;
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-cell {
+		display: flex;
+		flex: 0 0 var(--nntm-cl-yt-the-rong);
+		flex-direction: column;
+		gap: 15px;
+		width: var(--nntm-cl-yt-the-rong);
+		height: var(--nntm-cl-yt-the-cao);
+		padding: 20px;
+		box-sizing: border-box;
+		background: rgba(0, 0, 0, 0.5);
+		-webkit-backdrop-filter: blur(5px);
+		backdrop-filter: blur(5px);
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-item {
+		flex: 0 0 var(--nntm-cl-yt-hinh-cao);
+		width: var(--nntm-cl-yt-hinh-rong);
+		height: var(--nntm-cl-yt-hinh-cao);
+		border-radius: 0;
+		box-shadow: none;
+		background: transparent;
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-media {
+		width: var(--nntm-cl-yt-hinh-rong);
+		height: var(--nntm-cl-yt-hinh-cao);
+		aspect-ratio: auto;
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-title {
+		max-width: var(--nntm-cl-yt-hinh-rong);
+		font-family: var(--nntm-font-sans);
+		font-size: 18px;
+		font-weight: 700;
+		line-height: 30px;
+		letter-spacing: 0;
+		text-transform: none;
+		color: var(--nntm-trang);
+		-webkit-line-clamp: 2;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-marquee {
+		width: calc(100% + 100px);
+		margin-left: -50px;
+		padding-left: 90px;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-track {
+		gap: var(--nntm-cl-yt-khe);
+		animation: nntm-cl-yt-chay var(--nntm-yt-duration, 40s) linear infinite;
+		animation-delay: 600ms;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-cell--framed {
+		flex: 0 0 var(--nntm-cl-yt-the-rong);
+		width: var(--nntm-cl-yt-the-rong);
+		height: var(--nntm-cl-yt-the-cao);
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-item--framed {
+		width: var(--nntm-cl-yt-the-rong);
+		height: var(--nntm-cl-yt-the-cao);
+		min-height: var(--nntm-cl-yt-the-cao);
+		padding: 20px;
+		gap: 15px;
+		box-sizing: border-box;
+		border-radius: 0;
+		background: var(--nntm-den);
+		box-shadow: none;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-cell--framed:first-child .nntm-card-list__yt-item--framed {
+		background: rgba(0, 0, 0, 0.7);
+		-webkit-backdrop-filter: blur(5px);
+		backdrop-filter: blur(5px);
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-media {
+		width: var(--nntm-cl-yt-hinh-rong);
+		height: var(--nntm-cl-yt-hinh-cao);
+		aspect-ratio: auto;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-title {
+		max-width: var(--nntm-cl-yt-hinh-rong);
+		font-family: var(--nntm-font-sans);
+		font-size: 18px;
+		font-weight: 700;
+		line-height: 30px;
+		letter-spacing: 0;
+		text-transform: none;
+		color: var(--nntm-trang);
+		-webkit-line-clamp: 3;
+	}
+
+	/* Ảnh nhỏ và nút play trong thẻ, dùng chung cho cả hai dải. */
+	.nntm-card-list__yt-thumb {
+		object-fit: cover;
+	}
+
+	.nntm-card-list__yt-play {
+		inset: 0;
+		z-index: 2;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: auto;
+		height: auto;
+		pointer-events: none;
+	}
+
+	.nntm-card-list__yt-play svg {
+		width: 75px;
+		height: 75px;
+		filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.18));
+	}
+
+	.nntm-card-list__yt-frame {
+		z-index: 1;
+	}
+}
+
+/* -----------------------------------------------------------------------------
+   Rê chuột / tiêu điểm bàn phím vào một video
+   -----------------------------------------------------------------------------
+   Yêu cầu: video phóng to rõ, đè lên các video xung quanh, không bị khung cha
+   cắt mất, và không làm xô lệch bố cục (chỉ dùng transform, không đổi kích thước
+   thật). Chuột và bàn phím cho kết quả như nhau nhờ cặp :hover / :focus-visible.
+   ----------------------------------------------------------------------------- */
+
+.nntm-card-list__yt-marquee {
+	/*
+	 * Cắt theo chiều ngang (băng chạy vô tận) nhưng để hở chiều dọc, nếu không
+	 * phần nhô ra khi phóng to sẽ bị chính khung băng cắt cụt.
+	 */
+	overflow: visible;
+	overflow-x: clip;
+	overflow-y: visible;
+	overflow-clip-margin: 40px;
+}
+
+.nntm-card-list__yt-cell {
+	position: relative;
+	/* Thẻ không được cắt phần video nhô ra khi phóng. */
+	overflow: visible;
+}
+
+.nntm-card-list__yt-media {
+	/* Ảnh và iframe vẫn phải nằm gọn trong khung ảnh của thẻ. */
+	overflow: hidden;
+}
+
+.nntm-card-list__yt-cell:has(.nntm-card-list__yt-item:hover),
+.nntm-card-list__yt-cell:has(.nntm-card-list__yt-item:focus-visible),
+.nntm-card-list__yt-cell:has(.nntm-card-list__yt-item.is-playing) {
+	z-index: 6;
+}
+
+.nntm-card-list__yt-item:hover,
+.nntm-card-list__yt-item:focus-visible,
+.nntm-card-list__yt-item.is-playing {
+	transform: scale(var(--nntm-cl-phong, 1.06));
+	z-index: 6;
+	box-shadow: 0 18px 42px rgba(0, 0, 0, 0.32);
+}
+@media (min-width: 1152px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+	.nntm-card-list__yt-cell {
+		transition:
+			transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+			box-shadow 420ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.nntm-card-list__yt-item {
+		transform-origin: center;
+		backface-visibility: hidden;
+		will-change: transform;
+		transition:
+			transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+			box-shadow 420ms cubic-bezier(0.22, 1, 0.36, 1),
+			background-color 320ms ease;
+	}
+
+	.nntm-card-list__yt-thumb {
+		transition:
+			opacity 320ms ease,
+			transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+			filter 420ms ease;
+	}
+
+	.nntm-card-list__yt-play svg {
+		transform: scale(1);
+		transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1), opacity 280ms ease;
+	}
+
+	.nntm-card-list__yt-cell:has(.nntm-card-list__yt-item:hover),
+	.nntm-card-list__yt-cell:has(.nntm-card-list__yt-item:focus-visible) {
+		transform: translateY(-5px);
+	}
+
+	.nntm-card-list__yt-item:hover .nntm-card-list__yt-thumb,
+	.nntm-card-list__yt-item:focus-visible .nntm-card-list__yt-thumb {
+		transform: scale(1.04);
+		filter: saturate(1.035) contrast(1.02);
+	}
+
+	.nntm-card-list__yt-item:hover .nntm-card-list__yt-play svg,
+	.nntm-card-list__yt-item:focus-visible .nntm-card-list__yt-play svg {
+		transform: scale(1.045);
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.nntm-card-list--nen-toi .nntm-card-list__yt-track,
+	.nntm-card-list--nen-cam .nntm-card-list__yt-track {
+		animation: none;
+	}
+
+	.nntm-card-list__yt-cell,
+	.nntm-card-list__yt-item,
+	.nntm-card-list__yt-thumb,
+	.nntm-card-list__yt-play svg {
+		transition: none;
+		transform: none;
+	}
+}
+@media (max-width: 1151px) {
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-marquee {
+		width: 100%;
+		margin-left: 0;
+		padding-left: var(--nntm-sp-5);
+	}
+}
+@media (max-width: 767px) {
+	.nntm-card-list--nen-toi .nntm-card-list__yt-cell,
+	.nntm-card-list--nen-cam .nntm-card-list__yt-cell--framed {
+		flex-basis: min(88vw, 388px);
+		width: min(88vw, 388px);
+		height: auto;
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-item,
+	.nntm-card-list--nen-toi .nntm-card-list__yt-media,
+	.nntm-card-list--nen-cam .nntm-card-list__yt-media {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 348 / 203;
+	}
+
+	.nntm-card-list--nen-cam .nntm-card-list__yt-item--framed {
+		width: 100%;
+		height: auto;
+		min-height: 0;
+	}
+
+	.nntm-card-list--nen-toi .nntm-card-list__yt-title,
+	.nntm-card-list--nen-cam .nntm-card-list__yt-title {
+		max-width: 100%;
+		font-size: var(--nntm-fs-base);
+		line-height: 1.5;
+	}
+}
+
+@keyframes nntm-yt-marquee {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		 
+		transform: translateX(-50%);
+	}
+}
+
+@keyframes nntm-cl-yt-chay {
+	from {
+		transform: translate3d(0, 0, 0);
+	}
+	to {
+		transform: translate3d(calc(-50% - var(--nntm-cl-yt-bu, 0px)), 0, 0);
+	}
+}

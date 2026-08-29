@@ -17,6 +17,7 @@
 	var ToggleControl = wp.components.ToggleControl;
 	var RangeControl = wp.components.RangeControl;
 	var Button = wp.components.Button;
+	var ServerSideRender = wp.serverSideRender && wp.serverSideRender.default ? wp.serverSideRender.default : wp.serverSideRender;
 
 	function tamRong() {
 		return { mediaType: 'image', imageId: 0, imageUrl: '', imageAlt: '', heading: '', text: '' };
@@ -28,7 +29,7 @@
 			var setAttributes = props.setAttributes;
 			var slides = Array.isArray( attributes.slides ) ? attributes.slides : [];
 
-			var blockProps = useBlockProps( { className: 'nntm-banner-editor' } );
+			var blockProps = useBlockProps();
 
 			function capNhatTam( chiSo, thayDoi ) {
 				var moi = slides.map( function ( tam, i ) {
@@ -191,60 +192,18 @@
 				);
 			} );
 
-			var tamDau = slides.length > 0 ? slides[ 0 ] : null;
-
-			var xemTruoc = tamDau
-				? el(
-						'div',
-						{ className: 'nntm-banner-editor__stage' },
-						tamDau.imageUrl
-							? ( 'video' === ( tamDau.mediaType || 'image' )
-								? el( 'video', {
-									className: 'nntm-banner-editor__img',
-									src: tamDau.imageUrl,
-									autoPlay: true,
-									muted: true,
-									loop: true,
-									playsInline: true,
-								  } )
-								: el( 'img', {
-									className: 'nntm-banner-editor__img',
-									src: tamDau.imageUrl,
-									alt: tamDau.imageAlt || '',
-								  } ) )
-							: el( 'div', { className: 'nntm-banner-editor__no-img' } ),
-						el( 'div', { className: 'nntm-banner-editor__overlay' } ),
-						el(
-							'div',
-							{ className: 'nntm-banner-editor__text' },
-							attributes.emblemUrl
-								? el( 'img', {
-										className: 'nntm-banner-editor__emblem',
-										src: attributes.emblemUrl,
-										alt: '',
-								  } )
-								: null,
-							el( 'p', { className: 'nntm-banner-editor__heading' }, tamDau.heading || __( 'Nhập tiêu đề trong bảng bên phải…', 'nntm' ) ),
-							el( 'p', { className: 'nntm-banner-editor__sub' }, tamDau.text || '' )
-						),
-						slides.length > 1
-							? el(
-									'div',
-									{ className: 'nntm-banner-editor__dots' },
-									slides.map( function ( tam, i ) {
-										return el( 'span', {
-											key: 'cham-' + i,
-											className: 'nntm-banner-editor__dot' + ( 0 === i ? ' is-active' : '' ),
-										} );
-									} )
-							  )
-							: null
-				  )
-				: el(
-						'p',
-						{ className: 'nntm-banner-editor__empty' },
-						__( 'Chưa có tấm nào. Bấm "Thêm một tấm" trong bảng điều khiển bên phải.', 'nntm' )
-				  );
+			/*
+			 * Xem truoc bang chinh render.php, khong ve lai bang tay.
+			 *
+			 * Truoc day cho nay dung mot bo class song song .nntm-banner-editor__*
+			 * — khong trung mot class nao voi ban that — nen banner trong admin luon
+			 * khac ngoai trang. render.php da co san nhanh REST_REQUEST cho truong
+			 * hop chua co tam nao, nen chuyen sang ServerSideRender la du.
+			 */
+			var xemTruoc = el( ServerSideRender, {
+				block: 'nntm/banner',
+				attributes: attributes,
+			} );
 
 			return el(
 				'div',

@@ -9,6 +9,7 @@ define( 'NNTM_THEME_URI', get_template_directory_uri() );
 require NNTM_THEME_DIR . '/inc/setup.php';
 require NNTM_THEME_DIR . '/inc/page-settings.php';
 require NNTM_THEME_DIR . '/inc/enqueue.php';
+require NNTM_THEME_DIR . '/inc/editor-parity.php';
 require NNTM_THEME_DIR . '/inc/preloader-quotes.php';
 require NNTM_THEME_DIR . '/inc/preloader.php';
 require NNTM_THEME_DIR . '/inc/blocks.php';

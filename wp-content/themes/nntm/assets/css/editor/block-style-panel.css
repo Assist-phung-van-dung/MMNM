@@ -1,0 +1,255 @@
+/*
+ * Giao diện bảng điều khiển style block trong trình soạn thảo.
+ *
+ * Chỉ chạy trong wp-admin. Mục tiêu: các ô nằm thành nhóm rõ ràng, khoảng cách
+ * đều nhau, và bảng màu không bị bè ra chiếm hết chiều cao thanh bên.
+ */
+
+.nntm-bs .components-base-control {
+	margin-bottom: 0;
+}
+
+/* Mỗi ô cách nhau đều một nhịp, không phụ thuộc component bên trong. */
+.nntm-bs .components-panel__row,
+.nntm-bs > .components-base-control,
+.nntm-bs > .components-select-control,
+.nntm-bs > .components-range-control,
+.nntm-bs > .nntm-bs__nhom,
+.nntm-bs > .nntm-bs__doi,
+.nntm-bs > .nntm-bs__dat-lai {
+	margin-bottom: 16px;
+}
+
+.nntm-bs > *:last-child {
+	margin-bottom: 0;
+}
+
+/* Hàng nút chọn kiểu nền: Không / Màu / Chuyển sắc / Ảnh. */
+.nntm-bs__kieu {
+	margin-bottom: 16px;
+}
+
+/*
+ * Ô màu.
+ *
+ * ColorPalette mặc định để ô màu khá to; thu nhỏ lại cho vừa thanh bên và xếp
+ * được nhiều màu trên một hàng, đỡ phải cuộn.
+ */
+.nntm-bs__mau .components-circular-option-picker__option-wrapper {
+	width: 26px;
+	height: 26px;
+}
+
+.nntm-bs__mau .components-circular-option-picker__swatches {
+	gap: 8px;
+}
+
+/*
+ * Nhóm hai ô màu đứng cạnh nhau (màu đầu / màu cuối của chuyển sắc).
+ * Thanh bên hẹp nên xuống một cột khi không đủ chỗ.
+ */
+.nntm-bs__doi {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: 16px;
+}
+
+/* Nhóm con có tiêu đề riêng, ví dụ "Lớp phủ trên ảnh". */
+.nntm-bs__nhom {
+	padding-top: 16px;
+	border-top: 1px solid #e0e0e0;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.nntm-bs__nhom-ten {
+	margin: 0;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 1.4;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: #757575;
+}
+
+/* Ảnh nền đang chọn: xem trước nhỏ, tỉ lệ cố định để bảng không nhảy cao thấp. */
+.nntm-bs__anh {
+	margin-bottom: 12px;
+	border: 1px solid #e0e0e0;
+	border-radius: 2px;
+	overflow: hidden;
+	/* Ô caro nhạt để nhìn ra phần trong suốt của ảnh PNG. */
+	background-color: #f0f0f0;
+	background-image:
+		linear-gradient(45deg, #e0e0e0 25%, transparent 25%),
+		linear-gradient(-45deg, #e0e0e0 25%, transparent 25%),
+		linear-gradient(45deg, transparent 75%, #e0e0e0 75%),
+		linear-gradient(-45deg, transparent 75%, #e0e0e0 75%);
+	background-size: 12px 12px;
+	background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+}
+
+.nntm-bs__anh img {
+	display: block;
+	width: 100%;
+	height: 120px;
+	object-fit: cover;
+}
+
+/* Nút trả về mặc định tách hẳn xuống dưới, có vạch ngăn cho khỏi bấm nhầm. */
+.nntm-bs__dat-lai {
+	padding-top: 12px;
+	border-top: 1px solid #e0e0e0;
+}
+
+/*
+ * Bốn nhãn "Không / Màu / Chuyển sắc / Ảnh" trên một hàng trong thanh bên hẹp:
+ * thu cỡ chữ và bỏ bớt đệm ngang thì mới đủ chỗ, không bị cắt chữ.
+ */
+.nntm-bs__kieu .components-toggle-group-control-option-base {
+	padding-inline: 6px;
+	font-size: 11px;
+}
+
+/* ====================================================================== *
+ * BƯỚC 2 — bảng chữ theo vai trò
+ * ====================================================================== */
+
+/*
+ * Hàng chọn vai trò: Tiêu đề / Tiêu đề phụ / Nội dung / Nhãn nhỏ / Nút.
+ *
+ * Năm mục không xếp nổi một hàng trong thanh bên nên cho xuống dòng, thay vì
+ * dùng ToggleGroupControl (ép một hàng và sẽ cắt mất chữ).
+ */
+.nntm-bs__vaitro {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-bottom: 8px;
+}
+
+.nntm-bs__vaitro-nut {
+	position: relative;
+	padding: 6px 10px;
+	border: 1px solid #ddd;
+	border-radius: 2px;
+	background: #fff;
+	color: #1e1e1e;
+	font-size: 12px;
+	line-height: 1.2;
+	cursor: pointer;
+	transition: background-color .12s ease, border-color .12s ease;
+}
+
+.nntm-bs__vaitro-nut:hover {
+	border-color: #949494;
+}
+
+.nntm-bs__vaitro-nut.is-chon {
+	border-color: #3858e9;
+	background: #3858e9;
+	color: #fff;
+}
+
+.nntm-bs__vaitro-nut:focus-visible {
+	outline: 2px solid #3858e9;
+	outline-offset: 1px;
+}
+
+/* Chấm báo vai trò đã được chỉnh — nhìn là biết chỗ nào đang khác mặc định. */
+.nntm-bs__vaitro-nut.co-chinh::after {
+	content: "";
+	position: absolute;
+	top: 3px;
+	right: 3px;
+	width: 5px;
+	height: 5px;
+	border-radius: 50%;
+	background: #3858e9;
+}
+
+.nntm-bs__vaitro-nut.is-chon.co-chinh::after {
+	background: #fff;
+}
+
+.nntm-bs__vaitro-mota {
+	margin: 0 0 16px;
+	color: #757575;
+	font-size: 12px;
+	font-style: normal;
+	line-height: 1.5;
+}
+
+/* ====================================================================== *
+ * BƯỚC 3 — hàng chọn thiết bị
+ * ====================================================================== */
+
+/*
+ * Ba mốc: Máy tính / Máy tính bảng / Điện thoại. Dùng lại đúng dáng của hàng
+ * chọn vai trò để hai hàng nằm cạnh nhau không đá nhau, nhưng tách nền xám cho
+ * thấy rõ đây là bộ chuyển ngữ cảnh — mọi ô bên dưới đều thuộc mốc đang chọn.
+ */
+.nntm-bs__thietbi {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin-bottom: 8px;
+	padding: 4px;
+	border-radius: 2px;
+	background: #f0f0f0;
+}
+
+.nntm-bs__thietbi-nut {
+	position: relative;
+	flex: 1 1 auto;
+	padding: 6px 8px;
+	border: 0;
+	border-radius: 2px;
+	background: transparent;
+	color: #1e1e1e;
+	font-size: 11px;
+	line-height: 1.2;
+	white-space: nowrap;
+	cursor: pointer;
+	transition: background-color .12s ease;
+}
+
+.nntm-bs__thietbi-nut:hover {
+	background: #e0e0e0;
+}
+
+.nntm-bs__thietbi-nut.is-chon {
+	background: #fff;
+	box-shadow: 0 0 0 1px #3858e9;
+	font-weight: 600;
+}
+
+.nntm-bs__thietbi-nut:focus-visible {
+	outline: 2px solid #3858e9;
+	outline-offset: -2px;
+}
+
+/* Chấm báo mốc đã có giá trị riêng, khác Máy tính. */
+.nntm-bs__thietbi-nut.co-chinh::after {
+	content: "";
+	position: absolute;
+	top: 3px;
+	right: 3px;
+	width: 5px;
+	height: 5px;
+	border-radius: 50%;
+	background: #3858e9;
+}
+
+.nntm-bs__thietbi-mota {
+	margin: 0 0 16px;
+	color: #757575;
+	font-size: 12px;
+	line-height: 1.5;
+}
+
+/* Trong nhóm con thì dòng chú thích đã có khoảng cách riêng của nhóm. */
+.nntm-bs__nhom .nntm-bs__thietbi-mota {
+	margin-bottom: 0;
+}

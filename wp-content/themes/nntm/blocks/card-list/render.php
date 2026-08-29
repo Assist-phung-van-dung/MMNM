@@ -168,7 +168,6 @@ $show_category = ! isset( $attributes['showCategory'] ) || ! empty( $attributes[
 
 $show_card_cta   = ! empty( $attributes['showCardCta'] );
 $card_cta_label  = isset( $attributes['cardCtaLabel'] ) ? (string) $attributes['cardCtaLabel'] : __( 'Xem thêm', 'nntm' );
-$star_effect     = ! empty( $attributes['starEffect'] );
 $enable_quiz     = ! empty( $attributes['enableQuiz'] );
 
 $wrapper_attributes = get_block_wrapper_attributes(
@@ -176,7 +175,6 @@ $wrapper_attributes = get_block_wrapper_attributes(
 		'class' => 'nntm-card-list'
 			. ( 'none' !== $background ? ' nntm-card-list--nen-' . $background : '' )
 			. ( $is_books_marquee ? ' nntm-card-list--books-marquee' : '' )
-			. ( $star_effect ? ' nntm-card-list--star-effect' : '' ),
 	)
 );
 ?>
@@ -190,9 +188,6 @@ $wrapper_attributes = get_block_wrapper_attributes(
 	 
 	?>
 	<div class="nntm-card-list__band">
-	<?php if ( $star_effect ) : ?>
-		<div class="nntm-card-list__star-field" aria-hidden="true"></div>
-	<?php endif; ?>
 	<div class="nntm-container">
 		<?php if ( '' !== $heading || ( ! $is_books_marquee && $show_view_all && $view_all_url ) ) : ?>
 			<div class="nntm-card-list__header-row">

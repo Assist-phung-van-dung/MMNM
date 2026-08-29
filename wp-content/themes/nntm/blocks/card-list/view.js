@@ -51,10 +51,29 @@
 
 
 
-		var isProgrammaticScroll = false;
+		/*
+		 * Moc thoi gian cua lan cuon do CHINH carousel goi.
+		 *
+		 * Truoc day cho nay la mot co boolean, va no chi duoc dat lai false BEN
+		 * TRONG bo xu ly su kien 'scroll'. Neu mot lan tu cuon khong sinh ra su
+		 * kien 'scroll' — vi du bang da o cuoi nen scrollBy khong doi gi, hoac
+		 * trinh duyet gop su kien — thi co ket 'true' vinh vien, va tu do MOI cu
+		 * cuon tay cua nguoi dung deu bi hieu nham la do may tu cuon, nen autoplay
+		 * khong bao gio chiu dung lai khi nguoi dung gianh quyen.
+		 *
+		 * Moc thoi gian thi tu lanh: qua cua so ben duoi la coi nhu khong phai minh.
+		 */
+		var lucTuCuon = 0;
+
+		/* Cuon muot keo dai khoang 300-500ms; lay 1200ms cho du hao. */
+		var CUA_SO_TU_CUON = 1200;
+
+		function doMinhTuCuon() {
+			return ( Date.now() - lucTuCuon ) < CUA_SO_TU_CUON;
+		}
 
 		function scrollByDirection( direction ) {
-			isProgrammaticScroll = true;
+			lucTuCuon = Date.now();
 			track.scrollBy( {
 				left: direction * scrollStep(),
 				behavior: prefersReducedMotion() ? 'auto' : 'smooth',
@@ -62,7 +81,7 @@
 		}
 
 		function scrollToStart() {
-			isProgrammaticScroll = true;
+			lucTuCuon = Date.now();
 			track.scrollTo( {
 				left: 0,
 				behavior: prefersReducedMotion() ? 'auto' : 'smooth',
@@ -91,27 +110,80 @@
 
 
 
+		/*
+		 * Moc thoi gian cua thao tac NGUOI DUNG that su tren bang cuon.
+		 *
+		 * Truoc day chi can mot su kien "scroll" khong phai do carousel tu goi la
+		 * userScrolledManually bat len — va co do TAT AUTOPLAY VINH VIEN, khong co
+		 * duong quay lai. Nhung tren trinh duyet that co day su kien "scroll" chang
+		 * lien quan gi toi nguoi dung:
+		 *   - Chrome khoi phuc vi tri cuon khi tai lai trang hoac bam Back
+		 *   - anh trong bang tai xong lam do lai bo cuc
+		 *   - man hinh cho (preloader) nha ra, ca trang reflow
+		 *   - hieu ung hien dan nntm-reveal chay vao
+		 * Chi mot trong nhung thu do xay ra la bang khong bao gio tu chay nua.
+		 *
+		 * Nay phai hoi du HAI dieu kien moi coi la nguoi dung gianh quyen: cu cuon
+		 * khong phai do minh goi, VA co thao tac that tren bang trong 1 giay truoc do.
+		 */
+		var lucNguoiDungCham = 0;
+
+		[ 'wheel', 'touchstart', 'pointerdown', 'keydown' ].forEach( function ( ten ) {
+			track.addEventListener(
+				ten,
+				function () {
+					lucNguoiDungCham = Date.now();
+				},
+				{ passive: true }
+			);
+		} );
+
 		var scrollUpdateTimer = null;
+		var coThaoTacNguoiDung = false;
+
 		track.addEventListener(
 			'scroll',
 			function () {
+				/*
+				 * Quyet dinh "co phai nguoi dung khong" NGAY luc su kien no, khong doi
+				 * debounce. Trinh duyet bop setTimeout xuong toi thieu 1000ms o tab nen,
+				 * du de mot thao tac that cua nguoi dung roi ra ngoai cua so thoi gian
+				 * neu do o trong callback — luc do carousel se khong chiu dung lai.
+				 */
+				if ( ! doMinhTuCuon() && ( Date.now() - lucNguoiDungCham ) < 500 ) {
+					coThaoTacNguoiDung = true;
+				}
+
 				if ( scrollUpdateTimer ) {
 					window.clearTimeout( scrollUpdateTimer );
 				}
 				scrollUpdateTimer = window.setTimeout( function () {
 					updateButtonsState();
 
-					if ( ! isProgrammaticScroll ) {
+					if ( coThaoTacNguoiDung ) {
 						userScrolledManually = true;
 						stopAutoplayTimer();
 					}
-					isProgrammaticScroll = false;
 				}, 50 );
 			},
 			{ passive: true }
 		);
 
 		window.addEventListener( 'resize', updateButtonsState );
+
+		/*
+		 * Do lai be ngang khi bang thay doi kich thuoc.
+		 *
+		 * hasOverflow duoc tinh mot lan luc khoi tao. Neu luc do anh trong the chua
+		 * tai xong thi scrollWidth con nho, hasOverflow = false — nut mui ten bi an
+		 * va autoplay khong du dieu kien chay. Truoc day chi co su kien "resize" cua
+		 * cua so moi tinh lai, tuc la phai doi nguoi dung keo cua so.
+		 */
+		if ( window.ResizeObserver ) {
+			new window.ResizeObserver( updateButtonsState ).observe( track );
+		} else {
+			window.addEventListener( 'load', updateButtonsState );
+		}
 
 
 

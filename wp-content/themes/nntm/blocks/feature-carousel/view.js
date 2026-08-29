@@ -19,6 +19,22 @@
 		var pendingVideo = null;
 		var loadingObserver = null;
 
+		/*
+		 * Hai che do video (xem render.php):
+		 *   anh-dong — video lap lai nhu anh dong, KHONG dinh gi toi dong ho.
+		 *   phat-het — carousel dung cho video phat het roi moi chuyen.
+		 *
+		 * Truoc day khong co che do: the <video> luon co "loop" con doan nay luon
+		 * dung dong ho khi video chay va cho su kien "ended" de chuyen tiep. Video
+		 * co "loop" thi khong bao gio "ended" — nen mot khi slide video vao giua
+		 * la carousel dung han, va moi duong khoi phuc deu bi chan:
+		 *   - "ended" khong bao gio ban
+		 *   - "pause" khong bao gio ban (video loop tu no khong dung)
+		 *   - mouseleave/focusout co goi start(), nhung start() lai thoat som vi
+		 *     video van dang chay.
+		 */
+		var videoKhoaDongHo = root.dataset.videoMode === 'phat-het';
+
 		function signedDistance( index ) {
 			var total = slides.length;
 			var distance = ( index - current + total ) % total;
@@ -120,13 +136,24 @@
 
 		function start() {
 			stop();
-			if ( slides.length < 2 || root.dataset.autoplay !== '1' || reducedMotion.matches || pendingVideo ) {
+			if ( slides.length < 2 || root.dataset.autoplay !== '1' || reducedMotion.matches ) {
 				return;
 			}
 
-			var activeVideo = slides[ current ].querySelector( '[data-fc-video]' );
-			if ( activeVideo && ! activeVideo.paused && ! activeVideo.ended ) {
-				return;
+			/*
+			 * pendingVideo va video dang chay chi duoc chan dong ho o che do
+			 * phat-het. O che do anh-dong, video la mot anh dong trang tri — de
+			 * no chan dong ho thi carousel dung vinh vien.
+			 */
+			if ( videoKhoaDongHo ) {
+				if ( pendingVideo ) {
+					return;
+				}
+
+				var activeVideo = slides[ current ].querySelector( '[data-fc-video]' );
+				if ( activeVideo && ! activeVideo.paused && ! activeVideo.ended ) {
+					return;
+				}
 			}
 
 			var seconds = parseInt( root.dataset.interval || '6', 10 );
@@ -182,6 +209,14 @@
 		slides.forEach( function ( slide ) {
 			var video = slide.querySelector( '[data-fc-video]' );
 			if ( ! video ) {
+				return;
+			}
+
+			/*
+			 * O che do anh-dong, video khong duoc dinh vao dong ho chut nao:
+			 * carousel cu chay theo chu ky, video lap lai o duoi nhu mot anh dong.
+			 */
+			if ( ! videoKhoaDongHo ) {
 				return;
 			}
 

@@ -105,6 +105,11 @@
 			],
 			"default": "cream"
 		},
+		"videoMode": {
+			"type": "string",
+			"enum": [ "anh-dong", "phat-het" ],
+			"default": "anh-dong"
+		},
 		"arrowStyle": {
 			"type": "string",
 			"enum": [

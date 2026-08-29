@@ -205,6 +205,9 @@
 			var activeDetails = activeSlide && Array.isArray( activeSlide.details ) ? activeSlide.details : [];
 			var activePopupDetail = activeDetails[ Math.min( popupPreviewIndex, Math.max( 0, activeDetails.length - 1 ) ) ] || null;
 
+			/* render.php an mui ten khi tat cong tac hoac chi co mot slide. */
+			var hienMuiTen = attributes.showArrows !== false && slides.length > 1;
+
 			var previewSlides = slides.map( function ( slide, index ) {
 				var url = imageUrl( slide );
 				return el( 'figure', { className: 'nntm-feature-gallery-carousel__slide', 'data-position': String( relativePosition( index, previewIndex, slides.length ) ), key: 'preview-' + index },
@@ -245,12 +248,29 @@
 					)
 				),
 				slides.length < 1 ? el( Notice, { status: 'info', isDismissible: false }, __( 'Thêm ít nhất một slide. Ảnh được preview ngay trong editor, không cần lưu trước.', 'nntm' ) ) : null,
-				el( 'div', { className: 'nntm-feature-gallery-carousel nntm-feature-gallery-carousel--bg-' + ( attributes.backgroundStyle || 'white' ) + ' nntm-fgc-editor-main-preview' },
+				/*
+				 * Thanh chuyen slide danh rieng cho khung soan thao.
+				 *
+				 * Chi hien khi mui ten cua ban that dang bi tat — luc do khong con gi de
+				 * buoc qua slide khac. No nam NGOAI khung xem truoc va mang class
+				 * nntm-fgc-editor-* nen khong lam sai lech hinh dang ban that.
+				 */
+				! hienMuiTen && slides.length > 1 ? el( 'div', { className: 'nntm-fgc-editor-nav' },
+					el( Button, { variant: 'secondary', size: 'small', onClick: function () { setPreviewIndex( ( previewIndex - 1 + slides.length ) % slides.length ); setPopupPreviewIndex( 0 ); } }, '←' ),
+					el( 'span', {}, __( 'Slide', 'nntm' ) + ' ' + ( previewIndex + 1 ) + ' / ' + slides.length + ' — ' + __( 'mũi tên đang tắt ở bản thật', 'nntm' ) ),
+					el( Button, { variant: 'secondary', size: 'small', onClick: function () { setPreviewIndex( ( previewIndex + 1 ) % slides.length ); setPopupPreviewIndex( 0 ); } }, '→' )
+				) : null,
+				/*
+				 * Chuoi class phai khop render.php: ngoai --bg-* con co --arrows-*.
+				 * Thieu --arrows-* thi doi kieu mui ten (chi mui ten / o vuong) o thanh
+				 * ben khong thay gi trong admin, du ngoai trang co doi.
+				 */
+				el( 'div', { className: 'nntm-feature-gallery-carousel nntm-feature-gallery-carousel--bg-' + ( attributes.backgroundStyle || 'white' ) + ' nntm-feature-gallery-carousel--arrows-' + ( attributes.arrowStyle || 'plain' ) + ' nntm-fgc-editor-main-preview' },
 					attributes.heading ? el( 'header', { className: 'nntm-feature-gallery-carousel__header' }, el( 'h2', { className: 'nntm-feature-gallery-carousel__heading' }, el( 'span', {}, attributes.heading ) ) ) : null,
 					slides.length ? el( 'div', { className: 'nntm-feature-gallery-carousel__slider' },
-						el( Button, { className: 'nntm-feature-gallery-carousel__arrow nntm-feature-gallery-carousel__arrow--prev', disabled: slides.length < 2, onClick: function () { setPreviewIndex( ( previewIndex - 1 + slides.length ) % slides.length ); setPopupPreviewIndex( 0 ); } }, '←' ),
+						hienMuiTen ? el( Button, { className: 'nntm-feature-gallery-carousel__arrow nntm-feature-gallery-carousel__arrow--prev', disabled: slides.length < 2, onClick: function () { setPreviewIndex( ( previewIndex - 1 + slides.length ) % slides.length ); setPopupPreviewIndex( 0 ); } }, '←' ) : null,
 						el( 'div', { className: 'nntm-feature-gallery-carousel__track' }, previewSlides ),
-						el( Button, { className: 'nntm-feature-gallery-carousel__arrow nntm-feature-gallery-carousel__arrow--next', disabled: slides.length < 2, onClick: function () { setPreviewIndex( ( previewIndex + 1 ) % slides.length ); setPopupPreviewIndex( 0 ); } }, '→' )
+						hienMuiTen ? el( Button, { className: 'nntm-feature-gallery-carousel__arrow nntm-feature-gallery-carousel__arrow--next', disabled: slides.length < 2, onClick: function () { setPreviewIndex( ( previewIndex + 1 ) % slides.length ); setPopupPreviewIndex( 0 ); } }, '→' ) : null
 					) : null
 				),
 				activeSlide ? el( 'div', { className: 'nntm-fgc-editor-popup-preview' },

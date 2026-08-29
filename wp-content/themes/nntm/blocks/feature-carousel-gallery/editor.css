@@ -22,3 +22,12 @@
 	.nntm-fgc-editor-popup-stage { grid-template-columns:40px minmax(0,1fr) 40px; }
 	.nntm-fgc-editor-popup-card img,.nntm-fgc-editor-popup-empty { height:240px; }
 }
+
+/*
+ * Thanh chuyển slide chỉ có trong khung soạn thảo.
+ *
+ * Bản thật cho phép tắt mũi tên. Khi tắt, bản xem trước cũng phải giấu mũi tên
+ * cho giống — nhưng như vậy người soạn hết đường bước qua slide khác. Thanh này
+ * bù lại chỗ đó, và cố tình để ngoài khung xem trước cho khỏi lẫn với thiết kế.
+ */
+.nntm-fgc-editor-nav { display:flex; align-items:center; justify-content:center; gap:12px; width:min(100%,1184px); margin:12px auto 0; padding:8px; background:#f0f0f0; color:#555; font-size:12px; }

@@ -34,7 +34,15 @@ $google_url = apply_filters( 'nntm_google_login_url', '' );
 		<input type="hidden" name="redirect_to" value="<?php echo esc_attr( $redirect_to ); ?>" />
 
 		<div class="nntm-auth-field">
-			<label for="nntm-login-user"><?php esc_html_e( 'Email hoặc Tên đăng nhập', 'nntm' ); ?></label>
+			<?php
+			/*
+			 * Nhãn nêu Email trước vì tài khoản mới chỉ có email — form đăng ký
+			 * đã bỏ ô Tên đăng nhập. Vẫn giữ type="text" và vẫn nhận tên đăng
+			 * nhập: những tài khoản lập trước thay đổi này có tên do chính họ
+			 * đặt và có thể vẫn đang dùng nó. WordPress nhận cả hai sẵn.
+			 */
+			?>
+			<label for="nntm-login-user"><?php esc_html_e( 'Email', 'nntm' ); ?></label>
 			<div class="nntm-auth-field__control nntm-auth-field__control--icon">
 				<svg class="nntm-auth-field__icon" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
 					<circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.4" />
@@ -44,7 +52,7 @@ $google_url = apply_filters( 'nntm_google_login_url', '' );
 					type="text"
 					id="nntm-login-user"
 					name="user_login"
-					placeholder="<?php esc_attr_e( 'Email hoặc Tên đăng nhập', 'nntm' ); ?>"
+					placeholder="<?php esc_attr_e( 'vd: nguyenvana@gmail.com', 'nntm' ); ?>"
 					autocomplete="username"
 					required
 				/>

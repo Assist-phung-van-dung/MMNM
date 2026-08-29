@@ -210,8 +210,6 @@ function nntm_enqueue_auth_assets(): void {
 				'requiredName'     => __( 'Vui lòng nhập Họ và Tên.', 'nntm' ),
 				'requiredEmail'    => __( 'Vui lòng nhập Email.', 'nntm' ),
 				'invalidEmail'     => __( 'Email không hợp lệ. Vui lòng kiểm tra lại.', 'nntm' ),
-				'requiredLogin'    => __( 'Vui lòng nhập Tên đăng nhập.', 'nntm' ),
-				'shortLogin'       => __( 'Tên đăng nhập phải có ít nhất 4 ký tự.', 'nntm' ),
 				'requiredDharma'   => __( 'Vui lòng nhập Pháp danh.', 'nntm' ),
 				'shortDharma'      => __( 'Pháp danh phải có ít nhất 2 ký tự.', 'nntm' ),
 				'requiredPassword' => __( 'Vui lòng nhập mật khẩu.', 'nntm' ),
@@ -252,24 +250,67 @@ add_action( 'wp_footer', 'nntm_render_auth_modal' );
 
 
 /**
- * Gợi ý một tên đăng nhập duy nhất, dùng khi người dùng để trống ô Tên đăng nhập.
+ * Bảng ký tự dùng cho phần ngẫu nhiên của tên đăng nhập.
+ *
+ * Bỏ hẳn i, l, o, 0, 1 — những cặp dễ đọc nhầm cho nhau. Người dùng không bao
+ * giờ phải gõ chuỗi này, nhưng khi hỗ trợ hay tra lỗi thì có lúc phải đọc nó
+ * lên cho nhau nghe.
  */
-function nntm_tao_ten_dang_nhap( string $phap_danh ): string {
-	$goc = sanitize_title( sanitize_user( remove_accents( $phap_danh ), true ) );
+const NNTM_USER_LOGIN_BANG = 'abcdefghjkmnpqrstuvwxyz23456789';
 
-	if ( '' === $goc ) {
-		$goc = 'thanh-vien';
+/** Tiền tố của mọi tên đăng nhập sinh tự động (tv = thành viên). */
+const NNTM_USER_LOGIN_TIEN_TO = 'tv-';
+
+/** Số ký tự ngẫu nhiên. 31^8 ~ 850 tỉ tổ hợp. */
+const NNTM_USER_LOGIN_DO_DAI = 8;
+
+/**
+ * Sinh một tên đăng nhập TRUNG TÍNH, duy nhất — dạng tv-k7m2xp9q.
+ *
+ * Form đăng ký không còn ô "Tên đăng nhập": email mới là tài khoản. Nhưng
+ * WordPress vẫn bắt buộc mỗi tài khoản có user_login, nên hàm này lo phần đó.
+ *
+ * Vì sao KHÔNG lấy từ email: WordPress đặt user_nicename bằng chính user_login,
+ * mà nicename lộ công khai qua /author/<nicename>/ và qua REST API. Lấy phần
+ * trước dấu @ là công bố gần hết địa chỉ email của thành viên.
+ *
+ * Vì sao KHÔNG lấy từ Pháp danh: user_login không sửa được sau khi tạo. Buộc nó
+ * vào Pháp danh nghĩa là người đổi Pháp danh vẫn còn Pháp danh cũ nằm nguyên
+ * trong đường dẫn tác giả — vừa khó hiểu, vừa là thứ họ tưởng đã đổi rồi.
+ *
+ * Chuỗi ngẫu nhiên còn chặn luôn việc dò tài khoản: /author/tv-... không đoán
+ * được, khác hẳn tên tuần tự hay tên đoán được từ Pháp danh.
+ */
+function nntm_tao_user_login(): string {
+	$do_dai = strlen( NNTM_USER_LOGIN_BANG );
+
+	/*
+	 * Có giới hạn số lần thử để không bao giờ quay vòng vô hạn nếu username_exists
+	 * hỏng vì lý do nào đó. Với 850 tỉ tổ hợp thì đụng nhau 50 lần liên tiếp là
+	 * chuyện không thể xảy ra trong thực tế.
+	 */
+	for ( $lan = 0; $lan < 50; $lan++ ) {
+		$ma = '';
+
+		for ( $i = 0; $i < NNTM_USER_LOGIN_DO_DAI; $i++ ) {
+			// wp_rand dùng nguồn ngẫu nhiên mạnh, không đoán trước được.
+			$ma .= NNTM_USER_LOGIN_BANG[ wp_rand( 0, $do_dai - 1 ) ];
+		}
+
+		$user_login = NNTM_USER_LOGIN_TIEN_TO . $ma;
+
+		if ( ! username_exists( $user_login ) ) {
+			return $user_login;
+		}
 	}
 
-	$ten_dang_nhap = $goc;
-	$dem           = 1;
-
-	while ( username_exists( $ten_dang_nhap ) && $dem < 200 ) {
-		++$dem;
-		$ten_dang_nhap = $goc . '-' . $dem;
-	}
-
-	return $ten_dang_nhap;
+	/*
+	 * Đường lui: nối thêm dấu thời gian cho chắc chắn không trùng. Vẫn phải trả
+	 * về một tên chưa ai dùng — trả về tên đã có thì wp_insert_user chết với lỗi
+	 * "existing_user_login", một thông báo chẳng liên quan gì tới thứ người đăng
+	 * ký vừa nhập.
+	 */
+	return NNTM_USER_LOGIN_TIEN_TO . $ma . '-' . time();
 }
 
 /**
@@ -382,9 +423,16 @@ function nntm_handle_register_post(): void {
 	$ho_ten       = isset( $_POST['ho_ten'] ) ? sanitize_text_field( wp_unslash( $_POST['ho_ten'] ) ) : '';
 	$email        = isset( $_POST['user_email'] ) ? sanitize_email( wp_unslash( $_POST['user_email'] ) ) : '';
 
-	// user_login = TÊN ĐĂNG NHẬP (duy nhất). Pháp danh là ô riêng và ĐƯỢC PHÉP trùng.
-	$ten_dang_nhap = isset( $_POST['user_login'] ) ? sanitize_user( wp_unslash( $_POST['user_login'] ), true ) : '';
-	$ten_dang_nhap = trim( $ten_dang_nhap );
+	/*
+	 * Không còn ô "Tên đăng nhập" trong form: EMAIL chính là tài khoản đăng nhập.
+	 *
+	 * WordPress vẫn bắt buộc mỗi tài khoản có một user_login, nên nó được sinh
+	 * tự động, trung tính, sau khi qua hết phần kiểm tra (xem
+	 * nntm_tao_user_login). Ở đây
+	 * cố tình KHÔNG đọc $_POST['user_login']: form không còn gửi ô đó, và nhận
+	 * bừa thì người ngoài chỉ cần thêm một trường vào request là tự đặt được
+	 * user_login theo ý mình.
+	 */
 	$phap_danh    = isset( $_POST['nntm_phap_danh'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['nntm_phap_danh'] ) ) ) : '';
 	$password     = isset( $_POST['user_password'] ) ? (string) wp_unslash( $_POST['user_password'] ) : '';
 	$password_2   = isset( $_POST['user_password_2'] ) ? (string) wp_unslash( $_POST['user_password_2'] ) : '';
@@ -399,7 +447,6 @@ function nntm_handle_register_post(): void {
 	$GLOBALS['nntm_auth_values'] = array(
 		'ho_ten'            => $ho_ten,
 		'user_email'        => $email,
-		'user_login'        => $ten_dang_nhap,
 		'nntm_phap_danh'    => $phap_danh,
 		'nntm_vung_mien'    => $vung_mien,
 		'nntm_dia_chi'      => $dia_chi,
@@ -419,17 +466,6 @@ function nntm_handle_register_post(): void {
 		$errors->add( 'email', __( 'Email không hợp lệ.', 'nntm' ) );
 	} elseif ( email_exists( $email ) ) {
 		$errors->add( 'email', __( 'Email này đã được đăng ký.', 'nntm' ) );
-	}
-
-	// Tên đăng nhập: duy nhất, dùng để đăng nhập.
-	if ( '' === $ten_dang_nhap ) {
-		$errors->add( 'user_login', __( 'Vui lòng nhập Tên đăng nhập.', 'nntm' ) );
-	} elseif ( mb_strlen( $ten_dang_nhap ) < 4 ) {
-		$errors->add( 'user_login', __( 'Tên đăng nhập phải có ít nhất 4 ký tự.', 'nntm' ) );
-	} elseif ( ! validate_username( $ten_dang_nhap ) ) {
-		$errors->add( 'user_login', __( 'Tên đăng nhập chứa ký tự không hợp lệ. Chỉ dùng chữ không dấu, số, dấu chấm, gạch ngang và gạch dưới.', 'nntm' ) );
-	} elseif ( username_exists( $ten_dang_nhap ) ) {
-		$errors->add( 'user_login', __( 'Tên đăng nhập này đã có người dùng. Vui lòng chọn tên khác.', 'nntm' ) );
 	}
 
 	// Pháp danh: chỉ là tên hiển thị, ĐƯỢC PHÉP trùng giữa nhiều tài khoản.
@@ -455,7 +491,12 @@ function nntm_handle_register_post(): void {
 	}
 
 
-	$user_login = $ten_dang_nhap;
+	/*
+	 * user_login là định danh nội bộ, TRUNG TÍNH — dạng tv-k7m2xp9q. Không dính
+	 * gì tới email lẫn Pháp danh; lý do đầy đủ nằm ở nntm_tao_user_login().
+	 * Thành viên không nhìn thấy và cũng không cần biết tới nó.
+	 */
+	$user_login = nntm_tao_user_login();
 
 	$user_id = wp_insert_user(
 		array(
@@ -468,6 +509,25 @@ function nntm_handle_register_post(): void {
 			'role'         => 'subscriber',
 		)
 	);
+
+	/*
+	 * Hai người bấm Đăng ký cùng lúc thì cả hai có thể chọn trúng một
+	 * user_login: nntm_tao_user_login kiểm tra xong nhưng chưa ai kịp ghi.
+	 * Người thua nhận lỗi "existing_user_login" — một thông báo về ô mà form
+	 * còn chẳng có. Thử lại đúng một lần với đuôi ngẫu nhiên.
+	 */
+	if ( is_wp_error( $user_id ) && $user_id->get_error_code() === 'existing_user_login' ) {
+		$user_id = wp_insert_user(
+			array(
+				'user_login'   => $user_login . '-' . strtolower( wp_generate_password( 6, false ) ),
+				'user_email'   => $email,
+				'user_pass'    => $password,
+				'display_name' => $phap_danh,
+				'nickname'     => $phap_danh,
+				'role'         => 'subscriber',
+			)
+		);
+	}
 
 	if ( is_wp_error( $user_id ) ) {
 		$GLOBALS['nntm_auth_errors'] = $user_id;
