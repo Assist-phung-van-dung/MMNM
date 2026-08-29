@@ -140,11 +140,13 @@ function nntm_quiz_enqueue_assets(): void {
 			'nonce'    => wp_create_nonce( \NNTM\Core\Nghi_Quy_Quiz::NONCE ),
 			'autoOpen' => nntm_quiz_tu_mo(),
 			'i18n'     => array(
-				'dangTai'    => __( 'Đang tải câu hỏi…', 'nntm' ),
-				'loiMang'    => __( 'Không kết nối được. Vui lòng thử lại.', 'nntm' ),
-				'chuaChon'   => __( 'Vui lòng trả lời tất cả câu hỏi.', 'nntm' ),
-				'dangCham'   => __( 'Đang kiểm tra…', 'nntm' ),
-				'tieuDe'     => __( 'Trước khi xem Nghi Quỹ', 'nntm' ),
+				'dangTai'  => __( 'Đang tải câu hỏi…', 'nntm' ),
+				'loiMang'  => __( 'Không kết nối được. Vui lòng thử lại.', 'nntm' ),
+				'chuaChon' => __( 'Vui lòng trả lời tất cả câu hỏi.', 'nntm' ),
+				'dangCham' => __( 'Đang kiểm tra…', 'nntm' ),
+				'tieuDe'   => __( 'Trước khi xem Nghi Quỹ', 'nntm' ),
+				/* translators: %1$d: số câu đã trả lời, %2$d: tổng số câu. */
+				'tienDo'   => __( 'Đã trả lời %1$d/%2$d', 'nntm' ),
 			),
 		)
 	);
@@ -171,17 +173,44 @@ function nntm_quiz_render_modal(): void {
 				<span aria-hidden="true">&times;</span>
 			</button>
 
-			<h2 class="nntm-quiz-modal__title" id="nntm-quiz-modal-title"><?php esc_html_e( 'Trước khi xem Nghi Quỹ', 'nntm' ); ?></h2>
+			<?php
+			/*
+			 * Đầu khung đứng yên, chỉ vùng câu hỏi ở giữa cuộn. Bộ ba câu hỏi trên
+			 * màn hình điện thoại dài hơn một màn, để cuộn cả khung thì tiêu đề và
+			 * nút gửi trôi mất.
+			 */
+			?>
+			<header class="nntm-quiz-modal__header">
+				<p class="nntm-quiz-modal__eyebrow"><?php esc_html_e( 'Nghi Quỹ', 'nntm' ); ?></p>
+				<h2 class="nntm-quiz-modal__title" id="nntm-quiz-modal-title"><?php esc_html_e( 'Trước khi xem Nghi Quỹ', 'nntm' ); ?></h2>
+				<p class="nntm-quiz-modal__phu"><?php esc_html_e( 'Xin trả lời đúng tất cả câu hỏi để vào phần hành trì. Trả lời chưa đúng thì làm lại được, không giới hạn số lần.', 'nntm' ); ?></p>
+			</header>
 
-			<p class="nntm-quiz-modal__status" data-nntm-quiz-status role="status" aria-live="polite"></p>
-
-			<form class="nntm-quiz-modal__form" data-nntm-quiz-form hidden>
-				<div data-nntm-quiz-questions></div>
+			<form class="nntm-quiz-modal__form" id="nntm-quiz-form" data-nntm-quiz-form hidden>
+				<div class="nntm-quiz-modal__than">
+					<div data-nntm-quiz-questions></div>
+				</div>
 
 				<div class="nntm-quiz-modal__actions">
+					<span class="nntm-quiz-modal__tien-do" data-nntm-quiz-tien-do aria-live="polite"></span>
 					<button type="submit" class="nntm-quiz-modal__submit" data-nntm-quiz-submit><?php esc_html_e( 'Gửi câu trả lời', 'nntm' ); ?></button>
 				</div>
 			</form>
+
+			<?php
+			/*
+			 * Ô trạng thái nằm NGOÀI form: lúc trả lời sai, JS gỡ hết câu hỏi và
+			 * giấu form đi, chỉ còn lại thông báo — nếu ô này ở trong form thì nó
+			 * biến mất theo và người dùng không thấy vì sao mình bị chặn.
+			 */
+			?>
+			<div class="nntm-quiz-modal__khay-trang-thai">
+				<p class="nntm-quiz-modal__status" data-nntm-quiz-status role="status" aria-live="polite"></p>
+
+				<button type="button" class="nntm-quiz-modal__lam-lai" data-nntm-quiz-retry hidden>
+					<?php esc_html_e( 'Trả lời lại', 'nntm' ); ?>
+				</button>
+			</div>
 		</div>
 	</div>
 	<?php

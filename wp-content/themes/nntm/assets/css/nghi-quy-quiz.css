@@ -1,6 +1,12 @@
 /*
  * Popup câu hỏi gác cửa Nghi Quỹ.
  * Đi cùng inc/nghi-quy-quiz.php và assets/js/nghi-quy-quiz.js.
+ *
+ * Bố cục ba tầng cố định — đầu / thân cuộn / chân — chứ không cho cả khung
+ * cuộn: ba câu hỏi trên màn hình điện thoại dài hơn một màn, cuộn cả khung thì
+ * tiêu đề và nút gửi trôi mất khỏi tầm mắt.
+ *
+ * Góc vuông, không bo tròn, theo đúng lối chung của giao diện dự án.
  */
 
 html.nntm-quiz-open,
@@ -13,141 +19,280 @@ body.nntm-quiz-open {
 }
 
 .nntm-quiz-modal {
+  --qz-nen: var(--nntm-trang, #fff);
+  --qz-kem: var(--nntm-kem, #f7f1de);
+  --qz-nga: var(--nntm-nga, #f0eee9);
+  --qz-chu: var(--nntm-muc, #3f3b3b);
+  --qz-chu-mo: var(--nntm-xam-chu, #828282);
+  --qz-vien: var(--nntm-vien, #e0e0e0);
+  --qz-diem: var(--nntm-reu, #747766);
+  --qz-loi-nen: #fbeaea;
+  --qz-loi-chu: #a5342a;
+
   position: fixed;
   inset: 0;
   z-index: 100060;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--nntm-sp-5, 20px);
+  padding: clamp(12px, 4vw, 28px);
   box-sizing: border-box;
 }
 
 .nntm-quiz-modal__overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, .62);
+  background: rgba(20, 18, 16, .68);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  animation: nntm-quiz-hien 220ms ease both;
 }
 
 .nntm-quiz-modal__panel {
   position: relative;
   z-index: 1;
-  width: min(620px, 100%);
-  max-height: min(86dvh, 760px);
-  padding: 34px 34px 28px;
+  display: flex;
+  flex-direction: column;
+  width: min(640px, 100%);
+  max-height: min(88dvh, 780px);
   box-sizing: border-box;
-  overflow-y: auto;
-  background: var(--nntm-trang, #fff);
-  color: var(--nntm-chu, #3F3B3B);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, .35);
+  overflow: hidden;
+  background: var(--qz-nen);
+  color: var(--qz-chu);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .42);
+  animation: nntm-quiz-len 300ms cubic-bezier(.22, .61, .36, 1) both;
+}
+
+@keyframes nntm-quiz-hien {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes nntm-quiz-len {
+  from { opacity: 0; transform: translateY(14px) scale(.985); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---------- Đầu khung ---------- */
+
+.nntm-quiz-modal__header {
+  flex: none;
+  padding: 30px 34px 22px;
+  background: var(--qz-kem);
+  border-bottom: 1px solid rgba(63, 59, 59, .14);
+}
+
+.nntm-quiz-modal__eyebrow {
+  margin: 0 0 6px;
+  font-family: var(--nntm-font-sans, sans-serif);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--qz-diem);
+}
+
+.nntm-quiz-modal__title {
+  margin: 0 44px 8px 0;
+  font-family: var(--nntm-font-display, Georgia, serif);
+  font-size: clamp(1.5rem, 3.4vw, 1.875rem);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--qz-chu);
+}
+
+.nntm-quiz-modal__phu {
+  margin: 0;
+  max-width: 46ch;
+  font-family: var(--nntm-font-serif, Georgia, serif);
+  font-size: .9375rem;
+  line-height: 1.6;
+  color: var(--qz-chu-mo);
 }
 
 .nntm-quiz-modal__close {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 16px;
+  right: 16px;
+  z-index: 3;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 40px;
   height: 40px;
   padding: 0;
-  border: 0;
+  border: 1px solid transparent;
   background: transparent;
-  color: inherit;
-  font-size: 28px;
+  color: var(--qz-chu);
+  font-size: 26px;
   line-height: 1;
   cursor: pointer;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
 }
 
 .nntm-quiz-modal__close:hover,
 .nntm-quiz-modal__close:focus-visible {
-  color: var(--nntm-reu, #747766);
+  border-color: var(--qz-diem);
+  background: rgba(255, 255, 255, .6);
+  transform: rotate(90deg);
 }
 
-.nntm-quiz-modal__title {
-  margin: 0 40px 16px 0;
-  font-family: var(--nntm-font-display, Georgia, serif);
-  font-size: var(--nntm-fs-2xl, 1.875rem);
-  font-weight: 600;
-  line-height: 1.3;
-  color: var(--nntm-reu, #747766);
+/* ---------- Thân cuộn ---------- */
+
+.nntm-quiz-modal__form {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin: 0;
 }
 
-.nntm-quiz-modal__status {
-  margin: 0 0 14px;
-  font-family: var(--nntm-font-serif, Georgia, serif);
-  font-size: var(--nntm-fs-base, 1rem);
-  line-height: 1.6;
-  color: var(--nntm-chu-phu, #828282);
-}
-
-.nntm-quiz-modal__status[hidden] {
+.nntm-quiz-modal__form[hidden] {
   display: none;
 }
 
-.nntm-quiz-modal__status--loi {
-  padding: 12px 14px;
-  background: var(--nntm-loi-nen, #FBEAEA);
-  color: var(--nntm-loi-chu, #C0392B);
+.nntm-quiz-modal__than {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 26px 34px 8px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .nntm-quiz-modal__cau {
-  margin: 0 0 22px;
+  margin: 0 0 26px;
   padding: 0;
   border: 0;
+  /* Bộ đếm để dán nhãn A / B / C cho từng đáp án, không cần JS. */
+  counter-reset: nntm-quiz-dap-an;
+}
+
+.nntm-quiz-modal__cau:last-child {
+  margin-bottom: 4px;
 }
 
 .nntm-quiz-modal__hoi {
+  display: block;
+  width: 100%;
   padding: 0;
-  margin: 0 0 10px;
+  margin: 0 0 12px;
   font-family: var(--nntm-font-sans, sans-serif);
-  font-size: var(--nntm-fs-md, 1.125rem);
+  font-size: 1.0625rem;
   font-weight: 700;
   line-height: 1.5;
-  color: var(--nntm-chu, #3F3B3B);
+  color: var(--qz-chu);
 }
+
+/* ---------- Đáp án ---------- */
 
 .nntm-quiz-modal__dap-an {
+  position: relative;
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
   margin: 0 0 8px;
-  padding: 10px 12px;
-  border: 1px solid var(--nntm-vien, #E0E0E0);
+  padding: 12px 14px;
+  border: 1px solid var(--qz-vien);
+  background: var(--qz-nen);
   font-family: var(--nntm-font-serif, Georgia, serif);
-  font-size: var(--nntm-fs-base, 1rem);
+  font-size: 1rem;
   line-height: 1.5;
   cursor: pointer;
-  transition: border-color 180ms ease, background 180ms ease;
+  transition: border-color 160ms ease, background 160ms ease;
 }
 
-.nntm-quiz-modal__dap-an:hover,
-.nntm-quiz-modal__dap-an:focus-within {
-  border-color: var(--nntm-reu, #747766);
-  background: var(--nntm-nga, #F0EEE9);
+.nntm-quiz-modal__dap-an:hover {
+  border-color: var(--qz-diem);
+  background: var(--qz-nga);
 }
 
+/*
+ * Ô chọn thật bị ẩn khỏi mắt nhưng VẪN nằm trong luồng tiêu điểm — không dùng
+ * display:none, vì như thế bàn phím và trình đọc màn hình mất luôn ô chọn.
+ */
 .nntm-quiz-modal__dap-an input {
-  margin: 3px 0 0;
-  flex: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
 }
+
+.nntm-quiz-modal__ky-hieu {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--qz-vien);
+  background: var(--qz-nen);
+  font-family: var(--nntm-font-sans, sans-serif);
+  font-size: .8125rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--qz-chu-mo);
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.nntm-quiz-modal__ky-hieu::before {
+  counter-increment: nntm-quiz-dap-an;
+  content: counter(nntm-quiz-dap-an, upper-alpha);
+}
+
+.nntm-quiz-modal__nhan {
+  min-width: 0;
+}
+
+/* Trạng thái đã chọn — JS gắn class, khỏi phụ thuộc :has() của trình duyệt. */
+.nntm-quiz-modal__dap-an.is-chon {
+  border-color: var(--qz-diem);
+  background: var(--qz-kem);
+  box-shadow: inset 0 0 0 1px var(--qz-diem);
+}
+
+.nntm-quiz-modal__dap-an.is-chon .nntm-quiz-modal__ky-hieu {
+  border-color: var(--qz-diem);
+  background: var(--qz-diem);
+  color: var(--nntm-trang, #fff);
+}
+
+/* Viền tiêu điểm bàn phím vẽ trên nhãn vì ô chọn thật đã bị ẩn. */
+.nntm-quiz-modal__dap-an:focus-within {
+  outline: 2px solid var(--qz-diem);
+  outline-offset: 2px;
+}
+
+/* ---------- Chân khung ---------- */
 
 .nntm-quiz-modal__actions {
+  flex: none;
   display: flex;
-  justify-content: flex-end;
-  margin-top: 6px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 34px 22px;
+  border-top: 1px solid var(--qz-vien);
+  background: var(--qz-nen);
+}
+
+.nntm-quiz-modal__tien-do {
+  font-family: var(--nntm-font-sans, sans-serif);
+  font-size: .875rem;
+  color: var(--qz-chu-mo);
 }
 
 .nntm-quiz-modal__submit {
-  min-width: 160px;
-  height: 46px;
-  padding-inline: 20px;
-  border: 1px solid var(--nntm-chu, #3F3B3B);
-  background: var(--nntm-chu, #3F3B3B);
+  min-width: 176px;
+  height: 48px;
+  padding-inline: 22px;
+  border: 1px solid var(--qz-chu);
+  background: var(--qz-chu);
   color: var(--nntm-trang, #fff);
   font-family: var(--nntm-font-sans, sans-serif);
-  font-size: var(--nntm-fs-base, 1rem);
+  font-size: 1rem;
   cursor: pointer;
   transition: background 180ms ease, color 180ms ease;
 }
@@ -155,27 +300,142 @@ body.nntm-quiz-open {
 .nntm-quiz-modal__submit:hover,
 .nntm-quiz-modal__submit:focus-visible {
   background: transparent;
-  color: var(--nntm-chu, #3F3B3B);
+  color: var(--qz-chu);
 }
 
 .nntm-quiz-modal__submit[disabled] {
-  opacity: .6;
+  opacity: .55;
   cursor: progress;
 }
 
+/* ---------- Khay thông báo ---------- */
+
+.nntm-quiz-modal__khay-trang-thai {
+  flex: none;
+}
+
+.nntm-quiz-modal__khay-trang-thai:not(:has(> :not([hidden]))) {
+  display: none;
+}
+
+.nntm-quiz-modal__status {
+  margin: 0;
+  padding: 22px 34px;
+  font-family: var(--nntm-font-serif, Georgia, serif);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--qz-chu-mo);
+}
+
+.nntm-quiz-modal__status[hidden] {
+  display: none;
+}
+
+/*
+ * Câu từ chối là thông điệp nghiệp vụ, không phải lỗi kỹ thuật — dựng thành một
+ * khối riêng để người đọc nhận ra ngay mình bị chặn chứ không phải mạng hỏng.
+ */
+.nntm-quiz-modal__status--loi {
+  margin: 0;
+  padding: 20px 34px;
+  border-top: 1px solid rgba(165, 52, 42, .22);
+  background: var(--qz-loi-nen);
+  color: var(--qz-loi-chu);
+  font-weight: 600;
+}
+
+.nntm-quiz-modal__lam-lai {
+  display: block;
+  width: calc(100% - 68px);
+  margin: 0 34px 24px;
+  height: 46px;
+  border: 1px solid var(--qz-chu);
+  background: transparent;
+  color: var(--qz-chu);
+  font-family: var(--nntm-font-sans, sans-serif);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.nntm-quiz-modal__lam-lai:hover,
+.nntm-quiz-modal__lam-lai:focus-visible {
+  background: var(--qz-chu);
+  color: var(--nntm-trang, #fff);
+}
+
+.nntm-quiz-modal__lam-lai[hidden] {
+  display: none;
+}
+
+/* ---------- Màn hình hẹp ---------- */
+
 @media (max-width: 767px) {
-  .nntm-quiz-modal__panel {
-    padding: 26px 18px 20px;
+  .nntm-quiz-modal {
+    padding: 0;
+    align-items: flex-end;
   }
 
-  .nntm-quiz-modal__title {
-    font-size: var(--nntm-fs-xl, 1.4375rem);
+  .nntm-quiz-modal__panel {
+    width: 100%;
+    max-height: 92dvh;
+  }
+
+  .nntm-quiz-modal__header {
+    padding: 24px 20px 18px;
+  }
+
+  .nntm-quiz-modal__than {
+    padding: 20px 20px 6px;
+  }
+
+  .nntm-quiz-modal__actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 10px;
+    padding: 14px 20px 18px;
+  }
+
+  .nntm-quiz-modal__submit {
+    width: 100%;
+  }
+
+  .nntm-quiz-modal__tien-do {
+    text-align: center;
+  }
+
+  .nntm-quiz-modal__status,
+  .nntm-quiz-modal__status--loi {
+    padding-inline: 20px;
+  }
+
+  .nntm-quiz-modal__lam-lai {
+    width: calc(100% - 40px);
+    margin-inline: 20px;
+  }
+
+  /* Trên điện thoại khung trượt lên từ đáy màn hình như một tấm phiếu. */
+  .nntm-quiz-modal__panel {
+    animation-name: nntm-quiz-truot;
+  }
+
+  @keyframes nntm-quiz-truot {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: none; }
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .nntm-quiz-modal__overlay,
+  .nntm-quiz-modal__panel {
+    animation: none;
+  }
+
   .nntm-quiz-modal__dap-an,
-  .nntm-quiz-modal__submit {
+  .nntm-quiz-modal__ky-hieu,
+  .nntm-quiz-modal__submit,
+  .nntm-quiz-modal__lam-lai,
+  .nntm-quiz-modal__close {
     transition: none;
   }
 }

@@ -26,6 +26,8 @@
 	var vungCauHoi = modal.querySelector( '[data-nntm-quiz-questions]' );
 	var vungTrangThai = modal.querySelector( '[data-nntm-quiz-status]' );
 	var nutGui = modal.querySelector( '[data-nntm-quiz-submit]' );
+	var nutLamLai = modal.querySelector( '[data-nntm-quiz-retry]' );
+	var vungTienDo = modal.querySelector( '[data-nntm-quiz-tien-do]' );
 	var i18n = CAU_HINH.i18n || {};
 
 	var pubDangHoi = 0;
@@ -34,11 +36,53 @@
 
 	/* ------------------------------------------------------------------ */
 
-	function datTrangThai( text, loai ) {
+	function datTrangThai( text, loai, choLamLai ) {
 		vungTrangThai.textContent = text || '';
 		vungTrangThai.className = 'nntm-quiz-modal__status'
 			+ ( loai ? ' nntm-quiz-modal__status--' + loai : '' );
 		vungTrangThai.hidden = ! text;
+
+		if ( nutLamLai ) {
+			nutLamLai.hidden = ! choLamLai;
+		}
+	}
+
+	/*
+	 * Đếm số câu đã chọn đáp án và tô đậm ô đang chọn.
+	 *
+	 * Ô chọn thật bị CSS ẩn đi để vẽ nhãn A/B/C cho đẹp, nên trạng thái "đang
+	 * chọn" phải tự gắn bằng class — không trông chờ vào :checked của trình duyệt.
+	 */
+	function capNhatChon() {
+		var cacCau = vungCauHoi.querySelectorAll( '.nntm-quiz-modal__cau' );
+		var daChon = 0;
+
+		Array.prototype.forEach.call( cacCau, function ( fs ) {
+			var co = false;
+
+			Array.prototype.forEach.call( fs.querySelectorAll( '.nntm-quiz-modal__dap-an' ), function ( label ) {
+				var o = label.querySelector( 'input[type="radio"]' );
+				var chon = !! ( o && o.checked );
+
+				label.classList.toggle( 'is-chon', chon );
+
+				if ( chon ) {
+					co = true;
+				}
+			} );
+
+			if ( co ) {
+				daChon++;
+			}
+		} );
+
+		if ( vungTienDo ) {
+			vungTienDo.textContent = cacCau.length
+				? ( i18n.tienDo || 'Đã trả lời %1$d/%2$d' )
+					.replace( '%1$d', daChon )
+					.replace( '%2$d', cacCau.length )
+				: '';
+		}
 	}
 
 	function oCoTheFocus() {
@@ -76,6 +120,10 @@
 	function xoaCauHoi() {
 		vungCauHoi.innerHTML = '';
 		form.hidden = true;
+
+		if ( vungTienDo ) {
+			vungTienDo.textContent = '';
+		}
 	}
 
 	function gui( action, duLieu ) {
@@ -131,10 +179,17 @@
 				radio.name = 'cau-' + chiSo;
 				radio.value = String( viTri );
 
+				/* Ô vuông chữ A/B/C — nội dung do CSS đếm ra, ở đây chỉ dựng chỗ. */
+				var kyHieu = document.createElement( 'span' );
+				kyHieu.className = 'nntm-quiz-modal__ky-hieu';
+				kyHieu.setAttribute( 'aria-hidden', 'true' );
+
 				var span = document.createElement( 'span' );
+				span.className = 'nntm-quiz-modal__nhan';
 				span.textContent = nhan;
 
 				label.appendChild( radio );
+				label.appendChild( kyHieu );
 				label.appendChild( span );
 				fieldset.appendChild( label );
 			} );
@@ -145,6 +200,7 @@
 		vungCauHoi.innerHTML = '';
 		vungCauHoi.appendChild( mảnh );
 		form.hidden = false;
+		capNhatChon();
 	}
 
 	function nap( pubId, trigger ) {
@@ -229,7 +285,7 @@
 			 * muốn làm lại thì bấm vào Nghi Quỹ lần nữa — không giới hạn số lần.
 			 */
 			xoaCauHoi();
-			datTrangThai( ketQua.data.message, 'loi' );
+			datTrangThai( ketQua.data.message, 'loi', true );
 		} ).catch( function () {
 			dangGui = false;
 			nutGui.disabled = false;
@@ -298,6 +354,25 @@
 	} );
 
 	form.addEventListener( 'submit', nop );
+
+	/* Chọn đáp án: tô đậm ô vừa chọn và đếm lại số câu đã trả lời. */
+	vungCauHoi.addEventListener( 'change', function ( event ) {
+		if ( event.target && 'radio' === event.target.type ) {
+			capNhatChon();
+		}
+	} );
+
+	/*
+	 * "Trả lời lại" — hỏi lại đúng Nghi Quỹ vừa rồi, không bắt người dùng đóng
+	 * popup rồi bấm vào thẻ một lần nữa. Số lần làm lại không giới hạn.
+	 */
+	if ( nutLamLai ) {
+		nutLamLai.addEventListener( 'click', function () {
+			if ( pubDangHoi > 0 ) {
+				nap( pubDangHoi, nutMoCuoi );
+			}
+		} );
+	}
 
 	/*
 	 * wp_localize_script biến số thành chuỗi, nên "0" vẫn là truthy trong JS —

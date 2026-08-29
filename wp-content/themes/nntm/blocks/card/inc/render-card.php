@@ -75,8 +75,19 @@ function nntm_render_card_markup( int $post_id, string $variant, bool $show_date
 	 * (hoặc mở modal đăng nhập nếu khách chưa đăng nhập). Đây chỉ là lớp trải
 	 * nghiệm; chốt chặn thật nằm ở phía máy chủ — xem inc/nghi-quy-quiz.php.
 	 */
+	/*
+	 * KHÔNG còn phụ thuộc ô "enableQuiz" của khối. Ô đó mặc định tắt và thực tế
+	 * 0/19 khối trong cả site bật nó, nên bấm vào Nghi Quỹ khoá bằng câu hỏi
+	 * chẳng bao giờ mở popup — người dùng bị đẩy sang trang chi tiết rồi mới
+	 * gặp câu hỏi.
+	 *
+	 * Cuốn nào bị khoá bằng câu hỏi là việc của chính cuốn đó, không phải việc
+	 * của khối hiển thị nó. nntm_quiz_thuoc_tinh_the() đã tự trả chuỗi rỗng khi
+	 * cuốn không bị khoá hoặc người dùng đã trả lời đúng, nên gắn vô điều kiện
+	 * là an toàn.
+	 */
 	$thuoc_tinh_them = '';
-	if ( $enable_quiz && 'nntm_publication' === $post->post_type && function_exists( 'nntm_quiz_thuoc_tinh_the' ) ) {
+	if ( 'nntm_publication' === $post->post_type && function_exists( 'nntm_quiz_thuoc_tinh_the' ) ) {
 		$thuoc_tinh_them = nntm_quiz_thuoc_tinh_the( (int) $post->ID );
 	}
 

@@ -3,8 +3,15 @@
 .nntm-doc {
 	--doc-bg: #16181c;
 	--doc-panel: #1d2024;
-	--doc-ink: #f4f5f6;
-	--doc-ink-2: #b5bac0;
+	/*
+	 * Chữ trắng tinh theo yêu cầu (30/08/2026). Cả chữ chính lẫn chữ phụ, nên
+	 * trên nền tối không còn chỗ nào ngả xám.
+	 *
+	 * CHỈ áp cho nền tối. Hai nền sáng "sang" và "nga" bên dưới vẫn giữ chữ đậm
+	 * của riêng chúng — trắng trên nền kem là không đọc được.
+	 */
+	--doc-ink: #fff;
+	--doc-ink-2: #fff;
 	--doc-rule: #2b2f35;
 	--doc-accent: #16a37b;
 	--doc-bar: 60px;
