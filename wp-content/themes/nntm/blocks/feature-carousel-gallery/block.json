@@ -60,15 +60,10 @@
 								},
 								"imageAlt": {
 									"type": "string"
-								},
-								"title": {
-									"type": "string"
-								},
-								"text": {
-									"type": "string"
 								}
 							}
-						}
+						},
+						"description": "Danh sach anh phu cua slide. CHI la anh — bam vao anh chinh se mo khung xem anh va luot qua ca danh sach nay. Tieu de va noi dung cua khung \"Xem Chi Tiet\" nam o popupTitle / popupIntro cua chinh slide, moi slide mot bo."
 					}
 				}
 			}

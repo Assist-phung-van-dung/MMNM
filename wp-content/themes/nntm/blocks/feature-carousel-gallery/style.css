@@ -193,3 +193,207 @@ html.nntm-fgc-modal-open,body.nntm-fgc-modal-open { overflow: hidden; }
 @media (prefers-reduced-motion:reduce) {
 	.nntm-feature-gallery-carousel__slide,.nntm-feature-gallery-carousel__media,.nntm-feature-gallery-carousel__image,.nntm-feature-gallery-carousel__arrow,.nntm-feature-gallery-carousel__detail,.nntm-feature-gallery-modal,.nntm-feature-gallery-modal__panel,.nntm-feature-gallery-modal__close,.nntm-feature-gallery-modal__slide,.nntm-feature-gallery-modal__arrow,.nntm-feature-gallery-modal__dot { transition:none; animation:none; }
 }
+
+/* =============================================================================
+   KHUNG XEM: HAI CHẾ ĐỘ
+
+   Một khung dùng chung, class quyết định phần nào hiện:
+     --che-do-anh      bấm vào ảnh   -> xem ảnh to, lướt qua cả ảnh phụ của slide
+     --che-do-chi-tiet bấm Xem Chi Tiết -> ảnh bên trái, chữ bên phải
+
+   Dùng chung một khung để không phải nhân đôi phần đóng/bàn phím/bẫy tiêu điểm
+   trong view.js.
+   ========================================================================== */
+
+.nntm-feature-gallery-modal__xem-anh,
+.nntm-feature-gallery-modal__chi-tiet {
+	display: none;
+	min-height: 0;
+}
+
+.nntm-feature-gallery-modal--che-do-anh .nntm-feature-gallery-modal__xem-anh {
+	display: grid;
+	grid-template-rows: minmax(0, 1fr) auto;
+	min-height: 0;
+}
+
+.nntm-feature-gallery-modal--che-do-chi-tiet .nntm-feature-gallery-modal__chi-tiet {
+	display: grid;
+	min-height: 0;
+}
+
+/*
+ * Panel gốc đang chia 3 hàng cho bố cục cũ (đầu / giữa / chân). Hai chế độ mới
+ * tự lo bố cục bên trong nên panel chỉ còn một hàng.
+ */
+.nntm-feature-gallery-modal--che-do-anh .nntm-feature-gallery-modal__panel,
+.nntm-feature-gallery-modal--che-do-chi-tiet .nntm-feature-gallery-modal__panel {
+	grid-template-rows: minmax(0, 1fr);
+}
+
+/* --- Chế độ XEM ẢNH: ảnh chiếm hết chỗ, không có chữ chen vào --- */
+
+.nntm-feature-gallery-modal--che-do-anh .nntm-feature-gallery-modal__slide {
+	display: grid;
+	place-items: center;
+	min-height: 0;
+}
+
+.nntm-feature-gallery-modal--che-do-anh .nntm-feature-gallery-modal__image {
+	max-width: 100%;
+	max-height: 100%;
+	width: auto;
+	height: auto;
+	object-fit: contain;
+}
+
+/* Dấu ngoặc kép là chi tiết của khung chữ — chế độ xem ảnh thì giấu đi. */
+.nntm-feature-gallery-modal--che-do-anh .nntm-feature-gallery-modal__quote {
+	display: none;
+}
+
+/* --- Chế độ XEM CHI TIẾT: ảnh trái, chữ phải --- */
+
+/*
+ * Khung chi tiết luôn NỀN TRẮNG CHỮ ĐEN, không theo ô "Màu nền khung xem" ở
+ * thanh bên: ô đó chỉ nói về popup khi bấm vào ảnh — nơi ảnh cần nền tối để
+ * nổi lên. Khung chi tiết là khung ĐỌC, chữ đen trên nền trắng dễ đọc nhất và
+ * ăn nhập với phần còn lại của trang.
+ *
+ * Ghi đè lại cả năm biến màu chứ không chỉ nền: đổi mỗi nền mà giữ chữ trắng
+ * thì chữ biến mất. Khối này phải nằm SAU các lớp --nen-* ở đầu file vì cùng
+ * độ ưu tiên, thứ tự viết mới quyết định.
+ */
+.nntm-feature-gallery-modal--che-do-chi-tiet {
+	--fgc-vw-nen: var(--nntm-trang, #fff);
+	--fgc-vw-chu: var(--nntm-den, #000);
+	--fgc-vw-chu-mo: var(--nntm-xam-chu, #828282);
+	--fgc-vw-diem: var(--nntm-den, #000);
+	--fgc-vw-vien: rgba(0,0,0,.30);
+}
+
+.nntm-feature-gallery-modal__chi-tiet {
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	gap: clamp(24px, 5vw, 72px);
+	align-items: center;
+	width: min(1180px, 100%);
+	margin: 0 auto;
+}
+
+.nntm-feature-gallery-modal__ct-anh {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 0;
+	min-height: 0;
+	max-height: 100%;
+}
+
+/*
+ * Lớp bọc ôm sát tấm ảnh: xếp dọc, dấu ngoặc kép nằm HẲN BÊN NGOÀI ảnh, ngay
+ * phía trên và thẳng mép trái ảnh — không đè lên ảnh.
+ *
+ * Dùng flex dọc (dấu chiếm chỗ thật) chứ không đặt tuyệt đối: đặt tuyệt đối ra
+ * ngoài ảnh thì trên màn hình hẹp — nơi ảnh nằm sát mép trên khung — dấu sẽ bị
+ * cắt mất vì panel đang overflow:hidden.
+ *
+ * inline-flex nên bề ngang co đúng bằng ảnh (ảnh dựng đứng thì hẹp, ảnh ngang
+ * thì rộng), nhờ vậy dấu bám đúng mép trái ảnh chứ không bám mép cột.
+ */
+.nntm-feature-gallery-modal__ct-khung {
+	position: relative;
+	display: inline-flex;
+	flex-direction: column;
+	align-items: flex-start;
+	min-width: 0;
+	min-height: 0;
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.nntm-feature-gallery-modal__ct-hinh {
+	max-width: 100%;
+	/*
+	 * Trừ hao chỗ của dấu ngoặc kép phía trên: cùng cột nên ảnh cao hết 72vh là
+	 * cả cụm tràn khỏi khung và bị panel cắt mất chân ảnh.
+	 */
+	max-height: calc(72vh - 72px);
+	width: auto;
+	height: auto;
+	object-fit: contain;
+}
+
+.nntm-feature-gallery-modal__ct-chu {
+	position: relative;
+	min-width: 0;
+	max-height: 100%;
+	padding-block: 8px;
+	overflow-y: auto;
+	text-align: center;
+}
+
+/*
+ * Dấu ngoặc kép: nằm trên ảnh, ngoài vùng ảnh, thẳng mép trái.
+ *
+ * line-height nhỏ hơn 1 để ô chữ ôm sát phần mực của dấu — chữ nháy kép chỉ có
+ * mực ở nửa trên ô em, để line-height 1 thì thừa một khoảng trống lớn đẩy ảnh
+ * xuống. Nền khung này luôn trắng nên không cần quầng sáng như khi còn đè ảnh.
+ */
+.nntm-feature-gallery-modal--che-do-chi-tiet .nntm-feature-gallery-modal__quote {
+	position: static;
+	display: block;
+	flex: none;
+	/*
+	 * Lề âm tính bằng em nên co giãn theo cỡ chữ: ô chữ luôn thừa một khoảng
+	 * trống dưới phần mực của dấu nháy (chỗ dành cho chân chữ thường), không
+	 * kéo lại thì dấu treo lơ lửng cách ảnh hơn 30px.
+	 */
+	margin: 0 0 -.26em;
+	font-size: clamp(64px, 6.5vw, 110px);
+	line-height: .58;
+	opacity: .72;
+}
+
+.nntm-feature-gallery-modal__ct-tieu-de {
+	margin: 0;
+	font-family: var(--nntm-font-display);
+	font-size: clamp(22px, 2.4vw, 32px);
+	font-weight: 700;
+	line-height: 1.25;
+	letter-spacing: .04em;
+	text-transform: uppercase;
+	color: var(--fgc-vw-diem);
+}
+
+.nntm-feature-gallery-modal__ct-noi-dung {
+	max-width: 46ch;
+	margin: 14px auto 0;
+	font-family: var(--nntm-font-serif);
+	font-size: clamp(15px, 1.2vw, 17px);
+	line-height: 1.75;
+	color: var(--fgc-vw-chu);
+}
+
+/* Màn hình hẹp: xếp dọc, ảnh lên trên. */
+@media (max-width: 900px) {
+	.nntm-feature-gallery-modal__chi-tiet {
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: auto minmax(0, 1fr);
+		gap: 20px;
+		align-content: start;
+		overflow-y: auto;
+	}
+
+	.nntm-feature-gallery-modal__ct-hinh {
+		max-height: 42vh;
+	}
+
+	/* Ảnh nhỏ lại thì dấu ngoặc kép cũng nhỏ theo cho cân. */
+	.nntm-feature-gallery-modal--che-do-chi-tiet .nntm-feature-gallery-modal__quote {
+		font-size: 56px;
+	}
+
+	.nntm-feature-gallery-modal--che-do-chi-tiet .nntm-feature-gallery-modal__panel {
+		padding-inline: 20px;
+	}
+}

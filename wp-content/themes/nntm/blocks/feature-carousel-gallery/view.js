@@ -223,15 +223,32 @@
 			start();
 		}
 
-		function openDialog( id, trigger ) {
+		function openDialog( id, trigger, cheDo ) {
 			var dialog = document.getElementById( id );
 			if ( ! dialog ) { return; }
 			lastTrigger = trigger || null;
 			modalOpen = true;
 			activeDialog = dialog;
 			stop();
+
+			/*
+			 * Mot khung, hai che do:
+			 *   anh      — bam vao anh: xem anh to, luot qua ca cac anh phu cua slide
+			 *   chi-tiet — bam "Xem Chi Tiet": anh ben trai, tieu de + noi dung ben phai
+			 * Class quyet dinh phan nao hien; CSS lo phan con lai.
+			 */
+			dialog.classList.remove( 'nntm-feature-gallery-modal--che-do-anh' );
+			dialog.classList.remove( 'nntm-feature-gallery-modal--che-do-chi-tiet' );
+			dialog.classList.add(
+				'chi-tiet' === cheDo
+					? 'nntm-feature-gallery-modal--che-do-chi-tiet'
+					: 'nntm-feature-gallery-modal--che-do-anh'
+			);
+
+			/* Bang anh chi co nghia o che do xem anh — dua ve tam dau moi lan mo. */
 			var popup = popupCarousels.get( dialog );
-			if ( popup ) { popup.reset(); }
+			if ( popup && 'chi-tiet' !== cheDo ) { popup.reset(); }
+
 			dialog.hidden = false;
 			dialog.setAttribute( 'aria-hidden', 'false' );
 			document.documentElement.classList.add( 'nntm-fgc-modal-open' );
@@ -248,7 +265,11 @@
 			var opener = event.target.closest( '[data-fgc-open]' );
 			if ( opener && root.contains( opener ) ) {
 				event.preventDefault();
-				openDialog( opener.getAttribute( 'data-fgc-open' ), opener );
+				openDialog(
+					opener.getAttribute( 'data-fgc-open' ),
+					opener,
+					opener.getAttribute( 'data-fgc-mode' ) || 'anh'
+				);
 			}
 		} );
 

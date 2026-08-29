@@ -21,7 +21,8 @@
 	var useSelect = wp.data && wp.data.useSelect ? wp.data.useSelect : null;
 
 	function emptyDetail() {
-		return { imageId: 0, imageUrl: '', imageAlt: '', title: '', text: '' };
+		/* Anh phu chi la anh — tieu de va noi dung nam o cap slide. */
+		return { imageId: 0, imageUrl: '', imageAlt: '' };
 	}
 
 	function emptySlide() {
@@ -157,7 +158,7 @@
 				var detailPanels = details.map( function ( detail, detailIndex ) {
 					return el(
 						PanelBody,
-						{ title: __( 'Slide popup ', 'nntm' ) + ( detailIndex + 1 ) + ( detail.title ? ' — ' + detail.title : '' ), initialOpen: false, key: 'detail-' + index + '-' + detailIndex },
+						{ title: __( 'Ảnh phụ ', 'nntm' ) + ( detailIndex + 1 ), initialOpen: false, key: 'detail-' + index + '-' + detailIndex },
 						el( MediaControl, {
 							label: __( 'Chọn / đổi ảnh popup', 'nntm' ),
 							value: detail.imageId,
@@ -166,12 +167,10 @@
 							onRemove: function () { updateDetail( index, detailIndex, { imageId: 0, imageUrl: '', imageAlt: '' } ); },
 						} ),
 						el( TextControl, { label: __( 'Alt ảnh', 'nntm' ), value: detail.imageAlt || '', onChange: function ( value ) { updateDetail( index, detailIndex, { imageAlt: value } ); } } ),
-						el( TextControl, { label: __( 'Tiêu đề slide popup', 'nntm' ), value: detail.title || '', onChange: function ( value ) { updateDetail( index, detailIndex, { title: value } ); } } ),
-						el( TextareaControl, { label: __( 'Mô tả slide popup', 'nntm' ), rows: 5, value: detail.text || '', onChange: function ( value ) { updateDetail( index, detailIndex, { text: value } ); } } ),
 						el( 'div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '10px' } },
 							el( Button, { variant: 'secondary', disabled: detailIndex === 0, onClick: function () { moveDetail( index, detailIndex, -1 ); } }, '← ' + __( 'Lùi', 'nntm' ) ),
 							el( Button, { variant: 'secondary', disabled: detailIndex === details.length - 1, onClick: function () { moveDetail( index, detailIndex, 1 ); } }, __( 'Tiến', 'nntm' ) + ' →' ),
-							el( Button, { variant: 'link', isDestructive: true, onClick: function () { removeDetail( index, detailIndex ); } }, __( 'Xóa slide popup', 'nntm' ) )
+							el( Button, { variant: 'link', isDestructive: true, onClick: function () { removeDetail( index, detailIndex ); } }, __( 'Xoá ảnh phụ', 'nntm' ) )
 						)
 					);
 				} );
@@ -189,10 +188,27 @@
 					el( TextControl, { label: __( 'Alt ảnh chính', 'nntm' ), value: slide.imageAlt || '', onChange: function ( value ) { updateSlide( index, { imageAlt: value } ); } } ),
 					el( TextControl, { label: __( 'Tiêu đề riêng của slide', 'nntm' ), value: slide.title || '', onChange: function ( value ) { updateSlide( index, { title: value } ); } } ),
 					el( TextControl, { label: __( 'Nhãn nút chi tiết', 'nntm' ), value: slide.detailLabel || 'Xem Chi Tiết', onChange: function ( value ) { updateSlide( index, { detailLabel: value } ); } } ),
-					el( TextControl, { label: __( 'Tiêu đề popup', 'nntm' ), value: slide.popupTitle || '', placeholder: slide.title || '', onChange: function ( value ) { updateSlide( index, { popupTitle: value } ); } } ),
-					el( TextareaControl, { label: __( 'Mô tả / mở đầu popup', 'nntm' ), rows: 4, value: slide.popupIntro || '', onChange: function ( value ) { updateSlide( index, { popupIntro: value } ); } } ),
-					el( 'div', { style: { marginTop: '14px', paddingTop: '14px', borderTop: '1px solid #ddd' } }, detailPanels ),
-					el( Button, { variant: 'secondary', onClick: function () { updateSlide( index, { details: details.concat( [ emptyDetail() ] ) } ); setPreviewIndex( index ); setPopupPreviewIndex( details.length ); } }, __( '+ Thêm slide popup', 'nntm' ) ),
+					el( TextControl, {
+						label: __( 'Tiêu đề khung Xem Chi Tiết', 'nntm' ),
+						help: __( 'Bỏ trống cả ô này lẫn ô nội dung thì nút "Xem Chi Tiết" tự ẩn đi.', 'nntm' ),
+						value: slide.popupTitle || '',
+						placeholder: slide.title || '',
+						onChange: function ( value ) { updateSlide( index, { popupTitle: value } ); },
+					} ),
+					el( TextareaControl, {
+						label: __( 'Nội dung khung Xem Chi Tiết', 'nntm' ),
+						help: __( 'Hiện bên phải, cạnh ảnh, dưới dấu ngoặc kép.', 'nntm' ),
+						rows: 5,
+						value: slide.popupIntro || '',
+						onChange: function ( value ) { updateSlide( index, { popupIntro: value } ); },
+					} ),
+					el( 'div', { style: { marginTop: '14px', paddingTop: '14px', borderTop: '1px solid #ddd' } },
+						el( 'p', { style: { margin: '0 0 8px', color: '#757575', fontSize: '12px' } },
+							__( 'Ảnh phụ chỉ là ảnh. Bấm vào ảnh chính ngoài trang sẽ mở khung xem ảnh và lướt được qua những ảnh này.', 'nntm' )
+						),
+						detailPanels
+					),
+					el( Button, { variant: 'secondary', onClick: function () { updateSlide( index, { details: details.concat( [ emptyDetail() ] ) } ); setPreviewIndex( index ); setPopupPreviewIndex( details.length ); } }, __( '+ Thêm ảnh phụ', 'nntm' ) ),
 					el( 'div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '16px' } },
 						el( Button, { variant: 'secondary', disabled: index === 0, onClick: function () { moveSlide( index, -1 ); } }, '↑ Slide' ),
 						el( Button, { variant: 'secondary', disabled: index === slides.length - 1, onClick: function () { moveSlide( index, 1 ); } }, '↓ Slide' ),
@@ -275,17 +291,16 @@
 				),
 				activeSlide ? el( 'div', { className: 'nntm-fgc-editor-popup-preview' },
 					el( 'div', { className: 'nntm-fgc-editor-popup-bar' },
-						el( 'strong', {}, __( 'Preview popup slider:', 'nntm' ) + ' ' + ( activeSlide.popupTitle || activeSlide.title || '' ) ),
+						el( 'strong', {}, __( 'Xem trước khung xem ảnh:', 'nntm' ) + ' ' + ( activeSlide.popupTitle || activeSlide.title || '' ) ),
 						el( 'span', {}, activeDetails.length ? ( Math.min( popupPreviewIndex, activeDetails.length - 1 ) + 1 ) + ' / ' + activeDetails.length : '0 / 0' )
 					),
 					activeDetails.length ? el( 'div', { className: 'nntm-fgc-editor-popup-stage' },
 						el( Button, { className: 'nntm-fgc-editor-popup-arrow nntm-fgc-editor-popup-arrow--prev', disabled: activeDetails.length < 2, onClick: function () { setPopupPreviewIndex( ( popupPreviewIndex - 1 + activeDetails.length ) % activeDetails.length ); } }, '←' ),
 						el( 'div', { className: 'nntm-fgc-editor-popup-card' },
-							activePopupDetail && imageUrl( activePopupDetail ) ? el( 'img', { src: imageUrl( activePopupDetail ), alt: activePopupDetail.imageAlt || '' } ) : el( 'div', { className: 'nntm-fgc-editor-popup-empty' }, __( 'Chọn ảnh cho slide popup', 'nntm' ) ),
-							activePopupDetail && ( activePopupDetail.title || activePopupDetail.text ) ? el( 'div', { className: 'nntm-fgc-editor-popup-copy' }, activePopupDetail.title ? el( 'h4', {}, activePopupDetail.title ) : null, activePopupDetail.text ? el( 'p', {}, activePopupDetail.text ) : null ) : null
+							activePopupDetail && imageUrl( activePopupDetail ) ? el( 'img', { src: imageUrl( activePopupDetail ), alt: activePopupDetail.imageAlt || '' } ) : el( 'div', { className: 'nntm-fgc-editor-popup-empty' }, __( 'Chọn ảnh cho ảnh phụ này', 'nntm' ) )
 						),
 						el( Button, { className: 'nntm-fgc-editor-popup-arrow nntm-fgc-editor-popup-arrow--next', disabled: activeDetails.length < 2, onClick: function () { setPopupPreviewIndex( ( popupPreviewIndex + 1 ) % activeDetails.length ); } }, '→' )
-					) : el( Notice, { status: 'info', isDismissible: false }, __( 'Slide này chưa có slide popup. Bấm “+ Thêm slide popup” ở sidebar.', 'nntm' ) )
+					) : el( Notice, { status: 'info', isDismissible: false }, __( 'Slide này chưa có ảnh phụ. Bấm “+ Thêm ảnh phụ” ở thanh bên.', 'nntm' ) )
 				) : null
 			);
 		},
