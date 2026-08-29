@@ -635,6 +635,138 @@ a.nntm-card-list__paging-so:focus-visible {
 	}
 }
 
+/* -----------------------------------------------------------------------------
+   Hiệu ứng sao lấp lánh — bật riêng cho từng block trong Inspector Controls
+   ----------------------------------------------------------------------------- */
+
+.nntm-card-list--star-effect {
+	--nntm-star-core: rgb(174 119 36);
+	--nntm-star-glow: rgb(174 112 31 / 48%);
+}
+
+.nntm-card-list--star-effect:is(
+	.nntm-card-list--nen-cam,
+	.nntm-card-list--nen-toi,
+	.nntm-card-list--nen-cham,
+	.nntm-card-list--nen-vang
+) {
+	--nntm-star-core: rgb(255 248 218);
+	--nntm-star-glow: rgb(255 205 112 / 62%);
+}
+
+.nntm-card-list--star-effect > .nntm-card-list__band {
+	position: relative;
+	isolation: isolate;
+}
+
+.nntm-card-list--star-effect > .nntm-card-list__band > .nntm-container {
+	position: relative;
+	z-index: 1;
+}
+
+.nntm-card-list__star-field {
+	position: absolute;
+	z-index: 0;
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+	contain: paint;
+}
+
+.nntm-card-list__star-field::before {
+	content: "";
+	position: absolute;
+	left: 50%;
+	top: 45%;
+	width: min(650px, 80vw);
+	aspect-ratio: 1;
+	border-radius: 50%;
+	background: radial-gradient(
+		circle,
+		rgb(213 162 75 / 13%) 0%,
+		rgb(213 162 75 / 5%) 35%,
+		transparent 68%
+	);
+	filter: blur(20px);
+	transform: translate(-50%, -50%);
+}
+
+.nntm-card-list__star {
+	position: absolute;
+	left: var(--nntm-star-left);
+	top: var(--nntm-star-top);
+	width: var(--nntm-star-size);
+	height: var(--nntm-star-size);
+	border-radius: 50%;
+	background: var(--nntm-star-core);
+	box-shadow:
+		0 0 4px var(--nntm-star-core),
+		0 0 10px var(--nntm-star-glow),
+		0 0 18px rgb(255 188 75 / 25%);
+	opacity: 0;
+	animation: nntm-card-list-star-twinkle var(--nntm-star-duration) ease-in-out infinite;
+	animation-delay: var(--nntm-star-delay);
+	will-change: opacity, transform, filter;
+}
+
+.nntm-card-list__star--sparkle {
+	background: transparent;
+	box-shadow: none;
+}
+
+.nntm-card-list__star--sparkle::before,
+.nntm-card-list__star--sparkle::after {
+	content: "";
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	border-radius: 100%;
+	background: linear-gradient(90deg, transparent, var(--nntm-star-core), transparent);
+	transform: translate(-50%, -50%);
+}
+
+.nntm-card-list__star--sparkle::before {
+	width: calc(var(--nntm-star-size) * 7);
+	height: 1px;
+}
+
+.nntm-card-list__star--sparkle::after {
+	width: 1px;
+	height: calc(var(--nntm-star-size) * 7);
+	background: linear-gradient(180deg, transparent, var(--nntm-star-core), transparent);
+}
+
+@keyframes nntm-card-list-star-twinkle {
+	0%,
+	100% {
+		opacity: .1;
+		filter: brightness(.8);
+		transform: scale(.55);
+	}
+
+	45% {
+		opacity: .35;
+	}
+
+	50% {
+		opacity: 1;
+		filter: brightness(1.6);
+		transform: scale(1.25);
+	}
+
+	55% {
+		opacity: .5;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-card-list__star {
+		animation: none;
+		opacity: .45;
+		transform: scale(.8);
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.nntm-card-list__nav {
 		transition: none;
@@ -1170,6 +1302,7 @@ a.nntm-card-list__paging-so:focus-visible {
 .nntm-card-list .nntm-grid:focus {
 	outline: none;
 }
+
 
 /* =============================================================================
    GÓT SON (nền tối) & GITA (nền cam) — BẢN DÙNG CHUNG

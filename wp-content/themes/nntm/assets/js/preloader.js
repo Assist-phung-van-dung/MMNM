@@ -11,16 +11,27 @@
 		return;
 	}
 
-	var THOI_LUONG = {
-		halo: 1800,
-		mandala: 1900,
-		moon: 1900,
-		sun: 1900
-	};
-
 	var THOI_GIAN_TAN = 850;
 
-	var LUOI_AN_TOAN = 6000;
+	/*
+	 * Thoi luong TOI THIEU, do admin dat o Giao dien -> Trich dan man hinh cho,
+	 * duoc doan script trong <head> gan vao data-preload-min.
+	 *
+	 * Day la SAN chu khong phai HAN: man hinh cho tat o moc muon hon giua hai
+	 * moc — du so giay nay, va trang tai xong. Tai nhanh thi van cho du giay de
+	 * khach kip doc cau trich dan; tai cham thi cho toi luc xong.
+	 *
+	 * Truoc day moi hieu ung ghim cung 1800-1900ms, khong chinh duoc.
+	 */
+	function docToiThieu() {
+		var tho = parseFloat( root.getAttribute( 'data-preload-min' ) );
+
+		if ( ! isFinite( tho ) || tho < 0 ) {
+			tho = 2;
+		}
+
+		return Math.min( 15, tho ) * 1000;
+	}
 
 	var giamChuyenDong = window.matchMedia
 		&& window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
@@ -53,8 +64,17 @@
 		} );
 	}
 
-	var hieuUng = root.getAttribute( 'data-effect' );
-	var toiThieu = giamChuyenDong ? 300 : ( THOI_LUONG[ hieuUng ] || 1800 );
+	/*
+	 * Nguoi dat may o che do giam chuyen dong thi khong nen giu ho lai de xem
+	 * hieu ung — cat xuong con 300ms.
+	 */
+	var toiThieu = giamChuyenDong ? 300 : docToiThieu();
+
+	/*
+	 * Luoi an toan phai tinh TU toiThieu. Ghim cung 6000 thi admin dat 10 giay
+	 * la man hinh cho bi cat ngang o giay thu 6.
+	 */
+	var LUOI_AN_TOAN = toiThieu + 6000;
 
 	function choDuThoiLuong() {
 		var conLai = toiThieu - window.performance.now();

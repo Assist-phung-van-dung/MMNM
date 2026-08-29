@@ -144,6 +144,11 @@
 			],
 			"default": "none"
 		},
+		"starEffect": {
+			"type": "boolean",
+			"default": false,
+			"description": "Bat hieu ung sao vang lap lanh phu tren nen cua rieng block Card List nay."
+		},
 		"enableQuiz": {
 			"type": "boolean",
 			"default": false,

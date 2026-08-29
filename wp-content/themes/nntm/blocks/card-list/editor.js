@@ -293,6 +293,14 @@
 								setAttributes( { background: value } );
 							},
 						} ),
+						el( ToggleControl, {
+							label: __( 'Hiệu ứng sao lấp lánh', 'nntm' ),
+							help: __( 'Phủ các điểm sáng chuyển động nhẹ lên nền của riêng khối này. Hiệu ứng rõ và đẹp nhất với nền tối, chàm hoặc cam.', 'nntm' ),
+							checked: !! attributes.starEffect,
+							onChange: function ( value ) {
+								setAttributes( { starEffect: value } );
+							},
+						} ),
 						'youtube' !== attributes.videoSource && 'nntm_publication' === attributes.postType
 							? el( ToggleControl, {
 									label: __( 'Bật câu hỏi khi bấm vào thẻ', 'nntm' ),

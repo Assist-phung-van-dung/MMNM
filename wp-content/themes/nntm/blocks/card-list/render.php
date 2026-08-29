@@ -170,15 +170,21 @@ $show_card_cta   = ! empty( $attributes['showCardCta'] );
 $card_cta_label  = isset( $attributes['cardCtaLabel'] ) ? (string) $attributes['cardCtaLabel'] : __( 'Xem thêm', 'nntm' );
 $enable_quiz     = ! empty( $attributes['enableQuiz'] );
 
+$star_effect     = ! empty( $attributes['starEffect'] );
+
 $wrapper_attributes = get_block_wrapper_attributes(
 	array(
 		'class' => 'nntm-card-list'
 			. ( 'none' !== $background ? ' nntm-card-list--nen-' . $background : '' )
 			. ( $is_books_marquee ? ' nntm-card-list--books-marquee' : '' )
+			. ( $star_effect ? ' nntm-card-list--star-effect' : '' )
 	)
 );
 ?>
 <section <?php echo $wrapper_attributes;  ?>>
+	<?php if ( $star_effect ) : ?>
+		<div class="nntm-card-list__star-field" aria-hidden="true"></div>
+	<?php endif; ?>
 
 	<?php if ( '' !== trim( $heading_above ) ) : ?>
 		<p class="nntm-card-list__heading-above"><?php echo wp_kses_post( $heading_above ); ?></p>

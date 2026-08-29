@@ -16,6 +16,15 @@ function nntm_preloader_effects(): array {
 		'sun'     => array(
 			'title' => __( 'Nhật Quang', 'nntm' ),
 		),
+		/*
+		 * Hào Quang: logo của website đặt giữa, có vầng sáng toả và vòng quay
+		 * quanh. Ảnh do admin chọn ở Giao diện -> Trích dẫn màn hình chờ. Chưa
+		 * chọn ảnh thì hiệu ứng này tự bị loại khỏi vòng ngẫu nhiên, xem
+		 * nntm_preloader_hieu_ung_bat().
+		 */
+		'logo'    => array(
+			'title' => __( 'Hào Quang', 'nntm' ),
+		),
 	);
 }
 
@@ -32,8 +41,13 @@ function nntm_preloader_head_script(): void {
 		return;
 	}
 
-	$keys   = wp_json_encode( array_keys( nntm_preloader_effects() ) );
+	$keys   = wp_json_encode( array_values( nntm_preloader_hieu_ung_bat() ) );
 	$quotes = wp_json_encode( array_values( nntm_preloader_quotes() ), JSON_UNESCAPED_UNICODE );
+
+	$giay_toi_thieu = nntm_preloader_giay();
+
+	/* Lưới an toàn = thời gian tối thiểu + 8 giây dự phòng cho lúc mạng chậm. */
+	$luoi_cuoi = (int) round( $giay_toi_thieu * 1000 ) + 8000;
 
 	?>
 	<script>
@@ -82,12 +96,25 @@ function nntm_preloader_head_script(): void {
 			var root = document.documentElement;
 
 			root.setAttribute('data-effect', picked);
+
+			/*
+			 * Số giây TỐI THIỂU do admin đặt, đưa xuống đây để preloader.js đọc.
+			 * Đặt ngay trong <head> chứ không chờ localize: script này chạy trước
+			 * mọi thứ, còn preloader.js nằm cuối trang.
+			 */
+			root.setAttribute('data-preload-min', '<?php echo esc_js( (string) $giay_toi_thieu ); ?>');
+
 			root.className += ' is-loading';
 
+			/*
+			 * Lưới an toàn cuối cùng: nếu preloader.js không chạy được (lỗi JS,
+			 * chặn script), màn hình chờ vẫn phải tự mở ra. Phải tính từ số giây
+			 * admin đặt — ghim cứng 8000 thì admin đặt 10 giây là bị cắt ngang.
+			 */
 			window.setTimeout(function () {
 				root.classList.remove('is-loading');
 				root.classList.remove('is-revealing');
-			}, 8000);
+			}, <?php echo (int) $luoi_cuoi;  ?>);
 		})();
 	</script>
 	<?php
@@ -131,6 +158,44 @@ function nntm_preloader_markup(): void {
 			<span class="nntm-tai__song nntm-tai__song--2"></span>
 			<span class="nntm-tai__trang"></span>
 		</div>
+
+		<?php
+		/*
+		 * Hào Quang — logo của website. Chỉ dựng khi admin đã chọn ảnh; chưa có
+		 * ảnh thì hiệu ứng cũng đã bị loại khỏi vòng ngẫu nhiên nên không bao giờ
+		 * được chọn tới.
+		 */
+		$nntm_tai_logo_id = nntm_preloader_logo_id();
+
+		if ( $nntm_tai_logo_id ) :
+			?>
+			<div class="nntm-tai__hieu-ung nntm-tai__hieu-ung--logo">
+				<span class="nntm-tai__logo-quang"></span>
+				<span class="nntm-tai__logo-toa"></span>
+				<span class="nntm-tai__logo-vong"></span>
+				<span class="nntm-tai__logo-vong nntm-tai__logo-vong--2"></span>
+				<?php
+				/*
+				 * alt rỗng có chủ ý: cả màn hình chờ đã aria-hidden, logo ở đây
+				 * chỉ là trang trí, đọc tên nó lên chẳng giúp gì cho người dùng
+				 * trình đọc màn hình.
+				 */
+				echo wp_get_attachment_image(
+					$nntm_tai_logo_id,
+					'medium',
+					false,
+					array(
+						'class'    => 'nntm-tai__logo',
+						'alt'      => '',
+						'decoding' => 'async',
+						'loading'  => 'eager',
+					)
+				);
+				?>
+			</div>
+			<?php
+		endif;
+		?>
 
 		<?php   ?>
 		<div class="nntm-tai__hieu-ung nntm-tai__hieu-ung--sun">

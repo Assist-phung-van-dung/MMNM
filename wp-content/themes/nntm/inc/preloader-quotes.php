@@ -230,6 +230,14 @@ function nntm_preloader_quotes_admin_page(): void {
 		<h2><?php esc_html_e( 'Danh sách mặc định', 'nntm' ); ?></h2>
 		<p><?php esc_html_e( 'Dùng khi ô trên để trống. Có thể sao chép xuống ô trên rồi sửa lại theo ý.', 'nntm' ); ?></p>
 		<textarea rows="10" class="large-text code" readonly><?php echo esc_textarea( implode( "\n", nntm_preloader_default_quotes() ) ); ?></textarea>
+
+		<?php
+		/*
+		 * Phan cau hinh (anh logo, so giay toi thieu, chon hieu ung) nam o
+		 * inc/preloader-settings.php, gan vao day de admin chi phai vao mot cho.
+		 */
+		do_action( 'nntm_preloader_admin_sau_quote' );
+		?>
 	</div>
 	<?php
 }
