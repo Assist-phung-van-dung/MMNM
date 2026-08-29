@@ -82,17 +82,35 @@ function nntm_search_serve_pdf( WP_REST_Request $request ) {
 		return new WP_Error( 'nntm_not_pdf', __( 'Tệp này không phải PDF.', 'nntm' ), array( 'status' => 415 ) );
 	}
 
-	// Cổng quyền duy nhất. Hiện mở cho mọi người vì khách CHƯA CHỐT
-	// (docs/03-chot mục A). Đổi bằng filter, không sửa file này.
+	/*
+	 * Cổng quyền. Chủ dự án đã CHỐT ngày 30/08/2026: file PDF nằm ngoài thư mục
+	 * web và mọi đường ra đều phải qua kiểm quyền — nên câu hỏi bỏ ngỏ ở
+	 * docs/03-chot mục A đã có đáp án.
+	 *
+	 * PHẢI gọi hàm nntm_an_pham_can_access() chứ không gọi thẳng filter cùng
+	 * tên. Ô "khoá" của ấn phẩm (_nntm_pub_khoa) được xét TRONG THÂN HÀM, không
+	 * phải trong filter; gọi thẳng filter với mặc định true là bỏ qua ô khoá và
+	 * ai cũng tải được sách đang khoá. Đã đo bằng tay: trước khi sửa, endpoint
+	 * này trả 200 cho đúng cuốn mà endpoint đọc trả 403.
+	 */
 	$post_id     = nntm_search_pdf_owner( $attachment_id );
 	$publication = $post_id > 0 ? get_post( $post_id ) : null;
 
-	$can_read = (bool) apply_filters(
-		'nntm_an_pham_can_access',
-		true,
-		$publication,
-		get_current_user_id()
-	);
+	/*
+	 * Dùng hàm của nntm-library: nó xét MỌI ấn phẩm đang dùng tệp này, còn
+	 * nntm_search_pdf_owner() chỉ lấy một cái theo post_parent. Hai cách tra ra
+	 * hai ấn phẩm khác nhau chính là nguyên nhân của lỗ nói trên.
+	 */
+	if ( function_exists( 'nntm_lib_duoc_doc_tep' ) ) {
+		$can_read = nntm_lib_duoc_doc_tep( $attachment_id );
+	} else {
+		$can_read = (bool) apply_filters(
+			'nntm_an_pham_can_access',
+			true,
+			$publication,
+			get_current_user_id()
+		);
+	}
 
 	if ( ! $can_read ) {
 		return new WP_Error(

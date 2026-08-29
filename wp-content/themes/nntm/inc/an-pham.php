@@ -1,38 +1,18 @@
 <?php
+/*
+ * Ấn phẩm — phần HÌNH ẢNH.
+ *
+ * Bốn hàm nghiệp vụ (nntm_an_pham_bi_khoa / da_thanh_toan / can_access /
+ * pdf_url) đã chuyển sang plugin nntm-library, xem
+ * plugins/nntm-library/includes/quyen-truy-cap.php.
+ *
+ * VÌ SAO CHUYỂN: cổng quyền đọc và đường lấy tệp là nghiệp vụ, đổi theme không
+ * được mất. docs/04-kien-truc.md mục 1 đã chốt như vậy từ 06/08/2026.
+ *
+ * Ở lại đây chỉ còn việc nạp CSS/JS và đặt số bài mỗi trang cho kho lưu trữ.
+ */
 
 defined( 'ABSPATH' ) || exit;
-
-function nntm_an_pham_bi_khoa( $post = null ): bool {
-	$post = get_post( $post );
-
-	return $post ? (bool) get_post_meta( $post->ID, '_nntm_pub_khoa', true ) : false;
-}
-
-function nntm_an_pham_da_thanh_toan( $post = null ): bool {
-	$post = get_post( $post );
-
-	return (bool) apply_filters( 'nntm_an_pham_da_thanh_toan', false, $post, get_current_user_id() );
-}
-
-function nntm_an_pham_can_access( $post = null ): bool {
-	$post = get_post( $post );
-	$mo   = ! nntm_an_pham_bi_khoa( $post ) || nntm_an_pham_da_thanh_toan( $post );
-
-	return (bool) apply_filters( 'nntm_an_pham_can_access', $mo, $post, get_current_user_id() );
-}
-
-function nntm_an_pham_pdf_url( $post = null ): string {
-	$post   = get_post( $post );
-	$att_id = $post ? absint( get_post_meta( $post->ID, '_nntm_pdf_file', true ) ) : 0;
-
-	if ( ! $att_id ) {
-		return '';
-	}
-
-	$url = wp_get_attachment_url( $att_id );
-
-	return $url ? $url : '';
-}
 
 function nntm_an_pham_enqueue_assets(): void {
 	if ( ! is_singular( 'nntm_publication' ) ) {

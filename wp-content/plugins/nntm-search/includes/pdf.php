@@ -465,9 +465,18 @@ function nntm_search_pdf_rows_from( array $hits, string $query ): array {
 		$title     = $post instanceof WP_Post
 			? get_the_title( $post )
 			: get_the_title( (int) $hit->attachment_id );
+		/*
+		 * Tệp mồ côi (không gắn ấn phẩm nào) thì trỏ vào endpoint có kiểm quyền,
+		 * KHÔNG dùng wp_get_attachment_url(): từ khi PDF dời sang kho riêng, URL
+		 * đó trỏ tới một chỗ trống trong uploads và luôn ra 404.
+		 */
 		$permalink = $post instanceof WP_Post
 			? add_query_arg( 'trang', (int) $hit->page_no, (string) get_permalink( $post ) )
-			: (string) wp_get_attachment_url( (int) $hit->attachment_id );
+			: (
+				function_exists( 'nntm_lib_url_doc_pdf' )
+					? nntm_lib_url_doc_pdf( (int) $hit->attachment_id )
+					: nntm_search_pdf_download_url( (int) $hit->attachment_id )
+			);
 
 		$rows[] = array(
 			'id'        => $post_id,

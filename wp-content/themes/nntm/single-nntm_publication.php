@@ -34,9 +34,14 @@ while ( have_posts() ) :
 		);
 	}
 
-	$related  = new WP_Query( $related_args );
-	$bi_khoa  = nntm_an_pham_bi_khoa( $post_id );
-	$duoc_xem = nntm_an_pham_can_access( $post_id );
+	$related = new WP_Query( $related_args );
+
+	/*
+	 * Hai hàm quyền thuộc plugin nntm-library. Tắt plugin thì coi như không
+	 * khoá và không cho vào trang đọc — mất tính năng chứ không vỡ trang.
+	 */
+	$bi_khoa  = function_exists( 'nntm_an_pham_bi_khoa' ) && nntm_an_pham_bi_khoa( $post_id );
+	$duoc_xem = function_exists( 'nntm_an_pham_can_access' ) && nntm_an_pham_can_access( $post_id );
 	?>
 
 	<main id="nntm-noi-dung-chinh" class="nntm-an-pham-detail">
@@ -105,7 +110,7 @@ while ( have_posts() ) :
 						<?php
 						 
 						?>
-						<?php if ( $duoc_xem ) : ?>
+						<?php if ( $duoc_xem && function_exists( 'nntm_doc_url' ) ) : ?>
 							<a href="<?php echo esc_url( nntm_doc_url( $post_id ) ); ?>" class="nntm-an-pham__doc-nut">
 								<?php esc_html_e( 'Đọc ấn phẩm', 'nntm' ); ?>
 							</a>

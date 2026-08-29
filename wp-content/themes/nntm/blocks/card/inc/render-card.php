@@ -44,7 +44,11 @@ function nntm_render_card_markup( int $post_id, string $variant, bool $show_date
 
 	$permalink = get_permalink( $post );
 
-	if ( 'books' === $variant ) {
+	/*
+	 * Bọc function_exists: hai hàm này thuộc plugin nntm-library. Tắt plugin thì
+	 * thẻ trỏ về trang chi tiết như thẻ thường, chứ không làm trắng cả trang.
+	 */
+	if ( 'books' === $variant && function_exists( 'nntm_doc_url' ) && function_exists( 'nntm_an_pham_can_access' ) ) {
 		$duong_doc = nntm_doc_url( $post );
 
 		if ( '' !== $duong_doc && nntm_an_pham_can_access( $post ) ) {

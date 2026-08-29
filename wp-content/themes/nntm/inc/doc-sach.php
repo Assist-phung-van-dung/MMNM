@@ -1,116 +1,40 @@
 <?php
+/*
+ * Trang đọc sách — phần HÌNH ẢNH.
+ *
+ * Phần nghiệp vụ đã chuyển sang plugin nntm-library:
+ *   - đăng ký endpoint /doc/, nntm_dang_o_trang_doc(), nntm_doc_url()
+ *     → includes/trang-doc.php
+ *   - chặn quyền vào trang đọc, tự chuyển sang trang đọc
+ *     → includes/trang-doc.php
+ *   - bảng tiến độ đọc (wp_nntm_reading_progress)
+ *     → includes/tien-do-doc.php
+ *
+ * VÌ SAO CHUYỂN: bảng tiến độ đọc do plugin nntm-core dựng nhưng lại bị theme
+ * ghi thẳng bằng $wpdb->insert. Đổi theme là mất luôn chỗ đọc/ghi, dữ liệu nằm
+ * đó mà không ai dùng. docs/04-kien-truc.md mục 1 chốt "dữ liệu và nghiệp vụ ở
+ * plugin, hình ảnh ở theme".
+ *
+ * Ở lại đây: chọn template, nạp CSS/JS, gỡ giao diện chung, giấu thanh quản trị.
+ *
+ * Mọi hàm gọi sang plugin đều bọc function_exists(): tắt plugin thì trang đọc
+ * mất tác dụng, nhưng site vẫn chạy chứ không trắng màn hình.
+ */
 
 defined( 'ABSPATH' ) || exit;
 
-const NNTM_DOC_ENDPOINT = 'doc';
-
-const NNTM_DOC_REWRITE_VERSION = '1';
-
-function nntm_doc_dang_ky_endpoint(): void {
-	add_rewrite_endpoint( NNTM_DOC_ENDPOINT, EP_PERMALINK );
-
-	if ( NNTM_DOC_REWRITE_VERSION !== get_option( 'nntm_doc_rewrite_version' ) ) {
-		flush_rewrite_rules();
-		update_option( 'nntm_doc_rewrite_version', NNTM_DOC_REWRITE_VERSION );
-	}
+/**
+ * Đang ở trang đọc hay không — hỏi plugin, không tự đoán.
+ *
+ * Bọc lại thành một hàm riêng của theme để mỗi chỗ dùng khỏi phải tự kiểm tra
+ * xem plugin có bật không.
+ */
+function nntm_theme_o_trang_doc(): bool {
+	return function_exists( 'nntm_dang_o_trang_doc' ) && nntm_dang_o_trang_doc();
 }
-add_action( 'init', 'nntm_doc_dang_ky_endpoint' );
-
-function nntm_dang_o_trang_doc(): bool {
-	global $wp_query;
-
-	if ( ! is_singular( 'nntm_publication' ) ) {
-		return false;
-	}
-
-	return isset( $wp_query->query_vars[ NNTM_DOC_ENDPOINT ] );
-}
-
-function nntm_doc_url( $post = null ): string {
-	$post = get_post( $post );
-
-	if ( ! $post ) {
-		return '';
-	}
-
-	return trailingslashit( trailingslashit( (string) get_permalink( $post ) ) . NNTM_DOC_ENDPOINT );
-}
-
-function nntm_doc_chan_quyen(): void {
-	if ( ! nntm_dang_o_trang_doc() ) {
-		return;
-	}
-
-	$post = get_queried_object();
-
-	if ( ! $post instanceof WP_Post ) {
-		return;
-	}
-
-	$chi_tiet = (string) get_permalink( $post );
-
-	if ( nntm_an_pham_can_access( $post ) ) {
-		return;
-	}
-
-	if ( ! is_user_logged_in() ) {
-		$dich = function_exists( 'nntm_login_url' )
-			? nntm_login_url( nntm_doc_url( $post ) )
-			: wp_login_url( nntm_doc_url( $post ) );
-
-		wp_safe_redirect( $dich );
-		exit;
-	}
-
-	wp_safe_redirect( $chi_tiet );
-	exit;
-}
-add_action( 'template_redirect', 'nntm_doc_chan_quyen', 5 );
-
-function nntm_an_pham_chuyen_sang_trang_doc(): void {
-	if ( is_admin() || ! is_singular( 'nntm_publication' ) ) {
-		return;
-	}
-
-	if ( nntm_dang_o_trang_doc() ) {
-		return;
-	}
-
-	if ( is_feed() || is_embed() || is_preview() || is_customize_preview() ) {
-		return;
-	}
-
-	if ( isset( $_GET['chi-tiet'] ) ) {  
-		return;
-	}
-
-	$post = get_queried_object();
-
-	if ( ! $post instanceof WP_Post ) {
-		return;
-	}
-
-	if ( ! apply_filters( 'nntm_an_pham_tu_chuyen_sang_doc', true, $post ) ) {
-		return;
-	}
-
-	if ( ! nntm_an_pham_can_access( $post ) ) {
-		return;
-	}
-
-	$dich = nntm_doc_url( $post );
-
-	if ( '' === $dich ) {
-		return;
-	}
-
-	wp_safe_redirect( $dich, 302 );
-	exit;
-}
-add_action( 'template_redirect', 'nntm_an_pham_chuyen_sang_trang_doc', 6 );
 
 function nntm_doc_chon_template( string $template ): string {
-	if ( ! nntm_dang_o_trang_doc() ) {
+	if ( ! nntm_theme_o_trang_doc() ) {
 		return $template;
 	}
 
@@ -121,7 +45,7 @@ function nntm_doc_chon_template( string $template ): string {
 add_filter( 'template_include', 'nntm_doc_chon_template' );
 
 function nntm_doc_enqueue_assets(): void {
-	if ( ! nntm_dang_o_trang_doc() ) {
+	if ( ! nntm_theme_o_trang_doc() ) {
 		return;
 	}
 
@@ -131,7 +55,12 @@ function nntm_doc_enqueue_assets(): void {
 		return;
 	}
 
-	$pdf_url = nntm_an_pham_pdf_url( $post );
+	/*
+	 * Từ khi có kho riêng, hàm này trả về đường dẫn endpoint có kiểm quyền chứ
+	 * không còn là URL thẳng tới tệp trong uploads. Nó cũng trả về chuỗi rỗng
+	 * khi người xem chưa đủ quyền, nên không rò link ra HTML.
+	 */
+	$pdf_url = function_exists( 'nntm_an_pham_pdf_url' ) ? nntm_an_pham_pdf_url( $post ) : '';
 
 	$css = NNTM_THEME_DIR . '/assets/css/pages/doc-sach.css';
 	wp_enqueue_style(
@@ -161,15 +90,14 @@ function nntm_doc_enqueue_assets(): void {
 		'nntm-doc-sach',
 		'nntmDocSach',
 		array(
-			 
 			'pdfUrl'    => $co_tep ? $pdf_url : '',
 			'workerUrl' => NNTM_THEME_URI . '/assets/vendor/pdfjs/pdf.worker.min.js',
 			'objectId'  => $post->ID,
 			'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
 			'nonce'     => wp_create_nonce( 'nntm_doc_tien_do' ),
-			'viTri'     => nntm_doc_lay_vi_tri( $post->ID ),
+			'viTri'     => function_exists( 'nntm_doc_lay_vi_tri' ) ? nntm_doc_lay_vi_tri( $post->ID ) : 0,
 			'dangNhap'  => is_user_logged_in(),
-			 
+
 			'watermark' => is_user_logged_in() ? wp_get_current_user()->display_name : '',
 			'i18n'      => array(
 				'dangTai'     => __( 'Đang mở sách…', 'nntm' ),
@@ -184,7 +112,7 @@ function nntm_doc_enqueue_assets(): void {
 add_action( 'wp_enqueue_scripts', 'nntm_doc_enqueue_assets', 5 );
 
 function nntm_doc_dequeue_site_chrome(): void {
-	if ( ! nntm_dang_o_trang_doc() ) {
+	if ( ! nntm_theme_o_trang_doc() ) {
 		return;
 	}
 
@@ -196,82 +124,6 @@ function nntm_doc_dequeue_site_chrome(): void {
 add_action( 'wp_enqueue_scripts', 'nntm_doc_dequeue_site_chrome', 100 );
 
 function nntm_doc_an_admin_bar( $hien ) {
-	return nntm_dang_o_trang_doc() ? false : $hien;
+	return nntm_theme_o_trang_doc() ? false : $hien;
 }
 add_filter( 'show_admin_bar', 'nntm_doc_an_admin_bar' );
-
- 
-function nntm_doc_bang_tien_do(): string {
-	global $wpdb;
-
-	return $wpdb->prefix . 'nntm_reading_progress';
-}
-
-function nntm_doc_lay_vi_tri( int $object_id ): int {
-	global $wpdb;
-
-	if ( get_current_user_id() <= 0 ) {
-		return 0;
-	}
-
-	$bang = nntm_doc_bang_tien_do();
-
-	return (int) $wpdb->get_var(
-		$wpdb->prepare(
-			"SELECT position FROM {$bang} WHERE user_id = %d AND object_id = %d AND object_type = %s LIMIT 1",
-			get_current_user_id(),
-			$object_id,
-			'publication'
-		)
-	);
-}
-
-function nntm_doc_ajax_luu_tien_do(): void {
-	check_ajax_referer( 'nntm_doc_tien_do', 'nonce' );
-
-	if ( ! is_user_logged_in() ) {
-		wp_send_json_error( array( 'message' => __( 'Chưa đăng nhập.', 'nntm' ) ), 403 );
-	}
-
-	$object_id = isset( $_POST['object_id'] ) ? absint( wp_unslash( $_POST['object_id'] ) ) : 0;
-	$trang     = isset( $_POST['trang'] ) ? absint( wp_unslash( $_POST['trang'] ) ) : 0;
-
-	if ( $object_id <= 0 || $trang <= 0 || 'nntm_publication' !== get_post_type( $object_id ) ) {
-		wp_send_json_error( array( 'message' => __( 'Dữ liệu không hợp lệ.', 'nntm' ) ), 400 );
-	}
-
-	if ( ! nntm_an_pham_can_access( $object_id ) ) {
-		wp_send_json_error( array( 'message' => __( 'Không có quyền.', 'nntm' ) ), 403 );
-	}
-
-	global $wpdb;
-
-	$bang    = nntm_doc_bang_tien_do();
-	$user_id = get_current_user_id();
-
-	$da_co = (int) $wpdb->get_var(
-		$wpdb->prepare(
-			"SELECT id FROM {$bang} WHERE user_id = %d AND object_id = %d AND object_type = %s LIMIT 1",
-			$user_id,
-			$object_id,
-			'publication'
-		)
-	);
-
-	$data = array(
-		'user_id'     => $user_id,
-		'object_id'   => $object_id,
-		'object_type' => 'publication',
-		'position'    => (string) $trang,
-		'updated_at'  => current_time( 'mysql' ),
-	);
-
-	if ( $da_co > 0 ) {
-		$wpdb->update( $bang, $data, array( 'id' => $da_co ) );
-	} else {
-		$wpdb->insert( $bang, $data );
-	}
-
-	wp_send_json_success( array( 'trang' => $trang ) );
-}
-add_action( 'wp_ajax_nntm_doc_tien_do', 'nntm_doc_ajax_luu_tien_do' );
