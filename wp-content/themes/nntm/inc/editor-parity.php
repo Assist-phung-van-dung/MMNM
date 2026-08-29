@@ -102,6 +102,21 @@ function nntm_editor_parity_ban_do(): array {
 				'slug'      => array( 'r1' ),
 				'than'      => array( 'body.nntm-r1' ),
 			),
+			/*
+			 * Hai tep duoi day khong phai CSS cua trang, ma la phan bi tach ra
+			 * khoi blocks/card-list/style.css de ngoai trang khong phai tai thu
+			 * minh khong dung. Nhung trinh soan thao thi van phai co du, neu
+			 * khong block Card List se vo ngay trong admin: chung chi duoc nap
+			 * qua wp_enqueue_scripts, ma hook do khong chay trong wp-admin.
+			 */
+			array(
+				'css'      => 'blocks/card-list/style-youtube.css',
+				'kiem_tra' => 'nntm_editor_parity_co_bang_youtube',
+			),
+			array(
+				'css'      => 'assets/css/pages/lien-dan-khoa-lich.css',
+				'slug'     => array( 'lien-dan', 'vuon-xoai' ),
+			),
 			array(
 				'css'       => 'assets/css/pages/lien-dan-figma.css',
 				'slug'      => array( 'lien-dan' ),
@@ -131,6 +146,20 @@ function nntm_editor_parity_ban_do(): array {
 }
 
 /**
+ * Bài đang sửa có Card List nào dùng băng chạy YouTube không.
+ *
+ * Dùng lại đúng hàm quét mà bản ngoài trang dùng (inc/enqueue.php), để hai bên
+ * không thể lệch điều kiện nhau.
+ */
+function nntm_editor_parity_co_bang_youtube( WP_Post $post ): bool {
+	if ( ! function_exists( 'nntm_card_list_co_bang_youtube' ) ) {
+		return false;
+	}
+
+	return nntm_card_list_co_bang_youtube( parse_blocks( $post->post_content ) );
+}
+
+/**
  * Bài đang sửa có khớp điều kiện của một mục trong bản đồ không.
  */
 function nntm_editor_parity_khop( array $muc, WP_Post $post ): bool {
@@ -146,6 +175,14 @@ function nntm_editor_parity_khop( array $muc, WP_Post $post ): bool {
 
 	if ( ! empty( $muc['slug'] ) ) {
 		return 'page' === $post->post_type && in_array( $post->post_name, (array) $muc['slug'], true );
+	}
+
+	/*
+	 * Điều kiện dạng hàm — dành cho tệp CSS không gắn với một trang cụ thể nào,
+	 * mà gắn với việc bài đang sửa CÓ CHỨA một khối nhất định hay không.
+	 */
+	if ( ! empty( $muc['kiem_tra'] ) && is_callable( $muc['kiem_tra'] ) ) {
+		return (bool) call_user_func( $muc['kiem_tra'], $post );
 	}
 
 	return false;
