@@ -77,6 +77,7 @@
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	color: #fff;
 }
 
 .nntm-doc__actions {
@@ -148,8 +149,11 @@
 	font-size: 1.32rem;
 	line-height: 1.28;
 	font-weight: 600;
+	color: #fff;
 }
-
+.nntm-doc__intro p{
+	color: #fff;
+}
 .nntm-doc__author {
 	margin: 8px 0 0;
 	color: var(--doc-ink-2);
