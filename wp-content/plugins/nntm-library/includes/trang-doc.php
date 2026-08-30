@@ -51,6 +51,36 @@ if ( ! function_exists( 'nntm_dang_o_trang_doc' ) ) {
 	}
 }
 
+/**
+ * Cờ chống đệ quy khi đang lấy permalink GỐC.
+ *
+ * @var bool
+ */
+$GLOBALS['nntm_lib_permalink_goc'] = false;
+
+/**
+ * Permalink GỐC của ấn phẩm — dạng /an-pham/<slug>/, chưa gắn /doc/.
+ *
+ * Cần hàm riêng vì bộ lọc bên dưới đã đổi get_permalink() thành đường dẫn
+ * /doc/. Không có đường lấy bản gốc thì nntm_doc_url() sẽ ghép thành
+ * /doc/doc/, và chỗ nào chuyển hướng về trang chi tiết sẽ quay vòng vô tận.
+ *
+ * @param int|WP_Post|null $post Ấn phẩm.
+ */
+function nntm_an_pham_url_chi_tiet( $post = null ): string {
+	$post = get_post( $post );
+
+	if ( ! $post ) {
+		return '';
+	}
+
+	$GLOBALS['nntm_lib_permalink_goc'] = true;
+	$url                               = (string) get_permalink( $post );
+	$GLOBALS['nntm_lib_permalink_goc'] = false;
+
+	return $url;
+}
+
 if ( ! function_exists( 'nntm_doc_url' ) ) {
 	/**
 	 * Đường dẫn trang đọc của một ấn phẩm.
@@ -58,15 +88,46 @@ if ( ! function_exists( 'nntm_doc_url' ) ) {
 	 * @param int|WP_Post|null $post Ấn phẩm.
 	 */
 	function nntm_doc_url( $post = null ): string {
-		$post = get_post( $post );
+		$goc = nntm_an_pham_url_chi_tiet( $post );
 
-		if ( ! $post ) {
-			return '';
-		}
-
-		return trailingslashit( trailingslashit( (string) get_permalink( $post ) ) . NNTM_DOC_ENDPOINT );
+		return '' === $goc ? '' : trailingslashit( trailingslashit( $goc ) . NNTM_DOC_ENDPOINT );
 	}
 }
+
+/**
+ * MỌI đường dẫn tới ấn phẩm đều trỏ thẳng vào trình đọc.
+ *
+ * VÌ SAO LÀM Ở ĐÂY chứ không sửa từng khối: link tới ấn phẩm được dựng ở ít
+ * nhất bảy chỗ — thẻ Card, article-feature, article-mosaic, trang lưu trữ, kết
+ * quả tìm kiếm, trang chi tiết, popup Nghi Quỹ. Sửa từng chỗ thì lần nào cũng
+ * sót một hai chỗ, và khối mới viết sau lại quên. Móc vào chính get_permalink()
+ * thì mọi nơi tự đúng, kể cả nơi chưa ai nghĩ tới.
+ *
+ * NGOẠI LỆ DUY NHẤT: cuốn không có gì để đọc ('chan' — chưa gắn tệp, hoặc bị
+ * khoá bằng bộ câu hỏi mà chưa trả lời). Đẩy vào /doc/ thì cổng quyền lại đá
+ * ngược ra trang chi tiết, mà trang chi tiết cũng tự đẩy vào /doc/ — quay vòng
+ * vô tận. Mấy cuốn đó ở lại trang giới thiệu, nơi có nút mua hoặc nút trả lời
+ * câu hỏi.
+ *
+ * @param string  $url  Đường dẫn WordPress vừa dựng.
+ * @param WP_Post $post Bài viết.
+ */
+function nntm_lib_permalink_sang_doc( $url, $post ) {
+	if ( $GLOBALS['nntm_lib_permalink_goc'] ) {
+		return $url;
+	}
+
+	if ( is_admin() || ! $post instanceof WP_Post || 'nntm_publication' !== $post->post_type ) {
+		return $url;
+	}
+
+	if ( 'chan' === nntm_an_pham_che_do_doc( $post ) ) {
+		return $url;
+	}
+
+	return trailingslashit( trailingslashit( $url ) . NNTM_DOC_ENDPOINT );
+}
+add_filter( 'post_type_link', 'nntm_lib_permalink_sang_doc', 10, 2 );
 
 /**
  * Chặn người không có quyền vào trang đọc.
@@ -107,7 +168,11 @@ function nntm_doc_chan_quyen(): void {
 		exit;
 	}
 
-	wp_safe_redirect( (string) get_permalink( $post ) );
+	/*
+	 * Về trang giới thiệu bằng permalink GỐC. Dùng get_permalink() ở đây là ra
+	 * đúng /doc/ mình vừa bị đá khỏi — quay vòng vô tận.
+	 */
+	wp_safe_redirect( nntm_an_pham_url_chi_tiet( $post ) );
 	exit;
 }
 add_action( 'template_redirect', 'nntm_doc_chan_quyen', 5 );

@@ -42,27 +42,13 @@ function nntm_render_card_markup( int $post_id, string $variant, bool $show_date
 	$has_cta     = $is_dai_si || $is_kim_cuong || ( 'video' !== $variant ) || $show_cta;
 	$has_excerpt = $show_excerpt && ! $is_dai_si && in_array( $variant, array( 'article', 'khoa-tu', 'books', 'kim-cuong' ), true );
 
-	$permalink = get_permalink( $post );
-
 	/*
-	 * Bọc function_exists: hai hàm này thuộc plugin nntm-library. Tắt plugin thì
-	 * thẻ trỏ về trang chi tiết như thẻ thường, chứ không làm trắng cả trang.
+	 * Với ấn phẩm, get_permalink() đã tự trả về đường dẫn /doc/ — plugin
+	 * nntm-library móc vào bộ lọc post_type_link. Trước đây chỗ này tự ghép
+	 * /doc/ cho riêng biến thể "books", nên các biến thể khác vẫn trỏ về trang
+	 * giới thiệu; giữ lại là ghép hai lần thành /doc/doc/.
 	 */
-	if ( 'books' === $variant && function_exists( 'nntm_doc_url' ) && function_exists( 'nntm_an_pham_che_do_doc' ) ) {
-		$duong_doc = nntm_doc_url( $post );
-
-		/*
-		 * Vào THẲNG trình đọc, kể cả khi mới chỉ được xem thử: khách bấm vào bìa
-		 * sách là muốn đọc, không phải muốn đọc trang giới thiệu. Chưa mua thì
-		 * lật được mấy trang đầu rồi gặp khung thanh toán ngay trong trình đọc.
-		 *
-		 * Chỉ 'chan' (chưa cấu hình tệp xem thử) mới ở lại trang chi tiết, vì vào
-		 * trình đọc lúc đó chẳng có gì để xem.
-		 */
-		if ( '' !== $duong_doc && 'chan' !== nntm_an_pham_che_do_doc( $post ) ) {
-			$permalink = $duong_doc;
-		}
-	}
+	$permalink = get_permalink( $post );
 
 	$title     = get_the_title( $post );
 	$thumbnail = get_the_post_thumbnail(

@@ -70,22 +70,13 @@ function nntm_is_cpt_shared_single(): bool {
  * Preserve any special destination URL used by a CPT archive.
  */
 function nntm_cpt_archive_item_url( WP_Post $post ): string {
-	$url = get_permalink( $post );
-
-	// Ấn phẩm keeps its existing direct-document behavior when the user can read it.
-	if (
-		'nntm_publication' === $post->post_type
-		&& function_exists( 'nntm_doc_url' )
-		&& function_exists( 'nntm_an_pham_can_access' )
-		&& nntm_an_pham_can_access( $post )
-	) {
-		$document_url = (string) nntm_doc_url( $post );
-		if ( '' !== trim( $document_url ) ) {
-			$url = $document_url;
-		}
-	}
-
-	return (string) $url;
+	/*
+	 * Với ấn phẩm, get_permalink() đã tự trả về /doc/ — plugin nntm-library móc
+	 * vào post_type_link. Trước đây chỗ này tự ghép, và chỉ ghép khi người xem
+	 * ĐÃ có quyền đọc, nên người chưa mua vẫn thấy link trang giới thiệu. Giữ
+	 * lại vừa thừa vừa ghép hai lần thành /doc/doc/.
+	 */
+	return (string) get_permalink( $post );
 }
 
 /**
