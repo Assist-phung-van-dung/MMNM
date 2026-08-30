@@ -125,6 +125,17 @@ function nntm_payos_rest_tao_don( WP_REST_Request $req ) {
 				$chung,
 				array(
 					'cheDoThu'    => true,
+					/*
+					 * Chế độ thử không có chuỗi VietQR thật, nên vẽ tạm mã QR chứa
+					 * chính đường dẫn "đã trả tiền" — quét bằng điện thoại là mở
+					 * ngay, tiện thử cả luồng.
+					 */
+					'qrSvg'       => nntm_payos_qr_svg(
+						wp_nonce_url(
+							add_query_arg( array( 'nntm_payos_thu' => $ma ), home_url( '/' ) ),
+							'nntm_payos_thu_' . $ma
+						)
+					),
 					'checkoutUrl' => wp_nonce_url(
 						add_query_arg(
 							array(
@@ -134,14 +145,25 @@ function nntm_payos_rest_tao_don( WP_REST_Request $req ) {
 						),
 						'nntm_payos_thu_' . $ma
 					),
-					'qrCode'      => '',
 				)
 			)
 		);
 	}
 
+	/*
+	 * Đơn cũ còn hạn: dựng lại mã QR từ chuỗi VietQR đã cất, không gọi PayOS
+	 * thêm lần nữa.
+	 */
 	if ( $don && '' !== (string) $don->checkout_url ) {
-		return rest_ensure_response( array_merge( $chung, array( 'checkoutUrl' => (string) $don->checkout_url, 'qrCode' => '' ) ) );
+		return rest_ensure_response(
+			array_merge(
+				$chung,
+				array(
+					'checkoutUrl' => (string) $don->checkout_url,
+					'qrSvg'       => nntm_payos_qr_svg( (string) $don->qr_code ),
+				)
+			)
+		);
 	}
 
 	$kq = nntm_payos_tao_lien_ket(
@@ -156,9 +178,21 @@ function nntm_payos_rest_tao_don( WP_REST_Request $req ) {
 		return new WP_Error( 'nntm_payos_loi', $kq->get_error_message(), array( 'status' => 502 ) );
 	}
 
-	nntm_payos_luu_lien_ket( $ma, $kq['paymentLinkId'], $kq['checkoutUrl'] );
+	nntm_payos_luu_lien_ket( $ma, $kq['paymentLinkId'], $kq['checkoutUrl'], $kq['qrCode'] );
 
-	return rest_ensure_response( array_merge( $chung, array( 'checkoutUrl' => $kq['checkoutUrl'], 'qrCode' => $kq['qrCode'] ) ) );
+	/*
+	 * Trả về ẢNH QR đã vẽ sẵn, không trả chuỗi VietQR thô: trình duyệt không
+	 * cần biết chuỗi đó, và cũng chẳng có bộ vẽ QR nào ở phía trình duyệt.
+	 */
+	return rest_ensure_response(
+		array_merge(
+			$chung,
+			array(
+				'checkoutUrl' => $kq['checkoutUrl'],
+				'qrSvg'       => nntm_payos_qr_svg( $kq['qrCode'] ),
+			)
+		)
+	);
 }
 
 /**

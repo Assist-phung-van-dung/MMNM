@@ -46,6 +46,7 @@ function nntm_payos_dung_bang(): void {
 			order_code BIGINT UNSIGNED NOT NULL,
 			payment_link_id VARCHAR(64) NOT NULL DEFAULT '',
 			checkout_url TEXT NULL,
+			qr_code TEXT NULL,
 			created_at DATETIME NOT NULL,
 			paid_at DATETIME NULL,
 			PRIMARY KEY (id),
@@ -247,17 +248,22 @@ function nntm_payos_danh_dau_da_tra( int $order_code, int $so_tien ): bool {
  * @param string $link_id    payment_link_id.
  * @param string $url        checkoutUrl.
  */
-function nntm_payos_luu_lien_ket( int $order_code, string $link_id, string $url ): void {
+function nntm_payos_luu_lien_ket( int $order_code, string $link_id, string $url, string $qr = '' ): void {
 	global $wpdb;
 
+	/*
+	 * Cất luôn chuỗi VietQR để lần mở khung sau vẽ lại được mã QR mà không phải
+	 * gọi PayOS thêm lần nữa.
+	 */
 	$wpdb->update(
 		nntm_payos_bang(),
 		array(
 			'payment_link_id' => $link_id,
 			'checkout_url'    => $url,
+			'qr_code'         => $qr,
 		),
 		array( 'order_code' => $order_code ),
-		array( '%s', '%s' ),
+		array( '%s', '%s', '%s' ),
 		array( '%d' )
 	);
 }

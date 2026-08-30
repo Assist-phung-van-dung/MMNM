@@ -416,7 +416,13 @@ function nntm_payos_ve_trang_cai_dat(): void {
 			<?php endif; ?>
 		</p>
 
-		<?php nntm_payos_bang_don_gan_day(); ?>
+		<h2><?php esc_html_e( 'Đơn hàng', 'nntm' ); ?></h2>
+		<p>
+			<?php esc_html_e( 'Danh sách đơn đã tách sang màn riêng để dễ theo dõi hằng ngày.', 'nntm' ); ?>
+			<a class="button" href="<?php echo esc_url( admin_url( 'edit.php?post_type=nntm_publication&page=nntm-don-hang' ) ); ?>">
+				<?php esc_html_e( 'Mở màn Đơn hàng →', 'nntm' ); ?>
+			</a>
+		</p>
 	</div>
 	<?php
 }

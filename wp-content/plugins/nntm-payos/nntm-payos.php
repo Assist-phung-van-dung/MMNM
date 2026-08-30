@@ -19,15 +19,17 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'NNTM_PAYOS_VER', '1.0.0' );
+define( 'NNTM_PAYOS_VER', '1.1.0' );
 define( 'NNTM_PAYOS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'NNTM_PAYOS_URL', plugin_dir_url( __FILE__ ) );
 
 require_once NNTM_PAYOS_PATH . 'includes/cai-dat.php';
 require_once NNTM_PAYOS_PATH . 'includes/gia.php';
 require_once NNTM_PAYOS_PATH . 'includes/don-hang.php';
+require_once NNTM_PAYOS_PATH . 'includes/qr.php';
 require_once NNTM_PAYOS_PATH . 'includes/payos.php';
 require_once NNTM_PAYOS_PATH . 'includes/rest.php';
+require_once NNTM_PAYOS_PATH . 'includes/man-don-hang.php';
 require_once NNTM_PAYOS_PATH . 'includes/khung-thanh-toan.php';
 
 /**

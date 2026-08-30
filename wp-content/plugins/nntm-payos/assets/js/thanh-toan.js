@@ -63,24 +63,28 @@
 	}
 
 	/**
-	 * Vẽ mã QR từ chuỗi VietQR mà PayOS trả về.
+	 * Đặt ảnh mã QR vào ô bên trái.
 	 *
-	 * Trình duyệt không có sẵn bộ vẽ QR, và dự án chưa nhúng thư viện nào. Nếu
-	 * về sau có nhúng (đặt window.nntmVeQR) thì dùng ngay; chưa có thì ô này chỉ
-	 * cho một câu hướng dẫn, còn nút "Mở trang thanh toán" bên phải vẫn dùng
-	 * được — trang của PayOS đã có sẵn mã QR ở đó.
+	 * Máy chủ đã vẽ sẵn thành SVG (xem includes/qr.php) — ở đây chỉ gắn vào, KHÔNG
+	 * tự dựng mã. Nhờ vậy chuỗi thanh toán không cần đi ra tới JavaScript.
+	 *
+	 * @param {string} svg Mã SVG do máy chủ trả về, hoặc rỗng.
 	 */
-	function veQR( chuoi ) {
+	function veQR( svg ) {
 		oQR.innerHTML = '';
 
-		if ( chuoi && typeof window.nntmVeQR === 'function' ) {
-			window.nntmVeQR( chuoi, oQR );
+		if ( svg ) {
+			/*
+			 * Chuỗi này do chính máy chủ dựng, chỉ gồm <svg>/<rect>/<g> — không có
+			 * gì của người dùng lọt vào, nên gắn thẳng được.
+			 */
+			oQR.innerHTML = svg;
 			return;
 		}
 
 		var p = document.createElement( 'div' );
 		p.className = 'nntm-tt__qr-cho';
-		p.textContent = 'Bấm “Mở trang thanh toán” để lấy mã QR.';
+		p.textContent = 'Bấm “Mở trang thanh toán” để trả tiền.';
 		oQR.appendChild( p );
 	}
 
@@ -142,7 +146,7 @@
 				dongMa.hidden = false;
 			}
 
-			veQR( d.qrCode || '' );
+			veQR( d.qrSvg || '' );
 
 			if ( d.checkoutUrl ) {
 				nutMo.href = d.checkoutUrl;

@@ -183,7 +183,7 @@ function nntm_quiz_render_modal(): void {
 			<header class="nntm-quiz-modal__header">
 				<p class="nntm-quiz-modal__eyebrow"><?php esc_html_e( 'Nghi Quỹ', 'nntm' ); ?></p>
 				<h2 class="nntm-quiz-modal__title" id="nntm-quiz-modal-title"><?php esc_html_e( 'Trước khi xem Nghi Quỹ', 'nntm' ); ?></h2>
-				<p class="nntm-quiz-modal__phu"><?php esc_html_e( 'Xin trả lời đúng tất cả câu hỏi để vào phần hành trì. Trả lời chưa đúng thì làm lại được, không giới hạn số lần.', 'nntm' ); ?></p>
+				<p class="nntm-quiz-modal__phu"><?php esc_html_e( 'Xin trả lời đúng tất cả câu hỏi để vào phần hành trì.', 'nntm' ); ?></p>
 			</header>
 
 			<form class="nntm-quiz-modal__form" id="nntm-quiz-form" data-nntm-quiz-form hidden>
