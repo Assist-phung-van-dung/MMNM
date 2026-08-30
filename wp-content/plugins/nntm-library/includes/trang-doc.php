@@ -103,11 +103,14 @@ if ( ! function_exists( 'nntm_doc_url' ) ) {
  * sót một hai chỗ, và khối mới viết sau lại quên. Móc vào chính get_permalink()
  * thì mọi nơi tự đúng, kể cả nơi chưa ai nghĩ tới.
  *
- * NGOẠI LỆ DUY NHẤT: cuốn không có gì để đọc ('chan' — chưa gắn tệp, hoặc bị
- * khoá bằng bộ câu hỏi mà chưa trả lời). Đẩy vào /doc/ thì cổng quyền lại đá
- * ngược ra trang chi tiết, mà trang chi tiết cũng tự đẩy vào /doc/ — quay vòng
- * vô tận. Mấy cuốn đó ở lại trang giới thiệu, nơi có nút mua hoặc nút trả lời
- * câu hỏi.
+ * KHÔNG CÓ NGOẠI LỆ. Cuốn chưa mở được (chờ trả lời câu hỏi, chờ thanh toán,
+ * hay chưa gắn tệp) cũng đi vào /doc/ — cửa ải hiện ngay trong trình đọc chứ
+ * không đá người ta về trang giới thiệu.
+ *
+ * Bản đầu em có chừa ngoại lệ cho mấy cuốn đó, vì lúc ấy /doc/ đá ngược ra
+ * trang giới thiệu còn trang giới thiệu lại đẩy vào /doc/ — quay vòng vô tận.
+ * Đã gỡ hẳn cú đá ngược đó trong nntm_doc_chan_quyen(), nên ngoại lệ hết lý do
+ * tồn tại.
  *
  * @param string  $url  Đường dẫn WordPress vừa dựng.
  * @param WP_Post $post Bài viết.
@@ -121,61 +124,52 @@ function nntm_lib_permalink_sang_doc( $url, $post ) {
 		return $url;
 	}
 
-	if ( 'chan' === nntm_an_pham_che_do_doc( $post ) ) {
-		return $url;
-	}
-
 	return trailingslashit( trailingslashit( $url ) . NNTM_DOC_ENDPOINT );
 }
 add_filter( 'post_type_link', 'nntm_lib_permalink_sang_doc', 10, 2 );
 
 /**
- * Chặn người không có quyền vào trang đọc.
+ * Vì sao người đang xem chưa mở được cuốn này.
  *
- * Chưa đăng nhập thì đưa sang đăng nhập rồi quay lại; đã đăng nhập mà vẫn không
- * đủ quyền thì đưa về trang chi tiết — nơi có nút mua hoặc nút trả lời câu hỏi.
+ * '' = mở bình thường; 'quiz' = còn chờ trả lời câu hỏi; 'mua' = còn chờ thanh
+ * toán; 'thieu-tep' = chưa gắn tệp PDF nào.
+ *
+ * @param int|WP_Post|null $post Ấn phẩm.
+ */
+function nntm_an_pham_ly_do_khoa( $post = null ): string {
+	$post = get_post( $post );
+
+	if ( ! $post || nntm_an_pham_can_access( $post ) ) {
+		return '';
+	}
+
+	if ( function_exists( 'nntm_quiz_con_chan' ) && nntm_quiz_con_chan( (int) $post->ID ) ) {
+		return 'quiz';
+	}
+
+	if ( function_exists( 'nntm_payos_dang_ban' ) && nntm_payos_dang_ban( $post ) ) {
+		return 'mua';
+	}
+
+	return 'thieu-tep';
+}
+
+/**
+ * Trang đọc KHÔNG đá ai ra ngoài nữa.
+ *
+ * VÌ SAO BỎ CÚ ĐÁ NGƯỢC: trước đây người chưa đủ quyền bị đẩy về trang giới
+ * thiệu. Nhưng trang giới thiệu lại tự đẩy vào /doc/, nên phải chừa ngoại lệ
+ * cho mấy cuốn đó — và thế là link của chúng không có /doc/, đúng thứ khách
+ * không muốn.
+ *
+ * Nay cửa ải hiện ngay TRONG trình đọc: popup câu hỏi hoặc khung thanh toán tự
+ * mở đè lên. Nội dung vẫn kín như cũ — nntm_an_pham_pdf_url() không trả tệp gốc
+ * cho người chưa đủ quyền, nên chẳng có gì để lộ.
+ *
+ * Hàm giữ lại (rỗng) để chỗ nào từng gọi tới không vỡ.
  */
 function nntm_doc_chan_quyen(): void {
-	if ( ! nntm_dang_o_trang_doc() ) {
-		return;
-	}
-
-	$post = get_queried_object();
-
-	if ( ! $post instanceof WP_Post ) {
-		return;
-	}
-
-	if ( nntm_an_pham_can_access( $post ) ) {
-		return;
-	}
-
-	/*
-	 * Chưa mua nhưng cuốn này có tệp xem thử: cho vào trình đọc để lật mấy trang
-	 * đầu. Máy chủ chỉ gửi tệp xem thử (xem nntm_an_pham_pdf_url), nên không lộ
-	 * gì thêm — mà khách có cái để xem trước khi quyết định mua.
-	 */
-	if ( 'xem-thu' === nntm_an_pham_che_do_doc( $post ) ) {
-		return;
-	}
-
-	if ( ! is_user_logged_in() ) {
-		$dich = function_exists( 'nntm_login_url' )
-			? nntm_login_url( nntm_doc_url( $post ) )
-			: wp_login_url( nntm_doc_url( $post ) );
-
-		wp_safe_redirect( $dich );
-		exit;
-	}
-
-	/*
-	 * Về trang giới thiệu bằng permalink GỐC. Dùng get_permalink() ở đây là ra
-	 * đúng /doc/ mình vừa bị đá khỏi — quay vòng vô tận.
-	 */
-	wp_safe_redirect( nntm_an_pham_url_chi_tiet( $post ) );
-	exit;
 }
-add_action( 'template_redirect', 'nntm_doc_chan_quyen', 5 );
 
 /**
  * Vào thẳng trang đọc khi người xem đã có quyền.
@@ -211,13 +205,9 @@ function nntm_an_pham_chuyen_sang_trang_doc(): void {
 	}
 
 	/*
-	 * Chuyển sang trình đọc cả khi mới chỉ được xem thử — bấm vào ấn phẩm là
-	 * vào đọc luôn. Chỉ 'chan' mới ở lại trang giới thiệu.
+	 * LUÔN sang trình đọc, không trừ trường hợp nào. Cửa ải (câu hỏi / thanh
+	 * toán) hiện ngay trong đó.
 	 */
-	if ( 'chan' === nntm_an_pham_che_do_doc( $post ) ) {
-		return;
-	}
-
 	$dich = nntm_doc_url( $post );
 
 	if ( '' === $dich ) {

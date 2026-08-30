@@ -978,6 +978,46 @@
 		noiNut();
 		hienDangTai( false );
 
+		/*
+		 * Không có tệp để mở thì nói rõ VÌ SAO ngay giữa khung đọc.
+		 *
+		 * Trước đây chỗ này để trống trơn — người chưa mua hoặc chưa trả lời câu
+		 * hỏi vào tới nơi chỉ thấy một khung xám, không hiểu chuyện gì. Popup câu
+		 * hỏi / khung thanh toán vẫn tự mở đè lên, nhưng đóng nó đi là lại trống.
+		 */
+		( function veLyDoKhoa() {
+			var chu = {
+				quiz: CFG.i18n.khoaQuiz,
+				mua: CFG.i18n.khoaMua,
+				'thieu-tep': CFG.i18n.khoaThieu
+			}[ CFG.lyDoKhoa ];
+
+			if ( ! chu || ! el.stage ) { return; }
+
+			var hop = document.createElement( 'div' );
+			hop.className = 'nntm-doc__khoa';
+
+			var p = document.createElement( 'p' );
+			p.className = 'nntm-doc__khoa-chu';
+			p.textContent = chu;
+			hop.appendChild( p );
+
+			/*
+			 * Chỉ chế độ "mua" mới có nút ở đây. Popup câu hỏi tự mở sẵn nên thêm
+			 * nút nữa là thừa; còn "thiếu tệp" thì người đọc chẳng làm gì được.
+			 */
+			if ( 'mua' === CFG.lyDoKhoa ) {
+				var nut = document.createElement( 'button' );
+				nut.type = 'button';
+				nut.className = 'nntm-doc__khoa-nut';
+				nut.setAttribute( 'data-nntm-tt-mua', '' );
+				nut.textContent = CFG.i18n.khoaMua;
+				hop.appendChild( nut );
+			}
+
+			el.stage.appendChild( hop );
+		} )();
+
 		if ( el.tocBody ) {
 			el.tocBody.textContent = CFG.i18n.khongMucLuc;
 		}

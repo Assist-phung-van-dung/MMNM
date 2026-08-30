@@ -107,6 +107,11 @@ function nntm_doc_enqueue_assets(): void {
 			 * mở lên. 0 = không giới hạn (chỉ dừng ở trang cuối của tệp xem thử).
 			 */
 			'trangXemThu' => function_exists( 'nntm_payos_so_trang_xem_thu' ) ? (int) nntm_payos_so_trang_xem_thu( $post ) : 0,
+			/*
+			 * Vì sao chưa mở được: 'quiz' | 'mua' | 'thieu-tep' | ''. Trình đọc
+			 * dùng để in đúng câu giải thích thay vì để khung trống trơn.
+			 */
+			'lyDoKhoa'  => function_exists( 'nntm_an_pham_ly_do_khoa' ) ? nntm_an_pham_ly_do_khoa( $post ) : '',
 
 			'watermark' => is_user_logged_in() ? wp_get_current_user()->display_name : '',
 			'i18n'      => array(
@@ -114,6 +119,9 @@ function nntm_doc_enqueue_assets(): void {
 				'loi'         => __( 'Không mở được tệp. Tải lại trang giúp tôi.', 'nntm' ),
 				'trang'       => __( 'Trang', 'nntm' ),
 				'khongMucLuc' => __( 'Tệp này không có mục lục.', 'nntm' ),
+				'khoaQuiz'    => __( 'Xin trả lời đúng bộ câu hỏi để vào phần hành trì.', 'nntm' ),
+				'khoaMua'     => __( 'Ấn phẩm này cần mua mới đọc được.', 'nntm' ),
+				'khoaThieu'   => __( 'Ấn phẩm này chưa được gắn tệp để đọc.', 'nntm' ),
 				'trangAnh'    => __( 'Trang này là ảnh hoặc sơ đồ — đổi sang cách xem “Lật” để thấy đúng bản in.', 'nntm' ),
 			),
 		)

@@ -705,3 +705,53 @@ html.nntm-doc-html { margin-top: 0 !important; }
 
 .nntm-doc[data-xem="lat"] .nntm-doc__flip--prev { inset-inline-start: calc(var(--doc-side) + 10px); }
 .nntm-doc[data-xem="lat"] .nntm-doc__flip--next { inset-inline-end: 10px; }
+
+/* -------------------------------------------------------------------------
+   Trạng thái KHOÁ giữa khung đọc
+
+   Người chưa mua / chưa trả lời câu hỏi vẫn vào được trang đọc (mọi đường dẫn
+   ấn phẩm đều là /doc/). Không có tệp để vẽ thì phải nói rõ vì sao, chứ để
+   khung xám trống trơn thì người ta tưởng hỏng.
+   ---------------------------------------------------------------------- */
+
+.nntm-doc__khoa {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 18px;
+	margin: auto;
+	padding: 32px;
+	max-width: 32rem;
+	text-align: center;
+}
+
+.nntm-doc__khoa-chu {
+	margin: 0;
+	font-size: 1.0625rem;
+	line-height: 1.6;
+	color: var(--doc-ink-2);
+}
+
+.nntm-doc__khoa-nut {
+	height: 46px;
+	padding-inline: 26px;
+	border: 0;
+	border-radius: 8px;
+	background: var(--doc-accent);
+	color: #fff;
+	font-family: inherit;
+	font-size: 1rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: filter 180ms ease;
+}
+
+.nntm-doc__khoa-nut:hover,
+.nntm-doc__khoa-nut:focus-visible {
+	filter: brightness(1.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nntm-doc__khoa-nut { transition: none; }
+}
