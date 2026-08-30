@@ -74,6 +74,52 @@ if ( ! function_exists( 'nntm_an_pham_pdf_id' ) ) {
 	}
 }
 
+if ( ! function_exists( 'nntm_an_pham_pdf_xem_thu_id' ) ) {
+	/**
+	 * ID tệp PDF XEM THỬ của ấn phẩm (một hai trang đầu).
+	 *
+	 * VÌ SAO PHẢI CÓ TỆP RIÊNG chứ không cắt trang lúc chạy: máy chủ này không
+	 * có Imagick lẫn Ghostscript nên không tách được trang từ tệp gốc. Gửi cả
+	 * cuốn về rồi giấu trang bằng JavaScript thì mở công cụ nhà phát triển là
+	 * đọc hết — tức là không chặn được gì.
+	 *
+	 * Quản trị tải lên một tệp riêng chỉ gồm mấy trang đầu. Máy chủ chỉ gửi
+	 * đúng tệp đó cho người chưa mua, nên không có gì để lộ.
+	 *
+	 * @param int|WP_Post|null $post Ấn phẩm.
+	 */
+	function nntm_an_pham_pdf_xem_thu_id( $post = null ): int {
+		$post = get_post( $post );
+
+		return $post ? absint( get_post_meta( $post->ID, '_nntm_pdf_xem_thu', true ) ) : 0;
+	}
+}
+
+if ( ! function_exists( 'nntm_an_pham_che_do_doc' ) ) {
+	/**
+	 * Người đang xem được đọc ấn phẩm này ở mức nào.
+	 *
+	 *   'day-du' — đọc trọn cuốn
+	 *   'xem-thu' — chỉ được tệp xem thử, rồi gặp khung thanh toán
+	 *   'chan'   — không có gì để đọc (chưa cấu hình tệp xem thử)
+	 *
+	 * @param int|WP_Post|null $post Ấn phẩm.
+	 */
+	function nntm_an_pham_che_do_doc( $post = null ): string {
+		$post = get_post( $post );
+
+		if ( ! $post ) {
+			return 'chan';
+		}
+
+		if ( nntm_an_pham_can_access( $post ) ) {
+			return 'day-du';
+		}
+
+		return nntm_an_pham_pdf_xem_thu_id( $post ) > 0 ? 'xem-thu' : 'chan';
+	}
+}
+
 if ( ! function_exists( 'nntm_an_pham_pdf_url' ) ) {
 	/**
 	 * Đường dẫn để trình đọc lấy nội dung PDF.
@@ -92,13 +138,16 @@ if ( ! function_exists( 'nntm_an_pham_pdf_url' ) ) {
 			return '';
 		}
 
-		$att_id = nntm_an_pham_pdf_id( $post );
+		/*
+		 * Chưa đủ quyền thì trả về TỆP XEM THỬ, không trả tệp gốc. Đây là chỗ
+		 * quyết định người chưa mua nhận được những byte nào — quyết ở máy chủ,
+		 * không phải ở trình duyệt.
+		 */
+		$att_id = nntm_an_pham_can_access( $post )
+			? nntm_an_pham_pdf_id( $post )
+			: nntm_an_pham_pdf_xem_thu_id( $post );
 
 		if ( ! $att_id ) {
-			return '';
-		}
-
-		if ( ! nntm_an_pham_can_access( $post ) ) {
 			return '';
 		}
 

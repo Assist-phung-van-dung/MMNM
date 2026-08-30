@@ -130,6 +130,29 @@ while ( have_posts() ) :
 							>
 								<?php esc_html_e( 'Trả lời câu hỏi để xem Nghi Quỹ', 'nntm' ); ?>
 							</button>
+						<?php elseif ( $bi_khoa && function_exists( 'nntm_payos_dang_ban' ) && nntm_payos_dang_ban( $post_id ) ) : ?>
+							<?php
+							/*
+							 * Đang bán: hiện giá và nút mở khung thanh toán. Nút chỉ
+							 * mang một dấu data — mọi việc còn lại do plugin nntm-payos
+							 * lo, theme không biết gì về đơn hàng.
+							 */
+							?>
+							<button type="button" class="nntm-an-pham__doc-nut nntm-an-pham__doc-nut--mua" data-nntm-tt-mua>
+								<?php
+								printf(
+									/* translators: %s: giá bán đã định dạng. */
+									esc_html__( 'Mua để đọc — %s', 'nntm' ),
+									esc_html( nntm_payos_dinh_dang_tien( nntm_payos_gia( $post_id ) ) )
+								);
+								?>
+							</button>
+
+							<?php if ( function_exists( 'nntm_an_pham_pdf_xem_thu_id' ) && nntm_an_pham_pdf_xem_thu_id( $post_id ) ) : ?>
+								<a class="nntm-an-pham__xem-thu" href="<?php echo esc_url( nntm_doc_url( $post_id ) ); ?>">
+									<?php esc_html_e( 'Đọc thử vài trang', 'nntm' ); ?>
+								</a>
+							<?php endif; ?>
 						<?php elseif ( $bi_khoa ) : ?>
 							<p class="nntm-an-pham__khoa">
 								<?php esc_html_e( 'Ấn phẩm này yêu cầu thanh toán mới xem được nội dung đầy đủ.', 'nntm' ); ?>

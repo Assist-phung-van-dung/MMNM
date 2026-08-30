@@ -95,6 +95,26 @@ function nntm_lib_cac_an_pham_cua_pdf( int $attachment_id ): array {
 }
 
 /**
+ * Tệp này có phải tệp xem thử của một ấn phẩm nào không.
+ *
+ * @param int $attachment_id ID tệp đính kèm.
+ */
+function nntm_lib_la_tep_xem_thu( int $attachment_id ): bool {
+	global $wpdb;
+
+	if ( $attachment_id <= 0 ) {
+		return false;
+	}
+
+	return (bool) $wpdb->get_var(
+		$wpdb->prepare(
+			"SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_nntm_pdf_xem_thu' AND meta_value = %d LIMIT 1",
+			$attachment_id
+		)
+	);
+}
+
+/**
  * Ấn phẩm đại diện của một tệp — chỉ dùng để hiển thị, đừng dùng để xét quyền.
  *
  * @param int $attachment_id ID tệp đính kèm.
@@ -120,6 +140,15 @@ function nntm_lib_an_pham_cua_pdf( int $attachment_id ): int {
  * @param int $attachment_id ID tệp đính kèm.
  */
 function nntm_lib_duoc_doc_tep( int $attachment_id ): bool {
+	/*
+	 * Tệp XEM THỬ vốn để mời chào người chưa mua, nên ai cũng lấy được. Phải xét
+	 * trước, vì nó gắn với một cuốn đang khoá — hỏi quyền cuốn đó thì luôn ra
+	 * "không", và người chưa mua sẽ chẳng thấy gì để mà quyết định mua.
+	 */
+	if ( nntm_lib_la_tep_xem_thu( $attachment_id ) ) {
+		return true;
+	}
+
 	$ds = nntm_lib_cac_an_pham_cua_pdf( $attachment_id );
 
 	// Tệp mồ côi, không gắn ấn phẩm nào: để filter chung quyết định.

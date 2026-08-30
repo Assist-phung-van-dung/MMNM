@@ -46,9 +46,25 @@ class Nghi_Quy_Quiz {
 	public const META_CHE_DO = '_nntm_pub_access_mode';
 
 	/**
-	 * Khoá meta: bộ câu hỏi. KHÔNG mở ra REST (chứa đáp án đúng).
+	 * Khoá meta: bộ câu hỏi RIÊNG của từng ấn phẩm — chỉ còn để đọc dữ liệu cũ.
+	 *
+	 * Từ 30/08/2026 câu hỏi dùng CHUNG một bộ cho mọi Nghi Quỹ (xem OPTION_QUIZ).
+	 * Màn sửa ấn phẩm không còn ô nhập câu hỏi nữa, nhưng khoá này vẫn được đọc
+	 * làm đường lui để không mất bộ câu hỏi ai đó đã nhập trước đó.
 	 */
 	public const META_QUIZ = '_nntm_pub_quiz';
+
+	/**
+	 * Tuỳ chọn: BỘ CÂU HỎI DÙNG CHUNG cho mọi Nghi Quỹ.
+	 *
+	 * VÌ SAO DÙNG CHUNG: câu hỏi ở đây là cửa ải về thái độ hành trì, không phải
+	 * bài kiểm tra nội dung của từng cuốn — nên cùng một bộ cho mọi Nghi Quỹ.
+	 * Trước đây mỗi cuốn một bộ riêng, tức là bật khoá cho mười cuốn thì phải
+	 * gõ lại mười lần và sửa một chữ cũng phải sửa mười chỗ.
+	 *
+	 * KHÔNG bao giờ đẩy ra REST hay ra trình duyệt: bên trong có đáp án đúng.
+	 */
+	public const OPTION_QUIZ = 'nntm_bo_cau_hoi_nghi_quy';
 
 	/**
 	 * Khoá trong $_SESSION giữ danh sách Nghi Quỹ đã đậu.
@@ -105,6 +121,9 @@ class Nghi_Quy_Quiz {
 		add_action( 'add_meta_boxes_nntm_publication', array( $this, 'add_meta_box' ) );
 		add_action( 'save_post_nntm_publication', array( $this, 'save_meta_box' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
+
+		// Bộ câu hỏi dùng chung có màn riêng, nằm dưới menu Ấn phẩm.
+		add_action( 'admin_menu', array( $this, 'them_trang_cau_hoi' ) );
 
 		// Gác cửa: dùng chính bộ lọc quyền xem ấn phẩm của theme nên mọi đường
 		// vào nội dung (trang /doc/, nút "Đọc ấn phẩm", AJAX lưu tiến độ đọc)
@@ -288,15 +307,50 @@ class Nghi_Quy_Quiz {
 	}
 
 	/**
-	 * Bộ câu hỏi đầy đủ (có đáp án đúng) — CHỈ dùng ở phía máy chủ.
+	 * Bộ câu hỏi dùng chung — CHỈ dùng ở phía máy chủ (có đáp án đúng).
+	 *
+	 * @return array<int,array{hoi:string,dap_an:array<int,string>,dung:int}>
+	 */
+	public static function bo_cau_hoi_chung(): array {
+		$quiz = get_option( self::OPTION_QUIZ, array() );
+
+		return is_array( $quiz ) ? array_values( $quiz ) : array();
+	}
+
+	/**
+	 * Bộ câu hỏi áp cho một ấn phẩm — CHỈ dùng ở phía máy chủ.
+	 *
+	 * Lấy bộ dùng chung trước. Chỉ khi bộ chung còn trống mới lùi về bộ riêng
+	 * của ấn phẩm — đường lui này giữ cho những cuốn đã nhập câu hỏi từ trước
+	 * ngày đổi cách làm không bị mất, chứ không phải một cách dùng được khuyến
+	 * khích. Nhập bộ chung xong là nó thay thế hoàn toàn.
 	 *
 	 * @param int $post_id ID ấn phẩm.
 	 * @return array<int,array{hoi:string,dap_an:array<int,string>,dung:int}>
 	 */
 	public static function cau_hoi( int $post_id ): array {
+		$chung = self::bo_cau_hoi_chung();
+
+		if ( $chung ) {
+			return $chung;
+		}
+
 		$quiz = get_post_meta( $post_id, self::META_QUIZ, true );
 
 		return is_array( $quiz ) ? array_values( $quiz ) : array();
+	}
+
+	/**
+	 * Ấn phẩm này còn giữ bộ câu hỏi riêng kiểu cũ không?
+	 *
+	 * Dùng để báo cho quản trị biết vì sao cuốn này lại hỏi khác các cuốn kia.
+	 *
+	 * @param int $post_id ID ấn phẩm.
+	 */
+	public static function con_bo_rieng_cu( int $post_id ): bool {
+		$quiz = get_post_meta( $post_id, self::META_QUIZ, true );
+
+		return is_array( $quiz ) && ! empty( $quiz );
 	}
 
 	/* ---------------------------------------------------------------------
@@ -649,96 +703,196 @@ class Nghi_Quy_Quiz {
 	public function add_meta_box(): void {
 		add_meta_box(
 			'nntm_nghi_quy_quiz',
-			__( 'Nghi Quỹ — Quyền xem & Bộ câu hỏi', 'nntm' ),
+			__( 'Nghi Quỹ — Quyền xem', 'nntm' ),
 			array( $this, 'render_meta_box' ),
 			'nntm_publication',
-			'normal',
+			'side',
 			'default'
 		);
 	}
 
 	/**
-	 * Vẽ meta box.
+	 * Đường dẫn màn sửa bộ câu hỏi dùng chung.
+	 */
+	public static function url_trang_cau_hoi(): string {
+		return admin_url( 'edit.php?post_type=nntm_publication&page=nntm-bo-cau-hoi' );
+	}
+
+	/**
+	 * Vẽ meta box — chỉ còn MỘT công tắc.
+	 *
+	 * Câu hỏi không nằm ở đây nữa: cả site dùng chung một bộ, sửa ở màn
+	 * "Bộ câu hỏi Nghi Quỹ". Ở màn sửa từng cuốn chỉ cần trả lời một câu:
+	 * cuốn này có bắt trả lời trước khi xem không.
 	 *
 	 * @param \WP_Post $post Ấn phẩm đang sửa.
 	 */
 	public function render_meta_box( $post ): void {
 		wp_nonce_field( 'nntm_nghi_quy_quiz', 'nntm_nghi_quy_quiz_nonce' );
 
-		$che_do      = self::che_do( (int) $post->ID );
-		$cau_hoi     = self::cau_hoi( (int) $post->ID );
+		$bat         = 'quiz' === self::che_do( (int) $post->ID );
 		$la_nghi_quy = self::la_nghi_quy( (int) $post->ID );
+		$so_cau      = count( self::bo_cau_hoi_chung() );
 		?>
-		<div class="nntm-quiz-admin" data-nntm-quiz-admin>
-			<?php if ( ! $la_nghi_quy ) : ?>
-				<div class="notice notice-info inline">
-					<p>
-						<?php
-						printf(
-							/* translators: %s: tên chủ đề Nghi Quỹ. */
-							esc_html__( 'Bộ câu hỏi chỉ có tác dụng với ấn phẩm thuộc chủ đề "%s". Ấn phẩm này hiện chưa gắn chủ đề đó, nên dù chọn "Quiz Required" nó vẫn mở bình thường. Gắn chủ đề ở hộp "Chủ đề" rồi lưu lại.', 'nntm' ),
-							esc_html__( 'Nghi Quỹ', 'nntm' )
-						);
-						?>
-					</p>
-				</div>
+		<p>
+			<label>
+				<input type="checkbox" name="nntm_access_mode" value="quiz" <?php checked( $bat ); ?> />
+				<strong><?php esc_html_e( 'Bắt trả lời câu hỏi trước khi xem', 'nntm' ); ?></strong>
+			</label>
+		</p>
+
+		<p class="description">
+			<?php esc_html_e( 'Bỏ trống thì thành viên đã đăng nhập xem được ngay.', 'nntm' ); ?>
+		</p>
+
+		<?php if ( ! $la_nghi_quy ) : ?>
+			<div class="notice notice-info inline" style="margin:8px 0;padding:6px 10px;">
+				<p style="margin:.4em 0;">
+					<?php esc_html_e( 'Công tắc này chỉ có tác dụng với ấn phẩm thuộc chủ đề "Nghi Quỹ". Cuốn này chưa gắn chủ đề đó nên vẫn mở bình thường — gắn ở hộp "Chủ đề" rồi lưu lại.', 'nntm' ); ?>
+				</p>
+			</div>
+		<?php endif; ?>
+
+		<?php if ( $bat && $la_nghi_quy && 0 === $so_cau && ! self::con_bo_rieng_cu( (int) $post->ID ) ) : ?>
+			<div class="notice notice-warning inline" style="margin:8px 0;padding:6px 10px;">
+				<p style="margin:.4em 0;">
+					<?php esc_html_e( 'Đang bật nhưng bộ câu hỏi dùng chung chưa có câu nào — hiện KHÔNG ai đọc được cuốn này.', 'nntm' ); ?>
+				</p>
+			</div>
+		<?php endif; ?>
+
+		<?php if ( self::con_bo_rieng_cu( (int) $post->ID ) && 0 === $so_cau ) : ?>
+			<div class="notice notice-info inline" style="margin:8px 0;padding:6px 10px;">
+				<p style="margin:.4em 0;">
+					<?php esc_html_e( 'Cuốn này còn bộ câu hỏi riêng nhập từ trước. Nó vẫn đang được dùng cho tới khi bộ chung có câu hỏi.', 'nntm' ); ?>
+				</p>
+			</div>
+		<?php endif; ?>
+
+		<p>
+			<a href="<?php echo esc_url( self::url_trang_cau_hoi() ); ?>">
+				<?php
+				printf(
+					/* translators: %d: số câu hỏi trong bộ dùng chung. */
+					esc_html__( 'Sửa bộ câu hỏi dùng chung (%d câu) →', 'nntm' ),
+					(int) $so_cau
+				);
+				?>
+			</a>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Thêm màn "Bộ câu hỏi Nghi Quỹ" dưới menu Ấn phẩm.
+	 */
+	public function them_trang_cau_hoi(): void {
+		/*
+		 * Nhớ lại đúng hook suffix mà WordPress cấp, KHÔNG tự đoán chuỗi.
+		 * Tên hook của trang con phụ thuộc vào menu cha đã được dựng hay chưa —
+		 * đoán "nntm_publication_page_..." là sai trong nhiều ngữ cảnh.
+		 */
+		$this->hook_trang_cau_hoi = (string) add_submenu_page(
+			'edit.php?post_type=nntm_publication',
+			__( 'Bộ câu hỏi Nghi Quỹ', 'nntm' ),
+			__( 'Bộ câu hỏi Nghi Quỹ', 'nntm' ),
+			'manage_options',
+			'nntm-bo-cau-hoi',
+			array( $this, 'render_trang_cau_hoi' )
+		);
+	}
+
+	/**
+	 * Hook suffix của màn bộ câu hỏi, do WordPress cấp lúc đăng ký.
+	 *
+	 * @var string
+	 */
+	private string $hook_trang_cau_hoi = '';
+
+	/**
+	 * Vẽ màn sửa bộ câu hỏi dùng chung.
+	 *
+	 * Dùng lại đúng hai hàm dựng dòng của meta box cũ, nên chỉ có MỘT nguồn
+	 * markup và JS thêm/bớt câu hỏi chạy y nguyên, không phải viết lại.
+	 */
+	public function render_trang_cau_hoi(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$da_luu = false;
+
+		if ( isset( $_POST['nntm_luu_bo_cau_hoi'] ) && check_admin_referer( 'nntm_bo_cau_hoi' ) ) {
+			$tho = isset( $_POST['nntm_quiz'] ) && is_array( $_POST['nntm_quiz'] ) ? wp_unslash( $_POST['nntm_quiz'] ) : array();
+
+			// Bỏ hàng mẫu của JS nếu vì lý do nào đó nó bị gửi lên.
+			unset( $tho['__i__'] );
+
+			update_option( self::OPTION_QUIZ, $this->sanitize_quiz( array_values( $tho ) ) );
+			$da_luu = true;
+		}
+
+		$cau_hoi = self::bo_cau_hoi_chung();
+		?>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'Bộ câu hỏi Nghi Quỹ', 'nntm' ); ?></h1>
+
+			<?php if ( $da_luu ) : ?>
+				<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Đã lưu bộ câu hỏi.', 'nntm' ); ?></p></div>
 			<?php endif; ?>
 
-			<p>
-				<label>
-					<input type="radio" name="nntm_access_mode" value="public" <?php checked( 'public', $che_do ); ?> />
-					<strong><?php esc_html_e( 'Public', 'nntm' ); ?></strong>
-					— <?php esc_html_e( 'thành viên đã đăng nhập xem được ngay.', 'nntm' ); ?>
-				</label>
-			</p>
-			<p>
-				<label>
-					<input type="radio" name="nntm_access_mode" value="quiz" <?php checked( 'quiz', $che_do ); ?> />
-					<strong><?php esc_html_e( 'Quiz Required', 'nntm' ); ?></strong>
-					— <?php esc_html_e( 'phải trả lời đúng toàn bộ câu hỏi bên dưới mới được đọc.', 'nntm' ); ?>
-				</label>
-			</p>
-
-			<?php if ( 'quiz' === $che_do && $la_nghi_quy && empty( $cau_hoi ) ) : ?>
-				<div class="notice notice-warning inline">
-					<p><?php esc_html_e( 'Đang chọn "Quiz Required" nhưng chưa có câu hỏi nào. Nghi Quỹ này hiện KHÔNG ai đọc được. Hãy thêm ít nhất một câu hỏi.', 'nntm' ); ?></p>
-				</div>
-			<?php endif; ?>
-
-			<hr />
-
-			<p class="description">
+			<p class="description" style="max-width:60em;">
+				<?php esc_html_e( 'Bộ câu hỏi này dùng chung cho MỌI Nghi Quỹ có bật công tắc "Bắt trả lời câu hỏi trước khi xem". Sửa ở đây là mọi Nghi Quỹ đổi theo.', 'nntm' ); ?>
+				<br />
+				<?php esc_html_e( 'Người đọc phải trả lời đúng tất cả câu mới được vào, và được làm lại không giới hạn số lần.', 'nntm' ); ?>
+				<br />
 				<?php esc_html_e( 'Mỗi câu cần ít nhất 2 đáp án và phải chọn đúng một đáp án đúng. Câu thiếu nội dung, thiếu đáp án hoặc chưa chọn đáp án đúng sẽ bị bỏ khi lưu.', 'nntm' ); ?>
 			</p>
 
-			<div data-nntm-quiz-list>
-				<?php
-				if ( empty( $cau_hoi ) ) {
-					$this->render_cau_hoi_row( 0, array() );
-				} else {
-					foreach ( $cau_hoi as $chi_so => $cau ) {
-						$this->render_cau_hoi_row( (int) $chi_so, $cau );
+			<?php if ( empty( $cau_hoi ) ) : ?>
+				<div class="notice notice-warning inline"><p>
+					<?php esc_html_e( 'Bộ câu hỏi đang trống. Nghi Quỹ nào đã bật công tắc thì hiện KHÔNG ai đọc được — cửa đóng lại là đúng, nhưng hãy thêm câu hỏi.', 'nntm' ); ?>
+				</p></div>
+			<?php endif; ?>
+
+			<form method="post" class="nntm-quiz-admin" data-nntm-quiz-admin>
+				<?php wp_nonce_field( 'nntm_bo_cau_hoi' ); ?>
+
+				<div data-nntm-quiz-list>
+					<?php
+					if ( empty( $cau_hoi ) ) {
+						$this->render_cau_hoi_row( 0, array() );
+					} else {
+						foreach ( $cau_hoi as $chi_so => $cau ) {
+							$this->render_cau_hoi_row( (int) $chi_so, $cau );
+						}
 					}
-				}
-				?>
-			</div>
+					?>
+				</div>
 
-			<p>
-				<button type="button" class="button" data-nntm-quiz-add-question><?php esc_html_e( '+ Thêm câu hỏi', 'nntm' ); ?></button>
-			</p>
+				<p>
+					<button type="button" class="button" data-nntm-quiz-add-question><?php esc_html_e( '+ Thêm câu hỏi', 'nntm' ); ?></button>
+				</p>
 
-			<template data-nntm-quiz-question-template>
-				<?php $this->render_cau_hoi_row( -1, array() ); ?>
-			</template>
-			<template data-nntm-quiz-answer-template>
-				<?php $this->render_dap_an_row( -1, -1, '', false ); ?>
-			</template>
+				<template data-nntm-quiz-question-template>
+					<?php $this->render_cau_hoi_row( -1, array() ); ?>
+				</template>
+				<template data-nntm-quiz-answer-template>
+					<?php $this->render_dap_an_row( -1, -1, '', false ); ?>
+				</template>
+
+				<p class="submit">
+					<button type="submit" name="nntm_luu_bo_cau_hoi" value="1" class="button button-primary">
+						<?php esc_html_e( 'Lưu bộ câu hỏi', 'nntm' ); ?>
+					</button>
+				</p>
+			</form>
 		</div>
 		<?php
 	}
 
 	/**
-	 * Một khối câu hỏi trong meta box.
+	 * Một khối câu hỏi trong màn sửa bộ câu hỏi dùng chung.
 	 *
 	 * @param int                  $chi_so Chỉ số câu hỏi (-1 = mẫu cho JS).
 	 * @param array<string,mixed>  $cau    Dữ liệu câu hỏi.
@@ -829,15 +983,18 @@ class Nghi_Quy_Quiz {
 			return;
 		}
 
-		$che_do = isset( $_POST['nntm_access_mode'] ) ? sanitize_key( wp_unslash( $_POST['nntm_access_mode'] ) ) : 'public';
-		update_post_meta( $post_id, self::META_CHE_DO, 'quiz' === $che_do ? 'quiz' : 'public' );
+		/*
+		 * Ô tích: không gửi lên nghĩa là tắt. Trước đây là hai nút tròn nên lúc
+		 * nào cũng có giá trị; nay phải mặc định về 'public' khi vắng mặt.
+		 */
+		$bat = isset( $_POST['nntm_access_mode'] ) && 'quiz' === sanitize_key( wp_unslash( $_POST['nntm_access_mode'] ) );
+		update_post_meta( $post_id, self::META_CHE_DO, $bat ? 'quiz' : 'public' );
 
-		$quiz_tho = isset( $_POST['nntm_quiz'] ) && is_array( $_POST['nntm_quiz'] ) ? wp_unslash( $_POST['nntm_quiz'] ) : array();
-
-		// Bỏ hàng mẫu của JS nếu vì lý do nào đó nó bị gửi lên.
-		unset( $quiz_tho['__i__'] );
-
-		update_post_meta( $post_id, self::META_QUIZ, $this->sanitize_quiz( array_values( $quiz_tho ) ) );
+		/*
+		 * KHÔNG đụng vào META_QUIZ ở đây nữa. Câu hỏi đã chuyển sang bộ dùng
+		 * chung; ghi đè bằng mảng rỗng mỗi lần lưu bài sẽ xoá mất bộ riêng cũ
+		 * của những cuốn nhập từ trước — thứ đang được dùng làm đường lui.
+		 */
 	}
 
 	/**
@@ -846,13 +1003,12 @@ class Nghi_Quy_Quiz {
 	 * @param string $hook Slug màn quản trị.
 	 */
 	public function enqueue_admin_assets( string $hook ): void {
-		if ( ! in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) {
-			return;
-		}
-
-		$screen = get_current_screen();
-
-		if ( ! $screen || 'nntm_publication' !== $screen->post_type ) {
+		/*
+		 * Từ khi câu hỏi dùng chung, bộ thêm/bớt câu hỏi nằm ở màn riêng chứ
+		 * không còn trong màn sửa bài. Màn sửa bài giờ chỉ có một ô tích, không
+		 * cần JS này nữa.
+		 */
+		if ( '' === $this->hook_trang_cau_hoi || $hook !== $this->hook_trang_cau_hoi ) {
 			return;
 		}
 

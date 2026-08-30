@@ -1,0 +1,429 @@
+/*
+ * Khung thanh toán — dựng theo mẫu khách gửi: nền tối, hai cột ngăn bởi một
+ * đường dọc, mã QR bên trái, nội dung đơn bên phải, dải chân khung ở dưới.
+ *
+ * Tự đặt màu chứ không mượn biến của theme: khung này còn bật trên TRANG ĐỌC,
+ * nơi theme đã gỡ bỏ CSS nền (nntm-base, nntm-layout...) để trình đọc chiếm
+ * trọn màn hình. Mượn biến ở đó là mất màu.
+ */
+
+.nntm-tt {
+  --tt-nen: #16181c;
+  --tt-nen-2: #1d2024;
+  --tt-chu: #fff;
+  --tt-chu-mo: #a9b0b8;
+  --tt-vien: #2b3037;
+  --tt-diem: #16a37b;
+  --tt-diem-dam: #0f7d5d;
+
+  position: fixed;
+  inset: 0;
+  z-index: 100080;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(12px, 4vw, 28px);
+  box-sizing: border-box;
+  font-family: var(--nntm-font-ui, system-ui, -apple-system, "Segoe UI", sans-serif);
+}
+
+.nntm-tt[hidden] {
+  display: none;
+}
+
+.nntm-tt__nen {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .72);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.nntm-tt__khung {
+  position: relative;
+  z-index: 1;
+  width: min(940px, 100%);
+  max-height: min(92dvh, 700px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--tt-vien);
+  border-radius: 12px;
+  background: var(--tt-nen);
+  color: var(--tt-chu);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, .6);
+  animation: nntm-tt-len 300ms cubic-bezier(.22, .61, .36, 1) both;
+}
+
+@keyframes nntm-tt-len {
+  from { opacity: 0; transform: translateY(16px) scale(.985); }
+  to   { opacity: 1; transform: none; }
+}
+
+.nntm-tt__dong {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #33383f;
+  color: var(--tt-chu);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 180ms ease;
+}
+
+.nntm-tt__dong:hover,
+.nntm-tt__dong:focus-visible {
+  background: #454b53;
+}
+
+/* ---------- Đầu khung ---------- */
+
+.nntm-tt__dau {
+  flex: none;
+  padding: 30px 28px 6px;
+  text-align: center;
+}
+
+.nntm-tt__tieu-de {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--tt-chu);
+}
+
+.nntm-tt__phu {
+  margin: 6px 0 0;
+  font-size: .875rem;
+  color: var(--tt-chu-mo);
+}
+
+/* ---------- Hai cột ---------- */
+
+.nntm-tt__than {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  gap: 0;
+  padding: 24px 28px 26px;
+  overflow-y: auto;
+}
+
+/* Đường ngăn dọc là một cột lưới riêng nên nó luôn cao bằng cột dài nhất. */
+.nntm-tt__than::before {
+  content: "";
+  grid-column: 2;
+  grid-row: 1;
+  width: 1px;
+  background: var(--tt-vien);
+}
+
+.nntm-tt__cot {
+  min-width: 0;
+  padding-inline: 22px;
+  text-align: center;
+}
+
+.nntm-tt__cot--qr { grid-column: 1; grid-row: 1; }
+.nntm-tt__cot--don { grid-column: 3; grid-row: 1; }
+
+.nntm-tt__cot-tieu-de {
+  margin: 0 0 16px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--tt-chu);
+}
+
+/* ---------- Ô mã QR ---------- */
+
+.nntm-tt__qr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 196px;
+  height: 196px;
+  margin: 0 auto;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 2px solid var(--tt-diem);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.nntm-tt__qr img,
+.nntm-tt__qr canvas,
+.nntm-tt__qr svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.nntm-tt__qr-cho {
+  font-size: .8125rem;
+  color: #6b7280;
+}
+
+.nntm-tt__qr-chu {
+  max-width: 34ch;
+  margin: 16px auto 0;
+  font-size: .8125rem;
+  line-height: 1.6;
+  color: var(--tt-chu-mo);
+}
+
+/* ---------- Cột nội dung đơn ---------- */
+
+.nntm-tt__bang {
+  margin: 0 0 18px;
+  text-align: left;
+}
+
+.nntm-tt__dong-tin {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--tt-vien);
+}
+
+.nntm-tt__dong-tin[hidden] {
+  display: none;
+}
+
+.nntm-tt__dong-tin dt {
+  flex: none;
+  font-size: .8125rem;
+  color: var(--tt-chu-mo);
+}
+
+.nntm-tt__dong-tin dd {
+  margin: 0;
+  font-size: .9375rem;
+  text-align: right;
+  color: var(--tt-chu);
+}
+
+.nntm-tt__tien {
+  font-size: 1.25rem !important;
+  font-weight: 700;
+  color: var(--tt-diem) !important;
+}
+
+.nntm-tt__trang-thai {
+  min-height: 1.2em;
+  margin: 0 0 14px;
+  font-size: .875rem;
+  line-height: 1.5;
+  color: var(--tt-chu-mo);
+  text-align: left;
+}
+
+.nntm-tt__trang-thai--loi {
+  color: #f0857c;
+}
+
+.nntm-tt__trang-thai--xong {
+  color: var(--tt-diem);
+  font-weight: 600;
+}
+
+.nntm-tt__nut {
+  display: block;
+  width: 100%;
+  height: 48px;
+  line-height: 48px;
+  padding: 0 18px;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 8px;
+  background: var(--tt-diem);
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 180ms ease;
+}
+
+.nntm-tt__nut:hover,
+.nntm-tt__nut:focus-visible {
+  background: var(--tt-diem-dam);
+  color: #fff;
+}
+
+.nntm-tt__nut[hidden] {
+  display: none;
+}
+
+.nntm-tt__nut--lai {
+  margin-top: 10px;
+  background: transparent;
+  border: 1px solid var(--tt-vien);
+  color: var(--tt-chu);
+}
+
+.nntm-tt__nut--lai:hover {
+  background: #262b31;
+  color: var(--tt-chu);
+}
+
+/* ---------- Chân khung ---------- */
+
+.nntm-tt__chan {
+  flex: none;
+  padding: 16px 28px;
+  border-top: 1px solid var(--tt-vien);
+  font-size: .875rem;
+  color: var(--tt-chu-mo);
+  text-align: center;
+}
+
+/* ---------- Màn hình hẹp: xếp dọc, QR lên trên ---------- */
+
+@media (max-width: 767px) {
+  .nntm-tt {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .nntm-tt__khung {
+    width: 100%;
+    max-height: 94dvh;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .nntm-tt__dau {
+    padding: 24px 20px 4px;
+  }
+
+  .nntm-tt__than {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 18px 20px 22px;
+  }
+
+  /* Đường ngăn dọc thành đường kẻ ngang giữa hai phần. */
+  .nntm-tt__than::before {
+    grid-column: 1;
+    grid-row: 2;
+    width: auto;
+    height: 1px;
+    margin: 18px 0;
+  }
+
+  .nntm-tt__cot--qr { grid-column: 1; grid-row: 1; }
+  .nntm-tt__cot--don { grid-column: 1; grid-row: 3; }
+
+  .nntm-tt__cot {
+    padding-inline: 0;
+  }
+
+  .nntm-tt__qr {
+    width: 168px;
+    height: 168px;
+  }
+
+  .nntm-tt__chan {
+    padding: 14px 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nntm-tt__khung {
+    animation: none;
+  }
+
+  .nntm-tt__nut,
+  .nntm-tt__dong {
+    transition: none;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   Dải nổi trên TRANG ĐỌC
+
+   Trang đọc đã gỡ hết giao diện chung của site nên không còn header/footer để
+   đặt nút mua. Dải này nổi ở đáy, luôn trong tầm mắt người đang đọc thử.
+   ---------------------------------------------------------------------- */
+
+.nntm-tt-dai {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  z-index: 100070;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: calc(100vw - 24px);
+  padding: 12px 14px 12px 20px;
+  box-sizing: border-box;
+  border: 1px solid #2b3037;
+  border-radius: 999px;
+  background: rgba(22, 24, 28, .96);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .5);
+  font-family: var(--nntm-font-ui, system-ui, -apple-system, "Segoe UI", sans-serif);
+}
+
+.nntm-tt-dai__chu {
+  font-size: .875rem;
+  color: #a9b0b8;
+  white-space: nowrap;
+}
+
+.nntm-tt-dai__nut {
+  flex: none;
+  height: 40px;
+  padding-inline: 20px;
+  border: 0;
+  border-radius: 999px;
+  background: #16a37b;
+  color: #fff;
+  font-family: inherit;
+  font-size: .9375rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 180ms ease;
+}
+
+.nntm-tt-dai__nut:hover,
+.nntm-tt-dai__nut:focus-visible {
+  background: #0f7d5d;
+}
+
+@media (max-width: 600px) {
+  .nntm-tt-dai {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    transform: none;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+    border-radius: 14px;
+  }
+
+  .nntm-tt-dai__chu {
+    white-space: normal;
+    text-align: center;
+  }
+
+  .nntm-tt-dai__nut {
+    width: 100%;
+  }
+}

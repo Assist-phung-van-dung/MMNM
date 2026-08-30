@@ -97,6 +97,11 @@ function nntm_doc_enqueue_assets(): void {
 			'nonce'     => wp_create_nonce( 'nntm_doc_tien_do' ),
 			'viTri'     => function_exists( 'nntm_doc_lay_vi_tri' ) ? nntm_doc_lay_vi_tri( $post->ID ) : 0,
 			'dangNhap'  => is_user_logged_in(),
+			/*
+			 * Đang đọc bản xem thử hay bản đầy đủ. Trình đọc dùng cờ này để biết
+			 * lúc nào cần báo "hết phần xem thử" cho khung thanh toán.
+			 */
+			'xemThu'    => function_exists( 'nntm_an_pham_che_do_doc' ) && 'xem-thu' === nntm_an_pham_che_do_doc( $post ),
 
 			'watermark' => is_user_logged_in() ? wp_get_current_user()->display_name : '',
 			'i18n'      => array(

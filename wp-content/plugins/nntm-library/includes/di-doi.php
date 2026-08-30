@@ -30,8 +30,14 @@ defined( 'ABSPATH' ) || exit;
 function nntm_lib_danh_sach_pdf(): array {
 	global $wpdb;
 
+	/*
+	 * Cả tệp gốc lẫn tệp xem thử đều phải nằm trong kho riêng. Tệp xem thử tuy
+	 * cho ai cũng xem, nhưng để nó trong uploads là lại có một URL trần không đi
+	 * qua cổng quyền — và mai kia đổi ý muốn siết lại thì không có chỗ để siết.
+	 */
 	$ids = $wpdb->get_col(
-		"SELECT DISTINCT meta_value FROM {$wpdb->postmeta} WHERE meta_key = '_nntm_pdf_file' AND meta_value <> ''"
+		"SELECT DISTINCT meta_value FROM {$wpdb->postmeta}
+		 WHERE meta_key IN ( '_nntm_pdf_file', '_nntm_pdf_xem_thu' ) AND meta_value <> ''"
 	);
 
 	$ra = array();
@@ -196,11 +202,11 @@ function nntm_lib_di_doi_tat_ca( bool $that = false ): array {
  * @param string $meta_key Tên khoá meta.
  */
 function nntm_lib_tu_dong_di_doi( $meta_id, $post_id, $meta_key ): void {
-	if ( '_nntm_pdf_file' !== $meta_key ) {
+	if ( ! in_array( $meta_key, array( '_nntm_pdf_file', '_nntm_pdf_xem_thu' ), true ) ) {
 		return;
 	}
 
-	$att_id = absint( get_post_meta( (int) $post_id, '_nntm_pdf_file', true ) );
+	$att_id = absint( get_post_meta( (int) $post_id, (string) $meta_key, true ) );
 
 	if ( $att_id > 0 ) {
 		nntm_lib_di_doi_mot( $att_id, true );

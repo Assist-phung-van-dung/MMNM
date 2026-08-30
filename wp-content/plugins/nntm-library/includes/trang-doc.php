@@ -89,6 +89,15 @@ function nntm_doc_chan_quyen(): void {
 		return;
 	}
 
+	/*
+	 * Chưa mua nhưng cuốn này có tệp xem thử: cho vào trình đọc để lật mấy trang
+	 * đầu. Máy chủ chỉ gửi tệp xem thử (xem nntm_an_pham_pdf_url), nên không lộ
+	 * gì thêm — mà khách có cái để xem trước khi quyết định mua.
+	 */
+	if ( 'xem-thu' === nntm_an_pham_che_do_doc( $post ) ) {
+		return;
+	}
+
 	if ( ! is_user_logged_in() ) {
 		$dich = function_exists( 'nntm_login_url' )
 			? nntm_login_url( nntm_doc_url( $post ) )

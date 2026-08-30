@@ -461,8 +461,27 @@
 		return 'cuon' === cheDo ? veCuon() : veLat();
 	}
 
+	/*
+	 * Đang đọc bản XEM THỬ và người đọc muốn đi quá trang cuối — báo ra ngoài để
+	 * plugin thanh toán mở khung mua.
+	 *
+	 * Bắn sự kiện chứ không gọi thẳng hàm của plugin: trình đọc không được biết
+	 * gì về việc bán sách, và gỡ plugin đi thì chỗ này chỉ là một sự kiện không
+	 * ai nghe, không vỡ.
+	 */
+	function baoHetXemThu() {
+		document.dispatchEvent( new CustomEvent( 'nntm:het-xem-thu', {
+			detail: { objectId: CFG.objectId, soTrang: soTrang }
+		} ) );
+	}
+
 	function toiTrang( so ) {
 		if ( ! pdf ) { return; }
+
+		if ( CFG.xemThu && ( so | 0 ) > soTrang ) {
+			baoHetXemThu();
+			return;
+		}
 
 		so = Math.max( 1, Math.min( soTrang, so | 0 ) );
 
@@ -569,6 +588,11 @@
 		if ( ! pdf ) { return; }
 
 		if ( 'lat' === cheDo ) {
+			if ( CFG.xemThu && trangHT >= soTrang ) {
+				baoHetXemThu();
+				return;
+			}
+
 			latTo( 1 );
 			return;
 		}
