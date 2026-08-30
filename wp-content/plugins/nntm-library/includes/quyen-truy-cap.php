@@ -116,7 +116,12 @@ if ( ! function_exists( 'nntm_an_pham_che_do_doc' ) ) {
 			return 'day-du';
 		}
 
-		return nntm_an_pham_pdf_xem_thu_id( $post ) > 0 ? 'xem-thu' : 'chan';
+		/*
+		 * Phải kiểm tệp có dùng được không, không chỉ có ID hay không: bản ghi
+		 * trỏ vào một ID không tồn tại thì coi như chưa có tệp xem thử, chứ đừng
+		 * mời người ta vào trình đọc rồi báo lỗi.
+		 */
+		return nntm_lib_tep_dung_duoc( nntm_an_pham_pdf_xem_thu_id( $post ) ) ? 'xem-thu' : 'chan';
 	}
 }
 
@@ -147,10 +152,6 @@ if ( ! function_exists( 'nntm_an_pham_pdf_url' ) ) {
 			? nntm_an_pham_pdf_id( $post )
 			: nntm_an_pham_pdf_xem_thu_id( $post );
 
-		if ( ! $att_id ) {
-			return '';
-		}
-
-		return nntm_lib_url_doc_pdf( $att_id );
+		return nntm_lib_tep_dung_duoc( $att_id ) ? nntm_lib_url_doc_pdf( $att_id ) : '';
 	}
 }

@@ -990,7 +990,17 @@
 			hienDangTai( false );
 			capNhat();
 		} );
-	} ).catch( function () {
+	} ).catch( function ( loi ) {
+		/*
+		 * Khối catch này bọc CẢ chuỗi: mở tệp, dựng mục lục, vẽ trang. Trước đây
+		 * nó nuốt lỗi không dấu vết, nên hỏng ở bước vẽ cũng hiện đúng câu "không
+		 * mở được tệp" — đi tìm nguyên nhân rất mất công. Ghi lỗi thật ra console,
+		 * còn người đọc vẫn chỉ thấy câu tử tế.
+		 */
+		if ( window.console && console.error ) {
+			console.error( '[nntm-doc-sach] khong dung duoc trinh doc:', loi );
+		}
+
 		if ( el.loading ) {
 			el.loading.hidden = false;
 			el.loading.className = 'nntm-doc__error';

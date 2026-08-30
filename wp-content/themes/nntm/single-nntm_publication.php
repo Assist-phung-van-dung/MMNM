@@ -148,7 +148,13 @@ while ( have_posts() ) :
 								?>
 							</button>
 
-							<?php if ( function_exists( 'nntm_an_pham_pdf_xem_thu_id' ) && nntm_an_pham_pdf_xem_thu_id( $post_id ) ) : ?>
+							<?php
+							/*
+							 * Hỏi che_do_doc chứ không hỏi "có ID tệp xem thử không":
+							 * ID trỏ vào tệp đã mất thì vào trình đọc chỉ gặp lỗi.
+							 */
+							?>
+							<?php if ( function_exists( 'nntm_an_pham_che_do_doc' ) && 'xem-thu' === nntm_an_pham_che_do_doc( $post_id ) ) : ?>
 								<a class="nntm-an-pham__xem-thu" href="<?php echo esc_url( nntm_doc_url( $post_id ) ); ?>">
 									<?php esc_html_e( 'Đọc thử vài trang', 'nntm' ); ?>
 								</a>

@@ -95,6 +95,34 @@ function nntm_lib_cac_an_pham_cua_pdf( int $attachment_id ): array {
 }
 
 /**
+ * Tệp này có thật sự dùng được không: có tồn tại, đúng PDF, và đọc được từ đĩa.
+ *
+ * VÌ SAO CẦN: dữ liệu của dự án có bản ghi _nntm_pdf_file trỏ tới một ID KHÔNG
+ * PHẢI tệp đính kèm — sáu ấn phẩm đang trỏ vào cùng một ID hỏng như vậy. Không
+ * kiểm ở đây thì nntm_an_pham_pdf_url() vẫn dựng ra một đường dẫn trông hợp lệ,
+ * trình đọc gọi tới thì nhận 404 và báo "Không mở được tệp" — người dùng tưởng
+ * hỏng trình đọc, trong khi thật ra là bản ghi trỏ sai.
+ *
+ * Trả về chuỗi rỗng cho nơi gọi thì trình đọc hiện trạng thái "sách chưa có
+ * tệp" tử tế hơn nhiều.
+ *
+ * @param int $attachment_id ID tệp đính kèm.
+ */
+function nntm_lib_tep_dung_duoc( int $attachment_id ): bool {
+	if ( $attachment_id <= 0 || 'attachment' !== get_post_type( $attachment_id ) ) {
+		return false;
+	}
+
+	if ( 'application/pdf' !== get_post_mime_type( $attachment_id ) ) {
+		return false;
+	}
+
+	$duong = get_attached_file( $attachment_id );
+
+	return (bool) ( $duong && is_readable( $duong ) );
+}
+
+/**
  * Tệp này có phải tệp xem thử của một ấn phẩm nào không.
  *
  * @param int $attachment_id ID tệp đính kèm.
