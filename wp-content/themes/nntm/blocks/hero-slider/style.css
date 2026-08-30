@@ -91,7 +91,7 @@
 	left: 93px;  
 	right: 420px;  
 
-	top: var(--nntm-hero-content-top);
+	top: 280px;
 	display: flex;
 	flex-direction: column;
 	gap: var(--nntm-sp-4);
