@@ -48,10 +48,18 @@ function nntm_render_card_markup( int $post_id, string $variant, bool $show_date
 	 * Bọc function_exists: hai hàm này thuộc plugin nntm-library. Tắt plugin thì
 	 * thẻ trỏ về trang chi tiết như thẻ thường, chứ không làm trắng cả trang.
 	 */
-	if ( 'books' === $variant && function_exists( 'nntm_doc_url' ) && function_exists( 'nntm_an_pham_can_access' ) ) {
+	if ( 'books' === $variant && function_exists( 'nntm_doc_url' ) && function_exists( 'nntm_an_pham_che_do_doc' ) ) {
 		$duong_doc = nntm_doc_url( $post );
 
-		if ( '' !== $duong_doc && nntm_an_pham_can_access( $post ) ) {
+		/*
+		 * Vào THẲNG trình đọc, kể cả khi mới chỉ được xem thử: khách bấm vào bìa
+		 * sách là muốn đọc, không phải muốn đọc trang giới thiệu. Chưa mua thì
+		 * lật được mấy trang đầu rồi gặp khung thanh toán ngay trong trình đọc.
+		 *
+		 * Chỉ 'chan' (chưa cấu hình tệp xem thử) mới ở lại trang chi tiết, vì vào
+		 * trình đọc lúc đó chẳng có gì để xem.
+		 */
+		if ( '' !== $duong_doc && 'chan' !== nntm_an_pham_che_do_doc( $post ) ) {
 			$permalink = $duong_doc;
 		}
 	}

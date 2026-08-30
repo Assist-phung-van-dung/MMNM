@@ -2,10 +2,12 @@
 /**
  * Giá bán và màn chọn ấn phẩm phải mua.
  *
+ * MỘT Ô DUY NHẤT QUYẾT ĐỊNH: nhập giá là bán, để trống là mở. Không phải tick
+ * thêm ô nào ở đâu nữa.
+ *
  * Hai đường vào cùng một dữ liệu:
- *   - Màn "Bán & Giá": bảng liệt kê mọi ấn phẩm, tick cuốn nào phải mua rồi
- *     điền giá — sửa hàng loạt trong một lần lưu.
- *   - Trong trang sửa từng ấn phẩm: ô giá nằm ngay cạnh ô tích "Khoá" sẵn có.
+ *   - Màn "Bán & Giá": bảng liệt kê mọi ấn phẩm, sửa hàng loạt trong một lần lưu.
+ *   - Trong trang sửa từng ấn phẩm: hộp "Bán ấn phẩm".
  *
  * @package NNTM_PayOS
  */
@@ -32,22 +34,65 @@ function nntm_payos_gia( $post = null ): int {
 }
 
 /**
- * Ấn phẩm này có đang bán không: vừa bị khoá, vừa có giá.
+ * Số trang được xem thử trước khi hiện khung thanh toán.
+ */
+const NNTM_PAYOS_META_TRANG_THU = '_nntm_pub_trang_xem_thu';
+
+/**
+ * Mặc định cho số trang xem thử.
+ */
+const NNTM_PAYOS_TRANG_THU_MAC_DINH = 2;
+
+/**
+ * Số trang được lật trước khi khung thanh toán hiện lên.
  *
- * Khoá mà chưa đặt giá thì KHÔNG bán — vì không biết thu bao nhiêu. Lúc đó sách
- * vẫn đóng, và màn quản trị có cảnh báo để sửa.
+ * @param int|WP_Post|null $post Ấn phẩm.
+ */
+function nntm_payos_so_trang_xem_thu( $post = null ): int {
+	$post = get_post( $post );
+
+	if ( ! $post ) {
+		return NNTM_PAYOS_TRANG_THU_MAC_DINH;
+	}
+
+	$so = (int) get_post_meta( $post->ID, NNTM_PAYOS_META_TRANG_THU, true );
+
+	return $so > 0 ? $so : NNTM_PAYOS_TRANG_THU_MAC_DINH;
+}
+
+/**
+ * Ấn phẩm này có đang bán không: CHỈ CẦN CÓ GIÁ.
+ *
+ * ĐỔI TỪ 30/08/2026 — trước đây phải vừa tick ô "Khoá" ở hộp Tệp PDF vừa nhập
+ * giá ở hộp khác. Hai ô ở hai nơi cho cùng một ý định, mà quên một cái là ra
+ * trạng thái vô nghĩa: khoá mà chưa có giá thì không ai mua được và cũng không
+ * ai đọc được. Nay chỉ còn một ô: có giá là bán.
  *
  * @param int|WP_Post|null $post Ấn phẩm.
  */
 function nntm_payos_dang_ban( $post = null ): bool {
 	$post = get_post( $post );
 
-	if ( ! $post || ! function_exists( 'nntm_an_pham_bi_khoa' ) ) {
-		return false;
+	return $post ? nntm_payos_gia( $post ) > 0 : false;
+}
+
+/**
+ * Đặt giá là tự khoá — không phải tick thêm ô nào.
+ *
+ * Ô "Khoá" cũ ở hộp Tệp PDF vẫn còn tác dụng, nhưng giờ chỉ dùng cho trường hợp
+ * muốn đóng cửa mà KHÔNG bán; đặt giá thì không cần đụng tới nó.
+ *
+ * @param bool         $khoa Giá trị trước đó.
+ * @param WP_Post|null $post Ấn phẩm.
+ */
+function nntm_payos_gia_thi_khoa( $khoa, $post ): bool {
+	if ( $khoa ) {
+		return true;
 	}
 
-	return nntm_an_pham_bi_khoa( $post ) && nntm_payos_gia( $post ) > 0;
+	return $post instanceof WP_Post && 'nntm_publication' === $post->post_type && nntm_payos_gia( $post ) > 0;
 }
+add_filter( 'nntm_an_pham_bi_khoa', 'nntm_payos_gia_thi_khoa', 10, 2 );
 
 /**
  * Đăng ký meta giá.
@@ -114,9 +159,9 @@ function nntm_payos_ve_trang_gia(): void {
 	$da_luu = 0;
 
 	if ( isset( $_POST['nntm_payos_luu'] ) && check_admin_referer( 'nntm_payos_ban_gia' ) ) {
-		$ban = isset( $_POST['ban'] ) && is_array( $_POST['ban'] ) ? array_map( 'absint', wp_unslash( $_POST['ban'] ) ) : array();
-		$gia = isset( $_POST['gia'] ) && is_array( $_POST['gia'] ) ? wp_unslash( $_POST['gia'] ) : array();
-		$xem = isset( $_POST['xem_thu'] ) && is_array( $_POST['xem_thu'] ) ? wp_unslash( $_POST['xem_thu'] ) : array();
+		$gia   = isset( $_POST['gia'] ) && is_array( $_POST['gia'] ) ? wp_unslash( $_POST['gia'] ) : array();
+		$xem   = isset( $_POST['xem_thu'] ) && is_array( $_POST['xem_thu'] ) ? wp_unslash( $_POST['xem_thu'] ) : array();
+		$trang = isset( $_POST['trang_thu'] ) && is_array( $_POST['trang_thu'] ) ? wp_unslash( $_POST['trang_thu'] ) : array();
 
 		foreach ( (array) ( $_POST['co_mat'] ?? array() ) as $id ) {
 			$id = absint( $id );
@@ -125,16 +170,21 @@ function nntm_payos_ve_trang_gia(): void {
 				continue;
 			}
 
-			update_post_meta( $id, '_nntm_pub_khoa', in_array( $id, $ban, true ) );
-
 			/*
-			 * Người nhập hay gõ "150.000" hoặc "150,000" — bỏ hết ký tự không
-			 * phải chữ số rồi mới ép kiểu, chứ (int) "150.000" ra 150.
+			 * KHÔNG đụng vào _nntm_pub_khoa nữa. Giá quyết định việc bán; ô "Khoá"
+			 * ở hộp Tệp PDF giờ chỉ dành cho trường hợp đóng cửa mà không bán, và
+			 * màn này ghi đè lên nó thì người ta mất luôn lựa chọn đó.
+			 *
+			 * Người nhập hay gõ "150.000" — bỏ hết ký tự không phải chữ số rồi mới
+			 * ép kiểu, chứ (int) "150.000" ra 150.
 			 */
 			$so = isset( $gia[ $id ] ) ? preg_replace( '/\D/', '', (string) $gia[ $id ] ) : '';
 			update_post_meta( $id, NNTM_PAYOS_META_GIA, max( 0, (int) $so ) );
 
 			update_post_meta( $id, '_nntm_pdf_xem_thu', isset( $xem[ $id ] ) ? absint( $xem[ $id ] ) : 0 );
+
+			$st = isset( $trang[ $id ] ) ? absint( $trang[ $id ] ) : 0;
+			update_post_meta( $id, NNTM_PAYOS_META_TRANG_THU, $st > 0 ? $st : NNTM_PAYOS_TRANG_THU_MAC_DINH );
 
 			++$da_luu;
 		}
@@ -166,7 +216,8 @@ function nntm_payos_ve_trang_gia(): void {
 		<?php endif; ?>
 
 		<p class="description" style="max-width:70em;">
-			<?php esc_html_e( 'Tick "Phải mua" là cuốn đó đóng lại với người chưa trả tiền. Giá nhập theo đồng, không cần dấu chấm.', 'nntm' ); ?><br />
+			<?php esc_html_e( 'Nhập giá là cuốn đó phải mua mới đọc được. Để trống hoặc 0 là mở, ai cũng đọc. Giá theo đồng, không cần dấu chấm.', 'nntm' ); ?><br />
+			<?php esc_html_e( 'Số trang xem thử: người chưa mua lật tới trang này thì khung thanh toán hiện lên. Mặc định 2.', 'nntm' ); ?><br />
 			<?php esc_html_e( 'Tệp xem thử là một tệp PDF riêng chỉ gồm vài trang đầu. Máy chủ này không có công cụ tách trang, nên phải có tệp riêng thì người chưa mua mới xem thử được — không đặt thì họ gặp thẳng khung thanh toán.', 'nntm' ); ?>
 		</p>
 
@@ -176,17 +227,16 @@ function nntm_payos_ve_trang_gia(): void {
 			<table class="widefat striped">
 				<thead>
 					<tr>
-						<th style="width:70px;"><?php esc_html_e( 'Phải mua', 'nntm' ); ?></th>
 						<th><?php esc_html_e( 'Ấn phẩm', 'nntm' ); ?></th>
-						<th style="width:170px;"><?php esc_html_e( 'Giá (đồng)', 'nntm' ); ?></th>
-						<th style="width:320px;"><?php esc_html_e( 'Tệp PDF xem thử', 'nntm' ); ?></th>
-						<th style="width:160px;"><?php esc_html_e( 'Tình trạng', 'nntm' ); ?></th>
+						<th style="width:150px;"><?php esc_html_e( 'Giá (đồng)', 'nntm' ); ?></th>
+						<th style="width:110px;"><?php esc_html_e( 'Trang xem thử', 'nntm' ); ?></th>
+						<th style="width:300px;"><?php esc_html_e( 'Tệp PDF xem thử', 'nntm' ); ?></th>
+						<th style="width:170px;"><?php esc_html_e( 'Tình trạng', 'nntm' ); ?></th>
 					</tr>
 				</thead>
 				<tbody>
 				<?php foreach ( $ds as $p ) : ?>
 					<?php
-					$khoa    = function_exists( 'nntm_an_pham_bi_khoa' ) && nntm_an_pham_bi_khoa( $p );
 					$gia_ht  = nntm_payos_gia( $p );
 					$xem_id  = absint( get_post_meta( $p->ID, '_nntm_pdf_xem_thu', true ) );
 					$xem_ten = $xem_id ? get_the_title( $xem_id ) : '';
@@ -194,19 +244,21 @@ function nntm_payos_ve_trang_gia(): void {
 					<tr>
 						<td>
 							<input type="hidden" name="co_mat[]" value="<?php echo esc_attr( (string) $p->ID ); ?>" />
-							<input type="checkbox" name="ban[]" value="<?php echo esc_attr( (string) $p->ID ); ?>" <?php checked( $khoa ); ?> />
-						</td>
-						<td>
 							<strong><a href="<?php echo esc_url( (string) get_edit_post_link( $p->ID ) ); ?>"><?php echo esc_html( get_the_title( $p ) ); ?></a></strong>
 							<?php if ( 'publish' !== $p->post_status ) : ?>
 								<em>— <?php echo esc_html( $p->post_status ); ?></em>
 							<?php endif; ?>
 						</td>
 						<td>
-							<input type="text" inputmode="numeric" class="regular-text" style="width:150px;"
+							<input type="text" inputmode="numeric" class="regular-text" style="width:130px;"
 								name="gia[<?php echo esc_attr( (string) $p->ID ); ?>]"
 								value="<?php echo esc_attr( $gia_ht ? (string) $gia_ht : '' ); ?>"
-								placeholder="0" />
+								placeholder="<?php esc_attr_e( 'để trống = mở', 'nntm' ); ?>" />
+						</td>
+						<td>
+							<input type="number" min="1" max="99" style="width:80px;"
+								name="trang_thu[<?php echo esc_attr( (string) $p->ID ); ?>]"
+								value="<?php echo esc_attr( (string) nntm_payos_so_trang_xem_thu( $p ) ); ?>" />
 						</td>
 						<td class="nntm-payos-xemthu" data-post="<?php echo esc_attr( (string) $p->ID ); ?>">
 							<input type="hidden" name="xem_thu[<?php echo esc_attr( (string) $p->ID ); ?>]" value="<?php echo esc_attr( (string) $xem_id ); ?>" data-o-tep />
@@ -234,20 +286,26 @@ function nntm_payos_ve_trang_gia(): void {
  * @param WP_Post $p Ấn phẩm.
  */
 function nntm_payos_nhan_tinh_trang( WP_Post $p ): string {
-	$khoa = function_exists( 'nntm_an_pham_bi_khoa' ) && nntm_an_pham_bi_khoa( $p );
+	if ( ! nntm_payos_dang_ban( $p ) ) {
+		/*
+		 * Không có giá nhưng vẫn tick ô "Khoá" cũ: đóng cửa mà không bán. Trạng
+		 * thái này hợp lệ nhưng hiếm — nói rõ ra để quản trị không tưởng là quên
+		 * nhập giá.
+		 */
+		$khoa_tay = (bool) get_post_meta( $p->ID, '_nntm_pub_khoa', true );
 
-	if ( ! $khoa ) {
-		return '<span style="color:#646970;">' . esc_html__( 'Mở — ai cũng đọc', 'nntm' ) . '</span>';
+		return $khoa_tay
+			? '<span style="color:#996800;font-weight:600;">' . esc_html__( 'Đóng, không bán', 'nntm' ) . '</span>'
+			: '<span style="color:#646970;">' . esc_html__( 'Mở — ai cũng đọc', 'nntm' ) . '</span>';
 	}
 
-	if ( nntm_payos_gia( $p ) <= 0 ) {
-		return '<span style="color:#b32d2e;font-weight:600;">' . esc_html__( 'Khoá nhưng CHƯA CÓ GIÁ', 'nntm' ) . '</span>';
-	}
+	$xem = function_exists( 'nntm_lib_tep_dung_duoc' )
+		&& nntm_lib_tep_dung_duoc( absint( get_post_meta( $p->ID, '_nntm_pdf_xem_thu', true ) ) );
 
-	$xem = absint( get_post_meta( $p->ID, '_nntm_pdf_xem_thu', true ) );
-
-	return '<span style="color:#046b02;">' . esc_html( nntm_payos_dinh_dang_tien( nntm_payos_gia( $p ) ) ) . '</span>'
-		. ( $xem ? '' : '<br /><span style="color:#996800;">' . esc_html__( 'chưa có tệp xem thử', 'nntm' ) . '</span>' );
+	return '<span style="color:#046b02;font-weight:600;">' . esc_html( nntm_payos_dinh_dang_tien( nntm_payos_gia( $p ) ) ) . '</span>'
+		. ( $xem
+			? ''
+			: '<br /><span style="color:#996800;">' . esc_html__( 'chưa có tệp xem thử — khách gặp thẳng khung mua', 'nntm' ) . '</span>' );
 }
 
 /**
@@ -311,8 +369,7 @@ add_action( 'add_meta_boxes_nntm_publication', 'nntm_payos_them_meta_box' );
 function nntm_payos_ve_meta_box( WP_Post $post ): void {
 	wp_nonce_field( 'nntm_payos_gia', 'nntm_payos_gia_nonce' );
 
-	$gia  = nntm_payos_gia( $post );
-	$khoa = function_exists( 'nntm_an_pham_bi_khoa' ) && nntm_an_pham_bi_khoa( $post );
+	$gia = nntm_payos_gia( $post );
 	?>
 	<p>
 		<label for="nntm_payos_gia_input"><strong><?php esc_html_e( 'Giá bán (đồng)', 'nntm' ); ?></strong></label><br />
@@ -321,14 +378,17 @@ function nntm_payos_ve_meta_box( WP_Post $post ): void {
 	</p>
 
 	<p class="description">
-		<?php esc_html_e( 'Chỉ có tác dụng khi ô "Khoá" ở hộp Tệp PDF được tick.', 'nntm' ); ?>
+		<?php esc_html_e( 'Nhập giá là cuốn này phải mua mới đọc được. Để trống là mở, ai cũng đọc. Không phải tick thêm ô nào.', 'nntm' ); ?>
 	</p>
 
-	<?php if ( $khoa && $gia <= 0 ) : ?>
-		<div class="notice notice-warning inline" style="margin:8px 0;padding:6px 10px;">
-			<p style="margin:.4em 0;"><?php esc_html_e( 'Đang khoá nhưng chưa có giá — hiện không ai mua được, và cũng không ai đọc được.', 'nntm' ); ?></p>
-		</div>
-	<?php endif; ?>
+	<p>
+		<label for="nntm_payos_trang_thu"><strong><?php esc_html_e( 'Số trang cho xem thử', 'nntm' ); ?></strong></label><br />
+		<input type="number" min="1" max="99" id="nntm_payos_trang_thu" name="nntm_payos_trang_thu"
+			class="small-text" value="<?php echo esc_attr( (string) nntm_payos_so_trang_xem_thu( $post ) ); ?>" />
+	</p>
+	<p class="description">
+		<?php esc_html_e( 'Lật tới trang này thì khung thanh toán hiện lên.', 'nntm' ); ?>
+	</p>
 
 	<p>
 		<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=nntm_publication&page=nntm-ban-gia' ) ); ?>">
@@ -360,5 +420,8 @@ function nntm_payos_luu_meta_box( int $post_id ): void {
 
 	$so = isset( $_POST['nntm_payos_gia'] ) ? preg_replace( '/\D/', '', (string) wp_unslash( $_POST['nntm_payos_gia'] ) ) : '';
 	update_post_meta( $post_id, NNTM_PAYOS_META_GIA, max( 0, (int) $so ) );
+
+	$st = isset( $_POST['nntm_payos_trang_thu'] ) ? absint( wp_unslash( $_POST['nntm_payos_trang_thu'] ) ) : 0;
+	update_post_meta( $post_id, NNTM_PAYOS_META_TRANG_THU, $st > 0 ? $st : NNTM_PAYOS_TRANG_THU_MAC_DINH );
 }
 add_action( 'save_post_nntm_publication', 'nntm_payos_luu_meta_box' );

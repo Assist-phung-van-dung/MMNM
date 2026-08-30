@@ -475,10 +475,27 @@
 		} ) );
 	}
 
+	/*
+	 * Trang cuối cùng người chưa mua được lật tới.
+	 *
+	 * Lấy số nhỏ hơn giữa "số trang quản trị cho xem" và "số trang tệp xem thử
+	 * thật sự có" — đặt cho xem 5 trang mà tệp chỉ có 3 thì vẫn dừng ở 3.
+	 *
+	 * Đây là hàng rào TRẢI NGHIỆM, không phải hàng rào bảo mật: chốt chặn thật
+	 * là máy chủ chỉ gửi đúng tệp xem thử, không bao giờ gửi tệp gốc.
+	 */
+	function gioiHanXemThu() {
+		var dat = parseInt( CFG.trangXemThu, 10 );
+
+		if ( ! dat || dat < 1 ) { return soTrang; }
+
+		return Math.min( dat, soTrang );
+	}
+
 	function toiTrang( so ) {
 		if ( ! pdf ) { return; }
 
-		if ( CFG.xemThu && ( so | 0 ) > soTrang ) {
+		if ( CFG.xemThu && ( so | 0 ) > gioiHanXemThu() ) {
 			baoHetXemThu();
 			return;
 		}
@@ -588,7 +605,7 @@
 		if ( ! pdf ) { return; }
 
 		if ( 'lat' === cheDo ) {
-			if ( CFG.xemThu && trangHT >= soTrang ) {
+			if ( CFG.xemThu && trangHT >= gioiHanXemThu() ) {
 				baoHetXemThu();
 				return;
 			}

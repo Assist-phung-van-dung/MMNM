@@ -145,7 +145,11 @@ function nntm_an_pham_chuyen_sang_trang_doc(): void {
 		return;
 	}
 
-	if ( ! nntm_an_pham_can_access( $post ) ) {
+	/*
+	 * Chuyển sang trình đọc cả khi mới chỉ được xem thử — bấm vào ấn phẩm là
+	 * vào đọc luôn. Chỉ 'chan' mới ở lại trang giới thiệu.
+	 */
+	if ( 'chan' === nntm_an_pham_che_do_doc( $post ) ) {
 		return;
 	}
 

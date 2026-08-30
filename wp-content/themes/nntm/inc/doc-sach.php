@@ -102,6 +102,11 @@ function nntm_doc_enqueue_assets(): void {
 			 * lúc nào cần báo "hết phần xem thử" cho khung thanh toán.
 			 */
 			'xemThu'    => function_exists( 'nntm_an_pham_che_do_doc' ) && 'xem-thu' === nntm_an_pham_che_do_doc( $post ),
+			/*
+			 * Lật tới quá trang này thì trình đọc báo ra ngoài để khung thanh toán
+			 * mở lên. 0 = không giới hạn (chỉ dừng ở trang cuối của tệp xem thử).
+			 */
+			'trangXemThu' => function_exists( 'nntm_payos_so_trang_xem_thu' ) ? (int) nntm_payos_so_trang_xem_thu( $post ) : 0,
 
 			'watermark' => is_user_logged_in() ? wp_get_current_user()->display_name : '',
 			'i18n'      => array(

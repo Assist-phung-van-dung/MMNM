@@ -26,8 +26,14 @@ if ( ! function_exists( 'nntm_an_pham_bi_khoa' ) ) {
 	 */
 	function nntm_an_pham_bi_khoa( $post = null ): bool {
 		$post = get_post( $post );
+		$khoa = $post ? (bool) get_post_meta( $post->ID, '_nntm_pub_khoa', true ) : false;
 
-		return $post ? (bool) get_post_meta( $post->ID, '_nntm_pub_khoa', true ) : false;
+		/*
+		 * Mở bộ lọc để nơi khác tự kết luận "cuốn này đóng". nntm-payos dùng nó
+		 * để nói: đã đặt giá thì đương nhiên phải mua mới đọc được — quản trị
+		 * chỉ cần nhập giá, không phải nhớ tick thêm một ô nữa ở hộp khác.
+		 */
+		return (bool) apply_filters( 'nntm_an_pham_bi_khoa', $khoa, $post );
 	}
 }
 
