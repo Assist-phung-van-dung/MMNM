@@ -3,6 +3,13 @@
 .nntm-thien-duong {
 	display: block;
 	background-color: var(--nntm-cam);
+
+	/*
+	 * Sau khi đăng nhập / đăng ký, trang quay về kèm #neo của khối này. Header
+	 * dính trên đỉnh nên chừa sẵn khoảng bằng chiều cao header, không thì tiêu
+	 * đề "Thiền Đường" bị che mất.
+	 */
+	scroll-margin-block-start: var(--nntm-header-h-that, var(--nntm-header-h, 76px));
 }
 
 .nntm-thien-duong__inner {

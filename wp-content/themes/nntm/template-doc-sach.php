@@ -69,7 +69,12 @@ $nntm_gioi_thieu = has_excerpt( $nntm_pub )
 
 	<div class="nntm-doc__body">
 
-		<aside class="nntm-doc__side">
+		<aside class="nntm-doc__side" id="nntm-doc-side">
+			<button type="button" class="nntm-doc__side-close" data-nntm-doc="dong-ben" aria-controls="nntm-doc-side" aria-expanded="true" title="<?php esc_attr_e( 'Thu gọn khung sách', 'nntm' ); ?>">
+				<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+				<span class="nntm-doc__sr"><?php esc_html_e( 'Thu gọn khung sách', 'nntm' ); ?></span>
+			</button>
+
 			<?php if ( $nntm_bia ) : ?>
 				<img class="nntm-doc__cover" src="<?php echo esc_url( $nntm_bia ); ?>" alt="" />
 			<?php endif; ?>
@@ -101,6 +106,11 @@ $nntm_gioi_thieu = has_excerpt( $nntm_pub )
 			<?php endif; ?>
 		</aside>
 
+		<button type="button" class="nntm-doc__side-open" data-nntm-doc="mo-ben" aria-controls="nntm-doc-side" aria-expanded="false" title="<?php esc_attr_e( 'Mở khung sách', 'nntm' ); ?>">
+			<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+			<span class="nntm-doc__sr"><?php esc_html_e( 'Mở khung sách', 'nntm' ); ?></span>
+		</button>
+
 		<main class="nntm-doc__stage" data-nntm-doc="stage">
 			<p class="nntm-doc__loading" data-nntm-doc="dang-tai">
 				<span class="nntm-doc__spinner" aria-hidden="true"></span>
@@ -129,7 +139,7 @@ $nntm_gioi_thieu = has_excerpt( $nntm_pub )
 		<div class="nntm-doc__panel" id="nntm-doc-hien" hidden>
 			<p class="nntm-doc__panel-head"><?php esc_html_e( 'Nền', 'nntm' ); ?></p>
 			<div class="nntm-doc__panel-row">
-				<button type="button" class="nntm-doc__swatch" data-nntm-doc="nen" data-nen="sang"><span class="nntm-doc__sr"><?php esc_html_e( 'Sáng', 'nntm' ); ?></span></button>
+				<!-- <button type="button" class="nntm-doc__swatch" data-nntm-doc="nen" data-nen="sang"><span class="nntm-doc__sr"><?php esc_html_e( 'Sáng', 'nntm' ); ?></span></button> -->
 				<button type="button" class="nntm-doc__swatch" data-nntm-doc="nen" data-nen="nga"><span class="nntm-doc__sr"><?php esc_html_e( 'Vàng ngà', 'nntm' ); ?></span></button>
 				<button type="button" class="nntm-doc__swatch is-active" data-nntm-doc="nen" data-nen="toi"><span class="nntm-doc__sr"><?php esc_html_e( 'Tối', 'nntm' ); ?></span></button>
 			</div>

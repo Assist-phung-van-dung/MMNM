@@ -37,7 +37,9 @@
 		slider:   document.querySelector( '[data-nntm-doc="thanh-truot"]' ),
 		percent:  document.querySelector( '[data-nntm-doc="phan-tram"]' ),
 		chapter:  document.querySelector( '[data-nntm-doc="chuong"]' ),
-		water:    document.querySelector( '[data-nntm-doc="watermark"]' )
+		water:    document.querySelector( '[data-nntm-doc="watermark"]' ),
+		benDong:  document.querySelector( '[data-nntm-doc="dong-ben"]' ),
+		benMo:    document.querySelector( '[data-nntm-doc="mo-ben"]' )
 	};
 
 	var pdf     = null;
@@ -816,6 +818,34 @@
 		moDong( el.tocBtn, el.toc );
 		moDong( el.panelBtn, el.panel );
 
+		/*
+		 * Đóng/mở khung sách bên trái.
+		 *
+		 * Ở chế độ "lật", khổ trang được tính theo bề ngang khung đọc nên sau khi
+		 * đóng hay mở phải vẽ lại, y như lúc đổi kích thước cửa sổ.
+		 */
+		function doiBen( dong ) {
+			document.body.classList.toggle( 'is-ben-dong', dong );
+
+			if ( el.benDong ) { el.benDong.setAttribute( 'aria-expanded', dong ? 'false' : 'true' ); }
+			if ( el.benMo ) { el.benMo.setAttribute( 'aria-expanded', dong ? 'false' : 'true' ); }
+
+			try { window.localStorage.setItem( 'nntm-doc-ben', dong ? 'dong' : 'mo' ); } catch ( e ) {}
+
+			if ( ! pdf ) { return; }
+
+			hienDangTai( true );
+			veLai().then( function () { hienDangTai( false ); } );
+		}
+
+		if ( el.benDong ) {
+			el.benDong.addEventListener( 'click', function () { doiBen( true ); } );
+		}
+
+		if ( el.benMo ) {
+			el.benMo.addEventListener( 'click', function () { doiBen( false ); } );
+		}
+
 		if ( el.toc ) {
 			el.toc.addEventListener( 'click', function ( e ) {
 				var a = e.target.closest( 'a[data-trang]' );
@@ -950,6 +980,17 @@
 	try {
 		var nenLuu = window.localStorage.getItem( 'nntm-doc-nen' );
 		var xemLuu = window.localStorage.getItem( 'nntm-doc-xem' );
+		var benLuu = window.localStorage.getItem( 'nntm-doc-ben' );
+
+		if ( 'dong' === benLuu ) {
+			document.body.classList.add( 'is-ben-dong' );
+
+			var nutDongBen = document.querySelector( '[data-nntm-doc="dong-ben"]' );
+			var nutMoBen   = document.querySelector( '[data-nntm-doc="mo-ben"]' );
+
+			if ( nutDongBen ) { nutDongBen.setAttribute( 'aria-expanded', 'false' ); }
+			if ( nutMoBen ) { nutMoBen.setAttribute( 'aria-expanded', 'false' ); }
+		}
 
 
 		window.localStorage.removeItem( 'nntm-doc-chu' );

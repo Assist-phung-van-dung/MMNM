@@ -20,7 +20,32 @@ if ( ! in_array( $order_by_choice, $allowed_order_by, true ) ) {
 	$order_by_choice = 'newest';
 }
 
-$wrapper_attributes = get_block_wrapper_attributes( array( 'class' => 'nntm-thien-duong' ) );
+/*
+ * Neo của khối, dùng làm đích quay về sau khi đăng nhập / đăng ký.
+ *
+ * Khối có bật "anchor" nên biên tập viên tự đặt được id; lúc đó WP đã in id ra
+ * qua wrapper rồi, ta chỉ mượn lại giá trị. Không đặt thì tự sinh một id ổn
+ * định theo thứ tự khối trên trang, để một trang có hai Thiền Đường vẫn không
+ * trùng id.
+ */
+$anchor = isset( $attributes['anchor'] ) ? trim( (string) $attributes['anchor'] ) : '';
+
+$wrapper_extra = array( 'class' => 'nntm-thien-duong' );
+
+if ( '' === $anchor ) {
+	/*
+	 * Đếm qua $GLOBALS chứ không phải static: tệp này được include lại mỗi lần
+	 * dựng khối, static ở đây không chắc giữ được giá trị giữa các lần gọi.
+	 */
+	$GLOBALS['nntm_thien_duong_stt'] = isset( $GLOBALS['nntm_thien_duong_stt'] )
+		? (int) $GLOBALS['nntm_thien_duong_stt'] + 1
+		: 1;
+
+	$anchor              = 'nntm-thien-duong-' . $GLOBALS['nntm_thien_duong_stt'];
+	$wrapper_extra['id'] = $anchor;
+}
+
+$wrapper_attributes = get_block_wrapper_attributes( $wrapper_extra );
 
 $is_logged_in = (bool) apply_filters( 'nntm_thien_duong_can_access', is_user_logged_in() );
 
@@ -68,7 +93,7 @@ $is_logged_in = (bool) apply_filters( 'nntm_thien_duong_can_access', is_user_log
 			<div class="nntm-thien-duong__player">
 				<?php
 				if ( ! $is_logged_in ) :
-					echo nntm_thien_duong_render_guest_preview( $tracks_per_page, $order_by_choice );  
+					echo nntm_thien_duong_render_guest_preview( $tracks_per_page, $order_by_choice, $anchor );  
 				else :
 					$tracks = nntm_thien_duong_get_tracks( $tracks_per_page, $order_by_choice );
 

@@ -80,10 +80,61 @@ if ( ! function_exists( 'nntm_thien_duong_get_tracks' ) ) {
 	}
 }
 
+if ( ! function_exists( 'nntm_thien_duong_return_url' ) ) {
+	/*
+	 * Đích quay về sau khi đăng nhập / đăng ký: đúng trang đang đứng, kèm neo
+	 * của khối Thiền Đường.
+	 *
+	 * Có cái neo này thì người dùng bật lại trang là rơi thẳng xuống chỗ trình
+	 * phát, không phải cuộn tìm hay vào menu bấm lại. Mảnh #neo không gửi lên
+	 * máy chủ khi POST, nhưng nó nằm trong giá trị redirect_to nên wp_safe_redirect
+	 * trả lại nguyên vẹn cho trình duyệt.
+	 */
+	function nntm_thien_duong_return_url( string $anchor = '' ): string {
+		$url = function_exists( 'nntm_auth_current_url' ) ? nntm_auth_current_url() : '';
+
+		if ( '' === $url ) {
+			$url = (string) get_permalink();
+		}
+
+		if ( '' === $url ) {
+			$url = home_url( '/' );
+		}
+
+		if ( '' !== $anchor ) {
+			$url = strtok( $url, '#' ) . '#' . $anchor;
+		}
+
+		return $url;
+	}
+}
+
+if ( ! function_exists( 'nntm_thien_duong_login_attrs' ) ) {
+	/*
+	 * Thuộc tính cho mọi nút "đăng nhập" trong khối.
+	 *
+	 * href trỏ tới trang /dang-nhap để không có JS vẫn dùng được; còn khi có JS
+	 * thì auth-modal.js bắt data-nntm-auth-modal và mở popup ngay tại chỗ, trang
+	 * đứng yên nên không mất vị trí đang xem.
+	 */
+	function nntm_thien_duong_login_attrs( string $return_url ): string {
+		$login_url = function_exists( 'nntm_login_url' )
+			? nntm_login_url( $return_url )
+			: wp_login_url( $return_url );
+
+		return sprintf(
+			' href="%s" data-nntm-auth-modal="dang-nhap" data-nntm-auth-redirect="%s"',
+			esc_url( $login_url ),
+			esc_url( $return_url )
+		);
+	}
+}
+
 if ( ! function_exists( 'nntm_thien_duong_render_login_invite' ) ) {
 	 
-	function nntm_thien_duong_render_login_invite(): string {
-		$login_url = wp_login_url( get_permalink() );
+	function nntm_thien_duong_render_login_invite( string $anchor = '' ): string {
+		$return_url  = nntm_thien_duong_return_url( $anchor );
+		$login_attrs = nntm_thien_duong_login_attrs( $return_url );
 
 		ob_start();
 		?>
@@ -91,7 +142,7 @@ if ( ! function_exists( 'nntm_thien_duong_render_login_invite' ) ) {
 			<p class="nntm-thien-duong__invite-text">
 				<?php esc_html_e( 'Kính mời quý đạo hữu đăng nhập để vào Thiền Đường nghe nhạc thiền.', 'nntm' ); ?>
 			</p>
-			<a class="nntm-thien-duong__invite-cta" href="<?php echo esc_url( $login_url ); ?>">
+			<a class="nntm-thien-duong__invite-cta"<?php echo $login_attrs;  ?>>
 				<?php esc_html_e( 'Đăng nhập để nghe', 'nntm' ); ?>
 			</a>
 		</div>
@@ -102,7 +153,7 @@ if ( ! function_exists( 'nntm_thien_duong_render_login_invite' ) ) {
 
 if ( ! function_exists( 'nntm_thien_duong_render_guest_preview' ) ) {
 	 
-	function nntm_thien_duong_render_guest_preview( int $limit, string $order_by ): string {
+	function nntm_thien_duong_render_guest_preview( int $limit, string $order_by, string $anchor = '' ): string {
 		$args = array(
 			'post_type'              => 'nntm_zen_track',
 			'post_status'            => 'publish',
@@ -120,7 +171,9 @@ if ( ! function_exists( 'nntm_thien_duong_render_guest_preview' ) ) {
 			$args['order']   = 'oldest' === $order_by ? 'ASC' : 'DESC';
 		}
 		$posts = get_posts( $args );
-		$login_url = wp_login_url( get_permalink() );
+
+		$return_url  = nntm_thien_duong_return_url( $anchor );
+		$login_attrs = nntm_thien_duong_login_attrs( $return_url );
 
 		ob_start();
 		?>
@@ -129,13 +182,13 @@ if ( ! function_exists( 'nntm_thien_duong_render_guest_preview' ) ) {
 				<span class="nntm-thien-duong__spotify-avatar" aria-hidden="true">N</span>
 				<div><span class="nntm-thien-duong__spotify-type"><?php esc_html_e( 'Playlist', 'nntm' ); ?></span><strong>Năng Nhân Tịch Mặc</strong></div>
 			</div>
-			<div class="nntm-thien-duong__spotify-toolbar"><a href="<?php echo esc_url( $login_url ); ?>" aria-label="<?php esc_attr_e( 'Đăng nhập để nghe', 'nntm' ); ?>">&#9654;</a><span><?php esc_html_e( 'Danh sách phổ biến', 'nntm' ); ?></span></div>
+			<div class="nntm-thien-duong__spotify-toolbar"><a<?php echo $login_attrs;  ?> aria-label="<?php esc_attr_e( 'Đăng nhập để nghe', 'nntm' ); ?>">&#9654;</a><span><?php esc_html_e( 'Danh sách phổ biến', 'nntm' ); ?></span></div>
 			<ol class="nntm-thien-duong__spotify-list">
 				<?php foreach ( $posts as $index => $track_post ) : ?>
 					<li><span><?php echo esc_html( (string) ( $index + 1 ) ); ?></span><div><strong><?php echo esc_html( get_the_title( $track_post ) ); ?></strong><small>Năng Nhân Tịch Mặc</small></div><span aria-hidden="true">—:—</span></li>
 				<?php endforeach; ?>
 			</ol>
-			<a class="nntm-thien-duong__spotify-login" href="<?php echo esc_url( $login_url ); ?>"><?php esc_html_e( 'Đăng nhập để nghe trọn vẹn', 'nntm' ); ?></a>
+			<a class="nntm-thien-duong__spotify-login"<?php echo $login_attrs;  ?>><?php esc_html_e( 'Đăng nhập để nghe trọn vẹn', 'nntm' ); ?></a>
 		</div>
 		<?php
 		return trim( (string) ob_get_clean() );

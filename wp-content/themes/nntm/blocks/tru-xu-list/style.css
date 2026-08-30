@@ -231,7 +231,7 @@
 .nntm-tru-xu-dia-chi:hover,
 .nntm-tru-xu-dia-chi:focus-visible {
 	transform: translateY(-1px);
-	background-color: var(--nntm-chinh);
+	background-color: var(--nntm-chinh) !important;
 	color: var(--nntm-kem);
 }
 
