@@ -172,7 +172,33 @@ $nntm_nhac = function_exists( 'nntm_publication_music_tracks' )
 				</div>
 
 				<audio data-nntm-doc="nhac-audio" preload="metadata" src="<?php echo esc_url( $nntm_nhac[0]['url'] ); ?>"></audio>
+
+				<?php
+				/*
+				 * Đĩa nhạc quay khi đang phát. Thuần CSS, ăn theo class .is-playing
+				 * mà trình phát đã gắn lên panel — không cần thêm dòng JS nào.
+				 *
+				 * Nhãn giữa đĩa là bìa sách nếu ấn phẩm có bìa; không có thì để
+				 * vòng tròn màu nhấn, vẫn ra hình cái đĩa.
+				 */
+				?>
+				<div class="nntm-doc__music-disc" aria-hidden="true">
+					<span class="nntm-doc__music-disc-label"<?php echo $nntm_bia ? ' style="background-image:url(' . esc_url( $nntm_bia ) . ')"' : ''; ?>></span>
+				</div>
+
 				<p class="nntm-doc__music-now" data-nntm-doc="nhac-ten"><?php echo esc_html( $nntm_nhac[0]['title'] ); ?></p>
+
+				<div class="nntm-doc__music-seek">
+					<label class="nntm-doc__music-bar">
+						<span class="nntm-doc__sr"><?php esc_html_e( 'Kéo để nghe từ chỗ khác trong bài', 'nntm' ); ?></span>
+						<input type="range" min="0" max="1000" step="1" value="0" data-nntm-doc="nhac-tua" />
+					</label>
+					<span class="nntm-doc__music-time">
+						<span data-nntm-doc="nhac-da-nghe">0:00</span>
+						<span aria-hidden="true">/</span>
+						<span data-nntm-doc="nhac-dai">0:00</span>
+					</span>
+				</div>
 
 				<div class="nntm-doc__music-controls">
 					<button type="button" data-nntm-doc="nhac-truoc" title="<?php esc_attr_e( 'Bài trước', 'nntm' ); ?>">
@@ -190,10 +216,22 @@ $nntm_nhac = function_exists( 'nntm_publication_music_tracks' )
 					</button>
 				</div>
 
+				<div class="nntm-doc__music-volume">
+					<button type="button" class="nntm-doc__music-mute" data-nntm-doc="nhac-tat-tieng" data-label-tat="<?php esc_attr_e( 'Tắt tiếng', 'nntm' ); ?>" data-label-mo="<?php esc_attr_e( 'Bật tiếng', 'nntm' ); ?>" aria-pressed="false" title="<?php esc_attr_e( 'Tắt tiếng', 'nntm' ); ?>">
+						<svg class="nntm-doc__music-icon--loa" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 9.2a4 4 0 010 5.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+						<svg class="nntm-doc__music-icon--im" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 9.5l5 5M21 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+						<span class="nntm-doc__sr"><?php esc_html_e( 'Tắt hoặc bật tiếng nhạc nền', 'nntm' ); ?></span>
+					</button>
+					<label class="nntm-doc__music-bar">
+						<span class="nntm-doc__sr"><?php esc_html_e( 'Âm lượng nhạc nền', 'nntm' ); ?></span>
+						<input type="range" min="0" max="100" step="1" value="70" data-nntm-doc="nhac-am-luong" />
+					</label>
+				</div>
+
 				<ol class="nntm-doc__music-list">
 					<?php foreach ( $nntm_nhac as $nntm_so_nhac => $nntm_bai_nhac ) : ?>
 						<li>
-							<button type="button" data-nntm-doc-nhac-bai="<?php echo esc_attr( (string) $nntm_so_nhac ); ?>" data-nntm-doc-nhac-url="<?php echo esc_url( $nntm_bai_nhac['url'] ); ?>"<?php echo 0 === $nntm_so_nhac ? ' class="is-active" aria-current="true"' : ''; ?>>
+							<button type="button" data-nntm-doc-nhac-bai="<?php echo esc_attr( (string) $nntm_so_nhac ); ?>" data-nntm-doc-nhac-url="<?php echo esc_url( $nntm_bai_nhac['url'] ); ?>" data-nntm-doc-nhac-ten="<?php echo esc_attr( $nntm_bai_nhac['title'] ); ?>"<?php echo 0 === $nntm_so_nhac ? ' class="is-active" aria-current="true"' : ''; ?>>
 								<span class="nntm-doc__music-number"><?php echo esc_html( str_pad( (string) ( $nntm_so_nhac + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
 								<span><?php echo esc_html( $nntm_bai_nhac['title'] ); ?></span>
 							</button>

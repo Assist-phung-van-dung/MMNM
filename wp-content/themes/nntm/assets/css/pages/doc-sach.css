@@ -442,6 +442,65 @@
 
 .nntm-doc__music-close svg { inline-size: 18px; block-size: 18px; }
 
+/*
+ * Đĩa nhạc.
+ *
+ * Rãnh đĩa vẽ bằng repeating-radial-gradient chứ không dùng ảnh: một cái đĩa
+ * đen có vân thì không đáng thêm một lượt tải tệp.
+ *
+ * Quay hay đứng do animation-play-state quyết định, còn class .is-playing thì
+ * trình phát đã gắn sẵn lên panel. Cách này hơn việc bật/tắt animation: đĩa
+ * đứng lại ĐÚNG chỗ đang quay khi tạm dừng, chứ không giật về mốc 0 độ.
+ */
+.nntm-doc__music-disc {
+	position: relative;
+	display: grid;
+	place-items: center;
+	inline-size: 116px;
+	block-size: 116px;
+	margin: 18px auto 0;
+	border-radius: 50%;
+	background:
+		repeating-radial-gradient(
+			circle at 50% 50%,
+			rgba(255, 255, 255, .05) 0 1px,
+			transparent 1px 4px
+		),
+		radial-gradient(circle at 32% 28%, rgba(255, 255, 255, .14), transparent 58%),
+		#15161a;
+	box-shadow: 0 10px 24px -12px rgba(0, 0, 0, .9), inset 0 0 0 1px rgba(255, 255, 255, .06);
+	animation: nntm-doc-dia 5s linear infinite;
+	animation-play-state: paused;
+}
+
+.nntm-doc__music.is-playing .nntm-doc__music-disc { animation-play-state: running; }
+
+.nntm-doc__music-disc-label {
+	display: block;
+	inline-size: 44%;
+	block-size: 44%;
+	border-radius: 50%;
+	background: var(--doc-accent);
+	background-size: cover;
+	background-position: center;
+	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .35);
+}
+
+/* Lỗ giữa đĩa. Nền panel để lọt qua thì mới ra cái lỗ, không phải điểm tròn. */
+.nntm-doc__music-disc::after {
+	content: "";
+	position: absolute;
+	inset-block-start: 50%;
+	inset-inline-start: 50%;
+	inline-size: 9px;
+	block-size: 9px;
+	border-radius: 50%;
+	background: var(--doc-panel);
+	transform: translate(-50%, -50%);
+}
+
+@keyframes nntm-doc-dia { to { transform: rotate(360deg); } }
+
 .nntm-doc__music-now {
 	min-block-size: 1.5em;
 	margin: 16px 0 12px;
@@ -450,6 +509,46 @@
 	font-weight: 600;
 	line-height: 1.45;
 	text-align: center;
+}
+
+/* Thanh tua + hai mốc thời gian của bài đang nghe. */
+.nntm-doc__music-seek {
+	display: grid;
+	gap: 6px;
+	margin-bottom: 14px;
+}
+
+.nntm-doc__music-time {
+	display: flex;
+	justify-content: space-between;
+	gap: 6px;
+	color: var(--doc-ink-2);
+	font-size: .74rem;
+	font-variant-numeric: tabular-nums;
+	opacity: .8;
+}
+
+/* Dấu "/" chỉ cần khi hai số nằm sát nhau; ở đây chúng dạt hai bên nên ẩn đi. */
+.nntm-doc__music-time span[aria-hidden] { display: none; }
+
+/*
+ * Con trượt dùng chung cho thanh tua và âm lượng.
+ *
+ * Để trình duyệt tự vẽ và chỉ đổi accent-color, y như thanh chuyển trang ở
+ * footer. Vẽ tay track/thumb thì phải viết riêng cho WebKit và Firefox, mà đổi
+ * lại chẳng được gì trên một panel bé bằng này.
+ */
+.nntm-doc__music-bar {
+	display: block;
+	inline-size: 100%;
+}
+
+.nntm-doc__music-bar input[type="range"] {
+	display: block;
+	inline-size: 100%;
+	margin: 0;
+	accent-color: var(--doc-accent);
+	cursor: pointer;
 }
 
 .nntm-doc__music-controls {
@@ -488,6 +587,40 @@
 .nntm-doc__music-icon--pause { display: none; }
 .nntm-doc__music.is-playing .nntm-doc__music-icon--play { display: none; }
 .nntm-doc__music.is-playing .nntm-doc__music-icon--pause { display: block; }
+
+/* Nút tắt tiếng + con trượt âm lượng, nằm dưới hàng nút phát. */
+.nntm-doc__music-volume {
+	display: grid;
+	grid-template-columns: 32px minmax(0, 1fr);
+	gap: 10px;
+	align-items: center;
+	margin-bottom: 16px;
+}
+
+.nntm-doc__music-mute {
+	display: grid;
+	place-items: center;
+	inline-size: 32px;
+	block-size: 32px;
+	padding: 0;
+	border: 0;
+	border-radius: 8px;
+	background: transparent;
+	color: var(--doc-ink-2);
+	cursor: pointer;
+}
+
+.nntm-doc__music-mute:hover,
+.nntm-doc__music-mute:focus-visible {
+	background: color-mix(in srgb, var(--doc-ink) 10%, transparent);
+	color: var(--doc-ink);
+}
+
+.nntm-doc__music-mute svg { inline-size: 18px; block-size: 18px; }
+.nntm-doc__music-icon--im { display: none; }
+.nntm-doc__music-mute.is-muted { color: var(--doc-accent); }
+.nntm-doc__music-mute.is-muted .nntm-doc__music-icon--loa { display: none; }
+.nntm-doc__music-mute.is-muted .nntm-doc__music-icon--im { display: block; }
 
 .nntm-doc__music-list {
 	display: grid;
@@ -732,6 +865,7 @@
 
 @media (prefers-reduced-motion: reduce) {
 	.nntm-doc__spinner { animation: none; }
+	.nntm-doc__music-disc { animation: none; }
 	.nntm-doc__stage { scroll-behavior: auto; }
 	.nntm-doc__flip { transition: none; }
 }
