@@ -1555,6 +1555,7 @@ a.nntm-card-list__paging-so:focus-visible {
 
 	.nntm-card-list__heading-above {
 		padding-inline: var(--nntm-sp-6);
+		text-align: center;
 	}
 
 	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) .nntm-card-list__heading {

@@ -150,8 +150,9 @@
 	}
 
 	.nntm-y-kien__loi {
-		gap: var(--nntm-sp-2) var(--nntm-sp-3);
-		font-size: var(--nntm-fs-2xl);
+		gap: 6px 10px;
+		font-size: clamp(22px, 6vw, 26px);
+		line-height: 1.3;
 	}
 
 	.nntm-y-kien__nut {
@@ -161,6 +162,8 @@
 	}
 
 	.nntm-y-kien__mo-ta {
-		font-size: var(--nntm-fs-base);
+		max-width: 30ch;
+		font-size: var(--nntm-fs-15);
+		line-height: 1.55;
 	}
 }
