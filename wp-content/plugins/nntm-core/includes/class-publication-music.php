@@ -60,7 +60,7 @@ class Publication_Music {
 	 * từ biểu mẫu để tránh một quản trị viên vô tình lưu liên kết không an toàn.
 	 *
 	 * @param mixed $raw Dữ liệu thô.
-	 * @return array<int,array{id:int,title:string,url:string,mime:string}>
+	 * @return array<int,array{id:int,title:string,url:string,mime:string,length:string}>
 	 */
 	public static function sanitize_tracks( $raw ): array {
 		if ( ! is_array( $raw ) ) {
@@ -96,10 +96,11 @@ class Publication_Music {
 			}
 
 			$tracks[] = array(
-				'id'    => $id,
-				'title' => $title,
-				'url'   => esc_url_raw( $url ),
-				'mime'  => sanitize_mime_type( $mime ),
+				'id'     => $id,
+				'title'  => $title,
+				'url'    => esc_url_raw( $url ),
+				'mime'   => sanitize_mime_type( $mime ),
+				'length' => self::get_length( $id ),
 			);
 		}
 
@@ -107,9 +108,41 @@ class Publication_Music {
 	}
 
 	/**
+	 * Thời lượng bài nhạc, dạng "3:42"; chuỗi rỗng khi không biết.
+	 *
+	 * Lấy từ metadata mà WordPress đã đọc bằng ID3 lúc tải tệp lên — không mở
+	 * lại tệp để đo. Tệp tải lên bằng FTP hay bằng plugin không đọc ID3 thì
+	 * không có metadata này; trả về rỗng để nơi hiển thị tự xử, đừng bịa số.
+	 *
+	 * @param int $id ID tệp đính kèm.
+	 */
+	private static function get_length( int $id ): string {
+		$meta = wp_get_attachment_metadata( $id );
+
+		if ( ! is_array( $meta ) ) {
+			return '';
+		}
+
+		if ( isset( $meta['length_formatted'] ) && '' !== $meta['length_formatted'] ) {
+			return sanitize_text_field( (string) $meta['length_formatted'] );
+		}
+
+		$giay = isset( $meta['length'] ) ? absint( $meta['length'] ) : 0;
+
+		if ( $giay < 1 ) {
+			return '';
+		}
+
+		/* Không có bản đã định dạng thì tự ghép, giữ đúng dạng m:ss / h:mm:ss. */
+		return $giay >= 3600
+			? sprintf( '%d:%02d:%02d', (int) floor( $giay / 3600 ), (int) floor( ( $giay % 3600 ) / 60 ), $giay % 60 )
+			: sprintf( '%d:%02d', (int) floor( $giay / 60 ), $giay % 60 );
+	}
+
+	/**
 	 * Lấy danh sách sạch để frontend dùng.
 	 *
-	 * @return array<int,array{id:int,title:string,url:string,mime:string}>
+	 * @return array<int,array{id:int,title:string,url:string,mime:string,length:string}>
 	 */
 	public static function get_tracks(): array {
 		return self::sanitize_tracks( get_option( self::OPTION, array() ) );

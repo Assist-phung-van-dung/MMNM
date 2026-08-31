@@ -1059,6 +1059,16 @@
 			var dai = el.musicAudio.duration;
 
 			/*
+			 * Bài không có ID3 nên máy chủ không biết thời lượng: điền vào lúc
+			 * nghe tới nó, chứ không tải trước cả danh sách chỉ để lấy con số.
+			 */
+			var oDai = tracks[ current ].querySelector( '[data-nntm-doc-nhac-dai]' );
+
+			if ( oDai && '' === oDai.textContent.trim() && isFinite( dai ) ) {
+				oDai.textContent = dongHo( dai );
+			}
+
+			/*
 			 * Nghe tiếp đúng chỗ của lần vào trước. Chừa 2 giây cuối: nối lại ngay
 			 * sát cuối bài thì vừa mở đã hết, người ta tưởng nhạc hỏng.
 			 */

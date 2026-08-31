@@ -180,7 +180,7 @@ if ( ! function_exists( 'nntm_publication_music_tracks' ) ) {
 	/**
 	 * Lấy playlist nhạc nền dùng chung cho trình đọc Ấn phẩm và Nghi Quỹ.
 	 *
-	 * @return array<int,array{id:int,title:string,url:string,mime:string}>
+	 * @return array<int,array{id:int,title:string,url:string,mime:string,length:string}>
 	 */
 	function nntm_publication_music_tracks(): array {
 		if ( ! class_exists( '\\NNTM\\Core\\Publication_Music' ) ) {

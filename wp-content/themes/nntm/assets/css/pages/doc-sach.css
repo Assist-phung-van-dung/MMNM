@@ -637,7 +637,7 @@
 
 .nntm-doc__music-list button {
 	display: grid;
-	grid-template-columns: 28px minmax(0, 1fr);
+	grid-template-columns: 28px minmax(0, 1fr) auto;
 	gap: 8px;
 	align-items: center;
 	inline-size: 100%;
@@ -662,6 +662,13 @@
 .nntm-doc__music-list button.is-active {
 	background: color-mix(in srgb, var(--doc-accent) 15%, transparent);
 	color: var(--doc-accent);
+}
+
+/* Thời lượng ở cuối ô. Cột auto nên ô rỗng không chừa chỗ trống. */
+.nntm-doc__music-len {
+	font-size: .74rem;
+	font-variant-numeric: tabular-nums;
+	opacity: .6;
 }
 
 .nntm-doc__music-number {

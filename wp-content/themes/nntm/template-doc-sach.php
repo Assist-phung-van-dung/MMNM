@@ -234,6 +234,14 @@ $nntm_nhac = function_exists( 'nntm_publication_music_tracks' )
 							<button type="button" data-nntm-doc-nhac-bai="<?php echo esc_attr( (string) $nntm_so_nhac ); ?>" data-nntm-doc-nhac-url="<?php echo esc_url( $nntm_bai_nhac['url'] ); ?>" data-nntm-doc-nhac-ten="<?php echo esc_attr( $nntm_bai_nhac['title'] ); ?>"<?php echo 0 === $nntm_so_nhac ? ' class="is-active" aria-current="true"' : ''; ?>>
 								<span class="nntm-doc__music-number"><?php echo esc_html( str_pad( (string) ( $nntm_so_nhac + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
 								<span><?php echo esc_html( $nntm_bai_nhac['title'] ); ?></span>
+								<?php
+								/*
+								 * Tệp tải lên bằng FTP thì WordPress không có ID3 để biết
+								 * thời lượng. Để ô trống chứ không in "0:00": nghe tới bài
+								 * đó là JS điền số thật vào.
+								 */
+								?>
+								<span class="nntm-doc__music-len" data-nntm-doc-nhac-dai><?php echo esc_html( isset( $nntm_bai_nhac['length'] ) ? (string) $nntm_bai_nhac['length'] : '' ); ?></span>
 							</button>
 						</li>
 					<?php endforeach; ?>
