@@ -115,7 +115,7 @@
 
 @media (max-width: 600px) {
 	.nntm-chia-se__bang {
-		left: auto;
+		left: 0;
 		right: 0;
 	}
 }
