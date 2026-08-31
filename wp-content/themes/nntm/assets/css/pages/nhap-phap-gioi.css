@@ -33,7 +33,7 @@
 	width: 100%;
 	max-width: none;
 	margin: 0;
-	padding: clamp(18px, 2.2vw, 30px) clamp(20px, 6.8vw, 93px) clamp(12px, 1.5vw, 20px);
+	padding: clamp(18px, 2.2vw, 30px) clamp(20px, 6.8vw, 93px) 0px;
 	background-color: var(--nntm-trang);
 	box-sizing: border-box;
 }

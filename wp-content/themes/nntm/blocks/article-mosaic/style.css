@@ -345,7 +345,7 @@
 
 @media (max-width: 1151px) {
 	.nntm-article-mosaic__inner {
-		padding: var(--nntm-sp-8) var(--nntm-sp-5);
+		padding: var(--nntm-sp-5) var(--nntm-sp-5);
 	}
 
 	.nntm-article-mosaic__secondary {
@@ -439,7 +439,7 @@
 	}
 
 	.nntm-article-mosaic--phai-grid .nntm-article-mosaic__inner {
-		padding: var(--nntm-sp-8) var(--nntm-sp-5);
+		padding: var(--nntm-sp-5) var(--nntm-sp-5);
 	}
 }
 

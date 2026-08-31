@@ -320,10 +320,6 @@
 		margin-bottom: var(--nntm-sp-7);
 	}
 
-	.nntm-card-list:has(> .nntm-card-list__heading-above) > .nntm-card-list__band {
-		padding-block: var(--nntm-sp-7);
-	}
-
 	.nntm-card-list--nen-cam .nntm-card-list__heading,
 	.nntm-card-list--nen-cam .nntm-card-list__subheading {
 		padding-inline: var(--nntm-sp-5);
@@ -339,7 +335,6 @@
 		bottom: auto;
 		left: auto;
 		right: auto;
-		margin-block-end: var(--nntm-sp-8);
 	}
 }
 
@@ -1555,7 +1550,6 @@ a.nntm-card-list__paging-so:focus-visible {
 
 	.nntm-card-list__heading-above {
 		padding-inline: var(--nntm-sp-6);
-		text-align: center;
 	}
 
 	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) .nntm-card-list__heading {
