@@ -510,6 +510,8 @@ a.nntm-card-list__paging-so:focus-visible {
 	}
 }
 
+@media (max-width: 767px) { .nntm-card-list__track-item { flex-basis: 100%; } }
+
  
 .nntm-card-list__carousel {
 	--nntm-carousel-per-view: 3.45;  
@@ -555,6 +557,8 @@ a.nntm-card-list__paging-so:focus-visible {
 .nntm-card-list__track-item .nntm-card {
 	height: 100%;
 }
+
+
 
  
 .nntm-card-list__nav {
