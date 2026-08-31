@@ -174,15 +174,24 @@ $wrapper = get_block_wrapper_attributes(
 						 * là xem được, không bắt phải bấm CTA. Dùng <button> thật nên
 						 * Tab/Enter/Space đều dùng được; view.js gỡ Tab khỏi các ảnh
 						 * không nằm giữa để bàn phím không lạc vào slide đang bị ẩn.
+						 *
+						 * Bấm vào ảnh mở đúng chế độ "Xem Chi Tiết" — khách quen bấm
+						 * thẳng vào ảnh hơn là tìm nút chữ, nên hai lối vào phải ra
+						 * cùng một trang. Slide nào chưa nhập chữ thì lui về chế độ xem
+						 * ảnh, vì mở chi tiết ở đó chỉ gặp một khung rỗng.
 						 */
+						$che_do_anh = $co_chi_tiet ? 'chi-tiet' : 'anh';
+						$nhan_anh   = $co_chi_tiet
+							? ( $title ? sprintf( __( 'Xem chi tiết: %s', 'nntm' ), $title ) : __( 'Xem chi tiết', 'nntm' ) )
+							: ( $title ? sprintf( __( 'Xem ảnh: %s', 'nntm' ), $title ) : __( 'Xem ảnh', 'nntm' ) );
 						?>
 						<button
 							class="nntm-feature-gallery-carousel__media"
 							type="button"
 							data-fgc-open="<?php echo esc_attr( $modal_id ); ?>"
-							data-fgc-mode="anh"
+							data-fgc-mode="<?php echo esc_attr( $che_do_anh ); ?>"
 							data-fgc-media
-							aria-label="<?php echo esc_attr( $title ? sprintf( __( 'Xem ảnh: %s', 'nntm' ), $title ) : __( 'Xem ảnh', 'nntm' ) ); ?>"
+							aria-label="<?php echo esc_attr( $nhan_anh ); ?>"
 						>
 							<?php echo wp_kses_post( $render_image( $slide, 'nntm-feature-gallery-carousel__image', 0 === $index ) ); ?>
 						</button>
