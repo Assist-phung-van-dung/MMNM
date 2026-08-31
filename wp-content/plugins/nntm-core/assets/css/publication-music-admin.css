@@ -1,0 +1,79 @@
+.nntm-music-admin { max-width: 980px; }
+
+.nntm-music-admin > .description {
+	max-width: 760px;
+	margin-bottom: 22px;
+}
+
+.nntm-music-admin__empty {
+	margin: 20px 0;
+	padding: 22px;
+	border: 1px dashed #c3c4c7;
+	background: #fff;
+	text-align: center;
+}
+
+.nntm-music-admin__list {
+	display: grid;
+	gap: 12px;
+	margin: 18px 0;
+}
+
+.nntm-music-admin__row {
+	display: grid;
+	grid-template-columns: 28px minmax(0, 1fr) auto;
+	gap: 14px;
+	align-items: start;
+	margin: 0;
+	padding: 18px;
+	border: 1px solid #dcdcde;
+	border-radius: 6px;
+	background: #fff;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
+}
+
+.nntm-music-admin__handle {
+	padding-top: 5px;
+	color: #8c8f94;
+	font-size: 18px;
+}
+
+.nntm-music-admin__fields,
+.nntm-music-admin__fields label {
+	display: grid;
+	gap: 7px;
+}
+
+.nntm-music-admin__fields label > span { font-weight: 600; }
+.nntm-music-admin__fields .regular-text { width: min(100%, 520px); }
+
+.nntm-music-admin__file {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px 14px;
+	margin-top: 4px;
+	color: #646970;
+}
+
+.nntm-music-admin__file audio {
+	width: min(100%, 360px);
+	height: 36px;
+}
+
+.nntm-music-admin__actions {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+}
+
+.nntm-music-admin__footer {
+	display: flex;
+	gap: 10px;
+	padding-bottom: 30px;
+}
+
+@media (max-width: 782px) {
+	.nntm-music-admin__row { grid-template-columns: 22px minmax(0, 1fr); }
+	.nntm-music-admin__actions { grid-column: 2; flex-wrap: wrap; }
+}

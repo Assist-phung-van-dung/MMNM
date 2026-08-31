@@ -70,7 +70,7 @@
   .nntm-hk-news .nntm-article-mosaic__inner,
   .nntm-hk-dharma .nntm-article-mosaic__inner { height:auto; padding:40px 20px; }
   .nntm-hk-news .nntm-article-mosaic__heading,
-  .nntm-hk-dharma .nntm-article-mosaic__heading { height:auto; font-size:clamp(38px,7vw,var(--nntm-fs-4xl)); line-height:1.15; }
+  .nntm-hk-dharma .nntm-article-mosaic__heading { height:auto; font-size:clamp(28px,7vw,var(--nntm-fs-4xl)); line-height:1.15; }
    
   .nntm-hk-news .nntm-article-mosaic__list,
   .nntm-hk-dharma .nntm-article-mosaic__list { width:100%; }

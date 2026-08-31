@@ -1036,6 +1036,16 @@
 		transform: none;
 	}
 
+	/*
+	 * Dải trắng đã có sẵn 40px đệm trên (rule chung của block), cụm tiêu đề
+	 * cộng thêm 40px nữa thành 80px trống phía trên "The Drum of the True
+	 * Dharma" — trên điện thoại nhìn như bị rơi mất nội dung. Bỏ đệm của dải
+	 * trắng, chỉ giữ đệm của cụm tiêu đề.
+	 */
+	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__white {
+		padding-block: 0;
+	}
+
 	.home .nntm-engineering-earth--homepage-figma .nntm-engineering-earth__heading-group {
 		padding: 40px 0 30px;
 	}

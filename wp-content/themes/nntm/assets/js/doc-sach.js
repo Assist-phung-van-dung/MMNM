@@ -31,6 +31,19 @@
 		tocBtn:   document.querySelector( '[data-nntm-doc="muc-luc"]' ),
 		panel:    document.getElementById( 'nntm-doc-hien' ),
 		panelBtn: document.querySelector( '[data-nntm-doc="hien"]' ),
+		music:    document.getElementById( 'nntm-doc-nhac' ),
+		musicBtn: document.querySelector( '[data-nntm-doc="nhac"]' ),
+		musicAudio: document.querySelector( '[data-nntm-doc="nhac-audio"]' ),
+		musicPlay:  document.querySelector( '[data-nntm-doc="nhac-phat"]' ),
+		musicPrev:  document.querySelector( '[data-nntm-doc="nhac-truoc"]' ),
+		musicNext:  document.querySelector( '[data-nntm-doc="nhac-sau"]' ),
+		musicTitle: document.querySelector( '[data-nntm-doc="nhac-ten"]' ),
+		musicClose: document.querySelector( '[data-nntm-doc="nhac-dong"]' ),
+		musicSeek:  document.querySelector( '[data-nntm-doc="nhac-tua"]' ),
+		musicAt:    document.querySelector( '[data-nntm-doc="nhac-da-nghe"]' ),
+		musicLen:   document.querySelector( '[data-nntm-doc="nhac-dai"]' ),
+		musicVol:   document.querySelector( '[data-nntm-doc="nhac-am-luong"]' ),
+		musicMute:  document.querySelector( '[data-nntm-doc="nhac-tat-tieng"]' ),
 		mark:     document.querySelector( '[data-nntm-doc="danh-dau"]' ),
 		prev:     document.querySelector( '[data-nntm-doc="truoc"]' ),
 		next:     document.querySelector( '[data-nntm-doc="sau"]' ),
@@ -796,8 +809,8 @@
 		btn.addEventListener( 'click', function () {
 			var mo = hop.hidden;
 
-			[ el.toc, el.panel ].forEach( function ( h ) { if ( h ) { h.hidden = true; } } );
-			[ el.tocBtn, el.panelBtn ].forEach( function ( b ) {
+			[ el.toc, el.panel, el.music ].forEach( function ( h ) { if ( h ) { h.hidden = true; } } );
+			[ el.tocBtn, el.panelBtn, el.musicBtn ].forEach( function ( b ) {
 				if ( b ) {
 					b.setAttribute( 'aria-expanded', 'false' );
 					b.classList.remove( 'is-active' );
@@ -810,6 +823,322 @@
 		} );
 	}
 
+	/*
+	 * Bộ nhớ nhỏ của trình phát nhạc.
+	 *
+	 * Gói localStorage lại một chỗ vì trình phát đọc/ghi tới năm khoá (bài đang
+	 * nghe, chỗ đang nghe, đang phát hay không, âm lượng, tắt tiếng). Chế độ ẩn
+	 * danh của Safari làm setItem quăng lỗi; ở đây bỏ qua lặng lẽ để nhạc vẫn
+	 * chạy, chỉ mất phần ghi nhớ.
+	 */
+	function nhoNhac( khoa, giaTri ) {
+		try {
+			if ( undefined === giaTri ) {
+				return window.localStorage.getItem( 'nntm-doc-nhac-' + khoa );
+			}
+
+			window.localStorage.setItem( 'nntm-doc-nhac-' + khoa, String( giaTri ) );
+		} catch ( e ) {}
+
+		return null;
+	}
+
+	/** Số giây thành dạng 3:07 để in cạnh thanh tua. */
+	function dongHo( giay ) {
+		if ( ! isFinite( giay ) || giay < 0 ) { giay = 0; }
+
+		var phut = Math.floor( giay / 60 );
+		var le   = Math.floor( giay % 60 );
+
+		return phut + ':' + ( le < 10 ? '0' : '' ) + le;
+	}
+
+	function noiNhac() {
+		if ( ! el.music || ! el.musicAudio || ! el.musicPlay ) { return; }
+
+		var tracks = Array.prototype.slice.call( el.music.querySelectorAll( '[data-nntm-doc-nhac-bai]' ) );
+		if ( ! tracks.length ) { return; }
+
+		var current = 0;
+
+		/* Đang kéo thanh tua: lúc đó đừng để timeupdate giật con trượt về. */
+		var dangKeo = false;
+
+		/*
+		 * Số bài lỗi liền nhau. Tệp nhạc bị xoá khỏi Thư viện là chuyện thường;
+		 * không đếm thì cú "lỗi -> nhảy bài sau" thành vòng lặp vô tận khi cả
+		 * danh sách đều hỏng.
+		 */
+		var loiLien = 0;
+
+		/* Chỗ đang nghe của lần vào trước, chỉ dùng cho bài mở đầu tiên. */
+		var viTriCu = 0;
+
+		var luuBai = parseInt( nhoNhac( 'bai' ), 10 );
+		if ( ! isNaN( luuBai ) && luuBai >= 0 && luuBai < tracks.length ) { current = luuBai; }
+
+		var luuViTri = parseFloat( nhoNhac( 'vi-tri' ) );
+		if ( ! isNaN( luuViTri ) && luuViTri > 0 ) { viTriCu = luuViTri; }
+
+		var luuAm = parseFloat( nhoNhac( 'am' ) );
+		el.musicAudio.volume = ( ! isNaN( luuAm ) && luuAm >= 0 && luuAm <= 1 ) ? luuAm : 0.7;
+		el.musicAudio.muted  = '1' === nhoNhac( 'tat' );
+
+		function playingState( isPlaying ) {
+			var label = isPlaying ? el.musicPlay.dataset.labelPause : el.musicPlay.dataset.labelPlay;
+
+			el.music.classList.toggle( 'is-playing', isPlaying );
+			el.musicPlay.setAttribute( 'aria-pressed', isPlaying ? 'true' : 'false' );
+			el.musicPlay.title = label || '';
+
+			if ( el.musicBtn ) { el.musicBtn.classList.toggle( 'is-playing', isPlaying ); }
+
+			nhoNhac( 'phat', isPlaying ? '1' : '0' );
+		}
+
+		/** Con trượt âm lượng và nút tắt tiếng vẽ theo đúng trạng thái của thẻ audio. */
+		function veAmLuong() {
+			var im = el.musicAudio.muted || 0 === el.musicAudio.volume;
+
+			if ( el.musicVol ) { el.musicVol.value = String( Math.round( el.musicAudio.volume * 100 ) ); }
+
+			if ( el.musicMute ) {
+				var nhan = im ? el.musicMute.dataset.labelMo : el.musicMute.dataset.labelTat;
+
+				el.musicMute.classList.toggle( 'is-muted', im );
+				el.musicMute.setAttribute( 'aria-pressed', im ? 'true' : 'false' );
+				el.musicMute.title = nhan || '';
+			}
+		}
+
+		/** Thanh tua và hai mốc thời gian đi theo bài đang nghe. */
+		function veThoiGian() {
+			var dai = el.musicAudio.duration;
+			var tai = el.musicAudio.currentTime;
+
+			if ( el.musicAt ) { el.musicAt.textContent = dongHo( tai ); }
+			if ( el.musicLen ) { el.musicLen.textContent = isFinite( dai ) ? dongHo( dai ) : '0:00'; }
+
+			if ( el.musicSeek && ! dangKeo ) {
+				el.musicSeek.value = String( isFinite( dai ) && dai > 0 ? Math.round( ( tai / dai ) * 1000 ) : 0 );
+			}
+		}
+
+		function selectTrack( index, shouldPlay ) {
+			current = ( index + tracks.length ) % tracks.length;
+
+			var track = tracks[ current ];
+			var wasPlaying = ! el.musicAudio.paused;
+			var url = track.getAttribute( 'data-nntm-doc-nhac-url' ) || '';
+
+			el.musicAudio.pause();
+			el.musicAudio.src = url;
+			el.musicAudio.load();
+
+			tracks.forEach( function ( item, itemIndex ) {
+				var active = itemIndex === current;
+				item.classList.toggle( 'is-active', active );
+				if ( active ) {
+					item.setAttribute( 'aria-current', 'true' );
+				} else {
+					item.removeAttribute( 'aria-current' );
+				}
+			} );
+
+			/*
+			 * Tên bài lấy từ thuộc tính data thay vì cắt textContent: nút trong
+			 * danh sách có kèm số thứ tự "01", mà tên bài cũng có thể bắt đầu bằng
+			 * số, nên cắt bằng regex là trò may rủi.
+			 */
+			if ( el.musicTitle ) {
+				el.musicTitle.textContent = track.getAttribute( 'data-nntm-doc-nhac-ten' ) || track.textContent.trim();
+			}
+
+			nhoNhac( 'bai', current );
+			nhoNhac( 'vi-tri', 0 );
+
+			if ( el.musicSeek ) { el.musicSeek.value = '0'; }
+			veThoiGian();
+
+			if ( shouldPlay || wasPlaying ) {
+				var promise = el.musicAudio.play();
+				if ( promise && promise.catch ) { promise.catch( function () { playingState( false ); } ); }
+			} else {
+				playingState( false );
+			}
+		}
+
+		tracks.forEach( function ( track, index ) {
+			track.addEventListener( 'click', function () { selectTrack( index, true ); } );
+		} );
+
+		el.musicPlay.addEventListener( 'click', function () {
+			if ( el.musicAudio.paused ) {
+				var promise = el.musicAudio.play();
+				if ( promise && promise.catch ) { promise.catch( function () { playingState( false ); } ); }
+			} else {
+				el.musicAudio.pause();
+			}
+		} );
+
+		if ( el.musicPrev ) { el.musicPrev.addEventListener( 'click', function () { selectTrack( current - 1, true ); } ); }
+		if ( el.musicNext ) { el.musicNext.addEventListener( 'click', function () { selectTrack( current + 1, true ); } ); }
+
+		if ( el.musicSeek ) {
+			el.musicSeek.addEventListener( 'pointerdown', function () { dangKeo = true; } );
+			el.musicSeek.addEventListener( 'pointerup', function () { dangKeo = false; } );
+
+			/* Kéo tới đâu in mốc thời gian tới đó, chưa nhảy tiếng. */
+			el.musicSeek.addEventListener( 'input', function () {
+				var dai = el.musicAudio.duration;
+
+				if ( ! isFinite( dai ) || dai <= 0 ) { return; }
+
+				dangKeo = true;
+
+				if ( el.musicAt ) { el.musicAt.textContent = dongHo( ( Number( el.musicSeek.value ) / 1000 ) * dai ); }
+			} );
+
+			/* Thả tay mới nhảy thật — tua liên tục trong lúc kéo là nghe rất rối. */
+			el.musicSeek.addEventListener( 'change', function () {
+				var dai = el.musicAudio.duration;
+
+				dangKeo = false;
+
+				if ( ! isFinite( dai ) || dai <= 0 ) { return; }
+
+				try { el.musicAudio.currentTime = ( Number( el.musicSeek.value ) / 1000 ) * dai; } catch ( e ) {}
+
+				veThoiGian();
+			} );
+		}
+
+		if ( el.musicVol ) {
+			el.musicVol.addEventListener( 'input', function () {
+				var muc = Math.min( 100, Math.max( 0, Number( el.musicVol.value ) ) ) / 100;
+
+				el.musicAudio.volume = muc;
+
+				/* Kéo âm lượng lên thì hiểu là muốn nghe, tự bỏ tắt tiếng. */
+				if ( muc > 0 && el.musicAudio.muted ) { el.musicAudio.muted = false; }
+
+				nhoNhac( 'am', muc );
+				nhoNhac( 'tat', el.musicAudio.muted ? '1' : '0' );
+				veAmLuong();
+			} );
+		}
+
+		if ( el.musicMute ) {
+			el.musicMute.addEventListener( 'click', function () {
+				el.musicAudio.muted = ! el.musicAudio.muted;
+
+				/*
+				 * Bật tiếng lại mà âm lượng đang ở 0 thì vẫn im — kéo lên một mức
+				 * nghe được để nút không hoá ra vô tác dụng.
+				 */
+				if ( ! el.musicAudio.muted && 0 === el.musicAudio.volume ) {
+					el.musicAudio.volume = 0.7;
+					nhoNhac( 'am', 0.7 );
+				}
+
+				nhoNhac( 'tat', el.musicAudio.muted ? '1' : '0' );
+				veAmLuong();
+			} );
+		}
+
+		el.musicAudio.addEventListener( 'play', function () { playingState( true ); } );
+
+		el.musicAudio.addEventListener( 'pause', function () {
+			playingState( false );
+			nhoNhac( 'vi-tri', el.musicAudio.currentTime );
+		} );
+
+		el.musicAudio.addEventListener( 'playing', function () { loiLien = 0; } );
+
+		el.musicAudio.addEventListener( 'loadedmetadata', function () {
+			var dai = el.musicAudio.duration;
+
+			/*
+			 * Bài không có ID3 nên máy chủ không biết thời lượng: điền vào lúc
+			 * nghe tới nó, chứ không tải trước cả danh sách chỉ để lấy con số.
+			 */
+			var oDai = tracks[ current ].querySelector( '[data-nntm-doc-nhac-dai]' );
+
+			if ( oDai && '' === oDai.textContent.trim() && isFinite( dai ) ) {
+				oDai.textContent = dongHo( dai );
+			}
+
+			/*
+			 * Nghe tiếp đúng chỗ của lần vào trước. Chừa 2 giây cuối: nối lại ngay
+			 * sát cuối bài thì vừa mở đã hết, người ta tưởng nhạc hỏng.
+			 */
+			if ( viTriCu > 0 && isFinite( dai ) && viTriCu < dai - 2 ) {
+				try { el.musicAudio.currentTime = viTriCu; } catch ( e ) {}
+			}
+
+			viTriCu = 0;
+			veThoiGian();
+		} );
+
+		var mocLuu = 0;
+
+		el.musicAudio.addEventListener( 'timeupdate', function () {
+			veThoiGian();
+
+			/* Ghi chỗ đang nghe mỗi 5 giây, đủ để nối lại mà không quần localStorage. */
+			if ( Math.abs( el.musicAudio.currentTime - mocLuu ) >= 5 ) {
+				mocLuu = el.musicAudio.currentTime;
+				nhoNhac( 'vi-tri', mocLuu );
+			}
+		} );
+
+		el.musicAudio.addEventListener( 'ended', function () { selectTrack( current + 1, true ); } );
+
+		el.musicAudio.addEventListener( 'error', function () {
+			playingState( false );
+
+			/*
+			 * Tệp đã bị xoá khỏi Thư viện thì bỏ qua, nghe bài sau. Dừng lại khi đã
+			 * thử hết danh sách để không quay vòng vô tận.
+			 */
+			if ( tracks.length < 2 || loiLien >= tracks.length - 1 ) { return; }
+
+			loiLien++;
+			selectTrack( current + 1, true );
+		} );
+
+		if ( el.musicClose ) {
+			el.musicClose.addEventListener( 'click', function () {
+				el.music.hidden = true;
+				if ( el.musicBtn ) {
+					el.musicBtn.setAttribute( 'aria-expanded', 'false' );
+					el.musicBtn.classList.remove( 'is-active' );
+					el.musicBtn.focus();
+				}
+			} );
+		}
+
+		/*
+		 * Đọc cờ TRƯỚC khi gọi selectTrack: selectTrack kết thúc bằng
+		 * playingState( false ), tức là ghi cờ về '0' — đọc sau thì lần nào cũng
+		 * thấy "không phát".
+		 */
+		var phatTiep = '1' === nhoNhac( 'phat' );
+
+		veAmLuong();
+		selectTrack( current, false );
+
+		/*
+		 * Lần trước đang nghe thì nghe tiếp. Trình duyệt có quyền chặn vì trang
+		 * vừa tải chưa có cú bấm nào; bị chặn thì cứ nằm ở trạng thái tạm dừng,
+		 * người đọc bấm phát là chạy — không nhảy hộp báo lỗi.
+		 */
+		if ( phatTiep ) {
+			var tiep = el.musicAudio.play();
+			if ( tiep && tiep.catch ) { tiep.catch( function () { playingState( false ); } ); }
+		}
+	}
+
 	function noiNut() {
 		if ( el.prev ) { el.prev.addEventListener( 'click', truoc ); }
 		if ( el.next ) { el.next.addEventListener( 'click', sau ); }
@@ -817,6 +1146,8 @@
 
 		moDong( el.tocBtn, el.toc );
 		moDong( el.panelBtn, el.panel );
+		moDong( el.musicBtn, el.music );
+		noiNhac();
 
 		/*
 		 * Đóng/mở khung sách bên trái.
@@ -926,8 +1257,8 @@
 			if ( 'f' === e.key || 'F' === e.key ) { doiFull(); }
 
 			if ( 'Escape' === e.key ) {
-				[ el.toc, el.panel ].forEach( function ( h ) { if ( h ) { h.hidden = true; } } );
-				[ el.tocBtn, el.panelBtn ].forEach( function ( b ) {
+				[ el.toc, el.panel, el.music ].forEach( function ( h ) { if ( h ) { h.hidden = true; } } );
+				[ el.tocBtn, el.panelBtn, el.musicBtn ].forEach( function ( b ) {
 					if ( b ) {
 						b.setAttribute( 'aria-expanded', 'false' );
 						b.classList.remove( 'is-active' );
