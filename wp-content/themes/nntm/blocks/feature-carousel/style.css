@@ -390,7 +390,7 @@
 		--fc-outer-y: 9.45vw;
 		--fc-stage-height: 360px;
 		padding-top: 38px;
-		padding-bottom: 42px;
+		padding-bottom: 20px;
 	}
 	.nntm-feature-carousel--compact-header { padding-top: 42px; }
 	/* Cỡ tiêu đề mục chung của site trên điện thoại; fs-2xl nay là bậc tiêu đề
@@ -403,6 +403,25 @@
 	.nntm-feature-carousel__copy { padding-top: 16px; }
 	.nntm-feature-carousel__copy h3 { font-size: var(--nntm-fs-base); }
 	.nntm-feature-carousel__copy p { margin-top: 8px; font-size: var(--nntm-fs-sm); }
+
+	/* Trên điện thoại, chiều cao sân khấu phải đi theo đúng slide đang xem.
+	   Giữ một chiều cao cố định tạo ra một dải trống lớn dưới phần mô tả. */
+	.nntm-feature-carousel__slider,
+	.nntm-feature-carousel__track {
+		height: auto;
+	}
+
+	.nntm-feature-carousel__slide:first-child {
+		position: relative;
+	}
+
+	.nntm-feature-carousel.is-ready .nntm-feature-carousel__slide:first-child {
+		position: absolute;
+	}
+
+	.nntm-feature-carousel.is-ready .nntm-feature-carousel__slide[data-position="0"] {
+		position: relative;
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {

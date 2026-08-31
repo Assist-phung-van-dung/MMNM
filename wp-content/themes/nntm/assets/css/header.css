@@ -692,18 +692,20 @@ body.nntm-dau-trang-de-len .nntm-header {
 	.nntm-main-nav .current_page_ancestor > a {
 		padding-inline: var(--nntm-sp-5);
 		border-radius: 0;
-		background-color: color-mix(in srgb, var(--nntm-chinh) 10%, transparent);
-		box-shadow: inset 3px 0 0 var(--nntm-chinh);
+		background-color: var(--nntm-chinh);
+		box-shadow: inset 4px 0 0 var(--nntm-chinh-hover);
 		font-size: var(--nntm-fs-md);
+		font-weight: 600;
 		line-height: var(--nntm-lh-vua);
-		color: var(--nntm-chinh);
+		color: var(--nntm-kem);
 	}
 
 	.nntm-main-nav .current-menu-item > a:hover,
 	.nntm-main-nav .current_page_item > a:hover,
 	.nntm-main-nav .current-menu-ancestor > a:hover,
 	.nntm-main-nav .current_page_ancestor > a:hover {
-		color: var(--nntm-chinh);
+		background-color: var(--nntm-chinh-hover);
+		color: var(--nntm-kem);
 	}
 
 	.nntm-main-nav .sub-menu {

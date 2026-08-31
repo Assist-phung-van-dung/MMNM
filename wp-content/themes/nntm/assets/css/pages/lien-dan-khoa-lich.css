@@ -12,7 +12,7 @@
  */
 .nntm-lien-dan-khoa > .nntm-card-list__band {
 	min-height: 530px;  
-	padding-block: var(--nntm-sp-8);
+	padding-block: var(--nntm-sp-5);
 	background-color: var(--nntm-kem);
 	overflow: hidden;
 }

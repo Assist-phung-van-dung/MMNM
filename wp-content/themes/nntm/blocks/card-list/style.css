@@ -234,7 +234,7 @@
  
 .nntm-card-list:has(> .nntm-card-list__heading-above) > .nntm-card-list__band {
 	 
-	padding-block: 0 var(--nntm-sp-8);
+	padding-block: 0 var(--nntm-sp-5);
 }
 
 .nntm-card-list:has(> .nntm-card-list__heading-above) .nntm-card-list__heading {
@@ -1157,7 +1157,7 @@ a.nntm-card-list__paging-so:focus-visible {
 
 @media (max-width: 1151px) {
 	.nntm-card-list--books-marquee > .nntm-card-list__band {
-	padding-block: 40px;
+	padding-block: 20px;
 	overflow: hidden;
 	}
 
@@ -1557,7 +1557,7 @@ a.nntm-card-list__paging-so:focus-visible {
 	}
 
 	.nntm-card-list--nen-cam > .nntm-card-list__band {
-		padding: var(--nntm-sp-8) 0;
+		padding: var(--nntm-sp-5) 0;
 	}
 
 	.nntm-card-list--nen-cam > .nntm-card-list__band > .nntm-container,
