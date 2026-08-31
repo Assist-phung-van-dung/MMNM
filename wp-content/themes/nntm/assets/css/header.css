@@ -740,8 +740,6 @@ body.nntm-dau-trang-de-len .nntm-header {
 		justify-content: flex-start;
 		gap: var(--nntm-sp-4);
 		height: auto;
-
-		margin-top: auto;
 		padding: var(--nntm-sp-5);
 	}
 
