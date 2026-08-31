@@ -1379,7 +1379,7 @@ a.nntm-card-list__paging-so:focus-visible {
 		font-family: var(--nntm-font-display);
 		font-size: 58px;
 		font-weight: 600;
-		line-height: 68px;
+		line-height: 110px;
 		color: var(--nntm-den);
 		background: transparent;
 	}
