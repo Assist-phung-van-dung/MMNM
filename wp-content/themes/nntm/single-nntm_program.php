@@ -46,6 +46,12 @@ while ( have_posts() ) :
 				<p class="nntm-chuong-trinh__nhan"><?php esc_html_e( 'Chương trình trì tụng', 'nntm' ); ?></p>
 
 				<h1 class="nntm-chuong-trinh__tieu-de"><?php the_title(); ?></h1>
+					<?php
+					/* Bài không chọn nhạc nền thì hàm trả chuỗi rỗng, không in ra gì. */
+					if ( function_exists( 'nntm_render_nhac_nen' ) ) {
+						echo nntm_render_nhac_nen( (int) get_the_ID() );  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					}
+					?>
 
 				<?php if ( '' !== $nntm_ct_mo_dau ) : ?>
 					<p class="nntm-chuong-trinh__mo-dau"><?php echo esc_html( $nntm_ct_mo_dau ); ?></p>

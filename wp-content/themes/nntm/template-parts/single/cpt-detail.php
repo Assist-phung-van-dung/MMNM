@@ -17,6 +17,12 @@ while ( have_posts() ) :
 		<article <?php post_class( 'nntm-article-detail__article nntm-cpt-detail__article' ); ?>>
 			<div class="nntm-article-detail__inner">
 				<h1 class="nntm-article-detail__title"><?php the_title(); ?></h1>
+					<?php
+					/* Bài không chọn nhạc nền thì hàm trả chuỗi rỗng, không in ra gì. */
+					if ( function_exists( 'nntm_render_nhac_nen' ) ) {
+						echo nntm_render_nhac_nen( (int) $post_id );  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					}
+					?>
 
 				<p class="nntm-article-detail__meta">
 					<span class="nntm-article-detail__meta-dot" aria-hidden="true"></span>

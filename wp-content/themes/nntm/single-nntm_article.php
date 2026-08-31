@@ -36,6 +36,13 @@ if ( null === $nntm_cap_hanh_gia ) {
 				<div class="nntm-article-detail__inner">
 					<h1 class="nntm-article-detail__title"><?php the_title(); ?></h1>
 
+					<?php
+					/* Bài không chọn nhạc nền thì hàm trả chuỗi rỗng, không in ra gì. */
+					if ( function_exists( 'nntm_render_nhac_nen' ) ) {
+						echo nntm_render_nhac_nen( (int) $nntm_post_id );  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					}
+					?>
+
 					<p class="nntm-article-detail__meta">
 						<span class="nntm-article-detail__meta-dot" aria-hidden="true"></span>
 						<?php
@@ -129,6 +136,12 @@ if ( null === $nntm_cap_hanh_gia ) {
 			<section class="nntm-bai-hanh-gia__than <?php echo esc_attr( $nntm_class_bien_the ); ?>">
 				<div class="nntm-bai-hanh-gia__khung">
 					<h1 class="nntm-bai-hanh-gia__tieu-de"><?php the_title(); ?></h1>
+
+					<?php
+					if ( function_exists( 'nntm_render_nhac_nen' ) ) {
+						echo nntm_render_nhac_nen( (int) get_the_ID() );  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					}
+					?>
 
 					<p class="nntm-bai-hanh-gia__ngay">
 						<span class="nntm-bai-hanh-gia__cham" aria-hidden="true"></span>

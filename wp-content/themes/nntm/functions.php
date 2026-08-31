@@ -46,4 +46,5 @@ require NNTM_THEME_DIR . '/inc/len-dau-trang.php';
 require NNTM_THEME_DIR . '/inc/ke-sach-an-pham.php';
 require NNTM_THEME_DIR . '/inc/sao-link.php';
 require NNTM_THEME_DIR . '/inc/chia-se.php';
+require NNTM_THEME_DIR . '/inc/nhac-bai-viet.php';
 require NNTM_THEME_DIR . '/inc/search.php';

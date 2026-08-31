@@ -1,0 +1,33 @@
+/*
+ * Ô "Nhạc nền bài viết" trong quản trị — dùng chung cho bảng bên phải của trình
+ * soạn thảo khối và ô nhập của trình soạn thảo cũ.
+ */
+
+.nntm-nhac-o__dang-chon {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin-bottom: 10px;
+}
+
+.nntm-nhac-o__dang-chon strong {
+	/* Tên tệp dài không được đẩy rộng cả cột bên phải. */
+	overflow-wrap: anywhere;
+	font-size: 12px;
+	line-height: 1.4;
+}
+
+.nntm-nhac-o__dang-chon audio {
+	width: 100%;
+	max-width: 100%;
+}
+
+.nntm-nhac-o__cho {
+	display: flex;
+	justify-content: center;
+	padding: 8px 0;
+}
+
+.nntm-nhac-o__giai-thich {
+	margin-top: 10px;
+}

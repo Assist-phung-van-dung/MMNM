@@ -198,8 +198,8 @@
 		 * đáy nâng lên. Tất cả tính theo % chiều cao sân khấu nên co giãn theo
 		 * màn hình, không ghim riêng cho khổ 1366x768.
 		 */
-		--nntm-hero-content-top: 30%;
 		--nntm-hero-dots-top: 72%;
+		--nntm-hero-content-gap: 74px;
 		--nntm-hero-quicklinks-bottom: clamp(20px, 5%, 58px);
 	}
 
@@ -1186,11 +1186,13 @@
 /*
  * Man hinh thap (laptop 768px tro xuong): san khau ngan lai nhung cum chu van
  * cao bang do, nen phai keo len cao hon nua thi ba cum chu / cham / lien ket
- * moi du cho, khong de len nhau.
+ * moi du cho, khong de len nhau. Cum chu neo theo cum cham (xem
+ * blocks/hero-slider/style.css), nen chi can keo cum cham len va that bot
+ * khoang ho la ca ba cum cung di theo.
  */
 @media (min-width: 1152px) and (max-height: 780px) {
 	.home .nntm-hero-slider {
-		--nntm-hero-content-top: 20%;
 		--nntm-hero-dots-top: 70%;
+		--nntm-hero-content-gap: 40px;
 	}
 }

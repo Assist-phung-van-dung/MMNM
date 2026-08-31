@@ -27,6 +27,12 @@ while ( have_posts() ) :
 		<article class="nntm-post-detail__main">
 			<div class="nntm-post-detail__inner">
 				<h1 class="nntm-post-detail__title"><?php the_title(); ?></h1>
+					<?php
+					/* Bài không chọn nhạc nền thì hàm trả chuỗi rỗng, không in ra gì. */
+					if ( function_exists( 'nntm_render_nhac_nen' ) ) {
+						echo nntm_render_nhac_nen( (int) get_the_ID() );  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					}
+					?>
 				<p class="nntm-post-detail__meta"><span class="nntm-post-detail__meta-dot" aria-hidden="true"></span><?php printf( esc_html__( 'Cập nhật %s', 'nntm' ), esc_html( get_the_modified_date( 'd. m. Y' ) ) ); ?></p>
 				<?php if ( '' !== trim( $excerpt ) ) : ?><p class="nntm-post-detail__intro"><?php echo esc_html( $excerpt ); ?></p><?php endif; ?>
 				<?php if ( has_post_thumbnail() ) : ?><figure class="nntm-post-detail__media"><?php the_post_thumbnail( 'full' ); ?></figure><?php endif; ?>

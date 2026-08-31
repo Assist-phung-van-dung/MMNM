@@ -8,12 +8,14 @@
 	 * Ba mốc dọc của sân khấu, tính theo PHẦN TRĂM chiều cao sân khấu nên tự co
 	 * giãn theo mọi độ phân giải, không ghim px cho riêng một khổ màn hình.
 	 *
-	 * - cụm chữ (tiêu đề + mô tả + nút) hạ thấp xuống so với bản cũ (19%)
-	 * - cụm chấm chuyển tấm đi theo cụm chữ để giữ nguyên khoảng hở
+	 * - cụm chấm chuyển tấm là mốc gốc, đo theo % chiều cao sân khấu
+	 * - cụm chữ (tiêu đề + mô tả + nút) neo NGAY TRÊN cụm chấm, cách đúng
+	 *   --nntm-hero-content-gap, nên khoảng hở giữa hai cụm không đổi dù sân
+	 *   khấu cao hay thấp
 	 * - dải liên kết nhanh ở đáy được nâng lên khỏi mép dưới
 	 */
-	--nntm-hero-content-top: 30%;
 	--nntm-hero-dots-top: 70%;
+	--nntm-hero-content-gap: 40px;
 	--nntm-hero-quicklinks-bottom: clamp(28px, 7.5%, 72px);
 
 	display: block;
@@ -91,14 +93,40 @@
 	left: 93px;  
 	right: 420px;  
 
-	top: 280px;
+	/*
+	 * Cụm chữ neo theo ĐÁY — dính ngay trên cụm chấm — chứ không ghim
+	 * top: 280px như trước.
+	 *
+	 * Chiều cao sân khấu co theo màn hình (trang chủ: min(768px, 100svh trừ
+	 * thanh đầu trang), trang khác: theo tỉ lệ 1366/692), còn cụm chữ thì cao
+	 * gần như không đổi vì cỡ chữ cố định. Ghim top thì trên màn hình thấp cụm
+	 * chữ tràn xuống, đè lên cụm chấm, dải liên kết nhanh và thẻ bên phải.
+	 *
+	 * Đặt CẢ top lẫn bottom nên hộp bị kéo cao bằng cả dải trống; nhờ
+	 * justify-content: flex-end mà chữ vẫn dính đáy dải. top ở đây là chặn
+	 * trên: chữ có dài tới đâu cũng không chui lên dưới thanh đầu trang (đang
+	 * position: fixed, đè lên sân khấu).
+	 */
+	top: calc(var(--nntm-header-h-that, var(--nntm-header-h, 76px)) + var(--nntm-sp-4));
+	bottom: calc(100% - var(--nntm-hero-dots-top) + var(--nntm-hero-content-gap));
 	display: flex;
 	flex-direction: column;
+	justify-content: flex-end;
 	gap: var(--nntm-sp-4);
 	max-width: 620px;
+	/*
+	 * Hộp giờ cao bằng cả dải trống trên ảnh; phần trống đó phải cho chuột đi
+	 * xuyên qua, không thì nó nuốt cú bấm/kéo lên chính tấm ảnh. Chữ và nút
+	 * bên trong nhận lại chuột như thường.
+	 */
+	pointer-events: none;
 	transition:
 		opacity 680ms var(--nntm-hero-ease),
 		transform 860ms var(--nntm-hero-ease);
+}
+
+.nntm-hero-slider__content > * {
+	pointer-events: auto;
 }
 
 .nntm-hero-slider__slide.is-active .nntm-hero-slider__content {
@@ -389,7 +417,13 @@
 		left: var(--nntm-sp-8);
 
 		right: 36%;
+		/*
+		 * Ở dải này cụm chấm bỏ mốc % để neo theo đáy (xem rule bên dưới), nên
+		 * cụm chữ phải đo lại theo đúng mốc đó: đáy cụm chấm + chiều cao cụm
+		 * chấm (12px) + khoảng hở.
+		 */
 		top: var(--nntm-sp-9);
+		bottom: calc(var(--nntm-hero-quicklinks-bottom) + 45px + var(--nntm-sp-5) + 12px + var(--nntm-hero-content-gap));
 		max-width: none;
 	}
 
