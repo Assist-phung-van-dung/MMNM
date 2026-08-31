@@ -239,11 +239,26 @@
 
 /* ---------- Narrow screens ---------- */
 
-@media (max-width: 600px) {
+@media (max-width: 1150px) {
+	.nntm-header__tools .nntm-header__search-form {
+		overflow: visible;
+	}
+
 	.nntm-suggest {
-		position: fixed;
-		inset-block-start: var(--nntm-header-h, 72px);
-		inset-inline: 8px;
-		inline-size: auto;
+		position: absolute;
+		inset-block-start: auto;
+		inset-block-end: calc(100% + 8px);
+		inset-inline: 0;
+		inline-size: 100%;
+		max-block-size: min(60dvh, 360px);
+		border-radius: var(--nntm-r-md, 8px);
+	}
+
+	.nntm-suggest__all {
+		position: sticky;
+		inset-block-end: 0;
+		z-index: 2;
+		border-block-start: 1px solid var(--nntm-duong-vien, #e0d8c4);
+		background: var(--nntm-nen, #fdf8ec);
 	}
 }

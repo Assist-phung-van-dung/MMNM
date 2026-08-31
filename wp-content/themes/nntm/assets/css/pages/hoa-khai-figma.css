@@ -68,7 +68,7 @@
 
 @media (max-width:1151px) {
   .nntm-hk-news .nntm-article-mosaic__inner,
-  .nntm-hk-dharma .nntm-article-mosaic__inner { height:auto; padding:40px 20px; }
+  .nntm-hk-dharma .nntm-article-mosaic__inner { height:auto; padding:20px 20px; }
   .nntm-hk-news .nntm-article-mosaic__heading,
   .nntm-hk-dharma .nntm-article-mosaic__heading { height:auto; font-size:clamp(28px,7vw,var(--nntm-fs-4xl)); line-height:1.15; }
    

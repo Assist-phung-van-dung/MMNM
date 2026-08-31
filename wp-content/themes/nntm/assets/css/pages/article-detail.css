@@ -274,12 +274,139 @@
 }
 
 @media (max-width: 1151px) {
-	.nntm-article-detail__related .nntm-card-list__nav--prev {
-		left: var(--nntm-sp-3);
+	.nntm-article-detail__related {
+		padding-block: 44px 52px;
 	}
 
-	.nntm-article-detail__related .nntm-card-list__nav--next {
-		right: var(--nntm-sp-3);
+	.nntm-article-detail__related .nntm-card-list__heading {
+		margin-bottom: 24px;
+	}
+
+	.nntm-article-detail__related .nntm-card-list__carousel {
+		--nntm-related-gap: 18px;
+		position: relative;
+		display: block;
+	}
+
+	.nntm-article-detail__related .nntm-card-list__track {
+		gap: var(--nntm-related-gap);
+		padding-bottom: 8px;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: none;
+	}
+
+	.nntm-article-detail__related .nntm-card-list__track::-webkit-scrollbar {
+		display: none;
+	}
+
+	.nntm-article-detail__related .nntm-card-list__track-item,
+	.nntm-article-detail__related .nntm-card-list__track-item:first-child,
+	.nntm-article-detail__related .nntm-card-list__track-item:last-child {
+		flex: 0 0 calc((100% - var(--nntm-related-gap)) / 2);
+		margin-inline: 0;
+		scroll-snap-align: start;
+	}
+
+	.nntm-article-detail__related .nntm-card--article {
+		gap: 0;
+		height: 100%;
+		overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--nntm-duong-vien) 72%, transparent);
+		border-radius: 12px;
+		background: var(--nntm-trang);
+		box-shadow: 0 8px 24px rgb(63 59 59 / 8%);
+	}
+
+	.nntm-article-detail__related .nntm-card--article .nntm-card__body {
+		flex: 1;
+		gap: 8px;
+		padding: 16px 16px 18px;
+	}
+
+	.nntm-article-detail__related .nntm-card--article .nntm-card__title {
+		display: -webkit-box;
+		overflow: hidden;
+		font-size: var(--nntm-fs-base);
+		line-height: 1.45;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+	}
+
+	.nntm-article-detail__related .nntm-card--article .nntm-card__excerpt {
+		display: -webkit-box;
+		overflow: hidden;
+		font-size: var(--nntm-fs-sm);
+		line-height: 1.55;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 3;
+	}
+
+	.nntm-article-detail__related .nntm-card--article .nntm-card__cta {
+		margin-top: auto;
+		padding-block: 6px 0;
+		font-size: var(--nntm-fs-xs);
+		text-decoration: underline;
+		text-underline-offset: 0.18em;
+	}
+
+	.nntm-article-detail__related .nntm-card-list__nav {
+		position: absolute;
+		top: clamp(100px, 15.5vw, 160px);
+		z-index: 4;
+		width: 44px;
+		height: 44px;
+		padding: 0;
+		border: 1px solid rgb(63 59 59 / 12%);
+		border-radius: 50%;
+		background: rgb(255 255 255 / 92%);
+		color: var(--nntm-den);
+		box-shadow: 0 5px 16px rgb(63 59 59 / 16%);
+		transform: translateY(-50%);
+		backdrop-filter: blur(4px);
+	}
+
+	.nntm-article-detail__related .nntm-card-list__nav--prev { left: 8px; }
+	.nntm-article-detail__related .nntm-card-list__nav--next { right: 8px; }
+
+	.nntm-article-detail__related .nntm-card-list__nav-icon {
+		position: relative;
+		display: block;
+		width: 22px;
+		height: 12px;
+		margin: 0;
+		border: 0;
+		transform: none;
+	}
+
+	.nntm-article-detail__related .nntm-card-list__nav-icon::before {
+		content: '';
+		position: absolute;
+		left: 2px;
+		right: 2px;
+		top: 50%;
+		height: 1.5px;
+		background: currentColor;
+		transform: translateY(-50%);
+	}
+
+	.nntm-article-detail__related .nntm-card-list__nav-icon::after {
+		content: '';
+		position: absolute;
+		top: 50%;
+		width: 8px;
+		height: 8px;
+		border-top: 1.5px solid currentColor;
+		border-right: 1.5px solid currentColor;
+	}
+
+	.nntm-article-detail__related .nntm-card-list__nav--prev .nntm-card-list__nav-icon::after {
+		left: 2px;
+		transform: translateY(-50%) rotate(-135deg);
+	}
+
+	.nntm-article-detail__related .nntm-card-list__nav--next .nntm-card-list__nav-icon::after {
+		right: 2px;
+		transform: translateY(-50%) rotate(45deg);
 	}
 }
 
@@ -306,5 +433,33 @@
 
 	.nntm-article-detail__media {
 		aspect-ratio: 4 / 3;
+	}
+
+	.nntm-article-detail__related {
+		padding-block: 32px 42px;
+	}
+
+	.nntm-article-detail__related .nntm-card-list__heading {
+		margin-bottom: 20px;
+	}
+
+	.nntm-article-detail__related .nntm-card-list__carousel {
+		--nntm-related-gap: 14px;
+	}
+
+	.nntm-article-detail__related .nntm-card-list__track-item,
+	.nntm-article-detail__related .nntm-card-list__track-item:first-child,
+	.nntm-article-detail__related .nntm-card-list__track-item:last-child {
+		flex-basis: 100%;
+	}
+
+	.nntm-article-detail__related .nntm-card--article .nntm-card__img {
+		aspect-ratio: 16 / 9;
+	}
+
+	.nntm-article-detail__related .nntm-card-list__nav {
+		top: clamp(82px, 27vw, 190px);
+		width: 42px;
+		height: 42px;
 	}
 }
