@@ -420,6 +420,54 @@ function nntm_render_nhac_nen( int $post_id ): string {
 		<span class="nntm-sr-only" aria-live="polite" data-nntm-nhac-tinh-trang></span>
 	</div>
 	<?php
+	/*
+	 * Đoạn mồi này in THẲNG vào trang, ngay dưới thanh nhạc, chứ không chờ tệp
+	 * JS ở cuối trang.
+	 *
+	 * Lý do: tệp cuối trang chỉ chạy sau khi cả trang đọc xong — đo trên trang
+	 * chi tiết thật là hơn 4 giây (DOMContentLoaded 4150ms) vì phía trên còn
+	 * hơn hai chục tệp CSS/JS. Nhạc vào sau ngần ấy thời gian thì khách tưởng
+	 * là hỏng. Đoạn này chạy ngay lúc trình duyệt đọc tới đây, tức là ngay sau
+	 * tiêu đề bài, nên nhạc bắt đầu tải và phát sớm hơn hẳn.
+	 *
+	 * Nó chỉ làm đúng một việc: bảo trình duyệt tải tệp và phát. Nút bấm, sóng
+	 * nhạc, ghi nhớ "thôi không nghe" vẫn do tệp JS chính lo — tệp đó tự nhận
+	 * ra nhạc đã chạy rồi và chỉ đồng bộ lại nút.
+	 */
+	?>
+	<script>
+	( function () {
+		var khung = document.currentScript.previousElementSibling;
+		var tep = khung && khung.querySelector( 'audio' );
+
+		if ( ! tep ) {
+			return;
+		}
+
+		/* Khách đã bấm dừng ở bài trước trong phiên này thì đừng phát nữa. */
+		try {
+			if ( '1' === window.sessionStorage.getItem( 'nntm-nhac-tat' ) ) {
+				return;
+			}
+		} catch ( loi ) {}
+
+		tep.preload = 'auto';
+
+		var hua = tep.play();
+
+		if ( hua && hua.then ) {
+			hua.then( function () {
+				khung.classList.add( 'is-phat' );
+			} ).catch( function () {
+				/* Trình duyệt chặn tự phát — tệp JS chính lo phần chờ khách chạm. */
+			} );
+			return;
+		}
+
+		khung.classList.add( 'is-phat' );
+	} )();
+	</script>
+	<?php
 
 	return trim( (string) ob_get_clean() );
 }

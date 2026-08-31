@@ -32,7 +32,7 @@
 
 	/* Cờ "khách đã tắt nhạc" — sống trong phiên, không theo khách qua ngày sau. */
 	var KHOA_TAT = 'nntm-nhac-tat';
-	var VUOT_MS = 900;
+	var VUOT_MS = 500;
 	var itChuyenDong = window.matchMedia( '(prefers-reduced-motion: reduce)' );
 
 	var dangVuot = null;
@@ -252,7 +252,14 @@
 		veTinhTrang( false );
 	} );
 
-	if ( ! docCoTat() ) {
+	/*
+	 * Đoạn mồi in thẳng trong trang (xem nntm_render_nhac_nen) thường đã cho
+	 * nhạc chạy từ trước khi tệp này được nạp. Gặp trường hợp đó thì chỉ đồng
+	 * bộ lại nút và sóng nhạc, đừng gọi phát lần nữa.
+	 */
+	if ( ! tep.paused ) {
+		veTinhTrang( true );
+	} else if ( ! docCoTat() ) {
 		phat( false );
 	}
 } )();

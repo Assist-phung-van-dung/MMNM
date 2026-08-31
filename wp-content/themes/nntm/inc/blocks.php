@@ -16,6 +16,58 @@ function nntm_block_categories(array $categories): array
 }
 add_filter('block_categories_all', 'nntm_block_categories');
 
+/**
+ * Danh so hieu (version) cho CSS/JS cua block theo GIO SUA TEP.
+ *
+ * Vi sao can: WordPress lay so hieu cho tep cua block theo cong thuc trong
+ * register_block_style_handle() —
+ *
+ *     SCRIPT_DEBUG bat  -> filemtime cua chinh tep
+ *     SCRIPT_DEBUG tat  -> truong "version" trong block.json, khong co thi false
+ *     false             -> WP_Styles dung tam phien ban WordPress (vd 7.0.3)
+ *
+ * May phat trien bat SCRIPT_DEBUG nen sua CSS la thay doi ngay. May chu that
+ * thi tat, ma phan lon block.json cua theme khong khai "version", nen dia chi
+ * tep luon la ...style.css?ver=7.0.3 — sua CSS xong day len, dia chi khong doi,
+ * trinh duyet va CDN cu the ma dung ban cu. Dung la "sua roi ma khong nhan".
+ *
+ * Moc gio lay theo tep MOI NHAT trong thu muc block, nen doi bat ky tep nao
+ * (style.css, view.js, render.php...) cung ra so hieu moi.
+ *
+ * Chi dong vao block cua theme nay; block cua WordPress va cua plugin giu
+ * nguyen cach danh so cua ho.
+ */
+function nntm_block_so_hieu(array $metadata): array
+{
+	if (empty($metadata['file'])) {
+		return $metadata;
+	}
+
+	$thu_muc = wp_normalize_path(dirname((string) $metadata['file']));
+	$goc     = wp_normalize_path(NNTM_THEME_DIR . '/blocks');
+
+	if (0 !== strpos($thu_muc, $goc)) {
+		return $metadata;
+	}
+
+	$moc = 0;
+
+	foreach (array('style.css', 'editor.css', 'view.js', 'editor.js', 'render.php', 'block.json') as $ten) {
+		$duong_dan = $thu_muc . '/' . $ten;
+
+		if (file_exists($duong_dan)) {
+			$moc = max($moc, (int) filemtime($duong_dan));
+		}
+	}
+
+	if ($moc > 0) {
+		$metadata['version'] = (string) $moc;
+	}
+
+	return $metadata;
+}
+add_filter('block_type_metadata', 'nntm_block_so_hieu');
+
 function nntm_register_blocks(): void
 {
 	$blocks_dir = NNTM_THEME_DIR . '/blocks';
