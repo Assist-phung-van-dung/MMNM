@@ -22,7 +22,16 @@
 		return;
 	}
 
-	var tep = khung.querySelector( '[data-nntm-nhac-tep]' );
+	/*
+	 * Ưu tiên dùng lại đối tượng Audio mà đoạn mồi ở <head> đã tạo và cho chạy
+	 * từ đầu trang (xem nntm_nhac_moi_som). Dùng thẻ <audio> trong thân trang
+	 * thì hoá ra tải tệp nhạc hai lần, mà bản thứ hai lại bắt đầu muộn.
+	 *
+	 * Thẻ <audio> vẫn giữ làm đường lui: nếu đoạn mồi bị chặn — thường là do
+	 * plugin cache lọc mất script nội tuyến — thì mọi thứ vẫn chạy, chỉ chậm
+	 * hơn.
+	 */
+	var tep = window.nntmNhacSom || khung.querySelector( '[data-nntm-nhac-tep]' );
 	var nut = khung.querySelector( '[data-nntm-nhac-nut]' );
 	var oTinhTrang = khung.querySelector( '[data-nntm-nhac-tinh-trang]' );
 

@@ -420,57 +420,105 @@ function nntm_render_nhac_nen( int $post_id ): string {
 		<span class="nntm-sr-only" aria-live="polite" data-nntm-nhac-tinh-trang></span>
 	</div>
 	<?php
-	/*
-	 * Đoạn mồi này in THẲNG vào trang, ngay dưới thanh nhạc, chứ không chờ tệp
-	 * JS ở cuối trang.
-	 *
-	 * Lý do: tệp cuối trang chỉ chạy sau khi cả trang đọc xong — đo trên trang
-	 * chi tiết thật là hơn 4 giây (DOMContentLoaded 4150ms) vì phía trên còn
-	 * hơn hai chục tệp CSS/JS. Nhạc vào sau ngần ấy thời gian thì khách tưởng
-	 * là hỏng. Đoạn này chạy ngay lúc trình duyệt đọc tới đây, tức là ngay sau
-	 * tiêu đề bài, nên nhạc bắt đầu tải và phát sớm hơn hẳn.
-	 *
-	 * Nó chỉ làm đúng một việc: bảo trình duyệt tải tệp và phát. Nút bấm, sóng
-	 * nhạc, ghi nhớ "thôi không nghe" vẫn do tệp JS chính lo — tệp đó tự nhận
-	 * ra nhạc đã chạy rồi và chỉ đồng bộ lại nút.
-	 */
+
+	return trim( (string) ob_get_clean() );
+}
+
+/**
+ * Mồi nhạc ngay đầu trang, TRƯỚC mọi tệp CSS.
+ *
+ * Vì sao phải nằm ở đây chứ không phải trong thân trang: trình duyệt KHÔNG cho
+ * một thẻ <script> chạy khi phía trên nó còn tệp CSS chưa tải xong (script có
+ * thể hỏi kích thước, màu sắc — nên phải đợi CSS). Trang chi tiết đang nạp 19
+ * tệp CSS; đo trên site thật, tệp CSS cuối cùng xong ở giây thứ 4,7. Đoạn mồi
+ * đặt dưới tiêu đề bài vì thế phải nằm chờ ngần ấy thời gian rồi mới gọi phát
+ * được — đúng cái cảm giác "tải xong trang mới thấy nhạc".
+ *
+ * Đặt ở wp_head ưu tiên 2 thì nó được in ra TRƯỚC các thẻ <link rel=stylesheet>
+ * (WordPress in CSS ở ưu tiên 8), nên chạy ngay khi trình duyệt đọc dòng đầu
+ * của trang. Nhạc bắt đầu tải song song với CSS thay vì xếp hàng sau.
+ *
+ * Không cần chờ thẻ <audio> trong thân trang: tạo thẳng đối tượng Audio bằng
+ * JS. Tệp JS chính ở cuối trang sẽ dùng lại đúng đối tượng này.
+ */
+function nntm_nhac_moi_som(): void {
+	if ( ! is_singular( nntm_nhac_cac_loai() ) ) {
+		return;
+	}
+
+	$id = nntm_nhac_id( (int) get_queried_object_id() );
+
+	if ( ! $id ) {
+		return;
+	}
+
+	$url = (string) wp_get_attachment_url( $id );
+
+	if ( '' === $url ) {
+		return;
+	}
 	?>
 	<script>
-	( function () {
-		var khung = document.currentScript.previousElementSibling;
-		var tep = khung && khung.querySelector( 'audio' );
-
-		if ( ! tep ) {
-			return;
-		}
-
-		/* Khách đã bấm dừng ở bài trước trong phiên này thì đừng phát nữa. */
+	window.nntmNhacSom = ( function () {
+		/* Khách đã bấm dừng trong phiên này thì đừng phát nữa. */
 		try {
 			if ( '1' === window.sessionStorage.getItem( 'nntm-nhac-tat' ) ) {
-				return;
+				return null;
 			}
 		} catch ( loi ) {}
 
+		var tep = new Audio( <?php echo wp_json_encode( $url ); ?> );
 		tep.preload = 'auto';
+
+		/*
+		 * Lúc này thanh nhạc chưa được in ra nên chưa bật được sóng nhạc. Dò
+		 * vài chục mili giây một lần cho tới khi thấy nó — nếu không, nút sẽ
+		 * hiện biểu tượng "phát" trong khi nhạc đã kêu. Dò tối đa 5 giây rồi
+		 * thôi; tệp JS chính ở cuối trang vẫn đồng bộ lại lần nữa.
+		 */
+		function danhDau() {
+			var khung = document.querySelector( '[data-nntm-nhac]' );
+
+			if ( ! khung ) {
+				return false;
+			}
+
+			khung.classList.add( 'is-phat' );
+
+			return true;
+		}
+
+		function doi() {
+			if ( danhDau() ) {
+				return;
+			}
+
+			var dem = 0;
+			var hen = window.setInterval( function () {
+				dem += 1;
+
+				if ( danhDau() || dem > 200 ) {
+					window.clearInterval( hen );
+				}
+			}, 25 );
+		}
 
 		var hua = tep.play();
 
 		if ( hua && hua.then ) {
-			hua.then( function () {
-				khung.classList.add( 'is-phat' );
-			} ).catch( function () {
-				/* Trình duyệt chặn tự phát — tệp JS chính lo phần chờ khách chạm. */
+			hua.then( doi ).catch( function () {
+				/* Trình duyệt chặn — tệp JS chính lo phần chờ khách chạm. */
 			} );
-			return;
+		} else {
+			doi();
 		}
 
-		khung.classList.add( 'is-phat' );
+		return tep;
 	} )();
 	</script>
 	<?php
-
-	return trim( (string) ob_get_clean() );
 }
+add_action( 'wp_head', 'nntm_nhac_moi_som', 2 );
 
 function nntm_nhac_tai_tep_ngoai_trang(): void {
 	if ( ! is_singular( nntm_nhac_cac_loai() ) ) {
