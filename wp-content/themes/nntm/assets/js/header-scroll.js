@@ -7,7 +7,7 @@
 		return; 
 	}
 
-	var THRESHOLD = 80; 
+	var THRESHOLD = 20; 
 	var isDac      = false; 
 
 	function getScrollY() {

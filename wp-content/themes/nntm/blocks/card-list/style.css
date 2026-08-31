@@ -502,8 +502,11 @@ a.nntm-card-list__paging-so:focus-visible {
 	}
 
 	.nntm-card-list__paging-btn {
-		flex: 1;
 		padding-inline: var(--nntm-sp-5);
+	}
+	.nntm-card-list--nen-vang .nntm-card-list__paging-btn{
+		width: 30px;
+    	height: 30px;
 	}
 }
 
