@@ -57,6 +57,7 @@
 	display: grid;
 	grid-template-columns: 453fr 817fr;
 	align-items: stretch;
+	min-width: 0;
 	 
 	gap: var(--nntm-sp-3);
 }
@@ -64,6 +65,7 @@
 .nntm-thien-duong__cover {
 	display: block;
 	position: relative;
+	min-width: 0;
 	overflow: hidden;
 	border-radius: 0;
 	background-color: var(--nntm-xam);  
@@ -85,7 +87,10 @@
 .nntm-thien-duong__spotify-preview {
 	display: flex;
 	flex-direction: column;
+	width: 100%;
+	max-width: 100%;
 	height: 100%;
+	min-width: 0;
 	min-height: 0;
 	color: var(--nntm-trang);
 	background: linear-gradient(180deg, var(--nntm-xam) 0, var(--nntm-nhac-mat) 38%, var(--nntm-nhac-toi) 100%);
@@ -94,6 +99,7 @@
 .nntm-thien-duong__spotify-hero {
 	display: flex;
 	align-items: flex-end;
+	min-width: 0;
 	gap: var(--nntm-sp-5);
 	padding: var(--nntm-sp-5);
 }
@@ -121,10 +127,16 @@
 .nntm-thien-duong__spotify-hero div {
 	display: flex;
 	flex-direction: column;
+	min-width: 0;
+	max-width: 100%;
 	gap: var(--nntm-sp-1);
 }
 
 .nntm-thien-duong__spotify-hero strong {
+	display: block;
+	max-width: 100%;
+	overflow-wrap: anywhere;
+	white-space: normal;
 	font-family: var(--nntm-font-sans);
 	font-size: var(--nntm-fs-3xl);
 	line-height: 1;
@@ -169,6 +181,7 @@
 	display: grid;
 	grid-template-columns: 24px 1fr auto;
 	align-items: center;
+	min-width: 0;
 	gap: var(--nntm-sp-3);
 	padding-block: var(--nntm-sp-2);
 }
@@ -176,6 +189,13 @@
 .nntm-thien-duong__spotify-list div {
 	display: flex;
 	flex-direction: column;
+	min-width: 0;
+}
+
+.nntm-thien-duong__spotify-list strong,
+.nntm-thien-duong__spotify-list small {
+	overflow-wrap: anywhere;
+	white-space: normal;
 }
 
 .nntm-thien-duong__spotify-login {
@@ -188,6 +208,9 @@
 .nntm-thien-duong__player {
 	display: flex;
 	flex-direction: column;
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
 	border-radius: 0;
 	background-color: var(--nntm-nhac-toi);
 	box-shadow: var(--nntm-sh-card);
@@ -253,6 +276,9 @@
 .nntm-thien-duong__player-inner {
 	display: flex;
 	flex-direction: column;
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
 	height: 100%;
 	min-height: 0;  
 	padding: 0;
@@ -265,9 +291,8 @@
 	margin: 0;
 	flex: 1 1 180px;
 	min-width: 0;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+	overflow-wrap: anywhere;
+	white-space: normal;
 	font-family: var(--nntm-font-sans);
 	font-size: var(--nntm-fs-xs);
 	font-weight: 700;
@@ -293,6 +318,8 @@
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
+	min-width: 0;
+	max-width: 100%;
 	gap: var(--nntm-sp-4);
 }
 
@@ -532,6 +559,8 @@
 	align-items: center;
 	justify-content: space-between;
 	gap: var(--nntm-sp-4);
+	min-width: 0;
+	max-width: 100%;
 	padding: 0 var(--nntm-sp-5) var(--nntm-sp-2);
 	font-family: var(--nntm-font-sans);
 	font-size: var(--nntm-fs-xs);
@@ -548,16 +577,23 @@
 	scrollbar-width: thin;
 	scrollbar-color: var(--nntm-xam-chu) transparent;
 	min-height: 0;
+	min-width: 0;
+	max-width: 100%;
 }
 
 .nntm-thien-duong__track-item {
 	margin: 0;
+	min-width: 0;
+	max-width: 100%;
 }
 
 .nntm-thien-duong__track {
 	display: flex;
 	align-items: center;
 	width: 100%;
+	min-width: 0;
+	max-width: 100%;
+	overflow: hidden;
 	gap: var(--nntm-sp-3);
 	border: none;
 	border-radius: 0;
@@ -600,9 +636,8 @@
 .nntm-thien-duong__track-title {
 	flex: 1 1 auto;
 	min-width: 0;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+	overflow-wrap: anywhere;
+	white-space: normal;
 }
 
 .nntm-thien-duong__track-listens,
@@ -639,8 +674,75 @@
 }
 
 @media (max-width: 767px) {
+	.nntm-thien-duong__inner {
+		padding-inline: var(--nntm-sp-3);
+		gap: var(--nntm-sp-5);
+	}
+
 	.nntm-thien-duong__embed {
 		grid-template-columns: 1fr;
+	}
+
+	.nntm-thien-duong__player {
+		min-height: 0;
+	}
+
+	.nntm-thien-duong__spotify-hero--member {
+		align-items: center;
+		gap: var(--nntm-sp-3);
+		padding: var(--nntm-sp-4);
+	}
+
+	.nntm-thien-duong__spotify-hero--member .nntm-thien-duong__spotify-avatar {
+		width: 84px;
+		height: 84px;
+	}
+
+	.nntm-thien-duong__spotify-hero strong {
+		font-size: clamp(24px, 7vw, 34px);
+	}
+
+	.nntm-thien-duong__spotify-controls {
+		display: grid;
+		grid-template-columns: 40px 48px 40px minmax(0, 1fr);
+		gap: var(--nntm-sp-2);
+		padding: var(--nntm-sp-3) var(--nntm-sp-4);
+	}
+
+	.nntm-thien-duong__now-title {
+		grid-column: 1 / -1;
+		min-width: 0;
+		line-height: var(--nntm-lh-vua);
+	}
+
+	.nntm-thien-duong__playback-error,
+	.nntm-thien-duong__progress {
+		grid-column: 1 / -1;
+		width: 100%;
+	}
+
+	.nntm-thien-duong__player-tools {
+		grid-column: 1 / -1;
+		justify-self: end;
+		margin-left: 0;
+	}
+
+	.nntm-thien-duong__playlist-title {
+		padding-inline: var(--nntm-sp-4);
+	}
+
+	.nntm-thien-duong__tracklist {
+		padding-inline: var(--nntm-sp-3);
+	}
+
+	.nntm-thien-duong__track {
+		align-items: flex-start;
+		gap: var(--nntm-sp-2);
+		padding-inline: var(--nntm-sp-2);
+	}
+
+	.nntm-thien-duong__track-listens {
+		display: none;
 	}
 }
 
@@ -649,12 +751,37 @@
 		font-size: var(--nntm-fs-3xl);
 	}
 
-	.nntm-thien-duong__controls {
-		gap: var(--nntm-sp-3);
+	.nntm-thien-duong__spotify-hero--member {
+		padding: var(--nntm-sp-3);
+	}
+
+	.nntm-thien-duong__spotify-hero--member .nntm-thien-duong__spotify-avatar {
+		width: 72px;
+		height: 72px;
+	}
+
+	.nntm-thien-duong__spotify-controls {
+		grid-template-columns: 36px 46px 36px minmax(0, 1fr);
+		gap: 6px;
+		padding-inline: var(--nntm-sp-3);
+	}
+
+	.nntm-thien-duong__spotify-controls .nntm-thien-duong__btn {
+		width: 36px;
+		height: 36px;
+	}
+
+	.nntm-thien-duong__spotify-controls .nntm-thien-duong__btn--play {
+		width: 46px;
+		height: 46px;
 	}
 
 	.nntm-thien-duong__volume {
-		flex: 1 1 100%;
+		width: min(126px, calc(100vw - 110px));
+	}
+
+	.nntm-thien-duong__track-duration {
+		width: 38px;
 	}
 }
 
