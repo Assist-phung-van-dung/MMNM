@@ -252,6 +252,23 @@ $nntm_nhac = function_exists( 'nntm_publication_music_tracks' )
 
 	<footer class="nntm-doc__foot">
 		<span class="nntm-doc__chapter" data-nntm-doc="chuong">&nbsp;</span>
+		<div class="nntm-doc__page-jump" role="group" aria-label="<?php esc_attr_e( 'Chuyển tới trang', 'nntm' ); ?>">
+			<label for="nntm-doc-page-input"><?php esc_html_e( 'Trang', 'nntm' ); ?></label>
+			<input
+				type="text"
+				id="nntm-doc-page-input"
+				min="1"
+				max="1"
+				step="1"
+				value="1"
+				inputmode="numeric"
+				data-nntm-doc="nhap-trang"
+				aria-label="<?php esc_attr_e( 'Nhập số trang muốn tới', 'nntm' ); ?>"
+			/>
+			<span aria-hidden="true">/</span>
+			<output data-nntm-doc="tong-trang">1</output>
+			<button type="button" data-nntm-doc="toi-trang"><?php esc_html_e( 'Đi', 'nntm' ); ?></button>
+		</div>
 		<label class="nntm-doc__slider">
 			<span class="nntm-doc__sr"><?php esc_html_e( 'Kéo để chuyển trang', 'nntm' ); ?></span>
 			<input type="range" min="1" max="1" value="1" data-nntm-doc="thanh-truot" />

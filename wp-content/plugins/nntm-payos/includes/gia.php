@@ -299,8 +299,19 @@ function nntm_payos_nhan_tinh_trang( WP_Post $p ): string {
 			: '<span style="color:#646970;">' . esc_html__( 'Mở — ai cũng đọc', 'nntm' ) . '</span>';
 	}
 
+	$xem_id_tho = absint( get_post_meta( $p->ID, '_nntm_pdf_xem_thu', true ) );
+	$tep_goc    = function_exists( 'nntm_an_pham_pdf_id' ) ? nntm_an_pham_pdf_id( $p ) : 0;
+
+	if ( $xem_id_tho > 0 && $xem_id_tho === $tep_goc ) {
+		return '<span style="color:#046b02;font-weight:600;">' . esc_html( nntm_payos_dinh_dang_tien( nntm_payos_gia( $p ) ) ) . '</span>'
+			. '<br /><span style="color:#b32d2e;font-weight:600;">' . esc_html__( 'tệp xem thử đang trùng tệp đầy đủ — hệ thống đã chặn', 'nntm' ) . '</span>';
+	}
+
+	$xem_id = function_exists( 'nntm_an_pham_pdf_xem_thu_id' )
+		? nntm_an_pham_pdf_xem_thu_id( $p )
+		: $xem_id_tho;
 	$xem = function_exists( 'nntm_lib_tep_dung_duoc' )
-		&& nntm_lib_tep_dung_duoc( absint( get_post_meta( $p->ID, '_nntm_pdf_xem_thu', true ) ) );
+		&& nntm_lib_tep_dung_duoc( $xem_id );
 
 	return '<span style="color:#046b02;font-weight:600;">' . esc_html( nntm_payos_dinh_dang_tien( nntm_payos_gia( $p ) ) ) . '</span>'
 		. ( $xem

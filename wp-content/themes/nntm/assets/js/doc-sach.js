@@ -48,6 +48,9 @@
 		prev:     document.querySelector( '[data-nntm-doc="truoc"]' ),
 		next:     document.querySelector( '[data-nntm-doc="sau"]' ),
 		slider:   document.querySelector( '[data-nntm-doc="thanh-truot"]' ),
+		pageInput: document.querySelector( '[data-nntm-doc="nhap-trang"]' ),
+		pageTotal: document.querySelector( '[data-nntm-doc="tong-trang"]' ),
+		pageGo:    document.querySelector( '[data-nntm-doc="toi-trang"]' ),
 		percent:  document.querySelector( '[data-nntm-doc="phan-tram"]' ),
 		chapter:  document.querySelector( '[data-nntm-doc="chuong"]' ),
 		water:    document.querySelector( '[data-nntm-doc="watermark"]' ),
@@ -234,8 +237,10 @@
 	}
 
 	function daiTrang() {
-		tuTrang  = Math.max( 1, Math.min( soTrang, trangHT ) );
-		denTrang = Math.min( soTrang, tuTrang + CUA_SO - 1 );
+		var gioiHan = soTrangTrinhDoc();
+
+		tuTrang  = Math.max( 1, Math.min( gioiHan, trangHT ) );
+		denTrang = Math.min( gioiHan, tuTrang + CUA_SO - 1 );
 
 		var ds = [];
 
@@ -254,7 +259,7 @@
 
 			to = [];
 
-			for ( var i = 1; i <= soTrang; i++ ) {
+			for ( var i = 1; i <= soTrangTrinhDoc(); i++ ) {
 				to.push( { trang: i, el: null, xong: false, dangVe: false, viec: null } );
 			}
 
@@ -507,6 +512,26 @@
 		return Math.min( dat, soTrang );
 	}
 
+	/*
+	 * Số trang thực sự được dựng trong trình đọc.
+	 *
+	 * Không chỉ chặn nút "Trang sau": PageFlip còn cho kéo góc giấy và chế độ
+	 * cuộn tự nạp thêm trang. Nếu vẫn dựng đủ mọi trang thì hai đường đó có thể
+	 * đi vòng qua hàng rào thanh toán.
+	 */
+	function soTrangTrinhDoc() {
+		return CFG.xemThu ? gioiHanXemThu() : soTrang;
+	}
+
+	/* Trang cuối đang nhìn thấy; ở màn hình đôi có thể lớn hơn trangHT một đơn vị. */
+	function trangCuoiDangHien() {
+		if ( 'lat' === cheDo && 2 === buocTo() && to[ toHT + 1 ] ) {
+			return to[ toHT + 1 ].trang;
+		}
+
+		return trangHT;
+	}
+
 	function toiTrang( so ) {
 		if ( ! pdf ) { return; }
 
@@ -620,7 +645,7 @@
 		if ( ! pdf ) { return; }
 
 		if ( 'lat' === cheDo ) {
-			if ( CFG.xemThu && trangHT >= gioiHanXemThu() ) {
+			if ( CFG.xemThu && trangCuoiDangHien() >= gioiHanXemThu() ) {
 				baoHetXemThu();
 				return;
 			}
@@ -637,6 +662,10 @@
 		if ( ! pdf ) { return; }
 
 		if ( el.slider ) { el.slider.value = trangHT; }
+
+		if ( el.pageInput && document.activeElement !== el.pageInput ) {
+			el.pageInput.value = trangHT;
+		}
 
 		if ( el.percent ) {
 			el.percent.textContent = Math.round( trangHT / soTrang * 100 ) + '%';
@@ -1197,6 +1226,59 @@
 			} );
 		}
 
+		function toiTrangDaNhap() {
+			if ( ! el.pageInput || ! pdf ) { return; }
+
+			var so = parseInt( el.pageInput.value, 10 );
+
+			if ( ! so ) {
+				el.pageInput.value = trangHT;
+				return;
+			}
+
+			/*
+			 * Không tự ép số vượt phần xem thử xuống trang cuối được phép: giữ nguyên
+			 * số người đọc yêu cầu để toiTrang() mở đúng khung mua sách.
+			 */
+			if ( ! CFG.xemThu ) {
+				so = Math.max( 1, Math.min( soTrang, so ) );
+				el.pageInput.value = so;
+			}
+
+			toiTrang( so );
+		}
+
+		if ( el.pageGo ) {
+			el.pageGo.addEventListener( 'click', toiTrangDaNhap );
+		}
+
+		if ( el.pageInput ) {
+			el.pageInput.addEventListener( 'keydown', function ( e ) {
+				if ( 'Enter' === e.key ) {
+					e.preventDefault();
+					toiTrangDaNhap();
+				}
+			} );
+
+			el.pageInput.addEventListener( 'change', toiTrangDaNhap );
+		}
+
+		/*
+		 * Kéo/click trực tiếp lên góc sách không đi qua hàm sau(). Khi đang ở tờ
+		 * cuối được xem thử, mọi nỗ lực lật tiếp đều mở khung mua thay vì im lặng.
+		 */
+		function thuLatQuaGioiHan( e ) {
+			if ( ! pdf || ! CFG.xemThu || 'lat' !== cheDo ) { return; }
+			if ( ! e.target.closest || ! e.target.closest( '.nntm-doc__book' ) ) { return; }
+
+			if ( trangCuoiDangHien() >= gioiHanXemThu() ) {
+				baoHetXemThu();
+			}
+		}
+
+		el.stage.addEventListener( 'mouseup', thuLatQuaGioiHan );
+		el.stage.addEventListener( 'touchend', thuLatQuaGioiHan );
+
 		document.querySelectorAll( '[data-nntm-doc="nen"]' ).forEach( function ( b ) {
 			b.addEventListener( 'click', function () {
 				document.body.dataset.nen = b.dataset.nen;
@@ -1288,9 +1370,13 @@
 				capNhat();
 				luuViTri();
 
-				if ( el.stage.scrollTop + el.stage.clientHeight > el.stage.scrollHeight - 600 && denTrang < soTrang ) {
-					trangHT = Math.min( soTrang, denTrang );
-					veCuon();
+				if ( el.stage.scrollTop + el.stage.clientHeight > el.stage.scrollHeight - 600 ) {
+					if ( denTrang < soTrangTrinhDoc() ) {
+						trangHT = Math.min( soTrangTrinhDoc(), denTrang );
+						veCuon();
+					} else if ( CFG.xemThu && denTrang >= gioiHanXemThu() ) {
+						baoHetXemThu();
+					}
 				}
 			}, 120 );
 		} );
@@ -1394,7 +1480,7 @@
 			el.tocBody.textContent = CFG.i18n.khongMucLuc;
 		}
 
-		[ el.prev, el.next, el.slider, el.mark ].forEach( function ( x ) {
+		[ el.prev, el.next, el.slider, el.pageInput, el.pageGo, el.mark ].forEach( function ( x ) {
 			if ( x ) { x.disabled = true; }
 		} );
 
@@ -1404,9 +1490,15 @@
 	pdfjsLib.getDocument( { url: CFG.pdfUrl } ).promise.then( function ( tep ) {
 		pdf     = tep;
 		soTrang = tep.numPages;
-		trangHT = Math.min( viTriBanDau(), soTrang );
+		trangHT = Math.min( viTriBanDau(), soTrangTrinhDoc() );
 
 		if ( el.slider ) { el.slider.max = soTrang; }
+		if ( el.pageInput ) {
+			el.pageInput.max = CFG.xemThu ? gioiHanXemThu() : soTrang;
+		}
+		if ( el.pageTotal ) {
+			el.pageTotal.textContent = soTrang;
+		}
 
 		document.querySelectorAll( '[data-nntm-doc^="xem-"]' ).forEach( function ( b ) {
 			b.classList.toggle( 'is-active', b.dataset.nntmDoc === 'xem-' + cheDo );

@@ -97,7 +97,23 @@ if ( ! function_exists( 'nntm_an_pham_pdf_xem_thu_id' ) ) {
 	function nntm_an_pham_pdf_xem_thu_id( $post = null ): int {
 		$post = get_post( $post );
 
-		return $post ? absint( get_post_meta( $post->ID, '_nntm_pdf_xem_thu', true ) ) : 0;
+		if ( ! $post ) {
+			return 0;
+		}
+
+		$xem_thu = absint( get_post_meta( $post->ID, '_nntm_pdf_xem_thu', true ) );
+		$day_du  = nntm_an_pham_pdf_id( $post );
+
+		/*
+		 * Không bao giờ gửi tệp đầy đủ dưới danh nghĩa "xem thử". Nếu admin chọn
+		 * nhầm cùng một attachment cho cả hai ô, đóng nội dung và yêu cầu gắn một
+		 * PDF xem thử riêng thay vì để toàn bộ cuốn sách lọt xuống trình duyệt.
+		 */
+		if ( $xem_thu > 0 && $xem_thu === $day_du ) {
+			return 0;
+		}
+
+		return $xem_thu;
 	}
 }
 

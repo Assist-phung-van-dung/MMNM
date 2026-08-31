@@ -15,7 +15,7 @@
 	--doc-rule: #2b2f35;
 	--doc-accent: #16a37b;
 	--doc-bar: 60px;
-	--doc-foot: 62px;
+	--doc-foot: 72px;
 	--doc-side: 396px;
 	--doc-co-chu: 18px;     
 
@@ -761,7 +761,7 @@
 
 .nntm-doc__foot {
 	display: grid;
-	grid-template-columns: minmax(0, 1fr) auto;
+	grid-template-columns: minmax(0, 1fr) auto auto;
 	grid-template-rows: auto auto;
 	align-items: center;
 	gap: 4px 16px;
@@ -780,11 +780,58 @@
 }
 
 .nntm-doc__percent {
-	grid-column: 2;
+	grid-column: 3;
 	grid-row: 1;
 	color: var(--doc-ink-2);
 	font-size: .88rem;
 	font-variant-numeric: tabular-nums;
+}
+
+.nntm-doc__page-jump {
+	grid-column: 2;
+	grid-row: 1;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	color: var(--doc-ink-2);
+	font-size: .82rem;
+	font-variant-numeric: tabular-nums;
+}
+
+.nntm-doc__page-jump input {
+	box-sizing: border-box;
+	inline-size: 68px;
+	block-size: 30px;
+	padding: 4px 7px;
+	border: 1px solid var(--doc-rule);
+	border-radius: 6px;
+	background: var(--doc-panel);
+	color: var(--doc-ink);
+	font: inherit;
+	font-weight: 600;
+	text-align: center;
+}
+
+.nntm-doc__page-jump input:focus-visible {
+	outline: 2px solid var(--doc-accent);
+	outline-offset: 1px;
+}
+
+.nntm-doc__page-jump button {
+	block-size: 30px;
+	padding-inline: 11px;
+	border: 0;
+	border-radius: 6px;
+	background: var(--doc-accent);
+	color: #fff;
+	font: inherit;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.nntm-doc__page-jump button:hover,
+.nntm-doc__page-jump button:focus-visible {
+	filter: brightness(1.12);
 }
 
 .nntm-doc__slider {
@@ -835,7 +882,7 @@
 @media (max-width: 720px) {
 	.nntm-doc {
 		--doc-bar: 52px;
-		--doc-foot: 58px;
+		--doc-foot: 88px;
 	}
 
 	.nntm-doc__stage { padding-inline: 20px; }
@@ -867,6 +914,44 @@
 	.nntm-doc__title {
 		font-size: .92rem;
 		text-align: start;
+	}
+
+	.nntm-doc__foot {
+		grid-template-columns: minmax(0, 1fr) auto;
+		grid-template-rows: auto auto auto;
+		gap: 4px 10px;
+		padding: 6px 12px;
+	}
+
+	.nntm-doc__chapter {
+		grid-column: 1;
+		grid-row: 1;
+		font-size: .78rem;
+	}
+
+	.nntm-doc__percent {
+		grid-column: 2;
+		grid-row: 1;
+		font-size: .78rem;
+	}
+
+	.nntm-doc__page-jump {
+		grid-column: 1 / -1;
+		grid-row: 2;
+		justify-content: center;
+	}
+
+	.nntm-doc__page-jump input {
+		inline-size: 64px;
+		block-size: 28px;
+	}
+
+	.nntm-doc__page-jump button {
+		block-size: 28px;
+	}
+
+	.nntm-doc__slider {
+		grid-row: 3;
 	}
 }
 
