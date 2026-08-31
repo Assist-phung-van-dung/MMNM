@@ -369,7 +369,7 @@
 		padding: 46px 0 58px;
 	}
 	.nntm-feature-carousel__header { width: min(100% - 40px, 720px); margin-top: clamp(20px, 5vw, 40px); margin-bottom: 28px; }
-	.nntm-feature-carousel__heading { margin-bottom: 14px; font-size: var(--nntm-fs-3xl); }
+	.nntm-feature-carousel__heading { margin-bottom: 14px; font-size: var(--nntm-fs-5xl); }
 	.nntm-feature-carousel__intro-title { font-size: var(--nntm-fs-md); }
 	.nntm-feature-carousel__intro-text { font-size: var(--nntm-fs-sm); }
 	.nntm-feature-carousel__slide[data-position="-2"],
@@ -393,7 +393,9 @@
 		padding-bottom: 42px;
 	}
 	.nntm-feature-carousel--compact-header { padding-top: 42px; }
-	.nntm-feature-carousel__heading { font-size: var(--nntm-fs-2xl); }
+	/* Cỡ tiêu đề mục chung của site trên điện thoại; fs-2xl nay là bậc tiêu đề
+	   phụ (22px) nên dùng ở đây sẽ nhỏ hơn hẳn các mục khác cùng trang. */
+	.nntm-feature-carousel__heading { font-size: var(--nntm-fs-5xl); }
 	.nntm-feature-carousel--heading-badge .nntm-feature-carousel__heading span { padding: 8px 14px 10px; }
 	.nntm-feature-carousel__arrow { top: 103px; width: 42px; height: 42px; }
 	.nntm-feature-carousel__arrow--prev { left: 8px; }

@@ -31,6 +31,14 @@
 		tocBtn:   document.querySelector( '[data-nntm-doc="muc-luc"]' ),
 		panel:    document.getElementById( 'nntm-doc-hien' ),
 		panelBtn: document.querySelector( '[data-nntm-doc="hien"]' ),
+		music:    document.getElementById( 'nntm-doc-nhac' ),
+		musicBtn: document.querySelector( '[data-nntm-doc="nhac"]' ),
+		musicAudio: document.querySelector( '[data-nntm-doc="nhac-audio"]' ),
+		musicPlay:  document.querySelector( '[data-nntm-doc="nhac-phat"]' ),
+		musicPrev:  document.querySelector( '[data-nntm-doc="nhac-truoc"]' ),
+		musicNext:  document.querySelector( '[data-nntm-doc="nhac-sau"]' ),
+		musicTitle: document.querySelector( '[data-nntm-doc="nhac-ten"]' ),
+		musicClose: document.querySelector( '[data-nntm-doc="nhac-dong"]' ),
 		mark:     document.querySelector( '[data-nntm-doc="danh-dau"]' ),
 		prev:     document.querySelector( '[data-nntm-doc="truoc"]' ),
 		next:     document.querySelector( '[data-nntm-doc="sau"]' ),
@@ -796,8 +804,8 @@
 		btn.addEventListener( 'click', function () {
 			var mo = hop.hidden;
 
-			[ el.toc, el.panel ].forEach( function ( h ) { if ( h ) { h.hidden = true; } } );
-			[ el.tocBtn, el.panelBtn ].forEach( function ( b ) {
+			[ el.toc, el.panel, el.music ].forEach( function ( h ) { if ( h ) { h.hidden = true; } } );
+			[ el.tocBtn, el.panelBtn, el.musicBtn ].forEach( function ( b ) {
 				if ( b ) {
 					b.setAttribute( 'aria-expanded', 'false' );
 					b.classList.remove( 'is-active' );
@@ -810,6 +818,97 @@
 		} );
 	}
 
+	function noiNhac() {
+		if ( ! el.music || ! el.musicAudio || ! el.musicPlay ) { return; }
+
+		var tracks = Array.prototype.slice.call( el.music.querySelectorAll( '[data-nntm-doc-nhac-bai]' ) );
+		if ( ! tracks.length ) { return; }
+
+		var current = 0;
+
+		try {
+			var saved = parseInt( window.localStorage.getItem( 'nntm-doc-nhac-bai' ), 10 );
+			if ( ! isNaN( saved ) && saved >= 0 && saved < tracks.length ) { current = saved; }
+		} catch ( e ) {}
+
+		function playingState( isPlaying ) {
+			var label = isPlaying ? el.musicPlay.dataset.labelPause : el.musicPlay.dataset.labelPlay;
+
+			el.music.classList.toggle( 'is-playing', isPlaying );
+			el.musicPlay.setAttribute( 'aria-pressed', isPlaying ? 'true' : 'false' );
+			el.musicPlay.title = label || '';
+
+			if ( el.musicBtn ) { el.musicBtn.classList.toggle( 'is-playing', isPlaying ); }
+		}
+
+		function selectTrack( index, shouldPlay ) {
+			current = ( index + tracks.length ) % tracks.length;
+
+			var track = tracks[ current ];
+			var wasPlaying = ! el.musicAudio.paused;
+			var url = track.getAttribute( 'data-nntm-doc-nhac-url' ) || '';
+
+			el.musicAudio.pause();
+			el.musicAudio.src = url;
+			el.musicAudio.load();
+
+			tracks.forEach( function ( item, itemIndex ) {
+				var active = itemIndex === current;
+				item.classList.toggle( 'is-active', active );
+				if ( active ) {
+					item.setAttribute( 'aria-current', 'true' );
+				} else {
+					item.removeAttribute( 'aria-current' );
+				}
+			} );
+
+			if ( el.musicTitle ) { el.musicTitle.textContent = track.textContent.replace( /^\s*\d+\s*/, '' ).trim(); }
+
+			try { window.localStorage.setItem( 'nntm-doc-nhac-bai', String( current ) ); } catch ( e ) {}
+
+			if ( shouldPlay || wasPlaying ) {
+				var promise = el.musicAudio.play();
+				if ( promise && promise.catch ) { promise.catch( function () { playingState( false ); } ); }
+			} else {
+				playingState( false );
+			}
+		}
+
+		tracks.forEach( function ( track, index ) {
+			track.addEventListener( 'click', function () { selectTrack( index, true ); } );
+		} );
+
+		el.musicPlay.addEventListener( 'click', function () {
+			if ( el.musicAudio.paused ) {
+				var promise = el.musicAudio.play();
+				if ( promise && promise.catch ) { promise.catch( function () { playingState( false ); } ); }
+			} else {
+				el.musicAudio.pause();
+			}
+		} );
+
+		if ( el.musicPrev ) { el.musicPrev.addEventListener( 'click', function () { selectTrack( current - 1, true ); } ); }
+		if ( el.musicNext ) { el.musicNext.addEventListener( 'click', function () { selectTrack( current + 1, true ); } ); }
+
+		el.musicAudio.addEventListener( 'play', function () { playingState( true ); } );
+		el.musicAudio.addEventListener( 'pause', function () { playingState( false ); } );
+		el.musicAudio.addEventListener( 'ended', function () { selectTrack( current + 1, true ); } );
+		el.musicAudio.addEventListener( 'error', function () { playingState( false ); } );
+
+		if ( el.musicClose ) {
+			el.musicClose.addEventListener( 'click', function () {
+				el.music.hidden = true;
+				if ( el.musicBtn ) {
+					el.musicBtn.setAttribute( 'aria-expanded', 'false' );
+					el.musicBtn.classList.remove( 'is-active' );
+					el.musicBtn.focus();
+				}
+			} );
+		}
+
+		selectTrack( current, false );
+	}
+
 	function noiNut() {
 		if ( el.prev ) { el.prev.addEventListener( 'click', truoc ); }
 		if ( el.next ) { el.next.addEventListener( 'click', sau ); }
@@ -817,6 +916,8 @@
 
 		moDong( el.tocBtn, el.toc );
 		moDong( el.panelBtn, el.panel );
+		moDong( el.musicBtn, el.music );
+		noiNhac();
 
 		/*
 		 * Đóng/mở khung sách bên trái.
@@ -926,8 +1027,8 @@
 			if ( 'f' === e.key || 'F' === e.key ) { doiFull(); }
 
 			if ( 'Escape' === e.key ) {
-				[ el.toc, el.panel ].forEach( function ( h ) { if ( h ) { h.hidden = true; } } );
-				[ el.tocBtn, el.panelBtn ].forEach( function ( b ) {
+				[ el.toc, el.panel, el.music ].forEach( function ( h ) { if ( h ) { h.hidden = true; } } );
+				[ el.tocBtn, el.panelBtn, el.musicBtn ].forEach( function ( b ) {
 					if ( b ) {
 						b.setAttribute( 'aria-expanded', 'false' );
 						b.classList.remove( 'is-active' );

@@ -179,6 +179,14 @@ a.nntm-rank-card__cta:focus-visible {
 	}
 }
 
+@media (max-width: 767px) {
+	/* 40px cố định là cỡ vẽ cho máy tính; trên điện thoại kéo về cỡ tiêu đề
+	   mục chung của site. */
+	.nntm-rank-card__heading {
+		font-size: var(--nntm-fs-5xl);
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.nntm-rank-card__cta {
 		transition: none;

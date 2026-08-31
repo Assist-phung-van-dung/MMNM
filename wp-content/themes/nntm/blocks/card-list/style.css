@@ -321,7 +321,7 @@
 	}
 
 	.nntm-card-list:has(> .nntm-card-list__heading-above) > .nntm-card-list__band {
-		padding-block: 0 var(--nntm-sp-8);
+		padding-block: var(--nntm-sp-7);
 	}
 
 	.nntm-card-list--nen-cam .nntm-card-list__heading,
@@ -339,7 +339,7 @@
 		bottom: auto;
 		left: auto;
 		right: auto;
-		margin-block-end: var(--nntm-sp-5);
+		margin-block-end: var(--nntm-sp-8);
 	}
 }
 
@@ -1533,6 +1533,9 @@ a.nntm-card-list__paging-so:focus-visible {
 		height: auto;
 		min-height: 0;
 		margin-block: var(--nntm-sp-10);
+		/* 40px phía trên + 40px dưới heading: chữ Gót Son nằm đúng giữa
+		   khoảng trắng thay vì bị dồn sát về dải tối. */
+		margin-block-start: var(--nntm-sp-8);
 	}
 
 	.nntm-card-list--nen-toi:has(> .nntm-card-list__heading-above) > .nntm-card-list__band,

@@ -141,8 +141,23 @@
 }
 
 @media (max-width: 767px) {
-	.nntm-y-kien__loi {
+	.nntm-y-kien {
+		padding-block: var(--nntm-sp-7);
+	}
+
+	.nntm-y-kien__inner {
 		gap: var(--nntm-sp-3);
+	}
+
+	.nntm-y-kien__loi {
+		gap: var(--nntm-sp-2) var(--nntm-sp-3);
+		font-size: var(--nntm-fs-2xl);
+	}
+
+	.nntm-y-kien__nut {
+		min-height: var(--nntm-sp-8);
+		padding: var(--nntm-sp-1) var(--nntm-sp-5);
+		font-size: var(--nntm-fs-15);
 	}
 
 	.nntm-y-kien__mo-ta {

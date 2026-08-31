@@ -380,7 +380,7 @@
 	.nntm-lien-dan-khoa .nntm-card-list__heading,
 	.nntm-lien-dan-lich .nntm-card-list__heading,
 	.nntm-thien-duong__heading {
-		font-size: clamp(36px, 9vw, var(--nntm-fs-4xl));  
+		font-size: clamp(28px, 9vw, var(--nntm-fs-4xl));
 		line-height: 1.1;
 	}
 

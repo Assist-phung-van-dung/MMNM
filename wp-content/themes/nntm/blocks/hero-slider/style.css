@@ -549,9 +549,25 @@
 	}
 }
 
+@media (max-width: 767px) {
+	/*
+	 * Trên điện thoại thẻ bài viết nằm chồng dưới cụm chữ chính nên dòng trích
+	 * dẫn in nghiêng làm màn hình dài thêm mà không thêm thông tin; ẩn đi cho
+	 * gọn, chỉ giữ tiêu đề và nút "Xem thêm".
+	 */
+	.nntm-hero-slider__sidecard-text {
+		display: none;
+	}
+}
+
 @media (max-width: 480px) {
+	/*
+	 * Thang chữ hiển thị đã tự hạ một bậc ở mốc 767px (xem responsive.css) nên
+	 * fs-4xl ở đây đã bằng đúng cỡ mà rule cũ (fs-3xl) cho ra; giữ nguyên cỡ
+	 * tiêu đề đầu trang thay vì để nó tụt thêm một bậc nữa.
+	 */
 	.nntm-hero-slider__heading {
-		font-size: var(--nntm-fs-3xl);
+		font-size: var(--nntm-fs-4xl);
 	}
 
 	.nntm-hero-slider__stage {

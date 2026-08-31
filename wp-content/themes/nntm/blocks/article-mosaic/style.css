@@ -447,6 +447,37 @@
 	.nntm-article-mosaic__grid {
 		grid-template-columns: 1fr;
 	}
+
+	/*
+	 * Xuống một cột thì mọi thẻ xếp chồng nhau, nên nhịp dọc phải rõ: khoảng
+	 * hở GIỮA hai thẻ (30px) lớn hơn khoảng hở BÊN TRONG một thẻ (20px giữa
+	 * ảnh và chữ). Trước đây thẻ dẫn cách nhóm thẻ nhỏ có 20px còn các thẻ nhỏ
+	 * cách nhau 30px, lại thêm ảnh cách tiêu đề đúng 30px — bằng nhau hết nên
+	 * không phân biệt được đâu là một thẻ.
+	 */
+	.nntm-article-mosaic__list,
+	.nntm-article-mosaic__list--solo {
+		gap: var(--nntm-sp-7);
+	}
+
+	.nntm-article-mosaic__lead-body,
+	.nntm-article-mosaic--phai-grid .nntm-article-mosaic__lead-body {
+		padding-top: var(--nntm-sp-5);
+	}
+
+	/*
+	 * Tiêu đề thẻ dẫn hạ một bậc: ở một cột nó nằm ngay dưới tiêu đề mục nên
+	 * để nguyên cỡ cũ (28px) thì hai dòng chữ to bằng nhau, không còn thấy đâu
+	 * là tên mục đâu là tên bài.
+	 */
+	.nntm-article-mosaic__lead-title {
+		font-size: var(--nntm-fs-2xl);
+	}
+
+	/* 13px quá nhỏ so với đoạn trích 18px ngay trên nó. */
+	.nntm-article-mosaic__card-cta {
+		font-size: var(--nntm-fs-15);
+	}
 }
 
 .nntm-article-mosaic__viewall-wrap {

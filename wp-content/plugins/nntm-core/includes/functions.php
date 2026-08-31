@@ -175,3 +175,18 @@ if ( ! function_exists( 'nntm_core_get_latest_posts' ) ) {
 		return $posts;
 	}
 }
+
+if ( ! function_exists( 'nntm_publication_music_tracks' ) ) {
+	/**
+	 * Lấy playlist nhạc nền dùng chung cho trình đọc Ấn phẩm và Nghi Quỹ.
+	 *
+	 * @return array<int,array{id:int,title:string,url:string,mime:string}>
+	 */
+	function nntm_publication_music_tracks(): array {
+		if ( ! class_exists( '\\NNTM\\Core\\Publication_Music' ) ) {
+			return array();
+		}
+
+		return \NNTM\Core\Publication_Music::get_tracks();
+	}
+}
