@@ -284,9 +284,34 @@
 .nntm-term-list--phap-toa .nntm-term-list__arrow--next { right: 22px; }
 
 @media (max-width: 767px) {
-	.nntm-term-list--phap-toa { height: auto; min-height: 490px; padding-block: var(--nntm-sp-8); }
-	.nntm-term-list--phap-toa .nntm-container { padding-left: var(--nntm-sp-5); }
-	.nntm-term-list--phap-toa .nntm-term-card { flex-basis: 280px; height: 340px; }
-	.nntm-term-list--phap-toa .nntm-term-card__img { height: 210px; }
+
+	.nntm-term-list--phap-toa { height: auto; min-height: 0; padding-block: var(--nntm-sp-8); }
+
+	.nntm-term-list--phap-toa .nntm-container {
+		padding-left: var(--nntm-sp-5);
+		padding-right: var(--nntm-sp-5);
+	}
+
+	.nntm-term-list--phap-toa .nntm-term-list__track {
+		flex-direction: column;
+		gap: var(--nntm-sp-7);
+		overflow-x: visible;
+		scroll-snap-type: none;
+	}
+
+	.nntm-term-list--phap-toa .nntm-term-card {
+		flex: 0 0 auto;
+		width: 100%;
+		height: auto;
+		scroll-snap-align: none;
+	}
+
+	.nntm-term-list--phap-toa .nntm-term-card__img {
+		height: auto;
+		aspect-ratio: 350 / 245;
+	}
+
+	.nntm-term-list--phap-toa .nntm-term-card__desc { min-height: 0; }
+
 	.nntm-term-list--phap-toa .nntm-term-list__arrow { display: none; }
 }

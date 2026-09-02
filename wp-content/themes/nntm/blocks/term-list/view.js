@@ -18,6 +18,12 @@
 			return;
 		}
 
+		var manDoc = window.matchMedia( '(max-width: 767px)' );
+
+		function xepDoc() {
+			return manDoc.matches;
+		}
+
 		function buoc() {
 			var khe = parseFloat( window.getComputedStyle( track ).gap ) || 20;
 
@@ -33,6 +39,13 @@
 		}
 
 		function dongBoNut() {
+			if ( xepDoc() ) {
+				prev.hidden = true;
+				next.hidden = true;
+
+				return;
+			}
+
 			var co = tranKhung();
 
 			prev.hidden = ! co;
@@ -47,6 +60,10 @@
 		}
 
 		function di( huong ) {
+			if ( xepDoc() ) {
+				return;
+			}
+
 			var dich = Math.max( 0, Math.min( toiDa(), track.scrollLeft + huong * buoc() ) );
 			var muot = ! window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
 
@@ -87,6 +104,10 @@
 
 		function chay() {
 			dung();
+
+			if ( xepDoc() ) {
+				return;
+			}
 
 			if ( '1' !== root.dataset.autoplay || window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
 				return;
@@ -159,6 +180,21 @@
 			new window.ResizeObserver( dongBoNut ).observe( track );
 		} else {
 			window.addEventListener( 'resize', dongBoNut );
+		}
+
+		function doiKhung() {
+			if ( xepDoc() ) {
+				track.scrollLeft = 0;
+			}
+
+			dongBoNut();
+			chay();
+		}
+
+		if ( manDoc.addEventListener ) {
+			manDoc.addEventListener( 'change', doiKhung );
+		} else if ( manDoc.addListener ) {
+			manDoc.addListener( doiKhung );
 		}
 
 		dongBoNut();

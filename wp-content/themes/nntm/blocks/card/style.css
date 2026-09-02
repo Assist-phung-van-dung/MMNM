@@ -324,4 +324,7 @@
 	.nntm-feature-gallery-modal__chi-tiet{
 		grid-template-rows: none !important;
 	}
+	.nntm-rank-card__overlay {
+        padding: 65px 20px !important;
+    }
  }
