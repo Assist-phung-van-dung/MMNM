@@ -463,11 +463,52 @@
 		updateTrackListUI();
 	}
 
+	/*
+	 * Bóng mép cho vùng cuộn danh sách bài.
+	 *
+	 * Danh sách bị chặn trần chiều cao nên phần dư nằm ngoài tầm mắt. Vệt tối ở
+	 * mép trên / mép dưới là dấu hiệu duy nhất cho biết còn bài nữa, nhất là
+	 * trên điện thoại — nơi thanh cuộn chỉ hiện thoáng qua lúc chạm rồi tắt.
+	 *
+	 * Chạy cho cả hai trạng thái: khách và thành viên.
+	 */
+	function nntmInitBongMepDanhSach( wrap ) {
+		var list = wrap.querySelector( '.nntm-thien-duong__tracklist' );
+
+		if ( ! list ) {
+			return;
+		}
+
+		function capNhat() {
+			// Trừ hao 1px cho những trường hợp chiều cao lẻ, không thì mép dưới kẹt hoài.
+			var conDuoi = list.scrollTop + list.clientHeight < list.scrollHeight - 1;
+
+			wrap.classList.toggle( 'co-phia-tren', list.scrollTop > 1 );
+			wrap.classList.toggle( 'co-phia-duoi', conDuoi );
+		}
+
+		list.addEventListener( 'scroll', capNhat, { passive: true } );
+
+		if ( 'function' === typeof window.ResizeObserver ) {
+			new window.ResizeObserver( capNhat ).observe( list );
+		} else {
+			window.addEventListener( 'resize', capNhat );
+		}
+
+		capNhat();
+	}
+
 	function nntmInitAllThienDuongPlayers() {
 		var players = document.querySelectorAll( '[data-nntm-thien-duong]' );
 
 		for ( var i = 0; i < players.length; i++ ) {
 			nntmInitThienDuongPlayer( players[ i ] );
+		}
+
+		var wraps = document.querySelectorAll( '[data-nntm-tracklist]' );
+
+		for ( var j = 0; j < wraps.length; j++ ) {
+			nntmInitBongMepDanhSach( wraps[ j ] );
 		}
 	}
 

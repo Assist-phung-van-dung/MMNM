@@ -60,3 +60,6 @@ __pycache__/
 # PDF demo sinh boi tools/tao-pdf-demo.py
 /tools/pdf-demo/
 /db/*
+
+# Trang xem thử khối do tools/preview/*-harness.php sinh ra, không cần theo dõi.
+/tools/preview/*.html

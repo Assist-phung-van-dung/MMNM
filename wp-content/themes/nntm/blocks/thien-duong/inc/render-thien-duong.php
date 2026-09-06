@@ -183,11 +183,28 @@ if ( ! function_exists( 'nntm_thien_duong_render_guest_preview' ) ) {
 				<div><span class="nntm-thien-duong__spotify-type"><?php esc_html_e( 'Playlist', 'nntm' ); ?></span><strong>Năng Nhân Tịch Mặc</strong></div>
 			</div>
 			<div class="nntm-thien-duong__spotify-toolbar"><a<?php echo $login_attrs;  ?> aria-label="<?php esc_attr_e( 'Đăng nhập để nghe', 'nntm' ); ?>">&#9654;</a><span><?php esc_html_e( 'Danh sách phổ biến', 'nntm' ); ?></span></div>
-			<ol class="nntm-thien-duong__spotify-list">
-				<?php foreach ( $posts as $index => $track_post ) : ?>
-					<li><span><?php echo esc_html( (string) ( $index + 1 ) ); ?></span><div><strong><?php echo esc_html( get_the_title( $track_post ) ); ?></strong><small>Năng Nhân Tịch Mặc</small></div><span aria-hidden="true">—:—</span></li>
-				<?php endforeach; ?>
-			</ol>
+			<div class="nntm-thien-duong__tracklist-wrap" data-nntm-tracklist>
+				<ol class="nntm-thien-duong__tracklist nntm-thien-duong__tracklist--guest">
+					<?php foreach ( $posts as $index => $track_post ) : ?>
+						<?php $tieu_de = get_the_title( $track_post ); ?>
+						<li class="nntm-thien-duong__track-item">
+							<a class="nntm-thien-duong__track nntm-thien-duong__track--guest"<?php echo $login_attrs;  ?> aria-label="<?php echo esc_attr( sprintf( __( 'Đăng nhập để nghe bài "%s"', 'nntm' ), $tieu_de ) ); ?>">
+								<span class="nntm-thien-duong__track-cue" aria-hidden="true">
+									<span class="nntm-thien-duong__track-index"><?php echo esc_html( (string) ( $index + 1 ) ); ?></span>
+									<span class="nntm-thien-duong__track-cue-icon"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span>
+								</span>
+								<span class="nntm-thien-duong__track-text">
+									<span class="nntm-thien-duong__track-title" title="<?php echo esc_attr( $tieu_de ); ?>"><?php echo esc_html( $tieu_de ); ?></span>
+									<span class="nntm-thien-duong__track-meta"><span class="nntm-thien-duong__track-artist">Năng Nhân Tịch Mặc</span></span>
+								</span>
+								<span class="nntm-thien-duong__track-lock" aria-hidden="true">
+									<svg viewBox="0 0 24 24"><path d="M7.6 10.4V8a4.4 4.4 0 0 1 8.8 0v2.4"/><rect x="5" y="10.4" width="14" height="9.4" rx="2.2"/></svg>
+								</span>
+							</a>
+						</li>
+					<?php endforeach; ?>
+				</ol>
+			</div>
 			<a class="nntm-thien-duong__spotify-login"<?php echo $login_attrs;  ?>><?php esc_html_e( 'Đăng nhập để nghe trọn vẹn', 'nntm' ); ?></a>
 		</div>
 		<?php
@@ -212,9 +229,19 @@ if ( ! function_exists( 'nntm_thien_duong_render_track_item' ) ) {
 				data-nntm-track-image="<?php echo esc_url( $track['image_url'] ); ?>"
 				aria-label="<?php echo esc_attr( sprintf(   __( 'Nghe bài "%s"', 'nntm' ), $title ) ); ?>"
 			>
-				<span class="nntm-thien-duong__track-index" aria-hidden="true"><?php echo esc_html( (string) ( $index + 1 ) ); ?></span>
-				<span class="nntm-thien-duong__track-title"><?php echo esc_html( $title ); ?></span>
-				<span class="nntm-thien-duong__track-listens"><span class="nntm-thien-duong__track-listen-count"><?php echo esc_html( number_format_i18n( $track['listen_count'] ) ); ?></span> <?php esc_html_e( 'lượt nghe', 'nntm' ); ?></span>
+				<span class="nntm-thien-duong__track-cue" aria-hidden="true">
+					<span class="nntm-thien-duong__track-index"><?php echo esc_html( (string) ( $index + 1 ) ); ?></span>
+					<span class="nntm-thien-duong__track-cue-icon"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span>
+					<span class="nntm-thien-duong__track-eq"><i></i><i></i><i></i></span>
+				</span>
+				<span class="nntm-thien-duong__track-text">
+					<?php /* Tên bài cắt gọn một dòng cho các hàng đều nhau; tên đầy đủ vẫn đọc được qua tooltip và aria-label của nút. */ ?>
+					<span class="nntm-thien-duong__track-title" title="<?php echo esc_attr( $title ); ?>"><?php echo esc_html( $title ); ?></span>
+					<span class="nntm-thien-duong__track-meta">
+						<span class="nntm-thien-duong__track-artist">Năng Nhân Tịch Mặc</span>
+						<span class="nntm-thien-duong__track-listens"><span class="nntm-thien-duong__track-listen-count"><?php echo esc_html( number_format_i18n( $track['listen_count'] ) ); ?></span> <?php esc_html_e( 'lượt nghe', 'nntm' ); ?></span>
+					</span>
+				</span>
 				<span class="nntm-thien-duong__track-duration"><?php echo esc_html( $track['duration'] ); ?></span>
 			</button>
 		</li>
@@ -329,13 +356,15 @@ if ( ! function_exists( 'nntm_thien_duong_render_player' ) ) {
 				<strong><?php esc_html_e( 'Phổ biến', 'nntm' ); ?></strong>
 			</div>
 
-			<ol class="nntm-thien-duong__tracklist">
-				<?php
-				foreach ( $tracks as $index => $track ) {
-					echo nntm_thien_duong_render_track_item( $track, $index );  
-				}
-				?>
-			</ol>
+			<div class="nntm-thien-duong__tracklist-wrap" data-nntm-tracklist>
+				<ol class="nntm-thien-duong__tracklist">
+					<?php
+					foreach ( $tracks as $index => $track ) {
+						echo nntm_thien_duong_render_track_item( $track, $index );  
+					}
+					?>
+				</ol>
+			</div>
 		</div>
 		<?php
 		return trim( (string) ob_get_clean() );

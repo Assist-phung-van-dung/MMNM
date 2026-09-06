@@ -84,6 +84,20 @@
 	object-fit: cover;
 }
 
+/*
+ * Biến dùng chung cho hai trạng thái của trình phát (khách và thành viên) —
+ * khai báo một chỗ để hàng bài, thanh cuộn và chữ phụ luôn khớp nhau.
+ */
+.nntm-thien-duong__spotify-preview,
+.nntm-thien-duong__player-inner {
+	--td-hang: 48px;
+	--td-chu-mo: rgba(255, 255, 255, .64);
+	--td-hang-di-qua: rgba(255, 255, 255, .09);
+	--td-hang-dang-chon: rgba(255, 255, 255, .15);
+	--td-cuon: rgba(255, 255, 255, .28);
+	--td-cuon-dam: rgba(255, 255, 255, .5);
+}
+
 .nntm-thien-duong__spotify-preview {
 	display: flex;
 	flex-direction: column;
@@ -98,17 +112,27 @@
 
 .nntm-thien-duong__spotify-hero {
 	display: flex;
-	align-items: flex-end;
+	align-items: center;
 	min-width: 0;
-	gap: var(--nntm-sp-5);
-	padding: var(--nntm-sp-5);
+	gap: var(--nntm-sp-4);
+	padding: var(--nntm-sp-4) var(--nntm-sp-5) var(--nntm-sp-2);
+}
+
+/*
+ * Khung trình phát cao cố định 385px theo bản thiết kế, nên mỗi pixel dành cho
+ * phần đầu là một pixel danh sách bài mất đi. Trước đây riêng ảnh bìa tròn đã
+ * ăn 92px, cộng khoảng đệm rộng nữa thì danh sách chỉ còn hơn hai hàng. Thu
+ * gọn lại để phần cuộn có chỗ thở.
+ */
+.nntm-thien-duong__spotify-avatar {
+	width: 64px;
+	height: 64px;
+	font-size: var(--nntm-fs-2xl);
 }
 
 .nntm-thien-duong__spotify-avatar {
 	display: grid;
 	place-items: center;
-	width: 92px;
-	height: 92px;
 	flex: none;
 	border-radius: 50%;
 	background-color: var(--nntm-nhac-toi);
@@ -138,68 +162,37 @@
 	overflow-wrap: anywhere;
 	white-space: normal;
 	font-family: var(--nntm-font-sans);
-	font-size: var(--nntm-fs-3xl);
-	line-height: 1;
+	font-size: var(--nntm-fs-2xl);
+	line-height: 1.1;
 }
 
 .nntm-thien-duong__spotify-type,
 .nntm-thien-duong__spotify-hero small,
-.nntm-thien-duong__spotify-toolbar,
-.nntm-thien-duong__spotify-list {
+.nntm-thien-duong__spotify-toolbar {
 	font-family: var(--nntm-font-sans);
 	font-size: var(--nntm-fs-xs);
-}
-.nntm-thien-duong__spotify-list{
-	padding: 0px 22px !important;
 }
 .nntm-thien-duong__spotify-toolbar {
 	display: flex;
 	align-items: center;
-	gap: var(--nntm-sp-5);
-	padding: var(--nntm-sp-3) var(--nntm-sp-5);
+	gap: var(--nntm-sp-4);
+	padding: var(--nntm-sp-2) var(--nntm-sp-5) var(--nntm-sp-3);
 }
 
 .nntm-thien-duong__spotify-toolbar a {
 	display: grid;
 	place-items: center;
-	width: 42px;
-	height: 42px;
+	flex: none;
+	width: 40px;
+	height: 40px;
 	border-radius: 50%;
 	background-color: var(--nntm-xanh-nhac);
 	color: var(--nntm-den);
 	text-decoration: none;
 }
 
-.nntm-thien-duong__spotify-list {
-	list-style: none;
-	margin: 0;
-	padding: 0 var(--nntm-sp-5);
-	overflow: hidden;
-}
-
-.nntm-thien-duong__spotify-list li {
-	display: grid;
-	grid-template-columns: 24px 1fr auto;
-	align-items: center;
-	min-width: 0;
-	gap: var(--nntm-sp-3);
-	padding-block: var(--nntm-sp-2);
-}
-
-.nntm-thien-duong__spotify-list div {
-	display: flex;
-	flex-direction: column;
-	min-width: 0;
-}
-
-.nntm-thien-duong__spotify-list strong,
-.nntm-thien-duong__spotify-list small {
-	overflow-wrap: anywhere;
-	white-space: normal;
-}
-
 .nntm-thien-duong__spotify-login {
-	margin: auto var(--nntm-sp-5) var(--nntm-sp-4);
+	margin: var(--nntm-sp-2) var(--nntm-sp-5) var(--nntm-sp-4);
 	color: var(--nntm-trang);
 	font-family: var(--nntm-font-sans);
 	font-size: var(--nntm-fs-xs);
@@ -323,9 +316,36 @@
 	gap: var(--nntm-sp-4);
 }
 
+/*
+ * Hàng điều khiển xếp lưới thay vì để flex tự xuống dòng.
+ *
+ * Để flex-wrap thì tuỳ độ dài tên bài đang phát mà thanh tiến độ và cụm âm
+ * lượng nhảy xuống thành hai dòng riêng, ăn mất gần 130px của khung 385px —
+ * đúng phần lẽ ra dành cho danh sách bài. Ghim sẵn chỗ thì chiều cao luôn cố
+ * định: một dòng nút + tên bài + công cụ, một dòng thanh tiến độ.
+ */
 .nntm-thien-duong__spotify-controls {
-	padding: var(--nntm-sp-3) var(--nntm-sp-5);
-	gap: var(--nntm-sp-3);
+	display: grid;
+	grid-template-columns: auto auto auto minmax(0, 1fr) auto;
+	align-items: center;
+	padding: 0 var(--nntm-sp-5) var(--nntm-sp-3);
+	gap: var(--nntm-sp-2) var(--nntm-sp-3);
+}
+
+.nntm-thien-duong__spotify-controls .nntm-thien-duong__btn--prev { grid-area: 1 / 1; }
+.nntm-thien-duong__spotify-controls .nntm-thien-duong__btn--play { grid-area: 1 / 2; }
+.nntm-thien-duong__spotify-controls .nntm-thien-duong__btn--next { grid-area: 1 / 3; }
+.nntm-thien-duong__spotify-controls .nntm-thien-duong__now-title { grid-area: 1 / 4; }
+.nntm-thien-duong__spotify-controls .nntm-thien-duong__player-tools { grid-area: 1 / 5; }
+.nntm-thien-duong__spotify-controls .nntm-thien-duong__progress { grid-area: 2 / 1 / 2 / -1; }
+/* Dòng báo lỗi xếp cuối: lúc không có lỗi (gần như luôn luôn) thì hàng lưới rỗng này biến mất hẳn. */
+.nntm-thien-duong__spotify-controls .nntm-thien-duong__playback-error { grid-area: 3 / 1 / 3 / -1; }
+
+/* Tên bài đang phát gọn một dòng, tên đầy đủ vẫn còn ở danh sách bên dưới. */
+.nntm-thien-duong__spotify-controls .nntm-thien-duong__now-title {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 .nntm-thien-duong__btn {
@@ -561,24 +581,96 @@
 	gap: var(--nntm-sp-4);
 	min-width: 0;
 	max-width: 100%;
-	padding: 0 var(--nntm-sp-5) var(--nntm-sp-2);
+	padding: 0 var(--nntm-sp-5) 6px;
 	font-family: var(--nntm-font-sans);
 	font-size: var(--nntm-fs-xs);
+	color: var(--td-chu-mo);
+	letter-spacing: .04em;
+	text-transform: uppercase;
+}
+
+/*
+ * Vùng cuộn của danh sách bài.
+ *
+ * Bọc thêm một lớp ngoài để có chỗ vẽ bóng mép trên / dưới — cái báo cho người
+ * xem biết phía trên hoặc phía dưới còn bài nữa. Lớp bọc mới là phần co giãn
+ * trong trình phát, còn <ol> bên trong mới là phần thật sự cuộn.
+ */
+.nntm-thien-duong__tracklist-wrap {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+	min-height: 0;
+	min-width: 0;
+}
+
+.nntm-thien-duong__tracklist-wrap::before,
+.nntm-thien-duong__tracklist-wrap::after {
+	content: '';
+	position: absolute;
+	inset-inline: 0;
+	height: 26px;
+	z-index: 1;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 180ms var(--nntm-ease);
+}
+
+.nntm-thien-duong__tracklist-wrap::before {
+	top: 0;
+	background: linear-gradient(to bottom, var(--nntm-nhac-toi), rgba(18, 18, 18, 0));
+}
+
+.nntm-thien-duong__tracklist-wrap::after {
+	bottom: 0;
+	background: linear-gradient(to top, var(--nntm-nhac-toi), rgba(18, 18, 18, 0));
+}
+
+.nntm-thien-duong__tracklist-wrap.co-phia-tren::before,
+.nntm-thien-duong__tracklist-wrap.co-phia-duoi::after {
+	opacity: .95;
 }
 
 .nntm-thien-duong__tracklist {
 	list-style: none;
 	margin: 0;
-	padding: 0 var(--nntm-sp-5) var(--nntm-sp-4);
+	padding: 0 var(--nntm-sp-4) var(--nntm-sp-3);
 	display: flex;
 	flex-direction: column;
-	gap: var(--nntm-sp-1);
-	overflow-y: auto;
-	scrollbar-width: thin;
-	scrollbar-color: var(--nntm-xam-chu) transparent;
+	flex: 1 1 auto;
+	gap: 2px;
 	min-height: 0;
 	min-width: 0;
 	max-width: 100%;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	scrollbar-width: thin;
+	scrollbar-color: var(--td-cuon) transparent;
+}
+
+/*
+ * Thanh cuộn tự vẽ: mảnh, bo tròn, chìm vào nền tối. Để mặc định thì Chrome
+ * trên Windows vẽ một thanh xám bè ra, phá mất mảng tối của trình phát.
+ */
+.nntm-thien-duong__tracklist::-webkit-scrollbar {
+	width: 10px;
+}
+
+.nntm-thien-duong__tracklist::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.nntm-thien-duong__tracklist::-webkit-scrollbar-thumb {
+	border: 3px solid transparent;
+	border-radius: 99px;
+	background-color: var(--td-cuon);
+	background-clip: padding-box;
+}
+
+.nntm-thien-duong__tracklist::-webkit-scrollbar-thumb:hover {
+	background-color: var(--td-cuon-dam);
+	background-clip: padding-box;
 }
 
 .nntm-thien-duong__track-item {
@@ -587,77 +679,231 @@
 	max-width: 100%;
 }
 
+/*
+ * Một hàng bài = [số thứ tự] [tên bài + dòng phụ] [thời lượng].
+ *
+ * Tên bài cắt gọn đúng một dòng: tên nhạc thiền hay dài lê thê (có bài kèm cả
+ * "Official MV | ... × ..."), để nó tự xuống dòng thì hàng cao thấp so le,
+ * danh sách trông rối mà phần cuộn còn lại bị bóp bé xíu. Tên đầy đủ vẫn còn ở
+ * thuộc tính title và aria-label nên không mất thông tin.
+ */
 .nntm-thien-duong__track {
-	display: flex;
+	display: grid;
+	grid-template-columns: 26px minmax(0, 1fr) auto;
 	align-items: center;
 	width: 100%;
 	min-width: 0;
 	max-width: 100%;
-	overflow: hidden;
+	min-height: var(--td-hang);
 	gap: var(--nntm-sp-3);
 	border: none;
-	border-radius: 0;
-	padding: var(--nntm-sp-2) var(--nntm-sp-3);
+	border-radius: 8px;
+	padding: 5px var(--nntm-sp-3);
 	background-color: transparent;
 	color: var(--nntm-trang);
 	font-family: var(--nntm-font-sans);
 	font-size: var(--nntm-fs-sm);
 	text-align: left;
+	text-decoration: none;
 	cursor: pointer;
 	transition: background-color var(--nntm-dur) var(--nntm-ease);
 }
 
-.nntm-thien-duong__track:hover {
-	background-color: var(--nntm-trang-60);
+.nntm-thien-duong__track:hover,
+.nntm-thien-duong__track:focus-visible {
+	background-color: var(--td-hang-di-qua);
 }
 
 .nntm-thien-duong__track:focus-visible {
-	outline: 2px solid var(--nntm-chinh);
-	outline-offset: 2px;
+	outline: 2px solid var(--nntm-xanh-nhac);
+	outline-offset: -2px;
 }
 
-.nntm-thien-duong__track.is-playing {
-	background-color: var(--nntm-xam-chu);
-	box-shadow: inset 3px 0 0 var(--nntm-xanh-nhac);
-	font-weight: 700;
+.nntm-thien-duong__track.is-current,
+.nntm-thien-duong__track.is-current:hover {
+	background-color: var(--td-hang-dang-chon);
 }
 
-.nntm-thien-duong__track.is-playing:hover {
-	background-color: var(--nntm-xam-chu);
+/* Ô đầu hàng: thường là số, rê chuột thành nút phát, đang phát thành cột sóng. */
+.nntm-thien-duong__track-cue {
+	position: relative;
+	display: grid;
+	place-items: center;
+	width: 26px;
+	height: 26px;
 }
 
 .nntm-thien-duong__track-index {
-	flex: none;
-	width: 1.75em;
-	color: var(--nntm-trang);
+	font-size: var(--nntm-fs-xs);
 	font-variant-numeric: tabular-nums;
+	color: var(--td-chu-mo);
+	transition: opacity 140ms var(--nntm-ease);
+}
+
+.nntm-thien-duong__track-cue-icon,
+.nntm-thien-duong__track-eq {
+	position: absolute;
+	inset: 0;
+	opacity: 0;
+	transition: opacity 140ms var(--nntm-ease);
+}
+
+.nntm-thien-duong__track-cue-icon {
+	display: grid;
+	place-items: center;
+	color: var(--nntm-trang);
+}
+
+.nntm-thien-duong__track-cue-icon svg {
+	width: 18px;
+	height: 18px;
+	fill: currentColor;
+}
+
+.nntm-thien-duong__track:hover .nntm-thien-duong__track-index,
+.nntm-thien-duong__track:focus-visible .nntm-thien-duong__track-index {
+	opacity: 0;
+}
+
+.nntm-thien-duong__track:hover .nntm-thien-duong__track-cue-icon,
+.nntm-thien-duong__track:focus-visible .nntm-thien-duong__track-cue-icon {
+	opacity: 1;
+}
+
+.nntm-thien-duong__track-eq {
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	gap: 2px;
+	padding-block: 6px;
+}
+
+.nntm-thien-duong__track-eq i {
+	display: block;
+	width: 3px;
+	height: 100%;
+	border-radius: 2px;
+	background-color: var(--nntm-xanh-nhac);
+	transform-origin: bottom center;
+	animation: nntm-td-song 1s var(--nntm-ease) infinite;
+}
+
+.nntm-thien-duong__track-eq i:nth-child(2) {
+	animation-delay: -.35s;
+}
+
+.nntm-thien-duong__track-eq i:nth-child(3) {
+	animation-delay: -.7s;
+}
+
+@keyframes nntm-td-song {
+	0%, 100% { transform: scaleY(.3); }
+	50%      { transform: scaleY(1); }
+}
+
+.nntm-thien-duong__track.is-current .nntm-thien-duong__track-index,
+.nntm-thien-duong__track.is-current .nntm-thien-duong__track-cue-icon,
+.nntm-thien-duong__track.is-playing .nntm-thien-duong__track-index,
+.nntm-thien-duong__track.is-playing .nntm-thien-duong__track-cue-icon {
+	opacity: 0;
+}
+
+.nntm-thien-duong__track.is-current .nntm-thien-duong__track-eq,
+.nntm-thien-duong__track.is-playing .nntm-thien-duong__track-eq {
+	opacity: 1;
+}
+
+/* Đang chọn mà đã dừng thì cột sóng đứng yên, khỏi nhấp nháy vô nghĩa. */
+.nntm-thien-duong__track.is-current:not(.is-playing) .nntm-thien-duong__track-eq i {
+	animation-play-state: paused;
+	transform: scaleY(.45);
+}
+
+.nntm-thien-duong__track-text {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	min-width: 0;
 }
 
 .nntm-thien-duong__track-title {
-	flex: 1 1 auto;
 	min-width: 0;
-	overflow-wrap: anywhere;
-	white-space: normal;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	font-size: var(--nntm-fs-sm);
+	font-weight: 500;
+	line-height: 1.35;
+	color: var(--nntm-trang);
 }
 
-.nntm-thien-duong__track-listens,
-.nntm-thien-duong__track-duration {
-	flex: none;
+.nntm-thien-duong__track.is-current .nntm-thien-duong__track-title,
+.nntm-thien-duong__track.is-playing .nntm-thien-duong__track-title {
+	color: var(--nntm-xanh-nhac);
+	font-weight: 700;
+}
+
+.nntm-thien-duong__track-meta {
+	display: flex;
+	align-items: baseline;
+	min-width: 0;
+	gap: 6px;
 	font-size: var(--nntm-fs-xs);
-	color: var(--nntm-xam-nhat);
+	line-height: 1.35;
+	color: var(--td-chu-mo);
+}
+
+.nntm-thien-duong__track-artist {
+	flex: 0 1 auto;
+	min-width: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 .nntm-thien-duong__track-listens {
-	min-width: 92px;
-	text-align: right;
+	flex: none;
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+}
+
+.nntm-thien-duong__track-listens::before {
+	content: '\00B7';
+	margin-inline-end: 6px;
 }
 
 .nntm-thien-duong__track-duration {
-	width: 42px;
+	flex: none;
+	min-width: 38px;
+	font-size: var(--nntm-fs-xs);
+	font-variant-numeric: tabular-nums;
+	color: var(--td-chu-mo);
 	text-align: right;
 }
 
- 
+/* Hàng của người chưa đăng nhập: cùng khuôn, thay thời lượng bằng ổ khoá. */
+.nntm-thien-duong__track-lock {
+	display: grid;
+	place-items: center;
+	width: 22px;
+	color: var(--td-chu-mo);
+}
+
+.nntm-thien-duong__track-lock svg {
+	width: 16px;
+	height: 16px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.7;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.nntm-thien-duong__track--guest:hover .nntm-thien-duong__track-lock,
+.nntm-thien-duong__track--guest:focus-visible .nntm-thien-duong__track-lock {
+	color: var(--nntm-xanh-nhac);
+}
+
 @media (max-width: 1151px) {
 	.nntm-thien-duong__inner {
 		padding: var(--nntm-sp-8) var(--nntm-sp-5);
@@ -670,6 +916,63 @@
 	.nntm-thien-duong__player {
 		aspect-ratio: auto;
 		min-height: 320px;
+	}
+
+	/*
+	 * Dưới 1152px khung trình phát hẹp lại rõ rệt. Giữ nguyên lưới năm cột của
+	 * bản màn rộng thì ô tên bài đang phát bị bóp còn vài chục pixel, đọc được
+	 * đúng một hai chữ. Đổi sang hai tầng: hàng nút kèm cụm âm lượng nép cuối,
+	 * rồi tới tên bài và thanh tiến độ trải hết bề ngang.
+	 */
+	.nntm-thien-duong__spotify-controls {
+		grid-template-columns: 40px 48px 40px minmax(0, 1fr);
+		gap: var(--nntm-sp-2);
+		padding: 0 var(--nntm-sp-5) var(--nntm-sp-3);
+	}
+
+	.nntm-thien-duong__spotify-controls .nntm-thien-duong__player-tools {
+		grid-area: 1 / 4;
+		justify-self: end;
+		margin-left: 0;
+	}
+
+	.nntm-thien-duong__spotify-controls .nntm-thien-duong__now-title {
+		grid-area: 2 / 1 / 2 / -1;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		/* Tên dài thì gói trong hai dòng, không thì ba dòng tên bài ăn hết chỗ của danh sách. */
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+		white-space: normal;
+		line-height: var(--nntm-lh-vua);
+	}
+
+	.nntm-thien-duong__spotify-controls .nntm-thien-duong__progress {
+		grid-area: 3 / 1 / 3 / -1;
+		width: 100%;
+	}
+
+	.nntm-thien-duong__spotify-controls .nntm-thien-duong__playback-error {
+		grid-area: 4 / 1 / 4 / -1;
+		width: 100%;
+	}
+
+	.nntm-thien-duong__volume {
+		width: 100px;
+	}
+
+	.nntm-thien-duong__volume .nntm-thien-duong__range {
+		width: 58px;
+	}
+
+	/*
+	 * Từ đây trở xuống khung trình phát cao theo nội dung, nên nếu không chặn
+	 * trần thì danh sách 30 bài kéo trang dài ngoằng và người xem phải cuộn cả
+	 * trang mới tới được chỗ khác. Chặn trần rồi thì phần dư nằm gọn trong
+	 * thanh cuộn của chính danh sách.
+	 */
+	.nntm-thien-duong__tracklist {
+		max-height: min(58vh, 420px);
 	}
 }
 
@@ -687,62 +990,62 @@
 		min-height: 0;
 	}
 
-	.nntm-thien-duong__spotify-hero--member {
+	.nntm-thien-duong__spotify-hero {
 		align-items: center;
 		gap: var(--nntm-sp-3);
-		padding: var(--nntm-sp-4);
+		padding: var(--nntm-sp-4) var(--nntm-sp-4) var(--nntm-sp-2);
 	}
 
-	.nntm-thien-duong__spotify-hero--member .nntm-thien-duong__spotify-avatar {
-		width: 84px;
-		height: 84px;
+	.nntm-thien-duong__spotify-avatar {
+		width: 56px;
+		height: 56px;
 	}
 
 	.nntm-thien-duong__spotify-hero strong {
-		font-size: clamp(24px, 7vw, 34px);
+		font-size: clamp(20px, 5.6vw, 28px);
 	}
 
 	.nntm-thien-duong__spotify-controls {
-		display: grid;
-		grid-template-columns: 40px 48px 40px minmax(0, 1fr);
-		gap: var(--nntm-sp-2);
-		padding: var(--nntm-sp-3) var(--nntm-sp-4);
-	}
-
-	.nntm-thien-duong__now-title {
-		grid-column: 1 / -1;
-		min-width: 0;
-		line-height: var(--nntm-lh-vua);
-	}
-
-	.nntm-thien-duong__playback-error,
-	.nntm-thien-duong__progress {
-		grid-column: 1 / -1;
-		width: 100%;
-	}
-
-	.nntm-thien-duong__player-tools {
-		grid-column: 1 / -1;
-		justify-self: end;
-		margin-left: 0;
+		padding-inline: var(--nntm-sp-4);
 	}
 
 	.nntm-thien-duong__playlist-title {
 		padding-inline: var(--nntm-sp-4);
 	}
 
+	.nntm-thien-duong__spotify-toolbar,
+	.nntm-thien-duong__spotify-login {
+		padding-inline: var(--nntm-sp-4);
+		margin-inline: 0;
+	}
+
 	.nntm-thien-duong__tracklist {
 		padding-inline: var(--nntm-sp-3);
+		/* Điện thoại màn ngắn: chừng năm hàng là vừa mắt, phần còn lại cuộn. */
+		max-height: min(52vh, 288px);
 	}
 
 	.nntm-thien-duong__track {
-		align-items: flex-start;
 		gap: var(--nntm-sp-2);
 		padding-inline: var(--nntm-sp-2);
 	}
 
-	.nntm-thien-duong__track-listens {
-		display: none;
+	/*
+	 * Ngón tay khó trỏ trúng như con chuột, mà trên cảm ứng cũng chẳng có trạng
+	 * thái rê chuột. Bỏ luôn nút phát hiện theo hover, giữ nguyên số thứ tự cho
+	 * đỡ nhảy hình.
+	 */
+	.nntm-thien-duong__track:hover .nntm-thien-duong__track-index {
+		opacity: 1;
+	}
+
+	.nntm-thien-duong__track:hover .nntm-thien-duong__track-cue-icon {
+		opacity: 0;
+	}
+
+	.nntm-thien-duong__track.is-current .nntm-thien-duong__track-index,
+	.nntm-thien-duong__track.is-playing .nntm-thien-duong__track-index {
+		opacity: 0;
 	}
 }
 
@@ -751,13 +1054,14 @@
 		font-size: var(--nntm-fs-3xl);
 	}
 
-	.nntm-thien-duong__spotify-hero--member {
-		padding: var(--nntm-sp-3);
+	.nntm-thien-duong__spotify-hero {
+		padding: var(--nntm-sp-3) var(--nntm-sp-3) var(--nntm-sp-2);
 	}
 
-	.nntm-thien-duong__spotify-hero--member .nntm-thien-duong__spotify-avatar {
-		width: 72px;
-		height: 72px;
+	.nntm-thien-duong__spotify-avatar {
+		width: 48px;
+		height: 48px;
+		font-size: var(--nntm-fs-xl);
 	}
 
 	.nntm-thien-duong__spotify-controls {
@@ -777,19 +1081,41 @@
 	}
 
 	.nntm-thien-duong__volume {
-		width: min(126px, calc(100vw - 110px));
+		width: 92px;
+	}
+
+	.nntm-thien-duong__volume .nntm-thien-duong__range {
+		width: 50px;
+	}
+
+	/*
+	 * Màn hẹp: nhường hết bề ngang cho tên bài. Số lượt nghe đã có ở trang
+	 * chi tiết bài, ở đây bỏ đi không tiếc.
+	 */
+	.nntm-thien-duong__track-listens {
+		display: none;
 	}
 
 	.nntm-thien-duong__track-duration {
-		width: 38px;
+		min-width: 34px;
 	}
 }
 
 @media (prefers-reduced-motion: reduce) {
 	.nntm-thien-duong__btn,
 	.nntm-thien-duong__invite-cta,
-	.nntm-thien-duong__track {
+	.nntm-thien-duong__track,
+	.nntm-thien-duong__track-index,
+	.nntm-thien-duong__track-cue-icon,
+	.nntm-thien-duong__track-eq,
+	.nntm-thien-duong__tracklist-wrap::before,
+	.nntm-thien-duong__tracklist-wrap::after {
 		transition: none;
+	}
+
+	.nntm-thien-duong__track-eq i {
+		animation: none;
+		transform: scaleY(.55);
 	}
 
 	.nntm-thien-duong__btn:active {
