@@ -214,9 +214,9 @@
 
 	.home .nntm-hero-slider__heading {
 		font-family: var(--nntm-font-display);
-		font-size: 40px;
+		font-size: 60px;
 		font-weight: 600;
-		line-height: 45px;
+		line-height: 65px;
 		letter-spacing: 0;
 		color: var(--nntm-trang);
 		max-width: 890px;
@@ -1182,8 +1182,8 @@
 	}
 
 	.home .nntm-hero-slider__heading {
-		/* font-size: clamp(46px, 4.25vw, 58px);
-		line-height: 1.17; */
+		font-size: 40px;
+		line-height: 45px;
 		max-width: none;
 	}
 
