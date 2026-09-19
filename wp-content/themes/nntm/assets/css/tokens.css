@@ -89,11 +89,18 @@
   --nntm-tai-nhat-ky:    #71420D;   
 
 
-  --nntm-font-sans:    'Be Vietnam Pro', system-ui, -apple-system, sans-serif;   
-  --nntm-font-serif:   'Lora', Georgia, serif;                                   
+  /*
+   * Toàn bộ giao diện dùng MỘT bộ chữ: EB Garamond.
+   *
+   * Bốn biến còn lại giữ nguyên tên để không phải sửa hơn 300 chỗ gọi var()
+   * rải khắp các file CSS, nhưng đều trỏ về cùng một ngăn xếp chữ. Muốn đổi
+   * lại nhiều bộ chữ thì chỉ cần trả từng dòng về giá trị riêng ở đây.
+   */
   --nntm-font-display: 'EB Garamond', Georgia, serif;                            
-  --nntm-font-ui:      'Inter', system-ui, sans-serif;                           
-  --nntm-font-geo:     'Questrial', system-ui, sans-serif;                       
+  --nntm-font-sans:    var(--nntm-font-display);                                 
+  --nntm-font-serif:   var(--nntm-font-display);                                 
+  --nntm-font-ui:      var(--nntm-font-display);                                 
+  --nntm-font-geo:     var(--nntm-font-display);                                 
 
   --nntm-fs-xs:   0.8125rem;   
   --nntm-fs-sm:   0.875rem;    

@@ -17,12 +17,13 @@ function nntm_resource_hints( array $urls, string $relation_type ): array {
 add_filter( 'wp_resource_hints', 'nntm_resource_hints', 10, 2 );
 
 function nntm_google_fonts_url(): string {
+	/*
+	 * Toàn bộ giao diện chỉ dùng EB Garamond nên chỉ tải duy nhất bộ chữ này.
+	 * Xin đủ các độ đậm đang dùng trong CSS (400/500/600/700) và cả nhánh
+	 * nghiêng vì một số chỗ có font-style: italic.
+	 */
 	$families = array(
-		'Be Vietnam Pro:wght@400;500;700',
-		'Lora:wght@400;500',
-		'EB Garamond:wght@400;600',
-		'Inter:wght@400;500',
-		'Questrial:wght@400',
+		'EB Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600',
 	);
 
 	 

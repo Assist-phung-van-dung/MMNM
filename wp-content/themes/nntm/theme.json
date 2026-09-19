@@ -41,13 +41,13 @@
       "fontFamilies": [
         {
           "slug": "sans",
-          "name": "Thân bài (Be Vietnam Pro)",
-          "fontFamily": "'Be Vietnam Pro', system-ui, sans-serif"
+          "name": "Thân bài (EB Garamond)",
+          "fontFamily": "'EB Garamond', Georgia, serif"
         },
         {
           "slug": "serif",
-          "name": "Trích dẫn (Lora)",
-          "fontFamily": "Lora, Georgia, serif"
+          "name": "Trích dẫn (EB Garamond)",
+          "fontFamily": "'EB Garamond', Georgia, serif"
         },
         {
           "slug": "display",
@@ -56,13 +56,13 @@
         },
         {
           "slug": "ui",
-          "name": "Giao diện (Inter)",
-          "fontFamily": "Inter, system-ui, sans-serif"
+          "name": "Giao diện (EB Garamond)",
+          "fontFamily": "'EB Garamond', Georgia, serif"
         },
         {
           "slug": "geo",
-          "name": "Nhấn hình học (Questrial)",
-          "fontFamily": "Questrial, system-ui, sans-serif"
+          "name": "Nhấn hình học (EB Garamond)",
+          "fontFamily": "'EB Garamond', Georgia, serif"
         }
       ],
       "fontSizes": [

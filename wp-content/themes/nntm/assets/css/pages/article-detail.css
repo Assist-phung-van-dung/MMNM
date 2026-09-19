@@ -42,15 +42,6 @@
 	flex: none;
 }
 
-.nntm-article-detail__intro {
-	max-width: 100%;
-	margin-top: 34px;
-	font-family: var(--nntm-font-serif);
-	font-size: var(--nntm-fs-base);
-	line-height: 1.65;
-	color: var(--nntm-chinh);
-}
-
 .nntm-article-detail__media {
 	width: 100%;
 	margin: 20px 0 0;

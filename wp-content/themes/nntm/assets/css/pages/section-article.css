@@ -52,14 +52,6 @@
 	flex: 0 0 auto;
 }
 
-.nntm-article-detail__intro {
-	margin-top: var(--nntm-sp-7);
-	font-family: var(--nntm-font-serif);
-	font-size: var(--nntm-fs-base);
-	line-height: 1.65;
-	color: var(--nntm-chinh);
-}
-
 .nntm-article-detail__media {
 	margin-top: var(--nntm-sp-5);
 	width: 100%;

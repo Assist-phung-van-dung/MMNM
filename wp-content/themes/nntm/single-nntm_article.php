@@ -13,7 +13,6 @@ if ( null === $nntm_cap_hanh_gia ) {
 		the_post();
 
 		$nntm_post_id = get_the_ID();
-		$nntm_excerpt = trim( get_the_excerpt() );
 
 		$nntm_term_id_hien_tai = 0;
 		$nntm_terms_hien_tai   = get_the_terms( $nntm_post_id, 'nntm_section' );
@@ -53,10 +52,6 @@ if ( null === $nntm_cap_hanh_gia ) {
 						);
 						?>
 					</p>
-
-					<?php if ( '' !== $nntm_excerpt ) : ?>
-						<p class="nntm-article-detail__intro"><?php echo esc_html( $nntm_excerpt ); ?></p>
-					<?php endif; ?>
 
 					<?php if ( has_post_thumbnail() ) : ?>
 						<figure class="nntm-article-detail__media">

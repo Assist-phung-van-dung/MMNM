@@ -9,7 +9,6 @@ while ( have_posts() ) :
 
 	$post_id   = get_the_ID();
 	$post_type = sanitize_key( (string) get_post_type( $post_id ) );
-	$excerpt   = trim( (string) get_the_excerpt() );
 	$type_obj  = get_post_type_object( $post_type );
 	$type_name = $type_obj instanceof WP_Post_Type ? $type_obj->labels->singular_name : __( 'Nội dung', 'nntm' );
 	?>
@@ -33,10 +32,6 @@ while ( have_posts() ) :
 					);
 					?>
 				</p>
-
-				<?php if ( '' !== $excerpt ) : ?>
-					<p class="nntm-article-detail__intro"><?php echo esc_html( $excerpt ); ?></p>
-				<?php endif; ?>
 
 				<?php if ( has_post_thumbnail() ) : ?>
 					<figure class="nntm-article-detail__media">

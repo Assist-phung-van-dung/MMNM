@@ -8,7 +8,6 @@ while ( have_posts() ) :
 	the_post();
 
 	$post_id = get_the_ID();
-	$excerpt = trim( get_the_excerpt() );
 	$topic   = function_exists( 'nntm_retreat_primary_topic' ) ? nntm_retreat_primary_topic( $post_id ) : null;
 	$term_id = $topic instanceof WP_Term ? (int) $topic->term_id : 0;
 	$is_lich = $topic instanceof WP_Term && 'lich-tu' === $topic->slug;
@@ -48,10 +47,6 @@ while ( have_posts() ) :
 					);
 					?>
 				</p>
-
-				<?php if ( '' !== $excerpt ) : ?>
-					<p class="nntm-article-detail__intro"><?php echo esc_html( $excerpt ); ?></p>
-				<?php endif; ?>
 
 				<?php if ( has_post_thumbnail() ) : ?>
 					<figure class="nntm-article-detail__media">

@@ -21,7 +21,6 @@ while ( have_posts() ) :
 	the_post();
 	$categories = get_the_category();
 	$category   = ! empty( $categories ) ? $categories[0] : null;
-	$excerpt    = get_the_excerpt();
 	?>
 	<main id="nntm-noi-dung-chinh" class="nntm-post-detail">
 		<article class="nntm-post-detail__main">
@@ -34,7 +33,6 @@ while ( have_posts() ) :
 					}
 					?>
 				<p class="nntm-post-detail__meta"><span class="nntm-post-detail__meta-dot" aria-hidden="true"></span><?php printf( esc_html__( 'Cập nhật %s', 'nntm' ), esc_html( get_the_modified_date( 'd. m. Y' ) ) ); ?></p>
-				<?php if ( '' !== trim( $excerpt ) ) : ?><p class="nntm-post-detail__intro"><?php echo esc_html( $excerpt ); ?></p><?php endif; ?>
 				<?php if ( has_post_thumbnail() ) : ?><figure class="nntm-post-detail__media"><?php the_post_thumbnail( 'full' ); ?></figure><?php endif; ?>
 				<div class="nntm-post-detail__content"><?php the_content(); ?></div>
 				<div class="nntm-post-detail__favorite nntm-post-detail__actions">
