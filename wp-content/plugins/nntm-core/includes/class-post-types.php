@@ -40,6 +40,47 @@ class Post_Types {
 	 */
 	public function hooks(): void {
 		add_action( 'init', array( $this, 'register_post_types' ) );
+		add_filter( 'post_type_labels_post', array( $this, 'doi_nhan_tin_tuc' ) );
+	}
+
+	/**
+	 * Đổi nhãn của post type 'post' có sẵn thành "Tin tức".
+	 *
+	 * Theo bảng data model (docs/04-kien-truc.md mục 3), 'post' giữ Tin Tức và
+	 * Hoằng Pháp, còn bài của 6 phân mục nằm ở 'nntm_article'. Nhưng cả hai đều
+	 * hiện chữ "Bài viết" trên menu quản trị nên rất dễ vào nhầm chỗ.
+	 *
+	 * Ở đây CHỈ đổi chữ hiển thị, không đụng tới định danh 'post' trong cơ sở dữ
+	 * liệu, không đổi đường dẫn ngoài web, và không ảnh hưởng gì tới nội dung.
+	 * Muốn trả lại như cũ thì gỡ đúng filter này.
+	 *
+	 * @param object $nhan Bộ nhãn WordPress dựng sẵn cho post type 'post'.
+	 * @return object Bộ nhãn đã đổi.
+	 */
+	public function doi_nhan_tin_tuc( $nhan ) {
+		$ten = __( 'Tin tức', 'nntm' );
+
+		$nhan->name                  = $ten;
+		$nhan->singular_name         = $ten;
+		$nhan->menu_name             = $ten;
+		$nhan->name_admin_bar        = $ten;
+		$nhan->all_items             = __( 'Tất cả tin tức', 'nntm' );
+		$nhan->add_new               = __( 'Thêm tin', 'nntm' );
+		$nhan->add_new_item          = __( 'Thêm tin mới', 'nntm' );
+		$nhan->edit_item             = __( 'Sửa tin', 'nntm' );
+		$nhan->new_item              = __( 'Tin mới', 'nntm' );
+		$nhan->view_item             = __( 'Xem tin', 'nntm' );
+		$nhan->view_items            = __( 'Xem tin tức', 'nntm' );
+		$nhan->search_items          = __( 'Tìm tin tức', 'nntm' );
+		$nhan->not_found             = __( 'Không tìm thấy tin nào', 'nntm' );
+		$nhan->not_found_in_trash    = __( 'Không có tin nào trong thùng rác', 'nntm' );
+		$nhan->archives              = __( 'Kho tin tức', 'nntm' );
+		$nhan->insert_into_item      = __( 'Chèn vào tin', 'nntm' );
+		$nhan->uploaded_to_this_item = __( 'Đã tải lên cho tin này', 'nntm' );
+		$nhan->item_published        = __( 'Đã đăng tin', 'nntm' );
+		$nhan->item_updated          = __( 'Đã cập nhật tin', 'nntm' );
+
+		return $nhan;
 	}
 
 	/**
@@ -238,8 +279,18 @@ class Post_Types {
 			'menu_position'      => 35,
 			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'revisions', 'author' ),
 			'has_archive'        => true,
-			'show_in_menu'       => true,
-			'show_in_admin_bar'  => true,
+			/*
+			 * ẨN KHỎI MENU QUẢN TRỊ — không dùng tới.
+			 *
+			 * CHỈ ẩn chỗ quản lý, KHÔNG gỡ đăng ký loại nội dung: các khối
+			 * Video Carousel và GITA Centre ngoài trang chủ vẫn đang truy vấn
+			 * nntm_video, gỡ hẳn là hai dải đó trắng ngay. Trang lưu trữ
+			 * /video/ và mọi đường dẫn cũ cũng giữ nguyên.
+			 *
+			 * Cần dùng lại: đổi hai dòng dưới về true.
+			 */
+			'show_in_menu'       => false,
+			'show_in_admin_bar'  => false,
 			'show_in_nav_menus'  => true,
 			'hierarchical'       => false,
 			'rewrite'            => array(

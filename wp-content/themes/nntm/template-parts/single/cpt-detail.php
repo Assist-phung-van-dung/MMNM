@@ -69,14 +69,15 @@ while ( have_posts() ) :
 				echo render_block(
 					array(
 						'blockName'    => 'nntm/card-list',
-						'attrs'        => array(
-							'heading'          => sprintf(
-								/* translators: %s: post type label. */
-								__( '%s liên quan', 'nntm' ),
-								$type_name
+						'attrs'        => nntm_lien_quan_ap_vao_attrs(
+							array(
+								'heading'          => sprintf(
+									/* translators: %s: post type label. */
+									__( '%s liên quan', 'nntm' ),
+									$type_name
 							),
 							'postType'         => $post_type,
-							'variant'          => 'article',
+						'variant'          => 'article',
 							'layout'           => 'carousel',
 							'postsPerPage'     => 8,
 							'excludePostId'    => $post_id,
@@ -87,6 +88,8 @@ while ( have_posts() ) :
 							'showCategory'     => false,
 							'showCardCta'      => true,
 							'cardCtaLabel'     => __( 'Xem thêm', 'nntm' ),
+						),
+							$post_id
 						),
 						'innerBlocks'  => array(),
 						'innerHTML'    => '',

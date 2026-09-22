@@ -47,4 +47,7 @@ require NNTM_THEME_DIR . '/inc/ke-sach-an-pham.php';
 require NNTM_THEME_DIR . '/inc/sao-link.php';
 require NNTM_THEME_DIR . '/inc/chia-se.php';
 require NNTM_THEME_DIR . '/inc/nhac-bai-viet.php';
+require NNTM_THEME_DIR . '/inc/bai-lien-quan.php';
+require NNTM_THEME_DIR . '/inc/thu-tu-bai-viet.php';
 require NNTM_THEME_DIR . '/inc/search.php';
+require NNTM_THEME_DIR . '/inc/admin-loc-bai-viet.php';

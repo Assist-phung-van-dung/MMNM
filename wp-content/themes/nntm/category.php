@@ -12,6 +12,16 @@ if ( file_exists( $rows_css ) ) {
 get_header();
 $cat   = get_queried_object();
 $paged = max( 1, (int) get_query_var( 'paged' ) );
+
+/*
+ * Trang này dựng truy vấn riêng chứ không xài truy vấn chính, nên pre_get_posts
+ * không với tới. Phải tự lấy thứ tự đã xếp rồi truyền vào; có thứ tự thì bộ lọc
+ * posts_orderby đè lên orderby/order bên dưới.
+ */
+$thu_tu = ( $cat instanceof WP_Term && function_exists( 'nntm_thu_tu_lay' ) )
+	? nntm_thu_tu_lay( (int) $cat->term_id )
+	: array();
+
 $query = new WP_Query(
 	array(
 		'post_type'      => 'post',
@@ -21,6 +31,7 @@ $query = new WP_Query(
 		'paged'          => $paged,
 		'orderby'        => 'date',
 		'order'          => 'DESC',
+		'nntm_thu_tu'    => $thu_tu,
 	)
 );
 ?>

@@ -1,0 +1,86 @@
+/*
+ * Màn hình "Sắp xếp bài viết" trong trang quản trị.
+ *
+ * Chỉ dùng màu của giao diện admin, không kéo token của theme vào — màn hình
+ * này sống trong wp-admin nên phải đi theo giao diện admin.
+ */
+
+.nntm-thu-tu__chon {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin: 16px 0;
+}
+
+.nntm-thu-tu__chon label {
+	font-weight: 600;
+}
+
+.nntm-thu-tu__ds {
+	margin: 12px 0 0;
+	padding: 0;
+	list-style: none;
+	counter-reset: nntm-thu-tu;
+	max-width: 900px;
+}
+
+.nntm-thu-tu__muc {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 0 0 6px;
+	padding: 10px 14px;
+	border: 1px solid #c3c4c7;
+	border-radius: 3px;
+	background: #fff;
+	counter-increment: nntm-thu-tu;
+}
+
+/* Số thứ tự tự đánh lại sau mỗi lần kéo, không cần JS đụng vào. */
+.nntm-thu-tu__muc::before {
+	content: counter( nntm-thu-tu );
+	flex: 0 0 auto;
+	min-width: 2em;
+	color: #646970;
+	font-variant-numeric: tabular-nums;
+	text-align: right;
+}
+
+.nntm-thu-tu__tay {
+	flex: 0 0 auto;
+	width: 18px;
+	height: 18px;
+	cursor: grab;
+	/* Ba vạch ngang — ký hiệu quen thuộc cho chỗ nắm kéo. */
+	background-image: linear-gradient( #8c8f94 2px, transparent 2px );
+	background-size: 100% 6px;
+	background-position: 0 3px;
+	background-repeat: repeat-y;
+}
+
+.nntm-thu-tu__tay:active {
+	cursor: grabbing;
+}
+
+.nntm-thu-tu__ten {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+
+.nntm-thu-tu__sua {
+	flex: 0 0 auto;
+}
+
+.nntm-thu-tu__cho-trong {
+	margin: 0 0 6px;
+	border: 1px dashed #787c82;
+	border-radius: 3px;
+	background: #f0f0f1;
+}
+
+/* Bản thân mục đang được kéo: nhấc lên khỏi mặt danh sách. */
+.nntm-thu-tu__muc.ui-sortable-helper {
+	box-shadow: 0 2px 8px rgba( 0, 0, 0, 0.18 );
+}

@@ -42,28 +42,39 @@ while ( have_posts() ) :
 			</div>
 		</article>
 
-		<?php if ( $category instanceof WP_Term ) : ?>
+		<?php
+		/*
+		 * Hiện dải liên quan khi có chuyên mục (cơ chế tự động) HOẶC khi quản trị
+		 * đã chọn tay. Thiếu vế sau thì tin không gắn chuyên mục nào sẽ nuốt mất
+		 * danh sách vừa chọn mà không báo gì.
+		 */
+		$nntm_lq_tay = nntm_lien_quan_ids( (int) get_the_ID() );
+		if ( $category instanceof WP_Term || ! empty( $nntm_lq_tay ) ) :
+			?>
 			<section class="nntm-post-detail__related">
 				<?php
 				echo render_block(
 					array(
 						'blockName' => 'nntm/card-list',
-						'attrs' => array(
-							'heading' => __( 'Bài Viết Liên Quan', 'nntm' ),
-							'postType' => 'post',
-							'taxonomy' => 'category',
-							'termId' => (int) $category->term_id,
-							'variant' => 'article',
-							'layout' => 'carousel',
-							'postsPerPage' => 8,
-							'excludePostId' => get_the_ID(),
-							'autoplay' => true,
-							'autoplayInterval' => 5,
-							'background' => 'none',
-							'showDate' => false,
-							'showCategory' => false,
-							'showCardCta' => true,
-							'cardCtaLabel' => __( 'Xem thêm', 'nntm' ),
+						'attrs' => nntm_lien_quan_ap_vao_attrs(
+							array(
+								'heading' => __( 'Bài Viết Liên Quan', 'nntm' ),
+								'postType' => 'post',
+								'taxonomy' => 'category',
+								'termId' => $category instanceof WP_Term ? (int) $category->term_id : 0,
+								'variant' => 'article',
+								'layout' => 'carousel',
+								'postsPerPage' => 8,
+								'excludePostId' => get_the_ID(),
+								'autoplay' => true,
+								'autoplayInterval' => 5,
+								'background' => 'none',
+								'showDate' => false,
+								'showCategory' => false,
+								'showCardCta' => true,
+								'cardCtaLabel' => __( 'Xem thêm', 'nntm' ),
+							),
+							(int) get_the_ID()
 						),
 						'innerBlocks' => array(), 'innerHTML' => '', 'innerContent' => array(),
 					)

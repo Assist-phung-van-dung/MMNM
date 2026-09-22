@@ -88,7 +88,7 @@ Những màn có nghiệp vụ nặng, khách không có nhu cầu sửa bố c�
 | `nntm_abode` | Trú Xứ | ứng với `TRU XU CARD` |
 | `nntm_video` | Video / phim Phật pháp | ứng với `CARD variant=VIDEO`, popup video |
 | `nntm_zen_track` | Nhạc thiền cho Thiền Đường | |
-| `post` (có sẵn) | Tin Tức + Hoằng Pháp | dùng category, không đẻ thêm CPT |
+| `post` (có sẵn) | Tin Tức + Hoằng Pháp | dùng category, không đẻ thêm CPT. Nhãn trong trang quản trị đã đổi thành **"Tin tức"** để không lẫn với `nntm_article` — xem `Post_Types::doi_nhan_tin_tuc()`, chỉ đổi chữ hiển thị chứ định danh vẫn là `post` |
 
 ### Taxonomy
 
