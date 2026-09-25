@@ -39,6 +39,7 @@ require_once NNTM_CORE_DIR . 'includes/functions.php';
 require_once NNTM_CORE_DIR . 'includes/class-post-meta.php';
 require_once NNTM_CORE_DIR . 'includes/class-nghi-quy-quiz.php';
 require_once NNTM_CORE_DIR . 'includes/class-publication-music.php';
+require_once NNTM_CORE_DIR . 'includes/class-tu-khoa-dong.php';
 require_once NNTM_CORE_DIR . 'includes/class-schema.php';
 require_once NNTM_CORE_DIR . 'includes/class-chuoi-tri.php';
 require_once NNTM_CORE_DIR . 'includes/class-activator.php';
@@ -61,6 +62,7 @@ function nntm_core_bootstrap() {
 	\NNTM\Core\Post_Meta::instance()->hooks();
 	\NNTM\Core\Nghi_Quy_Quiz::instance()->hooks();
 	\NNTM\Core\Publication_Music::instance()->hooks();
+	\NNTM\Core\Tu_Khoa_Dong::instance()->hooks();
 	\NNTM\Core\Roles::instance()->hooks();
 }
 add_action( 'plugins_loaded', 'nntm_core_bootstrap' );
