@@ -307,26 +307,16 @@ function nntm_search_normalize( array $vector ): array {
 }
 
 /**
- * Store one image vector.
+ * Which post uses an image, and what that makes the image's permission/language.
  *
- * @param int     $attachment_id Attachment ID.
- * @param float[] $vector        Raw vector from the service.
- * @return bool
+ * Split out of nntm_search_store_vector() so ownership can be refreshed without
+ * re-embedding (includes/chi-muc.php): images are normally uploaded FIRST and
+ * placed in an article later, so the answer at upload time is usually "nobody".
+ *
+ * @param int $attachment_id Attachment ID.
+ * @return array{post_id:int,acl:string,lang:string}
  */
-function nntm_search_store_vector( int $attachment_id, array $vector ): bool {
-	global $wpdb;
-
-	if ( empty( $vector ) ) {
-		return false;
-	}
-
-	$attachment = get_post( $attachment_id );
-
-	if ( ! $attachment instanceof WP_Post ) {
-		return false;
-	}
-
-	$unit    = nntm_search_normalize( $vector );
+function nntm_search_image_owner( int $attachment_id ): array {
 	$post_id = nntm_search_post_using_image( $attachment_id );
 
 	// An image inherits the permission of the post that uses it: an illustration
@@ -346,14 +336,44 @@ function nntm_search_store_vector( int $attachment_id, array $vector ): bool {
 		? (string) pll_get_post_language( $post_id )
 		: '';
 
+	return array(
+		'post_id' => $post_id,
+		'acl'     => $acl,
+		'lang'    => $lang,
+	);
+}
+
+/**
+ * Store one image vector.
+ *
+ * @param int     $attachment_id Attachment ID.
+ * @param float[] $vector        Raw vector from the service.
+ * @return bool
+ */
+function nntm_search_store_vector( int $attachment_id, array $vector ): bool {
+	global $wpdb;
+
+	if ( empty( $vector ) ) {
+		return false;
+	}
+
+	$attachment = get_post( $attachment_id );
+
+	if ( ! $attachment instanceof WP_Post ) {
+		return false;
+	}
+
+	$unit  = nntm_search_normalize( $vector );
+	$owner = nntm_search_image_owner( $attachment_id );
+
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	return false !== $wpdb->replace(
 		nntm_search_table_vectors(),
 		array(
 			'attachment_id' => $attachment_id,
-			'post_id'       => $post_id,
-			'acl'           => $acl,
-			'lang'          => $lang,
+			'post_id'       => $owner['post_id'],
+			'acl'           => $owner['acl'],
+			'lang'          => $owner['lang'],
 			'model'         => nntm_search_model(),
 			'dim'           => count( $unit ),
 			'vector'        => pack( 'g*', ...$unit ),

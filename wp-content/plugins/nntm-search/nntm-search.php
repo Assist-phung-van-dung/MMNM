@@ -82,6 +82,8 @@ require_once NNTM_SEARCH_DIR . '/includes/rate-limit.php';
 require_once NNTM_SEARCH_DIR . '/includes/embed.php';
 require_once NNTM_SEARCH_DIR . '/includes/pdf.php';
 require_once NNTM_SEARCH_DIR . '/includes/ocr.php';
+require_once NNTM_SEARCH_DIR . '/includes/chi-muc.php';
+require_once NNTM_SEARCH_DIR . '/includes/chi-muc-admin.php';
 require_once NNTM_SEARCH_DIR . '/includes/download.php';
 require_once NNTM_SEARCH_DIR . '/includes/engine.php';
 require_once NNTM_SEARCH_DIR . '/includes/rest.php';

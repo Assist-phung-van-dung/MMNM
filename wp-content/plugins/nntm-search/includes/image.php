@@ -318,16 +318,21 @@ function nntm_search_index_image( int $attachment_id ) {
 }
 
 /**
- * Index new uploads immediately.
+ * New upload: queue it (includes/chi-muc.php), WP-Cron indexes it within a minute.
  *
- * Synchronous for now because one image costs tens of milliseconds. When the
- * client bulk-uploads thousands, move this one function onto Action Scheduler —
- * nothing else has to change.
+ * Was synchronous — fine for tens of images, but a bulk upload of thousands
+ * held every upload request hostage to the Python service. Falls back to the
+ * old inline path only if the queue module is missing.
  *
  * @param int $attachment_id New attachment ID.
  */
 function nntm_search_on_add_image( int $attachment_id ): void {
 	if ( ! nntm_search_image_enabled() || ! wp_attachment_is_image( $attachment_id ) ) {
+		return;
+	}
+
+	if ( function_exists( 'nntm_search_cm_xep_hang' ) ) {
+		nntm_search_cm_xep_hang( $attachment_id );
 		return;
 	}
 
