@@ -163,6 +163,7 @@ $nntm_panel_id = 'nntm-header-panel';
 
 					$nntm_account_url   = apply_filters( 'nntm_account_page_url', home_url( '/tai-khoan/' ) );
 					$nntm_favorites_url = apply_filters( 'nntm_account_favorites_url', home_url( '/yeu-thich/' ) );
+					$nntm_congtu_url    = function_exists( 'nntm_congtu_url_ca_nhan' ) ? nntm_congtu_url_ca_nhan() : '';
 					$nntm_logout_url    = wp_logout_url( home_url( '/' ) );
 					?>
 					<div class="nntm-header__account">
@@ -194,6 +195,9 @@ $nntm_panel_id = 'nntm-header-panel';
 							<?php endif; ?>
 							<ul class="nntm-header__account-menu">
 								<li><a href="<?php echo esc_url( $nntm_account_url ); ?>"><?php esc_html_e( 'Trang tài khoản', 'nntm' ); ?></a></li>
+								<?php if ( '' !== $nntm_congtu_url ) : ?>
+									<li><a href="<?php echo esc_url( $nntm_congtu_url ); ?>"><?php esc_html_e( 'Cộng tu của tôi', 'nntm' ); ?></a></li>
+								<?php endif; ?>
 								<li><a href="<?php echo esc_url( $nntm_favorites_url ); ?>"><?php esc_html_e( 'Yêu thích', 'nntm' ); ?></a></li>
 								<li><a href="<?php echo esc_url( $nntm_logout_url ); ?>"><?php esc_html_e( 'Đăng xuất', 'nntm' ); ?></a></li>
 							</ul>
