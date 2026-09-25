@@ -7,6 +7,67 @@
 ( function () {
 	'use strict';
 
+	/*
+	 * Ảnh xem trước cho trang kết quả tìm bằng ảnh (image-page.js). Máy chủ KHÔNG
+	 * giữ ảnh người dùng tải lên — trình duyệt tự giữ một bản thu nhỏ trong
+	 * sessionStorage (mất khi đóng tab), theo mã phiên /image trả về.
+	 *
+	 * Khai TRƯỚC đoạn thoát sớm bên dưới: header của thành viên đã đăng nhập không
+	 * có ô tìm, nhưng trang kết quả vẫn cần hàm này.
+	 */
+	var KHOA_ANH = 'nntm_anh_';
+	var DS_ANH = 'nntm_anh_ds';
+
+	function luuXemTruoc( file, token ) {
+		return new Promise( function ( xong ) {
+			if ( ! file || ! token || ! window.URL || ! window.sessionStorage ) {
+				xong();
+				return;
+			}
+
+			var url = window.URL.createObjectURL( file );
+			var img = new window.Image();
+
+			img.onload = function () {
+				try {
+					var k = Math.min( 1, 480 / Math.max( img.naturalWidth, img.naturalHeight ) );
+					var c = document.createElement( 'canvas' );
+					c.width = Math.max( 1, Math.round( img.naturalWidth * k ) );
+					c.height = Math.max( 1, Math.round( img.naturalHeight * k ) );
+					c.getContext( '2d' ).drawImage( img, 0, 0, c.width, c.height );
+
+					// Chỉ giữ 3 ảnh gần nhất cho khỏi đầy bộ nhớ phiên.
+					var ds = JSON.parse( window.sessionStorage.getItem( DS_ANH ) || '[]' );
+					ds.push( token );
+					while ( ds.length > 3 ) {
+						window.sessionStorage.removeItem( KHOA_ANH + ds.shift() );
+					}
+					window.sessionStorage.setItem( KHOA_ANH + token, c.toDataURL( 'image/jpeg', 0.8 ) );
+					window.sessionStorage.setItem( DS_ANH, JSON.stringify( ds ) );
+				} catch ( e ) {
+					// Cửa sổ ẩn danh / bộ nhớ đầy: trang kết quả chỉ thiếu ảnh xem trước.
+				}
+				window.URL.revokeObjectURL( url );
+				xong();
+			};
+			img.onerror = function () {
+				window.URL.revokeObjectURL( url );
+				xong();
+			};
+			img.src = url;
+		} );
+	}
+
+	function layXemTruoc( token ) {
+		try {
+			return window.sessionStorage.getItem( KHOA_ANH + token ) || '';
+		} catch ( e ) {
+			return '';
+		}
+	}
+
+	window.nntmAnhXemTruoc = { luu: luuXemTruoc, lay: layXemTruoc };
+
 	var form = document.querySelector( '.nntm-header__search-form' );
 
 	if ( ! form || typeof nntmSearch === 'undefined' ) {
@@ -436,6 +497,10 @@
 			.then( function ( data ) {
 				if ( ! data ) {
 					return;
+				}
+
+				if ( data.token ) {
+					luuXemTruoc( file, data.token );
 				}
 
 				var heading = renderKeywords( data.keywords, data.mode );

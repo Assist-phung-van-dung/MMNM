@@ -47,47 +47,34 @@ function nntm_search_index_pdf( int $attachment_id ) {
 		return new WP_Error( 'nntm_pdf_unreadable', __( 'Không đọc được file PDF.', 'nntm' ) );
 	}
 
-	$body = file_get_contents( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local file, not a URL.
+	// Shared helper: request id + timing log like every other service call, and a
+	// non-200 answer carries its HTTP status — the indexing queue (chi-muc.php)
+	// needs that to tell "service is down, wait" from "this file is broken, skip".
+	$data = nntm_search_post_file( '/pdf/text', $path, 'tep', 120 );
 
-	if ( false === $body ) {
-		return new WP_Error( 'nntm_pdf_unreadable', __( 'Không đọc được file PDF.', 'nntm' ) );
+	if ( is_wp_error( $data ) ) {
+		$status = (int) ( ( (array) $data->get_error_data() )['status'] ?? 0 );
+
+		return new WP_Error( 'nntm_pdf_service', __( 'Dịch vụ đọc PDF không phản hồi.', 'nntm' ), array( 'status' => $status ) );
 	}
 
-	$boundary = wp_generate_password( 24, false );
-
-	$payload = "--{$boundary}\r\n"
-		. 'Content-Disposition: form-data; name="tep"; filename="' . basename( $path ) . "\"\r\n"
-		. "Content-Type: application/pdf\r\n\r\n"
-		. $body . "\r\n"
-		. "--{$boundary}--\r\n";
-
-	$response = wp_remote_post(
-		nntm_search_service_url() . '/pdf/text',
-		array(
-			'timeout' => 120,
-			'headers' => array( 'Content-Type' => 'multipart/form-data; boundary=' . $boundary ),
-			'body'    => $payload,
-		)
-	);
-
-	if ( is_wp_error( $response ) || 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
-		return new WP_Error( 'nntm_pdf_service', __( 'Dịch vụ đọc PDF không phản hồi.', 'nntm' ) );
-	}
-
-	$data = json_decode( (string) wp_remote_retrieve_body( $response ), true );
-
-	if ( ! is_array( $data ) || empty( $data['trang'] ) ) {
+	if ( empty( $data['trang'] ) ) {
 		return new WP_Error( 'nntm_pdf_empty', __( 'PDF không có trang nào đọc được.', 'nntm' ) );
 	}
 
 	$post_id = nntm_search_pdf_owner( $attachment_id );
 	$stored  = 0;
+	$scanned = array();
 
 	foreach ( $data['trang'] as $page ) {
 		$content = trim( (string) ( $page['chu'] ?? '' ) );
 
-		// Empty page means a scanned image. Skipped for now — OCR (Tesseract,
-		// running locally, no third-party service) plugs in exactly here.
+		// (Almost) no text layer = a scanned image. Queue it for OCR (includes/ocr.php);
+		// a stray page number found on it is still stored meanwhile.
+		if ( 'trong' === ( $page['nguon'] ?? '' ) ) {
+			$scanned[] = (int) $page['trang'];
+		}
+
 		if ( '' === $content ) {
 			continue;
 		}
@@ -108,6 +95,10 @@ function nntm_search_index_pdf( int $attachment_id ) {
 		);
 
 		++$stored;
+	}
+
+	if ( function_exists( 'nntm_search_ocr_xep_hang' ) ) {
+		nntm_search_ocr_xep_hang( $attachment_id, $scanned );
 	}
 
 	return $stored;
@@ -264,7 +255,7 @@ function nntm_search_pdf_pages_like( string $query, array $terms, int $limit ): 
 	// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	$hits = $wpdb->get_results(
 		$wpdb->prepare(
-			"SELECT attachment_id, post_id, page_no, content, 0 AS score
+			"SELECT attachment_id, post_id, page_no, content, source, 0 AS score
 			 FROM {$table}
 			 WHERE " . implode( ' AND ', $where ) . '
 			 ORDER BY attachment_id, page_no
@@ -396,7 +387,7 @@ function nntm_search_pdf_pages( string $query, int $limit = 3 ): array {
 	// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	$hits = $wpdb->get_results(
 		$wpdb->prepare(
-			"SELECT attachment_id, post_id, page_no, content,
+			"SELECT attachment_id, post_id, page_no, content, source,
 			        MATCH(folded) AGAINST (%s IN BOOLEAN MODE) AS score
 			 FROM {$table}
 			 WHERE MATCH(folded) AGAINST (%s IN BOOLEAN MODE)
@@ -432,10 +423,25 @@ function nntm_search_pdf_pages( string $query, int $limit = 3 ): array {
  * @return object[]
  */
 function nntm_search_pdf_filter_results( array $hits, string $query, array $terms ): array {
+	/*
+	 * Trang OCR: dấu tiếng Việt do máy đọc, sai khoảng 1 từ trên 20 ("chiếu" →
+	 * "chiều", "đẳng" → "đăng" — đo thật trên scan mẫu, docs/15-ocr-pdf.md).
+	 * Đòi khớp đúng dấu (bộ lọc 1 ở trên) thì gõ "bình đẳng" KHÔNG ra được trang
+	 * scan có đúng câu đó. Nên với trang OCR chỉ so bỏ dấu; bộ lọc cụm câu dài
+	 * (bộ lọc 2) vẫn giữ. Nhãn kết quả đã ghi "chữ nhận dạng từ bản scan".
+	 */
+	$terms_ocr = function_exists( 'nntm_search_ocr_khop_bo_dau' ) && nntm_search_ocr_khop_bo_dau()
+		? array_map( 'nntm_search_fold', $terms )
+		: $terms;
+
 	return array_values(
 		array_filter(
 			$hits,
-			static fn( $hit ): bool => nntm_search_content_matches_query( (string) $hit->content, $query, $terms )
+			static fn( $hit ): bool => nntm_search_content_matches_query(
+				(string) $hit->content,
+				$query,
+				'ocr' === ( $hit->source ?? '' ) ? $terms_ocr : $terms
+			)
 		)
 	);
 }
@@ -488,8 +494,11 @@ function nntm_search_pdf_rows_from( array $hits, string $query ): array {
 			'thumb_tag' => $post instanceof WP_Post
 				? (string) get_the_post_thumbnail( $post, 'medium_large', array( 'class' => 'nntm-article-rows__img-el', 'loading' => 'lazy' ) )
 				: '',
-			/* translators: %d: page number inside the PDF. */
-			'label'     => sprintf( __( 'PDF · trang %d', 'nntm' ), (int) $hit->page_no ),
+			'label'     => 'ocr' === ( $hit->source ?? '' )
+				/* translators: %d: page number inside the PDF. */
+				? sprintf( __( 'PDF · trang %d · chữ nhận dạng từ bản scan', 'nntm' ), (int) $hit->page_no )
+				/* translators: %d: page number inside the PDF. */
+				: sprintf( __( 'PDF · trang %d', 'nntm' ), (int) $hit->page_no ),
 			'cta_1'     => __( 'Mở đúng trang', 'nntm' ),
 			'cta_2'     => __( 'Tải xuống', 'nntm' ),
 			// Second action points somewhere else than the first, so the row
@@ -503,12 +512,19 @@ function nntm_search_pdf_rows_from( array $hits, string $query ): array {
 }
 
 /**
- * Index a PDF as soon as it is uploaded.
+ * Index a PDF once it is uploaded (via the background queue).
  *
  * @param int $attachment_id New attachment ID.
  */
 function nntm_search_on_add_pdf( int $attachment_id ): void {
 	if ( ! nntm_search_pdf_enabled() || 'application/pdf' !== get_post_mime_type( $attachment_id ) ) {
+		return;
+	}
+
+	// Queue instead of extracting inside the upload request — a 300-page book
+	// used to hold the upload for up to 120 s (includes/chi-muc.php).
+	if ( function_exists( 'nntm_search_cm_xep_hang' ) ) {
+		nntm_search_cm_xep_hang( $attachment_id );
 		return;
 	}
 

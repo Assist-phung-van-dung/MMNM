@@ -150,6 +150,16 @@ function nntm_search_handle_image( WP_REST_Request $request ) {
 
 	$keywords = $read['keywords'];
 
+	/*
+	 * Vector luôn được tính (thêm vài chục ms): trang kết quả đầy đủ cần phần
+	 * "ảnh trông giống" kể cả khi từ khoá đã ra bài. Lỗi ở đây mà từ khoá vẫn có
+	 * thì đi tiếp không có phần đó; chỉ khi KHÔNG còn gì để dựa vào mới báo lỗi
+	 * dịch vụ (xem ghi chú bên dưới).
+	 */
+	$vector = nntm_search_embed_image( $file['tmp_name'] );
+	$token  = nntm_search_image_session_create( $keywords, is_wp_error( $vector ) ? null : $vector );
+	$page   = nntm_search_image_page_url( $token, $keywords );
+
 	if ( ! empty( $keywords ) ) {
 		$words = array_column( $keywords, 'word' );
 
@@ -179,16 +189,19 @@ function nntm_search_handle_image( WP_REST_Request $request ) {
 					'mode'     => 'keyword',
 					'results'  => array_values( array_slice( $rows, 0, 6 ) ),
 					'total'    => count( $rows ),
-					'see_all'  => esc_url_raw( add_query_arg( 's', $words[0], home_url( '/' ) ) ),
+					'token'    => $token,
+					// Trang kết quả đầy đủ (includes/image-page.php) — đủ MỌI từ khoá
+					// + ảnh trông giống. Trước đây chỉ tìm chữ theo từ khoá đầu tiên.
+					'see_all'  => esc_url_raw( $page ),
+					'trang'    => esc_url_raw( $page ),
 				)
 			);
 		}
 	}
 
-	// Nothing matched the words — fall back to visual similarity.
-	$vector = nntm_search_embed_image( $file['tmp_name'] );
-
 	/*
+	 * Nothing matched the words — fall back to visual similarity.
+	 *
 	 * The Python service already succeeded once in this very request (the
 	 * keyword read above). A failure here means the service went down or
 	 * timed out in between — a real service failure, not "no similar image
@@ -203,6 +216,7 @@ function nntm_search_handle_image( WP_REST_Request $request ) {
 	}
 
 	$nearest = nntm_search_vector_search( $vector, nntm_search_viewer_acl(), 30 );
+	$similar = nntm_search_group_by_post( $nearest, 6 );
 
 	nntm_search_log_image_request( 'similar', count( $nearest ), $started_at );
 
@@ -210,9 +224,12 @@ function nntm_search_handle_image( WP_REST_Request $request ) {
 		array(
 			'keywords' => $keywords,
 			'mode'     => 'similar',
-			'results'  => nntm_search_group_by_post( $nearest, 6 ),
-			'total'    => count( $nearest ),
-			'see_all'  => '',
+			'results'  => $similar,
+			'total'    => count( $similar ),
+			'token'    => $token,
+			'see_all'  => $similar ? esc_url_raw( $page ) : '',
+			// Trang kết quả luôn có (kể cả khi rỗng): vẫn hiện từ khoá đọc được.
+			'trang'    => esc_url_raw( $page ),
 		)
 	);
 }
@@ -318,16 +335,21 @@ function nntm_search_index_image( int $attachment_id ) {
 }
 
 /**
- * Index new uploads immediately.
+ * New upload: queue it (includes/chi-muc.php), WP-Cron indexes it within a minute.
  *
- * Synchronous for now because one image costs tens of milliseconds. When the
- * client bulk-uploads thousands, move this one function onto Action Scheduler —
- * nothing else has to change.
+ * Was synchronous — fine for tens of images, but a bulk upload of thousands
+ * held every upload request hostage to the Python service. Falls back to the
+ * old inline path only if the queue module is missing.
  *
  * @param int $attachment_id New attachment ID.
  */
 function nntm_search_on_add_image( int $attachment_id ): void {
 	if ( ! nntm_search_image_enabled() || ! wp_attachment_is_image( $attachment_id ) ) {
+		return;
+	}
+
+	if ( function_exists( 'nntm_search_cm_xep_hang' ) ) {
+		nntm_search_cm_xep_hang( $attachment_id );
 		return;
 	}
 

@@ -64,13 +64,16 @@ function nntm_search_request_id(): string {
 /**
  * POST a file to the service as multipart/form-data.
  *
- * @param string $endpoint  Path, e.g. '/anh/tu-khoa'.
- * @param string $file_path Local file.
- * @param string $field     Form field name.
- * @param int    $timeout   Seconds.
- * @return array|WP_Error Decoded JSON.
+ * @param string               $endpoint  Path, e.g. '/anh/tu-khoa'.
+ * @param string               $file_path Local file.
+ * @param string               $field     Form field name.
+ * @param int                  $timeout   Seconds.
+ * @param array<string,string> $fields    Extra plain form fields sent alongside the file.
+ * @return array|WP_Error Decoded JSON. On a non-200 answer the error data carries
+ *                        ['status' => HTTP code] so a caller can tell "service down"
+ *                        from "service says OCR is not installed" (503).
  */
-function nntm_search_post_file( string $endpoint, string $file_path, string $field, int $timeout = 20 ) {
+function nntm_search_post_file( string $endpoint, string $file_path, string $field, int $timeout = 20, array $fields = array() ) {
 	$generic = new WP_Error( 'nntm_service_failed', __( 'Không xử lý được ảnh lúc này.', 'nntm' ) );
 
 	if ( ! is_readable( $file_path ) ) {
@@ -85,7 +88,14 @@ function nntm_search_post_file( string $endpoint, string $file_path, string $fie
 
 	$boundary = wp_generate_password( 24, false );
 
-	$payload = "--{$boundary}\r\n"
+	$payload = '';
+	foreach ( $fields as $name => $value ) {
+		$payload .= "--{$boundary}\r\n"
+			. 'Content-Disposition: form-data; name="' . preg_replace( '/[^a-z0-9_]/i', '', (string) $name ) . "\"\r\n\r\n"
+			. str_replace( array( "\r", "\n" ), '', (string) $value ) . "\r\n";
+	}
+
+	$payload .= "--{$boundary}\r\n"
 		. 'Content-Disposition: form-data; name="' . $field . '"; filename="' . basename( $file_path ) . "\"\r\n"
 		. "Content-Type: application/octet-stream\r\n\r\n"
 		. $body . "\r\n"
@@ -123,6 +133,7 @@ function nntm_search_post_file( string $endpoint, string $file_path, string $fie
 	nntm_search_log_python_call( $request_id, $endpoint, $http_ms, 200 === $status );
 
 	if ( 200 !== $status ) {
+		$generic->add_data( array( 'status' => $status ) );
 		return $generic;
 	}
 
@@ -296,26 +307,16 @@ function nntm_search_normalize( array $vector ): array {
 }
 
 /**
- * Store one image vector.
+ * Which post uses an image, and what that makes the image's permission/language.
  *
- * @param int     $attachment_id Attachment ID.
- * @param float[] $vector        Raw vector from the service.
- * @return bool
+ * Split out of nntm_search_store_vector() so ownership can be refreshed without
+ * re-embedding (includes/chi-muc.php): images are normally uploaded FIRST and
+ * placed in an article later, so the answer at upload time is usually "nobody".
+ *
+ * @param int $attachment_id Attachment ID.
+ * @return array{post_id:int,acl:string,lang:string}
  */
-function nntm_search_store_vector( int $attachment_id, array $vector ): bool {
-	global $wpdb;
-
-	if ( empty( $vector ) ) {
-		return false;
-	}
-
-	$attachment = get_post( $attachment_id );
-
-	if ( ! $attachment instanceof WP_Post ) {
-		return false;
-	}
-
-	$unit    = nntm_search_normalize( $vector );
+function nntm_search_image_owner( int $attachment_id ): array {
 	$post_id = nntm_search_post_using_image( $attachment_id );
 
 	// An image inherits the permission of the post that uses it: an illustration
@@ -335,14 +336,44 @@ function nntm_search_store_vector( int $attachment_id, array $vector ): bool {
 		? (string) pll_get_post_language( $post_id )
 		: '';
 
+	return array(
+		'post_id' => $post_id,
+		'acl'     => $acl,
+		'lang'    => $lang,
+	);
+}
+
+/**
+ * Store one image vector.
+ *
+ * @param int     $attachment_id Attachment ID.
+ * @param float[] $vector        Raw vector from the service.
+ * @return bool
+ */
+function nntm_search_store_vector( int $attachment_id, array $vector ): bool {
+	global $wpdb;
+
+	if ( empty( $vector ) ) {
+		return false;
+	}
+
+	$attachment = get_post( $attachment_id );
+
+	if ( ! $attachment instanceof WP_Post ) {
+		return false;
+	}
+
+	$unit  = nntm_search_normalize( $vector );
+	$owner = nntm_search_image_owner( $attachment_id );
+
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	return false !== $wpdb->replace(
 		nntm_search_table_vectors(),
 		array(
 			'attachment_id' => $attachment_id,
-			'post_id'       => $post_id,
-			'acl'           => $acl,
-			'lang'          => $lang,
+			'post_id'       => $owner['post_id'],
+			'acl'           => $owner['acl'],
+			'lang'          => $owner['lang'],
 			'model'         => nntm_search_model(),
 			'dim'           => count( $unit ),
 			'vector'        => pack( 'g*', ...$unit ),
