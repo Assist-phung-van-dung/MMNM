@@ -36,6 +36,8 @@ class Schema {
 			'favorites',
 			'retreat_signup',
 			'kpi_log',
+			'mail_campaign',
+			'mail_queue',
 		);
 	}
 
@@ -165,6 +167,46 @@ class Schema {
 			KEY user_date (user_id, log_date),
 			KEY ct_nguoi_metric (program_id, user_id, metric),
 			KEY ct_metric (program_id, metric)
+		) {$charset_collate};";
+
+		// nntm_mail_campaign — mỗi lần gửi hàng loạt (một kỳ bản tin, một dịp lễ).
+		// khoa là khoá chống gửi trùng: 'ban_tin:2026-W39', 'dip_le:123:2026-05-31'.
+		// noi_dung là HTML đã dựng sẵn, còn chỗ trống {{ten}} / {{huy_url}} điền lúc gửi.
+		$table = self::table( 'mail_campaign' );
+		$sql[] = "CREATE TABLE {$table} (
+			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+			loai VARCHAR(20) NOT NULL,
+			khoa VARCHAR(100) NOT NULL,
+			ref_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+			tieu_de VARCHAR(255) NOT NULL,
+			noi_dung LONGTEXT NOT NULL,
+			van_ban LONGTEXT NULL,
+			trang_thai VARCHAR(20) NOT NULL DEFAULT 'dang_gui',
+			tong INT UNSIGNED NOT NULL DEFAULT 0,
+			da_gui INT UNSIGNED NOT NULL DEFAULT 0,
+			loi INT UNSIGNED NOT NULL DEFAULT 0,
+			che_do VARCHAR(20) NOT NULL DEFAULT '',
+			created_at DATETIME NOT NULL,
+			finished_at DATETIME NULL,
+			PRIMARY KEY  (id),
+			UNIQUE KEY khoa (khoa),
+			KEY trang_thai (trang_thai)
+		) {$charset_collate};";
+
+		// nntm_mail_queue — từng người nhận của một campaign, gửi dần theo lô.
+		$table = self::table( 'mail_queue' );
+		$sql[] = "CREATE TABLE {$table} (
+			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+			campaign_id BIGINT UNSIGNED NOT NULL,
+			user_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+			email VARCHAR(191) NOT NULL,
+			trang_thai VARCHAR(20) NOT NULL DEFAULT 'cho',
+			so_lan TINYINT UNSIGNED NOT NULL DEFAULT 0,
+			loi_msg VARCHAR(255) NULL,
+			sent_at DATETIME NULL,
+			PRIMARY KEY  (id),
+			UNIQUE KEY campaign_email (campaign_id, email),
+			KEY campaign_trang_thai (campaign_id, trang_thai)
 		) {$charset_collate};";
 
 		return $sql;

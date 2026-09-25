@@ -25,7 +25,7 @@ define( 'NNTM_CORE_VERSION', '0.1.0' );
 define( 'NNTM_CORE_DIR', plugin_dir_path( __FILE__ ) );
 define( 'NNTM_CORE_URL', plugin_dir_url( __FILE__ ) );
 define( 'NNTM_CORE_FILE', __FILE__ );
-define( 'NNTM_CORE_SCHEMA_VERSION', '1.1.0' );
+define( 'NNTM_CORE_SCHEMA_VERSION', '1.2.0' );
 
 /**
  * Nạp các file lớp của plugin.
@@ -41,6 +41,11 @@ require_once NNTM_CORE_DIR . 'includes/class-nghi-quy-quiz.php';
 require_once NNTM_CORE_DIR . 'includes/class-publication-music.php';
 require_once NNTM_CORE_DIR . 'includes/class-schema.php';
 require_once NNTM_CORE_DIR . 'includes/class-chuoi-tri.php';
+require_once NNTM_CORE_DIR . 'includes/ban-tin/class-am-lich.php';
+require_once NNTM_CORE_DIR . 'includes/ban-tin/class-gui-thu.php';
+require_once NNTM_CORE_DIR . 'includes/ban-tin/class-noi-dung-thu.php';
+require_once NNTM_CORE_DIR . 'includes/ban-tin/class-ban-tin.php';
+require_once NNTM_CORE_DIR . 'includes/ban-tin/class-ban-tin-admin.php';
 require_once NNTM_CORE_DIR . 'includes/class-activator.php';
 
 /**
@@ -62,6 +67,8 @@ function nntm_core_bootstrap() {
 	\NNTM\Core\Nghi_Quy_Quiz::instance()->hooks();
 	\NNTM\Core\Publication_Music::instance()->hooks();
 	\NNTM\Core\Roles::instance()->hooks();
+	\NNTM\Core\Ban_Tin::hooks();
+	\NNTM\Core\Ban_Tin_Admin::hooks();
 }
 add_action( 'plugins_loaded', 'nntm_core_bootstrap' );
 

@@ -244,6 +244,20 @@ function nntm_ajax_retreat_signup(): void {
 		wp_send_json_error( array( 'message' => __( 'Không thể lưu đăng ký lúc này.', 'nntm' ) ), 500 );
 	}
 
+	// Plugin nntm-core gửi thư "đã nhận đăng ký" (Phase 2, docs/14-ban-tin-email.md).
+	do_action(
+		'nntm_retreat_signup_created',
+		(int) $wpdb->insert_id,
+		array(
+			'retreat_id' => $retreat_id,
+			'user_id'    => $user_id,
+			'full_name'  => $full_name,
+			'phone'      => $phone,
+			'email'      => $email,
+			'note'       => $note,
+		)
+	);
+
 	wp_send_json_success(
 		array(
 			'message' => __( 'Đăng ký đã được gửi. Ban quản trị sẽ liên hệ xác nhận.', 'nntm' ),
