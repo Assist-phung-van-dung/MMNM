@@ -1,0 +1,391 @@
+/*
+ * Trang "Cộng tu của tôi" — dashboard cá nhân (template-parts/cong-tu/ca-nhan.php).
+ * MÀN TỰ DỰNG, Figma chưa có. Chỉ dùng token trong tokens.css.
+ */
+
+.nntm-ct-cn {
+	background: var(--nntm-nen);
+	padding-block: var(--nntm-sp-10);
+}
+
+.nntm-ct-cn__khung {
+	max-width: 960px;
+	margin: 0 auto;
+	padding-inline: var(--nntm-sp-5);
+	box-sizing: border-box;
+}
+
+.nntm-ct-cn__tieu-de {
+	margin: 0 0 var(--nntm-sp-3);
+	font-family: var(--nntm-font-display);
+	font-size: var(--nntm-fs-2xl);
+	color: var(--nntm-do-tham);
+}
+
+.nntm-ct-cn__loi-mo {
+	margin-bottom: var(--nntm-sp-5);
+	color: var(--nntm-chu-phu);
+}
+
+.nntm-ct-cn__muc {
+	margin: 0 0 var(--nntm-sp-4);
+	font-family: var(--nntm-font-display);
+	font-size: var(--nntm-fs-xl);
+	font-weight: 600;
+	color: var(--nntm-chu);
+}
+
+.nntm-ct-cn__rong {
+	margin: var(--nntm-sp-7) 0;
+	padding: var(--nntm-sp-7);
+	background: var(--nntm-trang);
+	box-shadow: var(--nntm-sh-card);
+	color: var(--nntm-chu-phu);
+	text-align: center;
+}
+
+/* ---------- Đầu trang ---------- */
+
+.nntm-ct-cn__dau {
+	margin-bottom: var(--nntm-sp-5);
+}
+
+.nntm-ct-cn__chao {
+	display: flex;
+	align-items: center;
+	gap: var(--nntm-sp-3);
+	margin: 0 0 var(--nntm-sp-2);
+	font-size: var(--nntm-fs-md);
+}
+
+.nntm-ct-cn__avatar {
+	border-radius: 50%;
+}
+
+.nntm-ct-cn__chuong-trinh {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--nntm-sp-3);
+	margin: 0;
+	font-size: var(--nntm-fs-lg);
+}
+
+.nntm-ct-cn__chuong-trinh a {
+	color: var(--nntm-chu);
+	font-weight: 600;
+}
+
+.nntm-ct-cn__trang-thai {
+	padding: 0 var(--nntm-sp-3);
+	border: 1px solid var(--nntm-duong-vien);
+	border-radius: var(--nntm-r-pill);
+	color: var(--nntm-chu-phu);
+	font-size: var(--nntm-fs-sm);
+}
+
+.nntm-ct-cn__trang-thai.is-mo {
+	border-color: var(--nntm-chinh);
+	color: var(--nntm-chinh);
+}
+
+.nntm-ct-cn__hom-nay-la {
+	margin: var(--nntm-sp-2) 0 0;
+	color: var(--nntm-chu-phu);
+	font-size: var(--nntm-fs-sm);
+}
+
+.nntm-ct-cn__chon {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--nntm-sp-2);
+	margin-top: var(--nntm-sp-4);
+}
+
+.nntm-ct-cn__chon a {
+	padding: var(--nntm-sp-1) var(--nntm-sp-4);
+	border: 1px solid var(--nntm-duong-vien);
+	border-radius: var(--nntm-r-pill);
+	color: var(--nntm-chu);
+	font-size: var(--nntm-fs-sm);
+	text-decoration: none;
+}
+
+.nntm-ct-cn__chon a[aria-current="page"] {
+	border-color: var(--nntm-chinh);
+	background: var(--nntm-chinh);
+	color: var(--nntm-trang);
+}
+
+/* ---------- Nút ---------- */
+
+.nntm-ct-cn__hanh-dong {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--nntm-sp-3);
+	margin: 0 0 var(--nntm-sp-7);
+}
+
+.nntm-ct-cn__nut {
+	display: inline-block;
+	padding: var(--nntm-sp-3) var(--nntm-sp-6);
+	border: 1px solid var(--nntm-muc);
+	color: var(--nntm-muc);
+	font-weight: 600;
+	text-decoration: none;
+	transition: background-color var(--nntm-dur) var(--nntm-ease), color var(--nntm-dur) var(--nntm-ease);
+}
+
+.nntm-ct-cn__nut--chinh,
+.nntm-ct-cn__nut:hover,
+.nntm-ct-cn__nut:focus-visible {
+	background: var(--nntm-muc);
+	color: var(--nntm-trang);
+}
+
+.nntm-ct-cn__nut--chinh:hover,
+.nntm-ct-cn__nut--chinh:focus-visible {
+	background: var(--nntm-do-tham);
+	border-color: var(--nntm-do-tham);
+}
+
+/* ---------- Ô số ---------- */
+
+.nntm-ct-cn__o-luoi {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: var(--nntm-sp-5);
+	margin-bottom: var(--nntm-sp-7);
+}
+
+.nntm-ct-cn__o,
+.nntm-ct-cn__cam-ket,
+.nntm-ct-cn__bieu-do,
+.nntm-ct-cn__nhat-ky {
+	background: var(--nntm-trang);
+	box-shadow: var(--nntm-sh-card);
+	padding: var(--nntm-sp-6);
+	box-sizing: border-box;
+}
+
+.nntm-ct-cn__o--noi-bat {
+	border-top: 3px solid var(--nntm-do-tham);
+}
+
+.nntm-ct-cn__o-so {
+	margin: 0;
+	font-family: var(--nntm-font-display);
+	font-size: 36px;
+	font-weight: 600;
+	line-height: 1.1;
+	color: var(--nntm-do-tham);
+}
+
+.nntm-ct-cn__o-nhan {
+	margin: var(--nntm-sp-1) 0 0;
+	font-weight: 600;
+	color: var(--nntm-chu);
+}
+
+.nntm-ct-cn__o-phu {
+	margin: var(--nntm-sp-2) 0 0;
+	color: var(--nntm-chu-phu);
+	font-size: var(--nntm-fs-sm);
+}
+
+/* ---------- Cam kết ---------- */
+
+.nntm-ct-cn__cam-ket,
+.nntm-ct-cn__bieu-do {
+	margin: 0 0 var(--nntm-sp-7);
+}
+
+.nntm-ct-cn__phan-so {
+	margin: 0 0 var(--nntm-sp-3);
+	font-size: var(--nntm-fs-lg);
+}
+
+.nntm-ct-cn__phan-so strong {
+	font-family: var(--nntm-font-display);
+	font-size: var(--nntm-fs-2xl);
+	color: var(--nntm-do-tham);
+}
+
+.nntm-ct-cn__phan-tram {
+	margin-left: var(--nntm-sp-3);
+	color: var(--nntm-chu-phu);
+	font-size: var(--nntm-fs-md);
+}
+
+.nntm-ct-cn__thanh {
+	height: 12px;
+	overflow: hidden;
+	border-radius: var(--nntm-r-pill);
+	background: var(--nntm-kem);
+}
+
+.nntm-ct-cn__thanh-day {
+	display: block;
+	height: 100%;
+	border-radius: inherit;
+	background: var(--nntm-chinh);
+}
+
+.nntm-ct-cn__thanh--vuot .nntm-ct-cn__thanh-day {
+	background: var(--nntm-do-tham);
+}
+
+.nntm-ct-cn__ghi-chu {
+	margin: var(--nntm-sp-3) 0 0;
+	color: var(--nntm-chu-phu);
+}
+
+/* ---------- Biểu đồ cột ---------- */
+
+.nntm-ct-cn__cot-ds {
+	display: grid;
+	grid-template-columns: repeat(var(--nntm-so-cot, 7), minmax(0, 1fr));
+	align-items: end;
+	gap: var(--nntm-sp-2);
+	height: 180px;
+	margin: 0;
+	padding: 0 0 var(--nntm-sp-1);
+	list-style: none;
+	border-bottom: 1px solid var(--nntm-vien);
+}
+
+.nntm-ct-cn__cot {
+	display: grid;
+	grid-template-rows: auto 1fr auto;
+	height: 100%;
+	min-width: 0;
+	text-align: center;
+}
+
+.nntm-ct-cn__cot-so {
+	min-height: 1.3em;
+	color: var(--nntm-chu);
+	font-size: var(--nntm-fs-xs);
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.nntm-ct-cn__cot-thanh {
+	align-self: end;
+	height: var(--nntm-cot-cao, 0%);
+	min-height: 2px;
+	border-radius: var(--nntm-r-sm) var(--nntm-r-sm) 0 0;
+	background: var(--nntm-chinh);
+}
+
+.nntm-ct-cn__cot.is-hom-nay .nntm-ct-cn__cot-thanh {
+	background: var(--nntm-do-tham);
+}
+
+.nntm-ct-cn__cot.is-truoc .nntm-ct-cn__cot-thanh {
+	background: var(--nntm-vien);
+}
+
+.nntm-ct-cn__cot-nhan {
+	margin-top: var(--nntm-sp-1);
+	overflow: hidden;
+	color: var(--nntm-chu-phu);
+	font-size: var(--nntm-fs-xs);
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.nntm-ct-cn__cot.is-hom-nay .nntm-ct-cn__cot-nhan {
+	overflow: visible;
+	color: var(--nntm-do-tham);
+	font-weight: 600;
+}
+
+.nntm-ct-cn__bieu-do-rong {
+	margin: 0;
+	padding: var(--nntm-sp-6) 0;
+	color: var(--nntm-chu-phu);
+	text-align: center;
+}
+
+.nntm-ct-cn__mo-ta {
+	margin-top: var(--nntm-sp-3);
+	color: var(--nntm-chu-phu);
+	font-size: var(--nntm-fs-sm);
+}
+
+/* ---------- Nhật ký ---------- */
+
+.nntm-ct-cn__bang-cuon {
+	overflow-x: auto;
+}
+
+.nntm-ct-cn__bang {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: var(--nntm-fs-15);
+}
+
+.nntm-ct-cn__bang th,
+.nntm-ct-cn__bang td {
+	padding: var(--nntm-sp-2) var(--nntm-sp-3);
+	border-bottom: 1px solid var(--nntm-vien);
+	text-align: left;
+	white-space: nowrap;
+}
+
+.nntm-ct-cn__bang thead th {
+	color: var(--nntm-chu-phu);
+	font-size: var(--nntm-fs-sm);
+	font-weight: 600;
+}
+
+.nntm-ct-cn__bang tbody th[scope="row"] {
+	font-weight: 400;
+}
+
+.nntm-ct-cn__bang-tuan th {
+	padding-top: var(--nntm-sp-4);
+	background: var(--nntm-kem);
+	color: var(--nntm-chu);
+	font-weight: 600;
+	white-space: normal;
+}
+
+@media (max-width: 767px) {
+	.nntm-ct-cn {
+		padding-block: var(--nntm-sp-7);
+	}
+
+	.nntm-ct-cn__khung {
+		padding-inline: var(--nntm-sp-4);
+	}
+
+	.nntm-ct-cn__o,
+	.nntm-ct-cn__cam-ket,
+	.nntm-ct-cn__bieu-do,
+	.nntm-ct-cn__nhat-ky {
+		padding: var(--nntm-sp-5);
+	}
+
+	.nntm-ct-cn__o-luoi {
+		grid-template-columns: 1fr;
+		gap: var(--nntm-sp-4);
+	}
+
+	.nntm-ct-cn__cot-ds {
+		gap: 3px;
+		height: 150px;
+	}
+
+	/* 14 cột trên 343px: bỏ số trên cột và nhãn xen kẽ để chữ không chồng nhau. */
+	/* visibility, KHÔNG display:none — bỏ hẳn hàng số thì lưới 3 hàng của cột
+	   sụp, cột và nhãn nhảy lên đầu khung (đã thấy trên ảnh chụp 390px). */
+	.nntm-ct-cn__cot-ds--day .nntm-ct-cn__cot-so {
+		visibility: hidden;
+	}
+
+	.nntm-ct-cn__cot-ds--day .nntm-ct-cn__cot:nth-child(even):not(.is-hom-nay) .nntm-ct-cn__cot-nhan {
+		visibility: hidden;
+	}
+}

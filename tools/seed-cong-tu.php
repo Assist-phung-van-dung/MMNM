@@ -9,7 +9,8 @@
  * tools/seed-kim-cuong-hanh-gia.php.
  *
  * Viec cua script:
- *   1. Tao 2 Page noi dung rong: tham-gia-chuoi-tri, khai-bao-chuoi-tri
+ *   1. Tao 3 Page noi dung rong: tham-gia-chuoi-tri, khai-bao-chuoi-tri,
+ *      cong-tu-cua-toi (dashboard ca nhan, Phase 2)
  *      (template PHP page-{slug}.php cua theme lo het phan hien thi).
  *   2. Tao 1 nntm_program "Le Dan Khong Tuoc", excerpt "Tri tung Tam Bo
  *      Chu Ngon", _nntm_program_dang_mo=1, bat dau hom nay, khong ket thuc.
@@ -57,6 +58,8 @@ echo str_repeat( '-', 60 ) . "\n";
 $nntm_ct_pages = array(
 	'tham-gia-chuoi-tri' => 'Tham gia chuỗi trì',
 	'khai-bao-chuoi-tri' => 'Khai báo chuỗi trì',
+	// Dashboard cá nhân (Phase 2) — template page-cong-tu-cua-toi.php.
+	'cong-tu-cua-toi'    => 'Cộng tu của tôi',
 );
 
 foreach ( $nntm_ct_pages as $slug => $title ) {

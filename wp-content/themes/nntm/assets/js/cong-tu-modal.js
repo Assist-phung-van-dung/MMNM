@@ -202,6 +202,8 @@
 				}
 
 				hoanTatForm( form, duLieuTraVe );
+				// Trang "Cộng tu của tôi" (cong-tu-ca-nhan.js) nghe sự kiện này để tải lại số liệu.
+				document.dispatchEvent( new CustomEvent( 'nntm-congtu:da-ghi', { detail: duLieuTraVe } ) );
 				baoDuoiNutBanner( duLieuTraVe.tong_ket );
 				capNhatKhoiThongKe( khoi, duLieuTraVe );
 				doiNutBanner( duLieuTraVe.nhan_nut_banner );

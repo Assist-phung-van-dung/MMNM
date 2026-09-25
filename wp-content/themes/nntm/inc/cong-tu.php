@@ -243,7 +243,8 @@ add_action( 'wp_enqueue_scripts', 'nntm_congtu_dequeue_site_chrome', 20 );
  
 function nntm_congtu_yeu_cau_dang_nhap(): void {
 	$can_gac = is_page( array( 'tham-gia-chuoi-tri', 'khai-bao-chuoi-tri' ) )
-		|| is_singular( 'nntm_program' );
+		|| is_singular( 'nntm_program' )
+		|| ( function_exists( 'nntm_congtu_la_trang_ca_nhan' ) && nntm_congtu_la_trang_ca_nhan() );
 
 	if ( ! $can_gac ) {
 		return;

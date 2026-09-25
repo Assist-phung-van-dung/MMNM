@@ -41,6 +41,7 @@ require_once NNTM_CORE_DIR . 'includes/class-nghi-quy-quiz.php';
 require_once NNTM_CORE_DIR . 'includes/class-publication-music.php';
 require_once NNTM_CORE_DIR . 'includes/class-schema.php';
 require_once NNTM_CORE_DIR . 'includes/class-chuoi-tri.php';
+require_once NNTM_CORE_DIR . 'includes/class-chuoi-tri-ca-nhan.php';
 require_once NNTM_CORE_DIR . 'includes/class-activator.php';
 
 /**
