@@ -2,6 +2,12 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// Tìm bằng hình ảnh có trang kết quả riêng (?s=…&nntm_anh=<mã phiên>).
+if ( function_exists( 'nntm_search_image_page_token' ) && '' !== nntm_search_image_page_token() ) {
+	get_template_part( 'template-parts/search/anh' );
+	return;
+}
+
 $nntm_query = get_search_query();
 
 $nntm_groups = nntm_result_groups();

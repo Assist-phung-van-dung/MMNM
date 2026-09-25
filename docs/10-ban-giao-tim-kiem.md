@@ -19,7 +19,7 @@ vẫn giữ nguyên trừ ba chỗ ghi rõ ở mục 6 bên dưới.
 | **Tìm bằng hình ảnh** — đọc ảnh ra từ khoá rồi tìm | ✅ |
 | Cổng quyền: khách không thấy nội dung khu Hành Giả | ✅ |
 | OCR file PDF dạng scan | ✅ 25/09 — xem `15-ocr-pdf.md` |
-| Trang kết quả riêng cho tìm bằng ảnh | ❌ chưa |
+| Trang kết quả riêng cho tìm bằng ảnh | ✅ 25/09 — xem `17-trang-tim-anh.md` |
 | Hàng đợi nền | ✅ 25/09 — WP-Cron, không dùng Action Scheduler; xem `16-chi-muc.md` |
 | Search engine ngoài (Meilisearch) | ❌ chưa |
 

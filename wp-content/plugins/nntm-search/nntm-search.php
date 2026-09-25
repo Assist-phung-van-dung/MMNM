@@ -88,4 +88,5 @@ require_once NNTM_SEARCH_DIR . '/includes/download.php';
 require_once NNTM_SEARCH_DIR . '/includes/engine.php';
 require_once NNTM_SEARCH_DIR . '/includes/rest.php';
 require_once NNTM_SEARCH_DIR . '/includes/image.php';
+require_once NNTM_SEARCH_DIR . '/includes/image-page.php';
 require_once NNTM_SEARCH_DIR . '/includes/assets.php';
