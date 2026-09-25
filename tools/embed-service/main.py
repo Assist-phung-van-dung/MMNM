@@ -26,13 +26,14 @@ import logging
 import time
 
 import numpy as np
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 from fastembed import ImageEmbedding, TextEmbedding
 from PIL import Image, ImageOps
 from pydantic import BaseModel
 from pypdf import PdfReader
 
+import ocr
 import tu_khoa
 
 logger = logging.getLogger("nntm-embed")
@@ -406,3 +407,58 @@ async def pdf_text(tep: UploadFile = File(...)) -> dict:
         )
 
     return {"so_trang": len(trang), "trang": trang}
+
+
+# ---------------------------------------------------------------------------
+# OCR trang PDF scan (khảo sát câu 11–12) — xem ocr.py.
+# ---------------------------------------------------------------------------
+
+# PDF sách scan 300 trang có thể tới vài trăm MB; quá mức này thì từ chối thay
+# vì nạp hết vào RAM.
+GIOI_HAN_PDF_BYTE = 300 * 1024 * 1024
+
+
+@app.get("/ocr/khoe")
+def ocr_khoe() -> dict:
+    """OCR có dùng được không (thiếu tesseract / thiếu gói vie / thiếu pypdfium2)."""
+    return ocr.trang_thai()
+
+
+@app.post("/pdf/ocr")
+def pdf_ocr(tep: UploadFile = File(...), trang: str = Form(...)) -> dict:
+    """OCR một số trang của file PDF, `trang` là danh sách số trang "3,4,7".
+
+    Hàm thường (def), không async: OCR ăn CPU, FastAPI tự đẩy sang threadpool
+    nên không chặn các request khác (tìm bằng ảnh vẫn trả lời được trong lúc OCR).
+    """
+    tt = ocr.trang_thai()
+    if not tt["san_sang"]:
+        raise HTTPException(status_code=503, detail=tt.get("ly_do", "ocr chua san sang"))
+
+    try:
+        cac_trang = sorted({int(x) for x in trang.split(",") if x.strip()})
+    except ValueError:
+        raise HTTPException(status_code=400, detail="danh sach trang khong hop le") from None
+
+    if not cac_trang or len(cac_trang) > ocr.TOI_DA_TRANG_MOI_LAN:
+        raise HTTPException(status_code=400, detail=f"1-{ocr.TOI_DA_TRANG_MOI_LAN} trang moi lan")
+
+    du_lieu = tep.file.read(GIOI_HAN_PDF_BYTE + 1)
+    if not du_lieu:
+        raise HTTPException(status_code=400, detail="tep rong")
+    if len(du_lieu) > GIOI_HAN_PDF_BYTE:
+        raise HTTPException(status_code=413, detail="tep qua lon")
+
+    bat_dau = time.perf_counter()
+    try:
+        ket_qua = ocr.nhan_dang(du_lieu, cac_trang)
+    except Exception:  # noqa: BLE001 — PDF hỏng / mã hoá.
+        raise HTTPException(status_code=400, detail="khong doc duoc pdf") from None
+
+    logger.info(
+        "OCR %d trang trong %.1fs",
+        len(cac_trang),
+        time.perf_counter() - bat_dau,
+    )
+
+    return {"trang": ket_qua}
