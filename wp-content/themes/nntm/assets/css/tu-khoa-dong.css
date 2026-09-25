@@ -1,0 +1,223 @@
+/*
+ * Từ khoá động (phiếu khảo sát câu 33–34).
+ *
+ * MÀN TỰ DỰNG — Figma chưa có thiết kế cho hiệu ứng này. Mọi màu/khoảng cách
+ * lấy từ tokens.css; khi có thiết kế thì chỉ cần sửa file này.
+ */
+
+/* ---------- Chữ từ khoá trong bài ---------- */
+
+.nntm-tkd {
+  --nntm-tkd-mau: var(--nntm-nau-dat);
+  --nntm-tkd-sang: var(--nntm-vang-nghe);
+
+  position: relative;
+  cursor: help;
+  color: inherit;
+  border-radius: 2px;
+  transition: color var(--nntm-dur) var(--nntm-ease);
+}
+
+/* Gạch chân chấm mờ báo hiệu "chữ này có gì đó" mà không phá mạch đọc. */
+.nntm-tkd::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background-image: radial-gradient(circle, var(--nntm-tkd-sang) 0.8px, transparent 1px);
+  background-size: 4px 1px;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.nntm-tkd:focus-visible {
+  outline: 2px solid var(--nntm-tkd-sang);
+  outline-offset: 2px;
+}
+
+/* Rê chuột: chữ ánh vàng chạy qua như hào quang. */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .nntm-tkd:hover,
+  .nntm-tkd.is-mo {
+    color: transparent;
+    background-image: linear-gradient(
+      100deg,
+      var(--nntm-tkd-mau) 0%,
+      var(--nntm-tkd-mau) 35%,
+      var(--nntm-tai-nhat-2) 50%,
+      var(--nntm-tkd-mau) 65%,
+      var(--nntm-tkd-mau) 100%
+    );
+    background-size: 250% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: nntm-tkd-hao-quang 1.6s var(--nntm-ease) infinite;
+  }
+}
+
+@keyframes nntm-tkd-hao-quang {
+  from { background-position: 100% 0; }
+  to   { background-position: -50% 0; }
+}
+
+/* ---------- Thẻ minh hoạ ---------- */
+
+.nntm-tkd-the {
+  --nntm-tkd-mui: 50%;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: min(300px, calc(100vw - 32px));
+  background: var(--nntm-nen-noi);
+  color: var(--nntm-chu);
+  border: 1px solid var(--nntm-kem-dam);
+  border-radius: var(--nntm-r-md);
+  box-shadow: var(--nntm-sh-lift);
+  font-family: var(--nntm-font-display);
+  opacity: 0;
+  transform: translateY(8px) scale(0.96);
+  transform-origin: var(--nntm-tkd-mui) 100%;
+  transition:
+    opacity var(--nntm-dur) var(--nntm-ease),
+    transform var(--nntm-dur) var(--nntm-ease);
+  pointer-events: none;
+}
+
+.nntm-tkd-the[data-phia="duoi"] {
+  transform: translateY(-8px) scale(0.96);
+  transform-origin: var(--nntm-tkd-mui) 0;
+}
+
+.nntm-tkd-the.is-hien {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.nntm-tkd-the[hidden] {
+  display: none;
+}
+
+/* Mũi nhọn trỏ về chữ. */
+.nntm-tkd-the::after {
+  content: "";
+  position: absolute;
+  left: var(--nntm-tkd-mui);
+  bottom: -7px;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  background: inherit;
+  border-right: 1px solid var(--nntm-kem-dam);
+  border-bottom: 1px solid var(--nntm-kem-dam);
+  transform: rotate(45deg);
+}
+
+.nntm-tkd-the[data-phia="duoi"]::after {
+  top: -7px;
+  bottom: auto;
+  transform: rotate(-135deg);
+}
+
+.nntm-tkd-the__khung {
+  overflow: hidden;
+  border-radius: var(--nntm-r-md) var(--nntm-r-md) 0 0;
+  aspect-ratio: 16 / 10;
+  background: var(--nntm-kem);
+}
+
+.nntm-tkd-the__anh {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.08);
+  transition: transform 1.2s var(--nntm-ease);
+}
+
+/* Hình khẽ lùi về khi thẻ hiện — cảm giác hình "hiện ra" từ chữ. */
+.nntm-tkd-the.is-hien .nntm-tkd-the__anh {
+  transform: scale(1);
+}
+
+.nntm-tkd-the__than {
+  padding: var(--nntm-sp-3) var(--nntm-sp-4) var(--nntm-sp-4);
+}
+
+.nntm-tkd-the__ten {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--nntm-nau-dat);
+}
+
+.nntm-tkd-the__mo-ta {
+  margin: var(--nntm-sp-1) 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--nntm-chu-phu);
+}
+
+.nntm-tkd-the__xem-them {
+  display: inline-block;
+  margin-top: var(--nntm-sp-2);
+  font-size: 15px;
+  color: var(--nntm-chinh);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.nntm-tkd-the__xem-them:hover,
+.nntm-tkd-the__xem-them:focus-visible {
+  color: var(--nntm-chinh-hover);
+}
+
+/* ---------- Biến thể "chỉ hình" ---------- */
+
+.nntm-tkd-the--anh {
+  width: min(380px, calc(100vw - 32px));
+  overflow: visible;
+}
+
+.nntm-tkd-the--anh .nntm-tkd-the__khung {
+  aspect-ratio: auto;
+  max-height: 60vh;
+  border-radius: var(--nntm-r-md) var(--nntm-r-md) 0 0;
+}
+
+.nntm-tkd-the--anh .nntm-tkd-the__anh {
+  height: auto;
+  max-height: 60vh;
+}
+
+.nntm-tkd-the--anh .nntm-tkd-the__than {
+  padding: var(--nntm-sp-2) var(--nntm-sp-4);
+}
+
+.nntm-tkd-the--anh .nntm-tkd-the__ten {
+  font-size: 16px;
+  text-align: center;
+}
+
+/* ---------- Giảm chuyển động ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .nntm-tkd:hover,
+  .nntm-tkd.is-mo {
+    animation: none;
+    background-position: 50% 0;
+  }
+
+  .nntm-tkd-the,
+  .nntm-tkd-the[data-phia="duoi"],
+  .nntm-tkd-the__anh {
+    transform: none;
+    transition: opacity var(--nntm-dur) linear;
+  }
+}
