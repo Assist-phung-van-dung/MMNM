@@ -237,9 +237,9 @@
 	.nntm-card-list--nen-toi .nntm-card-list__yt-title {
 		max-width: var(--nntm-cl-yt-hinh-rong);
 		font-family: var(--nntm-font-sans);
-		font-size: 18px;
+		font-size: 20px;
 		font-weight: 700;
-		line-height: 30px;
+		line-height: 32px;
 		letter-spacing: 0;
 		text-transform: none;
 		color: var(--nntm-trang);
@@ -291,9 +291,9 @@
 	.nntm-card-list--nen-cam .nntm-card-list__yt-title {
 		max-width: var(--nntm-cl-yt-hinh-rong);
 		font-family: var(--nntm-font-sans);
-		font-size: 18px;
+		font-size: 20px;
 		font-weight: 700;
-		line-height: 30px;
+		line-height: 32px;
 		letter-spacing: 0;
 		text-transform: none;
 		color: var(--nntm-trang);

@@ -335,7 +335,7 @@ body.nntm-dau-trang-de-len .nntm-header {
 	background: none;
 	font-family: var(--nntm-font-sans);
 	font-size: var(--nntm-fs-sm);   
-	line-height: 25px;              
+	line-height: 27px;              
 	color: var(--nntm-muc-nhat);
 }
 
@@ -354,7 +354,7 @@ body.nntm-dau-trang-de-len .nntm-header {
 .nntm-header__login {
 	font-family: var(--nntm-font-sans);
 	font-size: var(--nntm-fs-sm);   
-	line-height: 25px;               
+	line-height: 27px;               
 	color: var(--nntm-muc-nhat);    
 	text-decoration: none;
 	white-space: nowrap;

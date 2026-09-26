@@ -85,7 +85,7 @@
 	border-radius: 50%;
 
 	background-color: transparent;
-	font-size: 24px;
+	font-size: 26px;
 	line-height: 1;
 	color: var(--nntm-chu);
 	cursor: pointer;
@@ -314,7 +314,7 @@ body.nntm-tx-dang-mo {
 	border-radius: 50%;
 
 	background-color: transparent;
-	font-size: 24px;
+	font-size: 26px;
 	line-height: 1;
 	color: var(--nntm-chu);
 	cursor: pointer;
@@ -360,7 +360,7 @@ body.nntm-tx-dang-mo {
 	border-radius: 50%;
 
 	background-color: var(--nntm-nen-noi);
-	font-size: 20px;
+	font-size: 22px;
 	line-height: 1;
 	color: var(--nntm-chu);
 	cursor: pointer;

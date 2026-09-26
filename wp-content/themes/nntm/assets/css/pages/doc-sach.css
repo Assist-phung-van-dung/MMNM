@@ -17,7 +17,7 @@
 	--doc-bar: 60px;
 	--doc-foot: 72px;
 	--doc-side: 396px;
-	--doc-co-chu: 18px;     
+	--doc-co-chu: 20px;     
 
 	margin: 0;
 	background: var(--doc-bg);
@@ -71,7 +71,7 @@
 
 .nntm-doc__title {
 	margin: 0;
-	font-size: 1rem;
+	font-size: 1.125rem;
 	font-weight: 600;
 	text-align: center;
 	white-space: nowrap;
@@ -210,7 +210,7 @@
 .nntm-doc__book-title {
 	margin: 0;
 	font-family: var(--nntm-font-display, Georgia, serif);
-	font-size: 1.32rem;
+	font-size: 1.445rem;
 	line-height: 1.28;
 	font-weight: 600;
 	color: #fff;
@@ -230,7 +230,7 @@
 .nntm-doc__author {
 	margin: 8px 0 0;
 	color: var(--doc-ink-2);
-	font-size: .92rem;
+	font-size: 1.045rem;
 }
 
 .nntm-doc__cta {
@@ -243,7 +243,7 @@
 	margin: 0 0 14px;
 	text-align: center;
 	color: var(--doc-accent);
-	font-size: .94rem;
+	font-size: 1.065rem;
 }
 
 .nntm-doc__cta-btn {
@@ -252,7 +252,7 @@
 	border-radius: 8px;
 	background: var(--doc-accent);
 	color: #fff;
-	font-size: 1rem;
+	font-size: 1.125rem;
 	font-weight: 600;
 	text-align: center;
 	text-decoration: none;
@@ -267,13 +267,13 @@
 
 .nntm-doc__intro-head {
 	margin: 0 0 10px;
-	font-size: .96rem;
+	font-size: 1.085rem;
 	font-weight: 600;
 }
 
 .nntm-doc__intro-body {
 	color: var(--doc-ink-2);
-	font-size: .9rem;
+	font-size: 1.025rem;
 	line-height: 1.62;
 }
 
@@ -345,7 +345,7 @@
 	gap: 10px;
 	margin: 18vh 0 0;
 	color: var(--doc-ink-2);
-	font-size: .94rem;
+	font-size: 1.065rem;
 }
 
 .nntm-doc__spinner {
@@ -414,7 +414,7 @@
 
 .nntm-doc__music-head p {
 	margin: 0;
-	font-size: .84rem;
+	font-size: .965rem;
 	font-weight: 600;
 	color: var(--doc-ink-2);
 	letter-spacing: .04em;
@@ -505,7 +505,7 @@
 	min-block-size: 1.5em;
 	margin: 16px 0 12px;
 	color: var(--doc-ink);
-	font-size: .96rem;
+	font-size: 1.085rem;
 	font-weight: 600;
 	line-height: 1.45;
 	text-align: center;
@@ -523,7 +523,7 @@
 	justify-content: space-between;
 	gap: 6px;
 	color: var(--doc-ink-2);
-	font-size: .74rem;
+	font-size: .865rem;
 	font-variant-numeric: tabular-nums;
 	opacity: .8;
 }
@@ -647,7 +647,7 @@
 	background: transparent;
 	color: var(--doc-ink-2);
 	font: inherit;
-	font-size: .88rem;
+	font-size: 1.005rem;
 	line-height: 1.4;
 	text-align: start;
 	cursor: pointer;
@@ -666,13 +666,13 @@
 
 /* Thời lượng ở cuối ô. Cột auto nên ô rỗng không chừa chỗ trống. */
 .nntm-doc__music-len {
-	font-size: .74rem;
+	font-size: .865rem;
 	font-variant-numeric: tabular-nums;
 	opacity: .6;
 }
 
 .nntm-doc__music-number {
-	font-size: .72rem;
+	font-size: .845rem;
 	font-variant-numeric: tabular-nums;
 	opacity: .72;
 }
@@ -680,7 +680,7 @@
 .nntm-doc__toc-head,
 .nntm-doc__panel-head {
 	margin: 0 0 12px;
-	font-size: .84rem;
+	font-size: .965rem;
 	font-weight: 600;
 	color: var(--doc-ink-2);
 	letter-spacing: .04em;
@@ -694,7 +694,7 @@
 	padding: 8px 10px;
 	border-radius: 7px;
 	color: var(--doc-ink-2);
-	font-size: .88rem;
+	font-size: 1.005rem;
 	line-height: 1.45;
 	text-decoration: none;
 }
@@ -713,7 +713,7 @@
 .nntm-doc__toc-empty {
 	margin: 0;
 	color: var(--doc-ink-2);
-	font-size: .86rem;
+	font-size: .985rem;
 	font-style: italic;
 }
 
@@ -731,7 +731,7 @@
 	background: transparent;
 	color: var(--doc-ink-2);
 	font: inherit;
-	font-size: .86rem;
+	font-size: .985rem;
 	cursor: pointer;
 }
 
@@ -773,7 +773,7 @@
 .nntm-doc__chapter {
 	grid-column: 1;
 	color: var(--doc-ink-2);
-	font-size: .88rem;
+	font-size: 1.005rem;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -783,7 +783,7 @@
 	grid-column: 3;
 	grid-row: 1;
 	color: var(--doc-ink-2);
-	font-size: .88rem;
+	font-size: 1.005rem;
 	font-variant-numeric: tabular-nums;
 }
 
@@ -794,7 +794,7 @@
 	align-items: center;
 	gap: 6px;
 	color: var(--doc-ink-2);
-	font-size: .82rem;
+	font-size: .945rem;
 	font-variant-numeric: tabular-nums;
 }
 
@@ -856,7 +856,7 @@
 	pointer-events: none;
 	overflow: hidden;
 	opacity: .07;
-	font-size: .78rem;
+	font-size: .905rem;
 	color: var(--doc-ink);
 	white-space: pre;
 	line-height: 3.4;
@@ -912,7 +912,7 @@
 	}
 
 	.nntm-doc__title {
-		font-size: .92rem;
+		font-size: 1.045rem;
 		text-align: start;
 	}
 
@@ -926,13 +926,13 @@
 	.nntm-doc__chapter {
 		grid-column: 1;
 		grid-row: 1;
-		font-size: .78rem;
+		font-size: .905rem;
 	}
 
 	.nntm-doc__percent {
 		grid-column: 2;
 		grid-row: 1;
-		font-size: .78rem;
+		font-size: .905rem;
 	}
 
 	.nntm-doc__page-jump {
@@ -1156,7 +1156,7 @@ html.nntm-doc-html {
 	border-radius: 999px;
 	background: rgba(0, 0, 0, .34);
 	color: #fff;
-	font-size: 10px;
+	font-size: 12px;
 	letter-spacing: .08em;
 }
 
@@ -1196,7 +1196,7 @@ html.nntm-doc-html {
 
 .nntm-doc__khoa-chu {
 	margin: 0;
-	font-size: 1.0625rem;
+	font-size: 1.1875rem;
 	line-height: 1.6;
 	color: var(--doc-ink-2);
 }
@@ -1209,7 +1209,7 @@ html.nntm-doc-html {
 	background: var(--doc-accent);
 	color: #fff;
 	font-family: inherit;
-	font-size: 1rem;
+	font-size: 1.125rem;
 	font-weight: 600;
 	cursor: pointer;
 	transition: filter 180ms ease;
