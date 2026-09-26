@@ -385,7 +385,7 @@
 		capNhatHat: capNhatHatRoi
 	};
 
-	/* --- 3. Đóm sáng (sao 4 cánh) ----------------------------------------- */
+	/* --- 3. Đốm sáng (sao 4 cánh) ----------------------------------------- */
 	HIEU_UNG[ 'dom-sang' ] = {
 		veConTro: function ( g, x, y, tt ) {
 			var r = 6 * tt.ty;

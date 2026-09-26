@@ -33,7 +33,7 @@ function nntm_con_tro_ds_kieu(): array {
 			'mo_ta' => __( 'Đoá sen 6 cánh xoay nhẹ, cánh sen nhỏ rơi lả tả rồi mờ.', 'nntm' ),
 		),
 		'dom-sang'        => array(
-			'ten'   => __( 'Đóm sáng', 'nntm' ),
+			'ten'   => __( 'Đốm sáng', 'nntm' ),
 			'mo_ta' => __( 'Ngôi sao 4 cánh, đi qua đâu lấp lánh sao nhỏ nhấp nháy.', 'nntm' ),
 		),
 		'hao-quang'       => array(

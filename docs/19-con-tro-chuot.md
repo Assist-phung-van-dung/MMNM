@@ -50,7 +50,7 @@ tổng.
 |---|---|---|
 | `mat-troi` | Mặt trời | Lõi tròn vàng + 12 tia xoay chậm, bụi ánh vàng tan dần |
 | `hoa-sen` | Hoa sen | Đoá sen 6 cánh xoay nhẹ, cánh rơi lả tả |
-| `dom-sang` | Đóm sáng | Sao 4 cánh, lấp lánh sao nhỏ nhấp nháy |
+| `dom-sang` | Đốm sáng | Sao 4 cánh, lấp lánh sao nhỏ nhấp nháy |
 | `hao-quang` | Hào quang | Chấm sáng + vòng hào quang trễ một nhịp |
 | `sao-choi` | Sao chổi | Đuôi thon mượt theo quỹ đạo, mờ dần |
 | `gon-nuoc` | Gợn nước | Toả gợn vòng tròn như mặt nước |
