@@ -1,0 +1,174 @@
+/*
+ * Hiệu ứng con trỏ chuột — CSS rất ít, phần vẽ thật nằm ở con-tro.js (canvas).
+ *
+ * Ở đây chỉ:
+ *   - Ẩn con trỏ hệ thống khi hiệu ứng đang bật (giữ lại ở ô nhập liệu).
+ *   - Định vị canvas (toàn trang HOẶC trong một vùng — màn xem thử admin).
+ *   - Giao diện khung xem thử + lưới thẻ chọn kiểu ở màn quản trị.
+ *
+ * Toàn bộ màu dùng token của assets/css/tokens.css.
+ */
+
+/* --- Ẩn con trỏ hệ thống: toàn trang --- */
+html.nntm-con-tro-bat,
+html.nntm-con-tro-bat * {
+	cursor: none;
+}
+
+html.nntm-con-tro-bat input,
+html.nntm-con-tro-bat textarea,
+html.nntm-con-tro-bat select,
+html.nntm-con-tro-bat [contenteditable],
+html.nntm-con-tro-bat [contenteditable="true"] {
+	cursor: text;
+}
+
+/* --- Ẩn con trỏ hệ thống: chế độ "vùng" (khung xem thử admin) --- */
+.nntm-con-tro-vung.nntm-con-tro-bat,
+.nntm-con-tro-vung.nntm-con-tro-bat * {
+	cursor: none;
+}
+
+.nntm-con-tro-vung.nntm-con-tro-bat input,
+.nntm-con-tro-vung.nntm-con-tro-bat textarea,
+.nntm-con-tro-vung.nntm-con-tro-bat select,
+.nntm-con-tro-vung.nntm-con-tro-bat [contenteditable] {
+	cursor: text;
+}
+
+.nntm-con-tro-canvas {
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 2147483000;
+}
+
+.nntm-con-tro-vung {
+	position: relative;
+	overflow: hidden;
+}
+
+.nntm-con-tro-vung .nntm-con-tro-canvas {
+	position: absolute;
+}
+
+/* ==========================================================================
+ * Màn quản trị
+ * ========================================================================== */
+
+.nntm-con-tro-admin .nntm-con-tro-khung-thu {
+	position: relative;
+	width: 100%;
+	max-width: 900px;
+	height: 300px;
+	border-radius: var( --nntm-r-md, 10px );
+	overflow: hidden;
+	margin-bottom: 20px;
+	box-shadow: var( --nntm-sh-card, 0 4px 20px rgba( 0, 0, 0, 0.15 ) );
+}
+
+.nntm-con-tro-khung-thu__vung {
+	position: absolute;
+	inset: 0;
+}
+
+.nntm-con-tro-khung-thu[data-nen="toi"] .nntm-con-tro-khung-thu__vung {
+	background: #2b2a24;
+}
+
+.nntm-con-tro-khung-thu[data-nen="kem"] .nntm-con-tro-khung-thu__vung {
+	background: var( --nntm-kem, #F7F1DE );
+}
+
+.nntm-con-tro-khung-thu__vung[data-tat="1"]::after {
+	content: "Không dùng hiệu ứng ở đây";
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var( --nntm-reu-nhat, #B4B7A7 );
+	font-size: 14px;
+}
+
+.nntm-con-tro-khung-thu__thanh {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 14px;
+	background: rgba( 0, 0, 0, 0.45 );
+	color: #fff;
+	font-size: 12px;
+}
+
+.nntm-con-tro-luoi-kieu {
+	display: grid;
+	grid-template-columns: repeat( auto-fill, minmax( 210px, 1fr ) );
+	gap: 10px;
+	margin: 14px 0 22px;
+	max-width: 1100px;
+}
+
+.nntm-con-tro-the {
+	display: block;
+	border: 1px solid var( --nntm-duong-vien, #E0E0E0 );
+	border-radius: var( --nntm-r-sm, 5px );
+	padding: 10px 12px;
+	cursor: pointer;
+	background: #fff;
+}
+
+.nntm-con-tro-the.la-dang-chon {
+	border-color: var( --nntm-vang-nghe, #D4AF37 );
+	box-shadow: 0 0 0 1px var( --nntm-vang-nghe, #D4AF37 );
+}
+
+.nntm-con-tro-the input {
+	margin-right: 6px;
+}
+
+.nntm-con-tro-the__ten {
+	font-weight: 600;
+}
+
+.nntm-con-tro-the__mo-ta {
+	display: block;
+	font-size: 12px;
+	color: var( --nntm-muc-nhat, #4F4F4F );
+	margin-top: 3px;
+}
+
+.nntm-con-tro-bang-trang th,
+.nntm-con-tro-bang-trang td {
+	padding: 8px 10px;
+	vertical-align: middle;
+}
+
+.nntm-con-tro-dong__ket-qua {
+	position: relative;
+	z-index: 5;
+	background: #fff;
+	border: 1px solid var( --nntm-duong-vien, #E0E0E0 );
+	max-height: 200px;
+	overflow: auto;
+	margin-top: 2px;
+	box-shadow: var( --nntm-sh-card, 0 4px 20px rgba( 0, 0, 0, 0.15 ) );
+}
+
+.nntm-con-tro-dong__ket-qua-dong {
+	padding: 6px 10px;
+	cursor: pointer;
+}
+
+.nntm-con-tro-dong__ket-qua-dong:hover {
+	background: var( --nntm-kem, #F7F1DE );
+}
+
+.nntm-con-tro-dong__ket-qua-dong.la-dang-dung {
+	cursor: not-allowed;
+	color: var( --nntm-xam-chu, #828282 );
+}

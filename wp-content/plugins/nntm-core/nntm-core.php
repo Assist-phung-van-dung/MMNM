@@ -36,6 +36,8 @@ require_once NNTM_CORE_DIR . 'includes/class-taxonomies.php';
 require_once NNTM_CORE_DIR . 'includes/class-term-meta.php';
 require_once NNTM_CORE_DIR . 'includes/class-roles.php';
 require_once NNTM_CORE_DIR . 'includes/functions.php';
+require_once NNTM_CORE_DIR . 'includes/con-tro-dung-chung.php';
+require_once NNTM_CORE_DIR . 'includes/con-tro-khop-tim-kiem.php';
 require_once NNTM_CORE_DIR . 'includes/class-post-meta.php';
 require_once NNTM_CORE_DIR . 'includes/class-nghi-quy-quiz.php';
 require_once NNTM_CORE_DIR . 'includes/class-publication-music.php';

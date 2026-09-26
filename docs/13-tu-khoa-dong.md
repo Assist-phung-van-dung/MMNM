@@ -6,6 +6,10 @@ Rê chuột (hoặc chạm, hoặc Tab bằng bàn phím) vào một từ khoá 
 trang → chữ ánh vàng chạy qua + thẻ minh hoạ nổi lên (hình, tên, mô tả, nút
 "Xem thêm" tuỳ chọn). **Chỉ chạy trên trang BQT đã tích bật** (câu 33).
 
+> Mỗi Từ khoá động còn gắn được một **hiệu ứng con trỏ chuột** riêng (chạy
+> khi câu tìm kiếm của khách khớp đúng từ khoá đó) — quản lý ở
+> **Từ khoá động → Con trỏ chuột**. Xem chi tiết ở docs/19-con-tro-chuot.md.
+
 ---
 
 ## 1. BQT dùng thế nào
