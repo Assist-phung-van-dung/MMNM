@@ -363,7 +363,7 @@ function nntm_congtu_dat_loi( string $modal, WP_Error $error ): void {
  * gọi đều chỉ truyền 2 đối số — PHP báo ArgumentCountError nên form luôn hỏng.
  *
  * @param mixed $so_chuoi_raw Số chuỗi người dùng nhập.
- * @param bool  $ban_tin      Có nhận bản tin hay không.
+ * @param bool  $ban_tin      true = bật nhận bản tin; false = giữ nguyên lựa chọn cũ.
  * @return int|WP_Error ID chương trình, hoặc lỗi.
  */
 function nntm_congtu_ghi_cam_ket( $so_chuoi_raw, bool $ban_tin ) {
@@ -396,7 +396,12 @@ function nntm_congtu_ghi_cam_ket( $so_chuoi_raw, bool $ban_tin ) {
 	 
 	nntm_congtu_dong_bo_kpi_sau_ghi( $program->ID );
 
-	update_user_meta( $user_id, 'nntm_nhan_ban_tin', $ban_tin ? '1' : '0' );
+	// Chỉ BẬT, không bao giờ tắt. Form Cộng Tu đã bỏ ô tích bản tin (21/08) nên
+	// $ban_tin luôn false — ghi '0' ở đây từng huỷ nhận âm thầm mọi người cam kết.
+	// Huỷ nhận chỉ đi qua link trong thư (Ban_Tin::xu_ly_huy).
+	if ( $ban_tin ) {
+		update_user_meta( $user_id, 'nntm_nhan_ban_tin', '1' );
+	}
 
 	return (int) $program->ID;
 }

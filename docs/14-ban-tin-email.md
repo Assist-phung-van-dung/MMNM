@@ -130,7 +130,10 @@ Quán Âm đản sanh (19/2), Phật Đản (15/4), vía Quán Âm thành đạo
 - **Danh sách dịp thật** (câu 31) + nội dung từng thư — truyền thống của đạo tràng có
   thể khác danh sách mẫu.
 - Bản tin **tuần hay tháng**, ngày giờ gửi.
-- ⚠️ **Lỗi có sẵn, chưa sửa**: form Cộng Tu (`themes/nntm/inc/cong-tu.php:398`) ghi
-  đè `nntm_nhan_ban_tin` theo ô tích của form. Thành viên đã đăng ký nhận lúc tạo
-  tài khoản, vào Cộng Tu không tích ô → **bị huỷ nhận âm thầm**. Nên sửa thành chỉ
-  bật (không tắt), hoặc tích sẵn theo giá trị hiện tại — cần chủ dự án chọn.
+- ✅ **Đã sửa (26/09/2026, nhánh `sua-cong-tu-huy-ban-tin`)**: form Cộng Tu ghi đè
+  `nntm_nhan_ban_tin`. Nặng hơn mô tả cũ: ô tích bản tin đã bị gỡ khỏi form từ 21/08
+  (commit `d0e5b31`) nên **mọi** lần cam kết đều ghi `'0'` — ai cam kết cũng bị huỷ nhận.
+  Giờ `nntm_congtu_ghi_cam_ket()` chỉ **bật**, không bao giờ tắt; huỷ chỉ qua link trong thư.
+  ⚠️ **Dữ liệu cũ không tự khôi phục được**: `'0'` do lỗi này và `'0'` do không tích ô lúc
+  đăng ký trông như nhau. Trên production (nếu đã có thành viên cam kết trước bản sửa) cần
+  chủ dự án quyết: bật lại cho những người có dòng trong `nntm_kpi_log`, hay để nguyên.
