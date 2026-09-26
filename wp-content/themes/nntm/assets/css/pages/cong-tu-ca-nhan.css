@@ -203,7 +203,7 @@
 .nntm-ct-cn__hom-nay .nntm-ct-cn__hom-nay-so {
 	margin-top: var(--nntm-sp-2);
 	font-family: var(--nntm-font-display);
-	font-size: 72px;
+	font-size: 74px;
 	font-weight: 500;
 	line-height: 1;
 	color: var(--nntm-tai-vang);
@@ -355,7 +355,7 @@
 .nntm-ct-cn__o .nntm-ct-cn__o-so {
 	margin-top: var(--nntm-sp-2);
 	font-family: var(--nntm-font-display);
-	font-size: 44px;
+	font-size: 46px;
 	font-weight: 500;
 	line-height: 1.05;
 	color: var(--nntm-chu);
@@ -410,7 +410,7 @@
 
 .nntm-ct-cn__tuan7-thu {
 	color: var(--nntm-chu-phu);
-	font-size: 11px;
+	font-size: 13px;
 }
 
 .nntm-ct-cn__tuan7 .is-nay .nntm-ct-cn__tuan7-thu {
@@ -532,7 +532,7 @@
 .nntm-ct-cn__cot-so {
 	min-height: 18px;
 	color: var(--nntm-chu);
-	font-size: 11px;
+	font-size: 13px;
 	font-weight: 600;
 	white-space: nowrap;
 }
@@ -572,13 +572,13 @@
 .nntm-ct-cn__cot-thu {
 	margin-top: var(--nntm-sp-2);
 	color: var(--nntm-chu-phu);
-	font-size: 11px;
+	font-size: 13px;
 	font-weight: 600;
 }
 
 .nntm-ct-cn__cot-ngay {
 	color: var(--nntm-xam-chu);
-	font-size: 11px;
+	font-size: 13px;
 }
 
 .nntm-ct-cn__cot.is-nay .nntm-ct-cn__cot-thu,
@@ -812,7 +812,7 @@
 	}
 
 	.nntm-ct-cn__hom-nay .nntm-ct-cn__hom-nay-so {
-		font-size: 60px;
+		font-size: 62px;
 	}
 
 	.nntm-ct-cn__hom-nay .nntm-ct-cn__hanh-dong {

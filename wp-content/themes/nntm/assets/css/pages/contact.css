@@ -112,7 +112,7 @@
 .nntm-contact-modal__panel h2 {
   margin: 0 0 18px;
   font-family: var(--nntm-font-display);
-  font-size: 30px;
+  font-size: 32px;
   line-height: 1.2;
   color: var(--nntm-reu);
 }
@@ -120,7 +120,7 @@
 .nntm-contact-modal__panel p {
   margin: 0 0 28px;
   font-family: var(--nntm-font-sans);
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.75;
   color: var(--nntm-muc);
 }
@@ -139,7 +139,7 @@
   border: 0;
   background: transparent;
   color: var(--nntm-muc);
-  font-size: 27px;
+  font-size: 29px;
   line-height: 1;
   cursor: pointer;
 }

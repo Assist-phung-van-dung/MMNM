@@ -30,7 +30,7 @@
 	margin: 0;
 	font-family: var(--nntm-font-display);
 	font-weight: 600;
-	font-size: clamp(1.75rem, 4vw, var(--nntm-fs-4xl));
+	font-size: clamp(1.875rem, calc(4vw + 2px), var(--nntm-fs-4xl));
 	line-height: var(--nntm-lh-chat);
 	color: var(--nntm-chinh, #4a3b1f);
 	text-wrap: balance;

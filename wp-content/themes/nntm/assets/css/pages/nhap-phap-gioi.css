@@ -52,7 +52,7 @@
 	background-color: transparent;
 	box-sizing: border-box;
 	font-family: var(--nntm-font-serif);
-	font-size: clamp(13px, 1.32vw, var(--nntm-fs-md));
+	font-size: clamp(15px, calc(1.32vw + 2px), var(--nntm-fs-md));
 	font-style: italic;
 	line-height: var(--nntm-lh-vua);
 	color: var(--nntm-chu);

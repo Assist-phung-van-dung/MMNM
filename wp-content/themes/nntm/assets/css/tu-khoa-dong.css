@@ -151,7 +151,7 @@
 
 .nntm-tkd-the__ten {
   margin: 0;
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1.3;
   font-weight: 600;
   color: var(--nntm-nau-dat);
@@ -159,7 +159,7 @@
 
 .nntm-tkd-the__mo-ta {
   margin: var(--nntm-sp-1) 0 0;
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.5;
   color: var(--nntm-chu-phu);
 }
@@ -167,7 +167,7 @@
 .nntm-tkd-the__xem-them {
   display: inline-block;
   margin-top: var(--nntm-sp-2);
-  font-size: 15px;
+  font-size: 17px;
   color: var(--nntm-chinh);
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -201,7 +201,7 @@
 }
 
 .nntm-tkd-the--anh .nntm-tkd-the__ten {
-  font-size: 16px;
+  font-size: 18px;
   text-align: center;
 }
 

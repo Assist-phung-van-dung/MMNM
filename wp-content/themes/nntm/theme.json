@@ -66,16 +66,16 @@
         }
       ],
       "fontSizes": [
-        { "slug": "xs",   "name": "XS 13",  "size": "0.8125rem" },
-        { "slug": "sm",   "name": "S 14",   "size": "0.875rem" },
-        { "slug": "base", "name": "M 16",   "size": "1rem" },
-        { "slug": "md",   "name": "L 18",   "size": "1.125rem" },
-        { "slug": "lg",   "name": "XL 20",  "size": "1.25rem" },
-        { "slug": "xl",   "name": "2XL 23", "size": "1.4375rem" },
-        { "slug": "2xl",  "name": "3XL 30", "size": "1.875rem", "fluid": { "min": "1.5rem",   "max": "1.875rem" } },
-        { "slug": "3xl",  "name": "4XL 38", "size": "2.375rem", "fluid": { "min": "1.75rem",  "max": "2.375rem" } },
-        { "slug": "4xl",  "name": "5XL 52", "size": "3.25rem",  "fluid": { "min": "2.25rem",  "max": "3.25rem" } },
-        { "slug": "5xl",  "name": "6XL 58", "size": "3.625rem", "fluid": { "min": "2.5rem",   "max": "3.625rem" } }
+        { "slug": "xs", "name": "XS 15", "size": "0.9375rem" },
+        { "slug": "sm", "name": "S 16", "size": "1rem" },
+        { "slug": "base", "name": "M 18", "size": "1.125rem" },
+        { "slug": "md", "name": "L 20", "size": "1.25rem" },
+        { "slug": "lg", "name": "XL 22", "size": "1.375rem" },
+        { "slug": "xl", "name": "2XL 25", "size": "1.5625rem" },
+        { "slug": "2xl", "name": "3XL 32", "size": "2rem", "fluid": { "min": "1.625rem",   "max": "2rem" } },
+        { "slug": "3xl", "name": "4XL 40", "size": "2.5rem", "fluid": { "min": "1.875rem",  "max": "2.5rem" } },
+        { "slug": "4xl", "name": "5XL 54", "size": "3.375rem",  "fluid": { "min": "2.375rem",  "max": "3.375rem" } },
+        { "slug": "5xl", "name": "6XL 60", "size": "3.75rem", "fluid": { "min": "2.625rem",   "max": "3.75rem" } }
       ]
     },
     "spacing": {

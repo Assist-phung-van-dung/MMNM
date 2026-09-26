@@ -53,8 +53,11 @@ Khai báo trong modal xong → trang tải lại (sự kiện `nntm-congtu:da-gh
   giờ GMT để tính lại). Kiểm cả trên production.
 - Khai báo mà **chưa cam kết** vẫn được (code có sẵn cho phép) — dashboard hiện "chưa đặt
   mức cam kết" thay cho %.
-- Meta chương trình (ngày bắt đầu/kết thúc, đơn vị, mục tiêu) **chưa có ô nhập trong
-  wp-admin**, chỉ đặt bằng script seed. "Còn N ngày — Z mỗi ngày" chỉ hiện khi có ngày kết thúc.
+- "Còn N ngày — Z mỗi ngày" chỉ hiện khi chương trình có ngày kết thúc (đặt ở meta box, mục 5).
+- **Hai chương trình mở cùng lúc** (hành vi có từ trước): form cam kết/khai báo luôn ghi vào
+  `nntm_program_hien_tai()` = chương trình mới đăng nhất — kể cả khi bấm nút trên trang giới
+  thiệu của chương trình kia. Meta box cảnh báo khi xảy ra. Nên giữ quy ước một chương trình
+  mở tại một thời điểm.
 
 ## 4. Đã kiểm
 
@@ -72,6 +75,31 @@ Khai báo trong modal xong → trang tải lại (sự kiện `nntm-congtu:da-gh
 
 ⚠️ **Chưa kiểm:** bấm thật "Khai báo hôm nay" → modal → trang tải lại (cần đăng nhập
 trong trình duyệt).
+
+## 5. Thiết lập chương trình trong wp-admin (26/09/2026)
+
+Trước đây 5 meta của chương trình chỉ đặt được bằng `tools/seed-cong-tu.php`. Giờ ở
+**wp-admin → Chương trình trì tụng → sửa bài → hộp "Thiết lập chương trình"** (thanh bên):
+
+| Ô | Meta | Ghi chú |
+|---|---|---|
+| Mở nhận cam kết & khai báo | `_nntm_program_dang_mo` | công tắc BQT |
+| Ngày bắt đầu / kết thúc | `_nntm_program_bat_dau` / `_ket_thuc` | ô chọn ngày; trống = không giới hạn; sai định dạng hoặc kết thúc trước bắt đầu → **giữ giá trị cũ** và báo lỗi trong hộp ở lần tải sau |
+| Đơn vị đếm | `_nntm_program_don_vi` | tối đa 30 ký tự; để trống = "chuỗi" |
+| Mục tiêu chung của đạo tràng | `_nntm_program_muc_tieu` | 0 = không đặt; **chưa hiển thị ở đâu trên trang** |
+
+Hộp còn ghi **hiện trạng** (Đang mở / đóng vì công tắc tắt / chưa đăng / chưa tới ngày / đã qua
+ngày kết thúc) và **"Hôm nay theo giờ site"** — để BQT thấy ngay độ lệch múi giờ (mục 3).
+Màn danh sách có thêm cột **Trạng thái** (kèm "· đang hiện trên trang Cộng Tu") và **Thời gian**.
+
+Tệp: `plugins/nntm-core/includes/class-chuong-trinh-admin.php` (meta box PHP cổ điển theo mẫu
+hộp "Tệp PDF & Khoá xem" của ấn phẩm). Không đổi hành vi frontend, không đụng
+`nntm_program_dang_mo()`.
+
+**Đã kiểm** (PHP CLI, bài nháp tạm, đã xoá): lưu hợp lệ, ngày sai định dạng, kết thúc < bắt đầu
+(giữ cả hai ngày cũ, lỗi hiện một lần rồi mất), đơn vị trống → xoá meta, tắt công tắc, lượt
+lưu REST không có nonce không ghi đè, cảnh báo hai chương trình mở, cột danh sách; không PHP
+warning. ⚠️ **Chưa bấm thử trong trình duyệt** (cần đăng nhập wp-admin).
 
 ## 6. Bảng xếp hạng trong wp-admin (26/09/2026)
 

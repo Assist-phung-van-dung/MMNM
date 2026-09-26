@@ -43,6 +43,7 @@ require_once NNTM_CORE_DIR . 'includes/class-tu-khoa-dong.php';
 require_once NNTM_CORE_DIR . 'includes/class-schema.php';
 require_once NNTM_CORE_DIR . 'includes/class-chuoi-tri.php';
 require_once NNTM_CORE_DIR . 'includes/class-chuoi-tri-ca-nhan.php';
+require_once NNTM_CORE_DIR . 'includes/class-chuong-trinh-admin.php';
 require_once NNTM_CORE_DIR . 'includes/class-bxh-admin.php';
 require_once NNTM_CORE_DIR . 'includes/ban-tin/class-am-lich.php';
 require_once NNTM_CORE_DIR . 'includes/ban-tin/class-gui-thu.php';
@@ -70,6 +71,7 @@ function nntm_core_bootstrap() {
 	\NNTM\Core\Nghi_Quy_Quiz::instance()->hooks();
 	\NNTM\Core\Publication_Music::instance()->hooks();
 	\NNTM\Core\Tu_Khoa_Dong::instance()->hooks();
+	\NNTM\Core\Chuong_Trinh_Admin::instance()->hooks();
 	\NNTM\Core\Roles::instance()->hooks();
 	\NNTM\Core\Ban_Tin::hooks();
 	\NNTM\Core\Ban_Tin_Admin::hooks();

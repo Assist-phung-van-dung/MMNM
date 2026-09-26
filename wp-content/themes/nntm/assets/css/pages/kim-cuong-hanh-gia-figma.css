@@ -53,9 +53,9 @@
 		margin: 0 0 30px;
 		padding: 0;
 		font-family: var(--nntm-font-display);
-		font-size: 38px;
+		font-size: 40px;
 		font-weight: 600;
-		line-height: 46px;
+		line-height: 48px;
 		text-align: center;
 		color: var(--nntm-trang);
 	}
@@ -84,12 +84,12 @@
 	}
 
 	.nntm-kchg-articles .nntm-card--kim-cuong .nntm-card__title {
-		font-size: 16px;
+		font-size: 18px;
 		line-height: 1.35;
 	}
 
 	.nntm-kchg-articles .nntm-card--kim-cuong .nntm-card__excerpt {
-		font-size: 14px;
+		font-size: 16px;
 		line-height: 1.55;
 	}
 
@@ -133,9 +133,9 @@
 		order: 1;
 		margin: 0 0 30px;
 		font-family: var(--nntm-font-display);
-		font-size: 32px;
+		font-size: 34px;
 		font-weight: 600;
-		line-height: 40px;
+		line-height: 42px;
 		text-align: center;
 		color: var(--nntm-chu);
 	}
@@ -177,14 +177,14 @@
 	}
 
 	.nntm-kchg-nghi-quy .nntm-card--books .nntm-card__title {
-		font-size: 16px;
+		font-size: 18px;
 		font-weight: 700;
 		text-align: center;
 	}
 
 	.nntm-kchg-nghi-quy .nntm-card--books .nntm-card__cta {
 		align-self: center;
-		font-size: 13px;
+		font-size: 15px;
 		font-weight: 400;
 	}
 
@@ -198,7 +198,7 @@
 		border-radius: 0;
 		background: var(--nntm-nen-noi);
 		color: var(--nntm-chu);
-		font-size: 13px;
+		font-size: 15px;
 		font-weight: 400;
 		text-decoration: none;
 		display: inline-flex;
@@ -233,17 +233,17 @@
 	}
 
 	.nntm-kchg-le-dan .nntm-banner__heading {
-		font-size: 37px;
+		font-size: 39px;
 		font-weight: 600;
-		line-height: 46px;
+		line-height: 48px;
 		text-align: left;
 		text-wrap: initial;
 	}
 
 	.nntm-kchg-le-dan .nntm-banner__sub {
 		margin-top: 10px;
-		font-size: 14px;
-		line-height: 22px;
+		font-size: 16px;
+		line-height: 24px;
 		text-align: left;
 	}
 
@@ -265,9 +265,9 @@
 	.nntm-kchg-ranking .nntm-cong-tu__thong-ke-heading {
 		margin: 0 0 30px;
 		font-family: var(--nntm-font-display);
-		font-size: 35px;
+		font-size: 37px;
 		font-weight: 600;
-		line-height: 43px;
+		line-height: 45px;
 		text-align: center;
 		color: var(--nntm-trang);
 	}
@@ -289,9 +289,9 @@
 	.nntm-kchg-ranking .nntm-cong-tu__bxh-heading {
 		margin: 0 0 35px;
 		font-family: var(--nntm-font-display);
-		font-size: 28px;
+		font-size: 30px;
 		font-weight: 600;
-		line-height: 36px;
+		line-height: 38px;
 		text-align: center;
 		color: var(--nntm-do-tham);
 	}

@@ -243,11 +243,11 @@
 }
 
 .nntm-term-list--phap-toa .nntm-term-card__content { gap: 7px; }
-.nntm-term-list--phap-toa .nntm-term-card__name { font-size: 20px; line-height: 1.25; }
+.nntm-term-list--phap-toa .nntm-term-card__name { font-size: 22px; line-height: 1.25; }
 .nntm-term-list--phap-toa .nntm-term-card__meta { gap: 10px; }
 .nntm-term-list--phap-toa .nntm-term-card__desc {
 	min-height: 52px;
-	font-size: 17px;
+	font-size: 19px;
 	line-height: 1.5;
 	color: var(--nntm-reu);
 	-webkit-line-clamp: 2;

@@ -326,6 +326,7 @@
 	font-size: var(--nntm-fs-md);  
 	line-height: var(--nntm-lh-vua);
 	color: var(--nntm-trang);
+	overflow-wrap: break-word;
 }
 
 .nntm-hero-slider__sidecard-heading a {

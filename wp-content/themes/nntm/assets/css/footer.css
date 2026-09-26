@@ -113,7 +113,7 @@
 .nntm-footer__copyright {
 	font-family: var(--nntm-font-sans);
 	font-weight: 400;
-	font-size: max(11px, calc(var(--nntm-fs-base) * var(--nntm-footer-ty-le-chu)));
+	font-size: max(13px, calc(var(--nntm-fs-base) * var(--nntm-footer-ty-le-chu)));
 	line-height: 1.6;
 	color: var(--nntm-vien);
 	text-decoration: none;

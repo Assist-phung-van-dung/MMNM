@@ -66,7 +66,7 @@
 	margin: 0;
 
 	font-family: var(--nntm-font-display);
-	font-size: clamp(var(--nntm-fs-2xl), 3.4vw, var(--nntm-fs-3xl));
+	font-size: clamp(var(--nntm-fs-2xl), calc(3.4vw + 2px), var(--nntm-fs-3xl));
 	font-weight: 600;
 	line-height: 1.25;
 	color: var(--nntm-yk-chu);
@@ -89,7 +89,7 @@
 	background-color: var(--nntm-yk-nut-nen);
 
 	font-family: var(--nntm-font-serif);
-	font-size: clamp(var(--nntm-fs-base), 1.4vw, var(--nntm-fs-md));
+	font-size: clamp(var(--nntm-fs-base), calc(1.4vw + 2px), var(--nntm-fs-md));
 	font-style: italic;
 	font-weight: 400;
 	line-height: var(--nntm-lh-vua);
@@ -151,7 +151,7 @@
 
 	.nntm-y-kien__loi {
 		gap: 6px 10px;
-		font-size: clamp(22px, 6vw, 26px);
+		font-size: clamp(24px, calc(6vw + 2px), 28px);
 		line-height: 1.3;
 	}
 
