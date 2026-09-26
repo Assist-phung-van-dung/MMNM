@@ -10,7 +10,7 @@
  * phần tử DOM, canvas chỉ phủ bên trong phần tử đó).
  *
  * Quy tắc bắt buộc (xem docs/19-con-tro-chuot.md):
- *   - Chỉ chạy khi (hover: hover) and (pointer: fine) — điện thoại không chạy.
+ *   - Chỉ chạy khi sự kiện rê đến từ chuột (pointerType) — chạm bằng tay không chạy.
  *   - prefers-reduced-motion: reduce -> chỉ vẽ hình con trỏ, không hạt/vệt.
  *   - Ẩn con trỏ hệ thống CHỈ sau khi nhận pointermove đầu tiên.
  *   - Giữ con trỏ gõ chữ ở input/textarea/select/[contenteditable].
@@ -1054,7 +1054,20 @@
 			document.body.appendChild( canvas );
 		}
 
-		var hoTroChuot   = global.matchMedia( '(hover: hover) and (pointer: fine)' );
+		/*
+		 * Có đang dùng CHUỘT không — xét theo pointerType của chính sự kiện, KHÔNG
+		 * theo media query (hover: hover) and (pointer: fine): laptop Windows có
+		 * màn cảm ứng hay báo thiết bị chính là cảm ứng dù người dùng đang cầm
+		 * chuột, làm hiệu ứng không bao giờ bật. Chạm bằng tay (pointerType
+		 * 'touch') thì tắt ngay, trả lại con trỏ hệ thống — điện thoại vẫn không chạy.
+		 */
+		var dangDungChuot = false;
+		var hoTroChuot    = { get matches() { return dangDungChuot; } };
+
+		function laSuKienChuot( e ) {
+			// Trình duyệt cũ không có pointerType ('' / undefined) → coi là chuột.
+			return ! e.pointerType || 'mouse' === e.pointerType;
+		}
 		var giamChuyenDong = global.matchMedia( '(prefers-reduced-motion: reduce)' );
 
 		var hat      = [];
@@ -1194,6 +1207,14 @@
 				global.cancelAnimationFrame( rafId );
 				rafId = null;
 			}
+		}
+
+		// Chuyển sang chạm: dừng vòng thôi chưa đủ — khung vẽ cuối vẫn đọng trên màn hình.
+		function tatVaXoa() {
+			dungVong();
+			hat.length = 0;
+			duongDi.length = 0;
+			ctx.clearRect( 0, 0, canvas.width, canvas.height );
 		}
 
 		function traiDaiToaDo( x1, y1 ) {
@@ -1344,6 +1365,12 @@
 		var lanCuoiDiTs = 0;
 
 		function xuLyDi( e ) {
+			var laChuot = laSuKienChuot( e );
+			if ( laChuot !== dangDungChuot ) {
+				dangDungChuot = laChuot;
+				capNhatDangAn();
+				if ( ! laChuot ) { tatVaXoa(); }
+			}
 			if ( ! hoTroChuot.matches ) { return; }
 
 			var p = toaDoTuSuKien( e );
@@ -1384,6 +1411,10 @@
 		}
 
 		function xuLyBam( e ) {
+			if ( ! laSuKienChuot( e ) ) {
+				if ( dangDungChuot ) { dangDungChuot = false; capNhatDangAn(); tatVaXoa(); }
+				return;
+			}
 			if ( ! hoTroChuot.matches || 0 !== e.button ) { return; }
 			dangBam = true;
 			var p = toaDoTuSuKien( e );

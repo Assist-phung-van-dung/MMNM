@@ -79,9 +79,12 @@ vật lý hạt) nằm ở theme: `assets/js/con-tro.js`.
 
 ## Quy tắc bắt buộc (đã kiểm thật)
 
-- Chỉ chạy khi `matchMedia('(hover: hover) and (pointer: fine)')` — điện
-  thoại/máy tính bảng không chạy. Xác nhận: Chrome headless mặc định báo
-  `hover:none` (không có thiết bị trỏ thật), và bộ máy tự im lặng không vẽ gì.
+- Chỉ chạy khi sự kiện rê đến từ CHUỘT (`pointerType === 'mouse'`), không dựa vào
+  media query `(hover: hover) and (pointer: fine)`: laptop Windows có màn cảm ứng
+  hay báo thiết bị chính là cảm ứng dù đang dùng chuột → trước đây hiệu ứng không bao
+  giờ bật (lỗi thật, 26/09). Chạm bằng tay → tắt ngay, xoá khung vẽ, trả con trỏ hệ
+  thống; điện thoại/máy tính bảng vẫn không chạy. Đã kiểm: vuốt tay → 0 điểm ảnh;
+  rê chuột → vẽ; chuyển lại chạm → 0 điểm ảnh, con trỏ hệ thống trở lại.
 - `prefers-reduced-motion: reduce` → chỉ vẽ hình con trỏ, không vệt/hạt/xoay
   (kiểm bằng ảnh chụp, xem `sao-choi-giam-chuyen-dong.png`).
 - Giữ con trỏ gõ chữ ở input/textarea/select/`[contenteditable]`.
