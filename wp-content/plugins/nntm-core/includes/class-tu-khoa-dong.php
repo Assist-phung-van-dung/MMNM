@@ -38,6 +38,13 @@ class Tu_Khoa_Dong {
 	public const META_KIEU     = '_nntm_tkd_kieu';
 	public const META_LIEN_KET = '_nntm_tkd_lien_ket';
 
+	/**
+	 * Hiệu ứng con trỏ chuột gắn riêng cho từ khoá này (nntm-core/includes/con-tro-dung-chung.php).
+	 * '' = không gắn. Vẽ thật ở theme (inc/con-tro.php) khi câu tìm khớp từ khoá này.
+	 */
+	public const META_CON_TRO_KIEU = '_nntm_tkd_con_tro_kieu';
+	public const META_CON_TRO_MAU  = '_nntm_tkd_con_tro_mau';
+
 	/** Transient đệm danh sách đã chuẩn hoá cho frontend. */
 	private const TRANSIENT = 'nntm_tkd_du_lieu';
 
@@ -62,6 +69,7 @@ class Tu_Khoa_Dong {
 		add_action( 'init', array( $this, 'register' ) );
 		// Sau các CPT của Post_Types để post_type_supports() thấy được chúng.
 		add_action( 'init', array( $this, 'register_meta_trang' ), 20 );
+		add_action( 'init', array( $this, 'register_meta_con_tro' ), 20 );
 		add_action( 'add_meta_boxes_' . self::POST_TYPE, array( $this, 'add_meta_box' ) );
 		add_action( 'save_post_' . self::POST_TYPE, array( $this, 'save_meta_box' ), 10, 2 );
 		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_editor_panel' ) );
@@ -162,6 +170,46 @@ class Tu_Khoa_Dong {
 		}
 	}
 
+	/**
+	 * Meta hiệu ứng con trỏ chuột TRÊN CHÍNH từ khoá (khác META_BAT — cái đó là
+	 * cờ trên TRANG/BÀI dùng từ khoá này). Đăng ký để REST/trình soạn thảo
+	 * đọc/ghi được, dù màn "Giao diện -> ... -> Con trỏ chuột" (theme) không
+	 * dùng REST để lưu bảng theo từ khoá.
+	 */
+	public function register_meta_con_tro(): void {
+		register_post_meta(
+			self::POST_TYPE,
+			self::META_CON_TRO_KIEU,
+			array(
+				'type'              => 'string',
+				'single'            => true,
+				'default'           => '',
+				'show_in_rest'      => true,
+				'sanitize_callback' => 'nntm_con_tro_sanitize_kieu_dung_chung',
+				'auth_callback'     => static function ( $allowed, $meta_key, $post_id ) {
+					return current_user_can( 'edit_post', $post_id );
+				},
+				'description'       => __( 'Hiệu ứng con trỏ chuột dùng khi câu tìm kiếm khớp từ khoá này. Rỗng = không gắn.', 'nntm' ),
+			)
+		);
+
+		register_post_meta(
+			self::POST_TYPE,
+			self::META_CON_TRO_MAU,
+			array(
+				'type'              => 'string',
+				'single'            => true,
+				'default'           => '',
+				'show_in_rest'      => true,
+				'sanitize_callback' => 'nntm_con_tro_sanitize_mau_dung_chung',
+				'auth_callback'     => static function ( $allowed, $meta_key, $post_id ) {
+					return current_user_can( 'edit_post', $post_id );
+				},
+				'description'       => __( 'Màu riêng cho hiệu ứng con trỏ của từ khoá này. Rỗng = màu mặc định.', 'nntm' ),
+			)
+		);
+	}
+
 	/** Ô tích "Bật từ khoá động" trong thanh bên trình soạn thảo. */
 	public function enqueue_editor_panel(): void {
 		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
@@ -229,7 +277,9 @@ class Tu_Khoa_Dong {
 		$bien_the = implode( "\n", self::doc_bien_the( $post->ID ) );
 		$mo_ta    = (string) get_post_meta( $post->ID, self::META_MO_TA, true );
 		$kieu     = self::doc_kieu( $post->ID );
-		$lien_ket = (string) get_post_meta( $post->ID, self::META_LIEN_KET, true );
+		$lien_ket   = (string) get_post_meta( $post->ID, self::META_LIEN_KET, true );
+		$ct_kieu    = (string) get_post_meta( $post->ID, self::META_CON_TRO_KIEU, true );
+		$ct_mau     = (string) get_post_meta( $post->ID, self::META_CON_TRO_MAU, true );
 		?>
 		<p class="description" style="margin-top:0">
 			<?php esc_html_e( 'Tiêu đề phía trên chính là từ khoá. Hình minh hoạ chọn ở ô "Hình minh hoạ" bên phải. Hiệu ứng chỉ chạy trên những trang đã tích "Bật từ khoá động" trong trình soạn thảo trang.', 'nntm' ); ?>
@@ -269,6 +319,23 @@ class Tu_Khoa_Dong {
 					<p class="description"><?php esc_html_e( 'Không bắt buộc. Có liên kết thì thẻ minh hoạ hiện thêm nút "Xem thêm".', 'nntm' ); ?></p>
 				</td>
 			</tr>
+			<tr>
+				<th scope="row"><label for="nntm-tkd-con-tro-kieu"><?php esc_html_e( 'Hiệu ứng con trỏ chuột', 'nntm' ); ?></label></th>
+				<td>
+					<select id="nntm-tkd-con-tro-kieu" name="nntm_tkd_con_tro_kieu">
+						<option value="" <?php selected( '', $ct_kieu ); ?>><?php esc_html_e( 'Không gắn', 'nntm' ); ?></option>
+						<?php foreach ( nntm_con_tro_ds_kieu() as $khoa => $d ) : ?>
+							<option value="<?php echo esc_attr( $khoa ); ?>" <?php selected( $khoa, $ct_kieu ); ?>><?php echo esc_html( $d['ten'] ); ?></option>
+						<?php endforeach; ?>
+					</select>
+					<input type="text" id="nntm-tkd-con-tro-mau" name="nntm_tkd_con_tro_mau" value="<?php echo esc_attr( $ct_mau ); ?>" placeholder="#D4AF37" class="small-text" maxlength="7" style="margin-left:8px;" />
+					<p class="description">
+						<?php esc_html_e( 'Khi câu tìm kiếm của khách khớp đúng từ khoá này (hoặc một cách viết khác), trang kết quả tìm kiếm sẽ dùng hiệu ứng con trỏ chuột này thay vì cài đặt chung.', 'nntm' ); ?>
+						<br />
+						<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . self::POST_TYPE . '&page=nntm-con-tro' ) ); ?>"><?php esc_html_e( 'Quản lý mọi hiệu ứng con trỏ ở đây', 'nntm' ); ?></a>
+					</p>
+				</td>
+			</tr>
 		</table>
 		<?php
 	}
@@ -300,6 +367,14 @@ class Tu_Khoa_Dong {
 
 		$lien_ket = isset( $_POST['nntm_tkd_lien_ket'] ) ? esc_url_raw( wp_unslash( $_POST['nntm_tkd_lien_ket'] ), array( 'http', 'https' ) ) : '';
 		update_post_meta( $post_id, self::META_LIEN_KET, $lien_ket );
+
+		if ( isset( $_POST['nntm_tkd_con_tro_kieu'] ) ) {
+			update_post_meta( $post_id, self::META_CON_TRO_KIEU, nntm_con_tro_sanitize_kieu_dung_chung( wp_unslash( $_POST['nntm_tkd_con_tro_kieu'] ) ) );
+		}
+
+		if ( isset( $_POST['nntm_tkd_con_tro_mau'] ) ) {
+			update_post_meta( $post_id, self::META_CON_TRO_MAU, nntm_con_tro_sanitize_mau_dung_chung( wp_unslash( $_POST['nntm_tkd_con_tro_mau'] ) ) );
+		}
 	}
 
 	/**
@@ -476,6 +551,7 @@ class Tu_Khoa_Dong {
 				$moi[ $khoa ]        = __( 'Từ khoá', 'nntm' );
 				$moi['nntm_tkd_bien_the'] = __( 'Cách viết khác', 'nntm' );
 				$moi['nntm_tkd_kieu']     = __( 'Kiểu', 'nntm' );
+				$moi['nntm_tkd_con_tro']  = __( 'Hiệu ứng con trỏ', 'nntm' );
 				continue;
 			}
 			$moi[ $khoa ] = $nhan;
@@ -499,6 +575,15 @@ class Tu_Khoa_Dong {
 			case 'nntm_tkd_kieu':
 				$cac_kieu = self::cac_kieu();
 				echo esc_html( strtok( $cac_kieu[ self::doc_kieu( $post_id ) ], '—' ) );
+				break;
+			case 'nntm_tkd_con_tro':
+				$ct_kieu = (string) get_post_meta( $post_id, self::META_CON_TRO_KIEU, true );
+				if ( '' === $ct_kieu || ! function_exists( 'nntm_con_tro_ds_kieu' ) ) {
+					echo '—';
+					break;
+				}
+				$ds = nntm_con_tro_ds_kieu();
+				echo esc_html( $ds[ $ct_kieu ]['ten'] ?? $ct_kieu );
 				break;
 		}
 	}

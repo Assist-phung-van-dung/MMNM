@@ -53,3 +53,4 @@ require NNTM_THEME_DIR . '/inc/bai-lien-quan.php';
 require NNTM_THEME_DIR . '/inc/thu-tu-bai-viet.php';
 require NNTM_THEME_DIR . '/inc/search.php';
 require NNTM_THEME_DIR . '/inc/admin-loc-bai-viet.php';
+require NNTM_THEME_DIR . '/inc/con-tro.php';
