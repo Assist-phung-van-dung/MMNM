@@ -321,7 +321,7 @@
 	padding: 0;
 	border: 0;
 	border-radius: 0;
-	font-size: 26px;
+	font-size: 28px;
 	line-height: 1;
 	color: var(--nntm-den);
 	cursor: pointer;
@@ -374,7 +374,7 @@
 	.nntm-feature-carousel__intro-text { font-size: var(--nntm-fs-sm); }
 	.nntm-feature-carousel__slide[data-position="-2"],
 	.nntm-feature-carousel__slide[data-position="2"] { opacity: .55; }
-	.nntm-feature-carousel__arrow { top: 144px; width: 48px; height: 48px; font-size: 22px; }
+	.nntm-feature-carousel__arrow { top: 144px; width: 48px; height: 48px; font-size: 24px; }
 	.nntm-feature-carousel__arrow--prev { left: 16px; }
 	.nntm-feature-carousel__arrow--next { right: 16px; }
 	.nntm-feature-carousel__copy { padding-inline: 18px; }

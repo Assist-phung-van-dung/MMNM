@@ -56,7 +56,7 @@
 .nntm-cong-tu__o-so {
 	margin: 0;
 	font-family: var(--nntm-font-display);
-	font-size: 32px;  
+	font-size: 34px;  
 	font-weight: 600;
 	color: var(--nntm-do-tham);
 	line-height: var(--nntm-lh-chat);
@@ -65,7 +65,7 @@
 .nntm-cong-tu__o-nhan {
 	margin: var(--nntm-sp-2) 0 0;
 	font-family: var(--nntm-font-sans);
-	font-size: 12px;  
+	font-size: 14px;  
 	font-weight: 700;
 	letter-spacing: 0.04em;
 	text-transform: uppercase;
@@ -116,7 +116,7 @@
 .nntm-cong-tu__bxh-heading {
 	margin: 0 0 35px;  
 	font-family: var(--nntm-font-display);
-	font-size: 28px;  
+	font-size: 30px;  
 	color: var(--nntm-do-tham);
 	text-align: center;
 }
@@ -214,7 +214,7 @@
 
 .nntm-cong-tu--nen-vang .nntm-cong-tu__thong-ke-heading {
 	color: var(--nntm-trang);  
-	font-size: 35px;  
+	font-size: 37px;  
 }
 
 .nntm-cong-tu--nen-vang .nntm-cong-tu__thong-ke {
@@ -279,7 +279,7 @@
 .nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-bang thead th {
 	background-color: var(--nntm-do-tham);
 	font-family: var(--nntm-font-sans);
-	font-size: 11px;
+	font-size: 13px;
 	font-weight: 700;
 	line-height: 1.25;
 	letter-spacing: 0.02em;
@@ -295,7 +295,7 @@
 	border-bottom: 0;
 	background-color: var(--nntm-vang-nghe);
 	font-family: var(--nntm-font-serif);
-	font-size: 14px;
+	font-size: 16px;
 	line-height: 1.35;
 	color: var(--nntm-den);
 }
@@ -305,7 +305,7 @@
 }
 
 .nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-vung-mien {
-	font-size: 13px;
+	font-size: 15px;
 	color: var(--nntm-muc-nhat);
 }
 
@@ -319,7 +319,7 @@
 
 .nntm-cong-tu--nen-vang .nntm-cong-tu__bxh-phan-tram {
 	font-family: var(--nntm-font-serif);
-	font-size: 13px;
+	font-size: 15px;
 	font-weight: 600;
 	color: var(--nntm-den);
 }

@@ -253,7 +253,8 @@ if ( ! function_exists( 'nntm_hero_slider_render_sidecard' ) ) {
 		ob_start();
 		?>
 		<aside class="nntm-hero-slider__sidecard">
-			<p class="nntm-hero-slider__sidecard-heading nntm-cat-2-dong">
+			<?php // Không kẹp 2 dòng: chữ to hoặc tên bài dài thì thẻ dãn cao ra, không cắt mất chữ. ?>
+			<p class="nntm-hero-slider__sidecard-heading">
 				<a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( $title ); ?></a>
 			</p>
 

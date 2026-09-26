@@ -107,7 +107,7 @@
 	font-family: var(--nntm-font-display);
 	font-weight: 600;
 	 
-	font-size: clamp(1.75rem, 4.25vw, var(--nntm-fs-5xl));
+	font-size: clamp(1.875rem, calc(4.25vw + 2px), var(--nntm-fs-5xl));
 	line-height: var(--nntm-lh-chat);  
 	color: var(--nntm-trang);
 	text-wrap: balance;
@@ -117,7 +117,7 @@
 	margin: 0;
 	font-family: var(--nntm-font-sans);  
 	font-weight: 400;
-	font-size: clamp(var(--nntm-fs-sm), 1.32vw, var(--nntm-fs-md));
+	font-size: clamp(var(--nntm-fs-sm), calc(1.32vw + 2px), var(--nntm-fs-md));
 	line-height: var(--nntm-lh-khit);  
 	color: var(--nntm-trang);
 }
@@ -208,7 +208,7 @@
 }
 
 .nntm-banner.nntm-banner--kc-ledan .nntm-banner__heading {
-	font-size: 37px;  
+	font-size: 39px;  
 	text-align: left;
 	text-wrap: initial;
 }

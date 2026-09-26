@@ -37,16 +37,16 @@
 .nntm-lien-dan-khoa .nntm-card-list__heading {
 	margin: 0;
 	font-family: var(--nntm-font-display);
-	font-size: 52px;
+	font-size: 54px;
 	font-weight: 600;
-	line-height: 60px;
+	line-height: 62px;
 	color: var(--nntm-chinh);
 }
 
 .nntm-lien-dan-khoa .nntm-card-list__view-all {
-	font-size: 13px;
+	font-size: 15px;
 	font-weight: 700;
-	line-height: 23px;
+	line-height: 25px;
 	color: var(--nntm-chu);
 	text-underline-offset: 2px;
 }
@@ -99,25 +99,25 @@
 }
 
 .nntm-lien-dan-khoa .nntm-card--khoa-tu .nntm-card__title {
-	font-size: 18px;
+	font-size: 20px;
 	font-weight: 700;
-	line-height: 30px;
+	line-height: 32px;
 	color: var(--nntm-chu);
 }
 
 .nntm-lien-dan-khoa .nntm-card--khoa-tu .nntm-card__excerpt {
 	font-family: var(--nntm-font-serif);
-	font-size: 15px;
+	font-size: 17px;
 	font-weight: 400;
-	line-height: 22px;
+	line-height: 24px;
 	color: var(--nntm-chinh);
 }
 
 .nntm-lien-dan-khoa .nntm-card--khoa-tu .nntm-card__cta,
 .nntm-lien-dan-lich .nntm-card--khoa-tu .nntm-card__cta {
-	font-size: 13px;
+	font-size: 15px;
 	font-weight: 700;
-	line-height: 23px;
+	line-height: 25px;
 	text-decoration: underline;
 	text-underline-offset: 2px;
 }
@@ -147,9 +147,9 @@
 .nntm-lien-dan-lich .nntm-card-list__heading {
 	margin: 0;
 	font-family: var(--nntm-font-display);
-	font-size: 52px;
+	font-size: 54px;
 	font-weight: 600;
-	line-height: 60px;
+	line-height: 62px;
 	color: var(--nntm-chinh);
 }
 
@@ -207,9 +207,9 @@
 
 .nntm-lien-dan-lich .nntm-card--khoa-tu .nntm-card__title {
 	font-family: var(--nntm-font-sans);
-	font-size: 16px;
+	font-size: 18px;
 	font-weight: 700;
-	line-height: 22px;
+	line-height: 24px;
 	color: var(--nntm-chu);
 	white-space: nowrap;
 	overflow: hidden;
@@ -278,9 +278,9 @@
 
 .nntm-thien-duong__heading {
 	font-family: var(--nntm-font-display);
-	font-size: 52px;
+	font-size: 54px;
 	font-weight: 600;
-	line-height: 60px;
+	line-height: 62px;
 	color: var(--nntm-trang);
 }
 
@@ -380,7 +380,7 @@
 	.nntm-lien-dan-khoa .nntm-card-list__heading,
 	.nntm-lien-dan-lich .nntm-card-list__heading,
 	.nntm-thien-duong__heading {
-		font-size: clamp(28px, 9vw, var(--nntm-fs-4xl));
+		font-size: clamp(30px, calc(9vw + 2px), var(--nntm-fs-4xl));
 		line-height: 1.1;
 	}
 

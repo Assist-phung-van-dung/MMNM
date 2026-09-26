@@ -71,7 +71,7 @@
 	display: block;
 	font-family: var(--nntm-font-display);
 	font-weight: 700;
-	font-size: 116px;
+	font-size: 118px;
 	line-height: 0.62;
 	color: var(--nntm-chu);  
 }
@@ -82,7 +82,7 @@
 	font-size: var(--nntm-fs-3xl);          
 	font-weight: 600;
 	font-style: normal;
-	line-height: 44px;                      
+	line-height: 46px;                      
 	letter-spacing: 0;
 	color: var(--nntm-chu);
 
@@ -105,7 +105,7 @@
 	font-size: var(--nntm-fs-15);         
 	font-weight: 400;
 	font-style: italic;                   
-	line-height: 22px;                     
+	line-height: 24px;                     
 	letter-spacing: 0;
 	color: var(--nntm-chinh);             
 }
@@ -126,7 +126,7 @@
 	font-size: var(--nntm-fs-md);         
 	font-weight: 400;
 	font-style: normal;
-	line-height: 26px;                     
+	line-height: 28px;                     
 	letter-spacing: 0;
 	color: var(--nntm-chu);               
 

@@ -102,17 +102,17 @@
   --nntm-font-ui:      var(--nntm-font-display);                                 
   --nntm-font-geo:     var(--nntm-font-display);                                 
 
-  --nntm-fs-xs:   0.8125rem;   
-  --nntm-fs-sm:   0.875rem;    
-  --nntm-fs-15:   0.9375rem;   
-  --nntm-fs-base: 1rem;        
-  --nntm-fs-md:   1.125rem;    
-  --nntm-fs-lg:   1.25rem;     
-  --nntm-fs-xl:   1.4375rem;   
-  --nntm-fs-2xl:  1.875rem;    
-  --nntm-fs-3xl:  2.375rem;    
-  --nntm-fs-4xl:  3.25rem;     
-  --nntm-fs-5xl:  3.625rem;    
+  --nntm-fs-xs:   0.9375rem;   
+  --nntm-fs-sm:   1rem;    
+  --nntm-fs-15:   1.0625rem;   
+  --nntm-fs-base: 1.125rem;        
+  --nntm-fs-md:   1.25rem;    
+  --nntm-fs-lg:   1.375rem;     
+  --nntm-fs-xl:   1.5625rem;   
+  --nntm-fs-2xl:  2rem;    
+  --nntm-fs-3xl:  2.5rem;    
+  --nntm-fs-4xl:  3.375rem;     
+  --nntm-fs-5xl:  3.75rem;    
 
   --nntm-lh-chat:  1.16;   
   --nntm-lh-khit:  1.27;   

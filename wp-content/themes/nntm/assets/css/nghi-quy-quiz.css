@@ -85,7 +85,7 @@ body.nntm-quiz-open {
 .nntm-quiz-modal__eyebrow {
   margin: 0 0 6px;
   font-family: var(--nntm-font-sans, sans-serif);
-  font-size: .75rem;
+  font-size: .875rem;
   font-weight: 700;
   letter-spacing: .18em;
   text-transform: uppercase;
@@ -95,7 +95,7 @@ body.nntm-quiz-open {
 .nntm-quiz-modal__title {
   margin: 0 44px 8px 0;
   font-family: var(--nntm-font-display, Georgia, serif);
-  font-size: clamp(1.5rem, 3.4vw, 1.875rem);
+  font-size: clamp(1.625rem, calc(3.4vw + 2px), 2rem);
   font-weight: 600;
   line-height: 1.25;
   color: var(--qz-chu);
@@ -105,7 +105,7 @@ body.nntm-quiz-open {
   margin: 0;
   max-width: 46ch;
   font-family: var(--nntm-font-serif, Georgia, serif);
-  font-size: .9375rem;
+  font-size: 1.0625rem;
   line-height: 1.6;
   color: var(--qz-chu-mo);
 }
@@ -124,7 +124,7 @@ body.nntm-quiz-open {
   border: 1px solid transparent;
   background: transparent;
   color: var(--qz-chu);
-  font-size: 26px;
+  font-size: 28px;
   line-height: 1;
   cursor: pointer;
   transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
@@ -176,7 +176,7 @@ body.nntm-quiz-open {
   padding: 0;
   margin: 0 0 12px;
   font-family: var(--nntm-font-sans, sans-serif);
-  font-size: 1.0625rem;
+  font-size: 1.1875rem;
   font-weight: 700;
   line-height: 1.5;
   color: var(--qz-chu);
@@ -194,7 +194,7 @@ body.nntm-quiz-open {
   border: 1px solid var(--qz-vien);
   background: var(--qz-nen);
   font-family: var(--nntm-font-serif, Georgia, serif);
-  font-size: 1rem;
+  font-size: 1.125rem;
   line-height: 1.5;
   cursor: pointer;
   transition: border-color 160ms ease, background 160ms ease;
@@ -230,7 +230,7 @@ body.nntm-quiz-open {
   border: 1px solid var(--qz-vien);
   background: var(--qz-nen);
   font-family: var(--nntm-font-sans, sans-serif);
-  font-size: .8125rem;
+  font-size: .9375rem;
   font-weight: 700;
   line-height: 1;
   color: var(--qz-chu-mo);
@@ -280,7 +280,7 @@ body.nntm-quiz-open {
 
 .nntm-quiz-modal__tien-do {
   font-family: var(--nntm-font-sans, sans-serif);
-  font-size: .875rem;
+  font-size: 1rem;
   color: var(--qz-chu-mo);
 }
 
@@ -292,7 +292,7 @@ body.nntm-quiz-open {
   background: var(--qz-chu);
   color: var(--nntm-trang, #fff);
   font-family: var(--nntm-font-sans, sans-serif);
-  font-size: 1rem;
+  font-size: 1.125rem;
   cursor: pointer;
   transition: background 180ms ease, color 180ms ease;
 }
@@ -322,7 +322,7 @@ body.nntm-quiz-open {
   margin: 0;
   padding: 22px 34px;
   font-family: var(--nntm-font-serif, Georgia, serif);
-  font-size: 1rem;
+  font-size: 1.125rem;
   line-height: 1.6;
   color: var(--qz-chu-mo);
 }
@@ -353,7 +353,7 @@ body.nntm-quiz-open {
   background: transparent;
   color: var(--qz-chu);
   font-family: var(--nntm-font-sans, sans-serif);
-  font-size: 1rem;
+  font-size: 1.125rem;
   cursor: pointer;
   transition: background 180ms ease, color 180ms ease;
 }

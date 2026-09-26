@@ -38,9 +38,9 @@
 		height: 46px;
 		margin: 0;
 		font-family: var(--nntm-font-display);
-		font-size: 40px;
+		font-size: 42px;
 		font-weight: 600;
-		line-height: 46px;
+		line-height: 48px;
 		color: var(--nntm-trang);
 		text-align: center;
 	}
@@ -83,18 +83,18 @@
 	.nntm-rank-card__card-title {
 		margin: 30px 0 0;
 		font-family: var(--nntm-font-display);
-		font-size: 24px;
+		font-size: 26px;
 		font-weight: 700;
-		line-height: 30px;
+		line-height: 32px;
 		color: var(--nntm-trang);
 	}
 
 	.nntm-rank-card__cta {
 		margin-top: 12px;
 		font-family: var(--nntm-font-serif);
-		font-size: 14px;
+		font-size: 16px;
 		font-weight: 600;
-		line-height: 20px;
+		line-height: 22px;
 		color: var(--nntm-trang);
 		text-decoration: none;
 		transition: transform 260ms cubic-bezier(.22, 1, .36, 1), opacity 260ms ease;
