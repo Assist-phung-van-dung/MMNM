@@ -93,9 +93,6 @@ function nntm_search_serve_pdf( WP_REST_Request $request ) {
 	 * ai cũng tải được sách đang khoá. Đã đo bằng tay: trước khi sửa, endpoint
 	 * này trả 200 cho đúng cuốn mà endpoint đọc trả 403.
 	 */
-	$post_id     = nntm_search_pdf_owner( $attachment_id );
-	$publication = $post_id > 0 ? get_post( $post_id ) : null;
-
 	/*
 	 * Dùng hàm của nntm-library: nó xét MỌI ấn phẩm đang dùng tệp này, còn
 	 * nntm_search_pdf_owner() chỉ lấy một cái theo post_parent. Hai cách tra ra
@@ -104,12 +101,13 @@ function nntm_search_serve_pdf( WP_REST_Request $request ) {
 	if ( function_exists( 'nntm_lib_duoc_doc_tep' ) ) {
 		$can_read = nntm_lib_duoc_doc_tep( $attachment_id );
 	} else {
-		$can_read = (bool) apply_filters(
-			'nntm_an_pham_can_access',
-			true,
-			$publication,
-			get_current_user_id()
-		);
+		/*
+		 * Thiếu nntm-library thì không có cách nào biết ai đã mua gì. Trước đây
+		 * chỗ này gọi thẳng filter `nntm_an_pham_can_access` với mặc định `true`
+		 * — bỏ qua luôn ô khoá/giá, ai đoán ra ID cũng tải được. FAIL CLOSED:
+		 * không biết thì coi như không được đọc, còn hơn lỡ phát tệp đang bán.
+		 */
+		$can_read = false;
 	}
 
 	if ( ! $can_read ) {
