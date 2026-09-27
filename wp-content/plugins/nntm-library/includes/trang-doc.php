@@ -190,13 +190,18 @@ function nntm_an_pham_chuyen_sang_trang_doc(): void {
 		return;
 	}
 
-	if ( isset( $_GET['chi-tiet'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- chi doc, khong doi trang thai.
-		return;
-	}
-
 	$post = get_queried_object();
 
 	if ( ! $post instanceof WP_Post ) {
+		return;
+	}
+
+	/*
+	 * ?chi-tiet là cửa riêng của người soạn ấn phẩm. Trước đây ai gõ thêm
+	 * ?chi-tiet cũng ở lại được trang giới thiệu — trong khi chủ dự án chốt ấn
+	 * phẩm chỉ có một lối: vào trình đọc, xem thử rồi mua.
+	 */
+	if ( isset( $_GET['chi-tiet'] ) && current_user_can( 'edit_post', $post->ID ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- chi doc, khong doi trang thai.
 		return;
 	}
 
