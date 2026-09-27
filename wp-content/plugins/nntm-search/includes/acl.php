@@ -92,6 +92,14 @@ function nntm_search_post_acl( WP_Post $post ): string {
 		 * Ask about an ANONYMOUS visitor (user id 0), not about whoever is running
 		 * the job. Indexing runs from cron/CLI, so asking about the current session
 		 * would return the cron user's permissions — completely wrong.
+		 *
+		 * ⚠️ Mức này chỉ quyết định TẤM THẺ ấn phẩm (tiêu đề + mô tả) có được tìm
+		 * ra hay không — KHÔNG phải khung trả tiền. Một cuốn đang bán vẫn phải là
+		 * 'public' ở đây (khách chưa mua vẫn cần tìm thấy sách để mà mua), nên hàm
+		 * này KHÔNG xét ô khoá/giá tại đây. Chữ bên TRONG trang PDF là chuyện khác
+		 * hẳn và được xét lại, theo ĐÚNG người xem, tại nntm_search_pdf_rows_from()
+		 * (includes/pdf.php) — đừng bao giờ lấy giá trị $level/$visitor_can_read ở
+		 * đây làm căn cứ cho phép hiện chữ trong PDF.
 		 */
 		$visitor_can_read = (bool) apply_filters( 'nntm_an_pham_can_access', true, $post, 0 );
 

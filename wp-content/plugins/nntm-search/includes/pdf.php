@@ -288,7 +288,11 @@ function nntm_search_pdf_hits( string $query ): array {
 
 	static $cache = array();
 
-	$key = md5( $query . '|' . implode( ',', nntm_search_viewer_acl() ) );
+	// Kết quả giờ còn phụ thuộc vào NGƯỜI xem (đã mua hay chưa), không chỉ vào
+	// nhóm quyền 'public'/'member' — hai người cùng nhóm 'member' có thể một
+	// người đã mua, một người chưa. Thiếu user id trong khoá thì người vào sau
+	// sẽ ăn cache của người vào trước, thấy trích đoạn hoặc thấy khoá sai người.
+	$key = md5( $query . '|' . implode( ',', nntm_search_viewer_acl() ) . '|' . get_current_user_id() );
 
 	// One search page render asks for this twice (once for counts, once for
 	// display). Same request, same answer — no reason to run it twice.
@@ -467,6 +471,33 @@ function nntm_search_pdf_rows_from( array $hits, string $query ): array {
 			continue;
 		}
 
+		/*
+		 * `nntm_search_can_view()` ở trên chỉ trả lời "ấn phẩm này có hiển thị
+		 * công khai không" — với ấn phẩm có bán, mức đó luôn là 'public' (xem
+		 * acl.php dòng ~96), vì thẻ ấn phẩm vẫn phải tìm ra được để mời mua. Nó
+		 * KHÔNG trả lời "người đang xem đã mua chưa". Thiếu cổng thứ hai này,
+		 * excerpt lấy thẳng từ CSDL — tức nguyên văn trang sách — đã lộ ra cho
+		 * bất kỳ ai gõ đúng từ khoá, kể cả khách chưa đăng nhập, với sách khoá.
+		 *
+		 * Hỏi thẳng `nntm_lib_duoc_doc_tep()` (nntm-library): nó xét ĐÚNG người
+		 * đang xem tại THỜI ĐIỂM TRUY VẤN, không phải nhóm quyền tĩnh lúc lập chỉ
+		 * mục — nên "member" (đã đăng nhập) và "đã mua" là hai chuyện khác nhau,
+		 * và người vừa mua thấy được ngay mà không cần lập lại chỉ mục.
+		 *
+		 * FAIL CLOSED khi thiếu nntm-library: không có plugin đó thì không có
+		 * cách nào biết ai đã mua gì, nên thà không hiện chữ còn hơn lỡ hiện
+		 * nhầm cho người chưa trả tiền.
+		 */
+		$duoc_doc = function_exists( 'nntm_lib_duoc_doc_tep' )
+			? nntm_lib_duoc_doc_tep( (int) $hit->attachment_id )
+			: false;
+
+		// Trang mồ côi (không gắn ấn phẩm nào) mà không đọc được: không có ấn
+		// phẩm nào để mời mua, giữ dòng này lại chỉ tổ lộ chữ mà chẳng để làm gì.
+		if ( 0 === $post_id && ! $duoc_doc ) {
+			continue;
+		}
+
 		$post      = $post_id > 0 ? get_post( $post_id ) : null;
 		$title     = $post instanceof WP_Post
 			? get_the_title( $post )
@@ -484,28 +515,63 @@ function nntm_search_pdf_rows_from( array $hits, string $query ): array {
 					: nntm_search_pdf_download_url( (int) $hit->attachment_id )
 			);
 
-		$rows[] = array(
+		$row = array(
 			'id'        => $post_id,
 			'type'      => 'pdf_page',
 			'title'     => nntm_search_highlight( $title, $query ),
-			'excerpt'   => nntm_search_highlight( nntm_search_excerpt( (string) $hit->content, $query ), $query ),
 			'permalink' => $permalink,
 			'thumb'     => $post instanceof WP_Post ? (string) ( get_the_post_thumbnail_url( $post, 'thumbnail' ) ?: '' ) : '',
 			'thumb_tag' => $post instanceof WP_Post
 				? (string) get_the_post_thumbnail( $post, 'medium_large', array( 'class' => 'nntm-article-rows__img-el', 'loading' => 'lazy' ) )
 				: '',
-			'label'     => 'ocr' === ( $hit->source ?? '' )
+		);
+
+		if ( $duoc_doc ) {
+			$row['excerpt'] = nntm_search_highlight( nntm_search_excerpt( (string) $hit->content, $query ), $query );
+			$row['label']   = 'ocr' === ( $hit->source ?? '' )
 				/* translators: %d: page number inside the PDF. */
 				? sprintf( __( 'PDF · trang %d · chữ nhận dạng từ bản scan', 'nntm' ), (int) $hit->page_no )
 				/* translators: %d: page number inside the PDF. */
-				: sprintf( __( 'PDF · trang %d', 'nntm' ), (int) $hit->page_no ),
-			'cta_1'     => __( 'Mở đúng trang', 'nntm' ),
-			'cta_2'     => __( 'Tải xuống', 'nntm' ),
+				: sprintf( __( 'PDF · trang %d', 'nntm' ), (int) $hit->page_no );
+			$row['cta_1']   = __( 'Mở đúng trang', 'nntm' );
+			$row['cta_2']   = __( 'Tải xuống', 'nntm' );
 			// Second action points somewhere else than the first, so the row
 			// renderer needs its own URL rather than reusing the permalink.
-			'cta_2_url' => nntm_search_pdf_download_url( (int) $hit->attachment_id ),
-			'cta_2_download' => true,
-		);
+			$row['cta_2_url']      = nntm_search_pdf_download_url( (int) $hit->attachment_id );
+			$row['cta_2_download'] = true;
+		} else {
+			/*
+			 * "Nhử, giấu chữ": vẫn cho biết trang này CÓ chứa từ khoá — để còn mời
+			 * mua — nhưng KHÔNG một chữ nào của nội dung thật lọt ra ngoài. Không
+			 * đặt cta_2_url/cta_2_download: endpoint tải sẽ trả 403 cho tệp này,
+			 * nút tải chỉ tổ dẫn tới trang lỗi.
+			 */
+			$row['excerpt'] = '';
+			$row['cta_2']   = '';
+
+			/*
+			 * Sách khoá không phải lúc nào cũng vì giá: Nghi Quỹ khoá bằng câu hỏi.
+			 * Ghi "cần mua" cho cuốn không bán là mời người ta trả tiền cho thứ
+			 * không có quầy bán.
+			 */
+			$ly_do = function_exists( 'nntm_an_pham_ly_do_khoa' ) ? nntm_an_pham_ly_do_khoa( $post ) : '';
+
+			if ( 'mua' === $ly_do ) {
+				/* translators: %d: page number inside the PDF. */
+				$row['label'] = sprintf( __( 'PDF · trang %d · cần mua để đọc', 'nntm' ), (int) $hit->page_no );
+				$row['cta_1'] = __( 'Mua để đọc', 'nntm' );
+			} elseif ( 'quiz' === $ly_do ) {
+				/* translators: %d: page number inside the PDF. */
+				$row['label'] = sprintf( __( 'PDF · trang %d · cần trả lời câu hỏi để đọc', 'nntm' ), (int) $hit->page_no );
+				$row['cta_1'] = __( 'Mở ấn phẩm', 'nntm' );
+			} else {
+				/* translators: %d: page number inside the PDF. */
+				$row['label'] = sprintf( __( 'PDF · trang %d · chưa mở cho bạn', 'nntm' ), (int) $hit->page_no );
+				$row['cta_1'] = __( 'Mở ấn phẩm', 'nntm' );
+			}
+		}
+
+		$rows[] = $row;
 	}
 
 	return $rows;
