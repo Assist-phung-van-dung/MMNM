@@ -479,6 +479,29 @@ function nntm_block_style_css_nen( array $nen ): array {
  * Gói trong một :not(:is(...)) duy nhất để cả cụm chỉ nặng (0,1,0); viết thành
  * nhiều :not() liên tiếp thì độ ưu tiên cộng dồn, khó lường.
  */
+function nntm_block_style_typo_manh_khong_phai_chu(): array {
+	return array( '-img', 'icon', 'glyph', 'media', '-group', '-wrap', '-inner', '-stage', '-el', '-field', '-slot' );
+}
+
+/**
+ * Dựng một cụm :not(:is(...)) từ danh sách mảnh class.
+ *
+ * Luôn gói trong MỘT :is() duy nhất để cả cụm chỉ nặng (0,1,0); viết thành
+ * nhiều :not() liên tiếp thì độ ưu tiên cộng dồn, khó lường.
+ */
+function nntm_block_style_typo_khong_thuoc( array $manh ): string {
+	if ( empty( $manh ) ) {
+		return '';
+	}
+
+	$dieu_kien = array();
+	foreach ( array_unique( $manh ) as $m ) {
+		$dieu_kien[] = '[class*="' . $m . '"]';
+	}
+
+	return ':not(:is(' . implode( ',', $dieu_kien ) . '))';
+}
+
 function nntm_block_style_typo_loai_tru(): string {
 	static $cache = null;
 
@@ -486,14 +509,7 @@ function nntm_block_style_typo_loai_tru(): string {
 		return $cache;
 	}
 
-	$manh = array( '-img', 'icon', 'glyph', 'media', '-group', '-wrap', '-inner', '-stage', '-el', '-field', '-slot' );
-
-	$dieu_kien = array();
-	foreach ( $manh as $m ) {
-		$dieu_kien[] = '[class*="' . $m . '"]';
-	}
-
-	$cache = ':not(:is(' . implode( ',', $dieu_kien ) . '))';
+	$cache = nntm_block_style_typo_khong_thuoc( nntm_block_style_typo_manh_khong_phai_chu() );
 
 	return $cache;
 }
@@ -511,9 +527,15 @@ function nntm_block_style_typo_loai_tru(): string {
  * 'manh'  — mảnh chuỗi tìm trong thuộc tính class.
  *
  * THỨ TỰ CÓ Ý NGHĨA. Một class có thể trúng nhiều vai trò (`__subheading` trúng
- * cả 'heading' lẫn 'sub'); các quy tắc sinh ra bằng độ ưu tiên nên cái đứng sau
- * thắng. Vì vậy 'sub' phải đứng sau 'heading', 'button' phải đứng sau 'label'
- * (để `nntm-cta__label` được tính là nút chứ không phải nhãn).
+ * cả 'heading' lẫn 'sub'); vai trò ĐỨNG SAU thắng. Vì vậy 'sub' phải đứng sau
+ * 'heading', 'button' phải đứng sau 'label' (để `nntm-cta__label` được tính là
+ * nút chứ không phải nhãn).
+ *
+ * Việc "thắng" do nntm_block_style_typo_roles_chot() lo: mỗi vai trò tự loại
+ * mảnh class của các vai trò đứng sau nó ra khỏi selector. Trước đây chỉ dựa
+ * vào thứ tự xuất CSS nên nó chỉ ăn KHI vai trò đứng sau có đặt gì đó — đặt cỡ
+ * chữ "Tiêu đề" mà bỏ trống "Tiêu đề phụ" thì `__subheading` lại rơi về
+ * 'heading', một lần chỉnh ăn hai chỗ.
  *
  * @return array<string, array{ten: string, tags: string[], manh: string[]}>
  */
@@ -544,10 +566,60 @@ function nntm_block_style_typo_roles(): array {
 			'button'  => array(
 				'ten'  => __( 'Nút', 'nntm' ),
 				'tags' => array(),
-				'manh' => array( 'btn', 'cta', 'link', 'view-all', 'detail', 'arrow', 'quicklink' ),
+				/*
+				 * '__detail' chứ không phải 'detail': tên khối trang chi tiết đều là
+				 * `nntm-article-detail`, `nntm-post-detail`, `nntm-retreat-detail`…
+				 * nên mảnh 'detail' trần sẽ nuốt luôn tiêu đề và phần thân của mấy
+				 * trang đó. Nút "chi tiết" thật chỉ có một: __detail.
+				 */
+				'manh' => array( 'btn', 'cta', 'link', 'view-all', '__detail', 'arrow', 'quicklink' ),
 			),
 		)
 	);
+}
+
+/**
+ * Bản đồ vai trò đã chốt: mỗi vai trò mang sẵn chuỗi loại trừ của riêng nó.
+ *
+ * Vì sao cần: quy tắc "vai trò đứng sau thắng" trước đây chỉ dựa vào thứ tự
+ * xuất CSS, nên nó CHỈ ăn khi vai trò đứng sau có đặt gì đó. Đặt cỡ chữ cho
+ * "Tiêu đề" mà bỏ trống "Tiêu đề phụ" thì không có quy tắc nào của 'sub' được
+ * xuất, và `__sidecard-subheading` lại rơi về 'heading' — một lần chỉnh ăn hai
+ * chỗ. Nay mỗi vai trò tự loại bỏ mảnh class của những vai trò ĐỨNG SAU nó,
+ * nên một phần tử chỉ thuộc đúng một vai trò, đặt hay không đặt cũng vậy.
+ *
+ * - 'tru'    cho selector theo mảnh class: gộp chung với danh sách "không phải
+ *            chữ" vào MỘT :not(:is(...)) nên độ ưu tiên không đổi so với trước.
+ * - 'truTag' cho selector theo thẻ trần: chỉ loại vai trò đứng sau.
+ *
+ * @return array<string, array{ten: string, tags: string[], manh: string[], tru: string, truTag: string}>
+ */
+function nntm_block_style_typo_roles_chot(): array {
+	static $cache = null;
+
+	if ( null !== $cache ) {
+		return $cache;
+	}
+
+	$roles = nntm_block_style_typo_roles();
+	$ma    = array_keys( $roles );
+	$chung = nntm_block_style_typo_manh_khong_phai_chu();
+	$cache = array();
+
+	foreach ( $ma as $vi_tri => $ten_vai_tro ) {
+		$manh_sau = array();
+
+		foreach ( array_slice( $ma, $vi_tri + 1 ) as $sau ) {
+			$manh_sau = array_merge( $manh_sau, $roles[ $sau ]['manh'] );
+		}
+
+		$cache[ $ten_vai_tro ] = $roles[ $ten_vai_tro ] + array(
+			'tru'    => nntm_block_style_typo_khong_thuoc( array_merge( $chung, $manh_sau ) ),
+			'truTag' => nntm_block_style_typo_khong_thuoc( $manh_sau ),
+		);
+	}
+
+	return $cache;
 }
 
 /**
@@ -556,11 +628,12 @@ function nntm_block_style_typo_roles(): array {
  * @return string Chuỗi selector ngăn bằng dấu phẩy.
  */
 function nntm_block_style_typo_selector( string $goc, array $role ): string {
-	$tru  = nntm_block_style_typo_loai_tru();
-	$chon = array();
+	$tru     = $role['tru'] ?? nntm_block_style_typo_loai_tru();
+	$tru_tag = $role['truTag'] ?? '';
+	$chon    = array();
 
 	foreach ( $role['tags'] as $tag ) {
-		$chon[] = $goc . ' ' . $tag;
+		$chon[] = $goc . ' ' . $tag . $tru_tag;
 	}
 
 	foreach ( $role['manh'] as $manh ) {
@@ -890,7 +963,7 @@ function nntm_block_style_build_css( string $lop_dinh_danh, string $block_name, 
 		 * quy tắc bằng độ ưu tiên nên vai trò đứng sau thắng ở những class trúng
 		 * nhiều vai trò.
 		 */
-		foreach ( nntm_block_style_typo_roles() as $ma_vai_tro => $role ) {
+		foreach ( nntm_block_style_typo_roles_chot() as $ma_vai_tro => $role ) {
 			if ( empty( $typo[ $ma_vai_tro ] ) ) {
 				continue;
 			}
@@ -1201,12 +1274,14 @@ function nntm_block_style_editor_assets(): void {
 	 * sửa bản đồ một chỗ là cả hai bên đổi theo.
 	 */
 	$vai_tro = array();
-	foreach ( nntm_block_style_typo_roles() as $ma => $role ) {
+	foreach ( nntm_block_style_typo_roles_chot() as $ma => $role ) {
 		$vai_tro[] = array(
-			'ma'   => $ma,
-			'ten'  => $role['ten'],
-			'tags' => $role['tags'],
-			'manh' => $role['manh'],
+			'ma'     => $ma,
+			'ten'    => $role['ten'],
+			'tags'   => $role['tags'],
+			'manh'   => $role['manh'],
+			'tru'    => $role['tru'],
+			'truTag' => $role['truTag'],
 		);
 	}
 

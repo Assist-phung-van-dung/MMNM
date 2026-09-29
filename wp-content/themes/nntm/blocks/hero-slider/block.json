@@ -89,6 +89,18 @@
 		"quickLinksParentTermId": {
 			"type": "number",
 			"default": 0
+		},
+		"quickLinkBgColor": {
+			"type": "string",
+			"default": ""
+		},
+		"quickLinkBgOpacity": {
+			"type": "number",
+			"default": 100
+		},
+		"quickLinkTextColor": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"editorScript": "file:./editor.js",

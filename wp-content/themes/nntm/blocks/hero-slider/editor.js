@@ -20,6 +20,8 @@
 	var ToggleControl = wp.components.ToggleControl;
 	var RangeControl = wp.components.RangeControl;
 	var SelectControl = wp.components.SelectControl;
+	var BaseControl = wp.components.BaseControl;
+	var ColorPalette = wp.components.ColorPalette;
 	var apiFetch = wp.apiFetch;
 	var ServerSideRender = wp.serverSideRender && wp.serverSideRender.default ? wp.serverSideRender.default : wp.serverSideRender;
 
@@ -52,6 +54,19 @@
 	function sidecardTaxonomyLabel( taxonomy ) {
 		return SIDECARD_TAXONOMY_LABELS[ taxonomy ] || taxonomy;
 	}
+
+	var QUICKLINK_COLORS = [
+		{ name: __( 'Đen', 'nntm' ), color: '#000000' },
+		{ name: __( 'Mực', 'nntm' ), color: '#3F3B3B' },
+		{ name: __( 'Xám đậm', 'nntm' ), color: '#333333' },
+		{ name: __( 'Rêu', 'nntm' ), color: '#747766' },
+		{ name: __( 'Rêu nhạt', 'nntm' ), color: '#B4B7A7' },
+		{ name: __( 'Nâu đất', 'nntm' ), color: '#A47764' },
+		{ name: __( 'Chàm', 'nntm' ), color: '#1F4E79' },
+		{ name: __( 'Kem', 'nntm' ), color: '#F7F1DE' },
+		{ name: __( 'Ngà', 'nntm' ), color: '#F0EEE9' },
+		{ name: __( 'Trắng', 'nntm' ), color: '#FFFFFF' },
+	];
 
 	function emptySlide() {
 		return {
@@ -467,7 +482,56 @@
 							onChange: function ( value ) {
 								setAttributes( { quickLinksParentTermId: parseInt( value, 10 ) || 0 } );
 							},
-						} )
+						} ),
+						attributes.quickLinksParentTermId
+							? el(
+									Fragment,
+									{},
+									el(
+										'p',
+										{ className: 'components-base-control__help' },
+										__( 'Thiết kế gốc để nút trong suốt, chỉ có viền. Nếu ảnh nền quá rối làm chữ khó đọc thì chọn thêm màu nền ở đây. Để trống là giữ nguyên như cũ.', 'nntm' )
+									),
+									el(
+										BaseControl,
+										{ label: __( 'Màu nền nút', 'nntm' ) },
+										el( ColorPalette, {
+											colors: QUICKLINK_COLORS,
+											value: attributes.quickLinkBgColor || undefined,
+											onChange: function ( value ) {
+												setAttributes( { quickLinkBgColor: value || '' } );
+											},
+										} )
+									),
+									attributes.quickLinkBgColor
+										? el( RangeControl, {
+												label: __( 'Độ đậm của nền (%)', 'nntm' ),
+												help: __( '100% là nền đặc hẳn; kéo thấp xuống để còn thấy mờ mờ ảnh phía sau.', 'nntm' ),
+												value: 'number' === typeof attributes.quickLinkBgOpacity ? attributes.quickLinkBgOpacity : 100,
+												min: 10,
+												max: 100,
+												step: 5,
+												onChange: function ( value ) {
+													setAttributes( { quickLinkBgOpacity: value || 100 } );
+												},
+										  } )
+										: null,
+									el(
+										BaseControl,
+										{
+											label: __( 'Màu chữ nút', 'nntm' ),
+											help: __( 'Để trống là chữ kem như thiết kế gốc. Chọn màu nền sáng (kem, trắng) thì nhớ đổi chữ sang màu tối cho đọc được.', 'nntm' ),
+										},
+										el( ColorPalette, {
+											colors: QUICKLINK_COLORS,
+											value: attributes.quickLinkTextColor || undefined,
+											onChange: function ( value ) {
+												setAttributes( { quickLinkTextColor: value || '' } );
+											},
+										} )
+									)
+							  )
+							: null
 					)
 				),
 				el( ServerSideRender, {
