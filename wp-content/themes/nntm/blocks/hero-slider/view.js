@@ -16,7 +16,7 @@
 			'.nntm-hero-slider__slide.is-active .nntm-hero-slider__text',
 			'.nntm-hero-slider__slide.is-active .nntm-hero-slider__cta',
 			'.nntm-hero-slider__dots',
-			'.nntm-hero-slider__sidecard-heading',
+			'.nntm-hero-slider__sidecard-subheading',
 			'.nntm-hero-slider__sidecard-text',
 			'.nntm-hero-slider__sidecard-cta',
 			'.nntm-hero-slider__quicklink'

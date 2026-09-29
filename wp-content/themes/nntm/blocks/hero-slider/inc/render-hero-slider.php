@@ -190,9 +190,105 @@ if ( ! function_exists( 'nntm_hero_slider_render_nav' ) ) {
 	}
 }
 
+if ( ! function_exists( 'nntm_hero_slider_hex_to_rgb' ) ) {
+
+	function nntm_hero_slider_hex_to_rgb( string $hex ): array {
+		$hex = trim( $hex );
+
+		if ( ! preg_match( '/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $hex ) ) {
+			return array();
+		}
+
+		$raw = substr( $hex, 1 );
+
+		if ( 3 === strlen( $raw ) ) {
+			$raw = $raw[0] . $raw[0] . $raw[1] . $raw[1] . $raw[2] . $raw[2];
+		}
+
+		return array(
+			(int) hexdec( substr( $raw, 0, 2 ) ),
+			(int) hexdec( substr( $raw, 2, 2 ) ),
+			(int) hexdec( substr( $raw, 4, 2 ) ),
+		);
+	}
+}
+
+if ( ! function_exists( 'nntm_hero_slider_color_css' ) ) {
+
+	function nntm_hero_slider_color_css( string $hex, float $alpha = 1.0 ): string {
+		$rgb = nntm_hero_slider_hex_to_rgb( $hex );
+
+		if ( empty( $rgb ) ) {
+			return '';
+		}
+
+		$alpha = max( 0.0, min( 1.0, $alpha ) );
+
+		if ( $alpha >= 1.0 ) {
+			return sprintf( 'rgb(%d,%d,%d)', $rgb[0], $rgb[1], $rgb[2] );
+		}
+
+		return sprintf( 'rgba(%d,%d,%d,%s)', $rgb[0], $rgb[1], $rgb[2], number_format( $alpha, 2, '.', '' ) );
+	}
+}
+
+if ( ! function_exists( 'nntm_hero_slider_contrast_color' ) ) {
+
+	function nntm_hero_slider_contrast_color( string $hex ): string {
+		$rgb = nntm_hero_slider_hex_to_rgb( $hex );
+
+		if ( empty( $rgb ) ) {
+			return '';
+		}
+
+		$luminance = ( 0.299 * $rgb[0] + 0.587 * $rgb[1] + 0.114 * $rgb[2] ) / 255;
+
+		return $luminance > 0.55 ? 'rgb(63,59,59)' : 'rgb(247,241,222)';
+	}
+}
+
+if ( ! function_exists( 'nntm_hero_slider_quicklinks_style' ) ) {
+
+	function nntm_hero_slider_quicklinks_style( string $bg_color, float $bg_opacity, string $text_color ): string {
+		$bg_soft  = nntm_hero_slider_color_css( $bg_color, $bg_opacity / 100 );
+		$bg_solid = nntm_hero_slider_color_css( $bg_color );
+		$text     = nntm_hero_slider_color_css( $text_color );
+
+		$vars = array();
+
+		if ( '' !== $bg_soft ) {
+			$vars['--nntm-hero-ql-nen'] = $bg_soft;
+		}
+
+		if ( '' !== $text ) {
+			$vars['--nntm-hero-ql-chu']       = $text;
+			$vars['--nntm-hero-ql-vien']      = $text;
+			$vars['--nntm-hero-ql-nen-hover'] = $text;
+		}
+
+		if ( '' !== $bg_solid ) {
+			$vars['--nntm-hero-ql-chu-hover'] = $bg_solid;
+		} elseif ( '' !== $text ) {
+			$vars['--nntm-hero-ql-chu-hover'] = nntm_hero_slider_contrast_color( $text_color );
+		}
+
+		if ( empty( $vars ) ) {
+			return '';
+		}
+
+		$pairs = array();
+
+		foreach ( $vars as $name => $value ) {
+			$pairs[] = $name . ':' . $value;
+		}
+
+		return implode( ';', $pairs ) . ';';
+	}
+}
+
 if ( ! function_exists( 'nntm_hero_slider_render_quicklinks' ) ) {
 	 
-	function nntm_hero_slider_render_quicklinks( int $parent_term_id ): string {
+	function nntm_hero_slider_render_quicklinks( int $parent_term_id, string $inline_style = '' ): string {
 		if ( $parent_term_id <= 0 || ! taxonomy_exists( 'nntm_section' ) ) {
 			return '';
 		}
@@ -215,7 +311,13 @@ if ( ! function_exists( 'nntm_hero_slider_render_quicklinks' ) ) {
 
 		ob_start();
 		?>
-		<nav class="nntm-hero-slider__quicklinks" aria-label="<?php esc_attr_e( 'Liên kết nhanh', 'nntm' ); ?>">
+		<nav
+			class="nntm-hero-slider__quicklinks"
+			aria-label="<?php esc_attr_e( 'Liên kết nhanh', 'nntm' ); ?>"
+			<?php if ( '' !== $inline_style ) : ?>
+				style="<?php echo esc_attr( $inline_style ); ?>"
+			<?php endif; ?>
+		>
 			<?php foreach ( $child_terms as $child_term ) : ?>
 				<?php
 				$term_link = get_term_link( $child_term );
@@ -253,8 +355,18 @@ if ( ! function_exists( 'nntm_hero_slider_render_sidecard' ) ) {
 		ob_start();
 		?>
 		<aside class="nntm-hero-slider__sidecard">
-			<?php // Không kẹp 2 dòng: chữ to hoặc tên bài dài thì thẻ dãn cao ra, không cắt mất chữ. ?>
-			<p class="nntm-hero-slider__sidecard-heading">
+			<?php
+			/*
+			 * Không kẹp 2 dòng: chữ to hoặc tên bài dài thì thẻ dãn cao ra, không
+			 * cắt mất chữ.
+			 *
+			 * Class là `-subheading` chứ không phải `-heading`: bảng "Chữ trong
+			 * khối" nhận vai trò qua mảnh class, nên tên cũ rơi chung vai trò
+			 * "Tiêu đề" với chữ lớn bên trái — chỉnh một lần là đổi cả hai. Tên
+			 * này đẩy nó sang vai trò "Tiêu đề phụ" để chỉnh riêng.
+			 */
+			?>
+			<p class="nntm-hero-slider__sidecard-subheading">
 				<a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( $title ); ?></a>
 			</p>
 

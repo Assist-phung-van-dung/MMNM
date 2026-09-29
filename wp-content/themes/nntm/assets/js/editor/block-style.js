@@ -358,13 +358,20 @@
 	 */
 	function selectorVaiTro( goc, role ) {
 		var chon = [];
+		/*
+		 * role.tru / role.truTag do PHP chốt sẵn: mỗi vai trò tự loại mảnh class
+		 * của những vai trò đứng sau nó, nên một phần tử chỉ thuộc đúng một vai
+		 * trò. TYPO_TRU chỉ còn là đường lui cho dữ liệu cũ chưa có hai khoá này.
+		 */
+		var tru = role.tru || TYPO_TRU;
+		var truTag = role.truTag || '';
 
 		( role.tags || [] ).forEach( function ( tag ) {
-			chon.push( goc + ' ' + tag );
+			chon.push( goc + ' ' + tag + truTag );
 		} );
 
 		( role.manh || [] ).forEach( function ( manh ) {
-			chon.push( goc + ' [class*="' + manh + '"]' + TYPO_TRU );
+			chon.push( goc + ' [class*="' + manh + '"]' + tru );
 		} );
 
 		return chon.join( ',' );

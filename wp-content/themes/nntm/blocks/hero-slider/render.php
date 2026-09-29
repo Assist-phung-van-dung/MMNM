@@ -52,7 +52,19 @@ $nntm_hs_show_live_region = $nntm_hs_has_multiple && ! $nntm_hs_autoplay;
 $nntm_hs_show_nav = $nntm_hs_has_multiple && ( ! isset( $attributes['arrowsEnabled'] ) || ! empty( $attributes['arrowsEnabled'] ) );
 
 $nntm_hs_quicklinks_parent_id = isset( $attributes['quickLinksParentTermId'] ) ? absint( $attributes['quickLinksParentTermId'] ) : 0;
-$nntm_hs_quicklinks_html      = nntm_hero_slider_render_quicklinks( $nntm_hs_quicklinks_parent_id );
+
+$nntm_hs_quicklink_bg      = isset( $attributes['quickLinkBgColor'] ) ? (string) $attributes['quickLinkBgColor'] : '';
+$nntm_hs_quicklink_chu     = isset( $attributes['quickLinkTextColor'] ) ? (string) $attributes['quickLinkTextColor'] : '';
+$nntm_hs_quicklink_opacity = isset( $attributes['quickLinkBgOpacity'] ) ? (float) $attributes['quickLinkBgOpacity'] : 100;
+$nntm_hs_quicklink_opacity = max( 0, min( 100, $nntm_hs_quicklink_opacity ) );
+
+$nntm_hs_quicklinks_style = nntm_hero_slider_quicklinks_style(
+	$nntm_hs_quicklink_bg,
+	$nntm_hs_quicklink_opacity,
+	$nntm_hs_quicklink_chu
+);
+
+$nntm_hs_quicklinks_html = nntm_hero_slider_render_quicklinks( $nntm_hs_quicklinks_parent_id, $nntm_hs_quicklinks_style );
 
 $nntm_hs_sidecard_enabled  = ! isset( $attributes['sideCardEnabled'] ) || ! empty( $attributes['sideCardEnabled'] );
 $nntm_hs_sidecard_article  = null;
