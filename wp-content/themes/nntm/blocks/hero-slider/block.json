@@ -86,6 +86,18 @@
 			"type": "string",
 			"default": "Xem thêm"
 		},
+		"sideCardTextWords": {
+			"type": "number",
+			"default": 16
+		},
+		"sideCardTextSize": {
+			"type": "number",
+			"default": 0
+		},
+		"sideCardTextLines": {
+			"type": "number",
+			"default": 0
+		},
 		"quickLinksParentTermId": {
 			"type": "number",
 			"default": 0

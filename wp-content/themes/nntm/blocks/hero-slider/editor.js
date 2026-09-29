@@ -463,6 +463,41 @@
 										onChange: function ( value ) {
 											setAttributes( { sideCardCtaLabel: value } );
 										},
+									} ),
+									el(
+										'p',
+										{ className: 'components-base-control__help' },
+										__( 'Ba mục dưới đây chỉ chỉnh DÒNG TRÍCH DẪN in nghiêng trong thẻ, không đụng tới mô tả của tấm băng chuyền.', 'nntm' )
+									),
+									el( RangeControl, {
+										label: __( 'Số chữ tối đa của trích dẫn', 'nntm' ),
+										help: __( 'Quá số chữ này thì cắt và thêm dấu … Mặc định 16 chữ.', 'nntm' ),
+										value: 'number' === typeof attributes.sideCardTextWords ? attributes.sideCardTextWords : 16,
+										min: 5,
+										max: 60,
+										onChange: function ( value ) {
+											setAttributes( { sideCardTextWords: value || 16 } );
+										},
+									} ),
+									el( RangeControl, {
+										label: __( 'Số dòng tối đa (0 = không kẹp)', 'nntm' ),
+										help: __( 'Chặn phần dài ra do màn hẹp hoặc cỡ chữ lớn — thứ mà đếm chữ không lường được. Quá số dòng này thì cắt ngang và thêm dấu …', 'nntm' ),
+										value: 'number' === typeof attributes.sideCardTextLines ? attributes.sideCardTextLines : 0,
+										min: 0,
+										max: 6,
+										onChange: function ( value ) {
+											setAttributes( { sideCardTextLines: value || 0 } );
+										},
+									} ),
+									el( RangeControl, {
+										label: __( 'Cỡ chữ trích dẫn (px, 0 = theo thiết kế)', 'nntm' ),
+										help: __( 'Đặt ở đây là chốt: thắng cả bảng "Chữ trong khối" lẫn cỡ chữ riêng của trang chủ. Nhận từ 12px trở lên (đặt nhỏ hơn sẽ tự nâng về 12), và dùng chung một cỡ cho mọi màn hình nên đừng để quá to.', 'nntm' ),
+										value: 'number' === typeof attributes.sideCardTextSize ? attributes.sideCardTextSize : 0,
+										min: 0,
+										max: 32,
+										onChange: function ( value ) {
+											setAttributes( { sideCardTextSize: value || 0 } );
+										},
 									} )
 							  )
 							: null
