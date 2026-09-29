@@ -337,7 +337,7 @@ if ( ! function_exists( 'nntm_hero_slider_render_quicklinks' ) ) {
 
 if ( ! function_exists( 'nntm_hero_slider_render_sidecard' ) ) {
 	 
-	function nntm_hero_slider_render_sidecard( ?WP_Post $article, string $cta_label ): string {
+	function nntm_hero_slider_render_sidecard( ?WP_Post $article, string $cta_label, int $text_words = 16, int $text_size = 0, int $text_lines = 0 ): string {
 		if ( null === $article ) {
 			return '';
 		}
@@ -351,6 +351,28 @@ if ( ! function_exists( 'nntm_hero_slider_render_sidecard' ) ) {
 
 		 
 		$excerpt = trim( wp_strip_all_tags( (string) $article->post_excerpt ) );
+
+		/*
+		 * Ba nấc chặn "quá dài", lồng vào nhau:
+		 *   1. cắt theo SỐ CHỮ ngay từ PHP (…) — giữ cho HTML gọn;
+		 *   2. kẹp SỐ DÒNG bằng CSS (…) — chặn phần dài ra do màn hẹp hay cỡ
+		 *      chữ lớn, thứ mà đếm chữ không lường được;
+		 *   3. cỡ chữ đặt thẳng vào thuộc tính style nên chốt trên cả bảng
+		 *      "Chữ trong khối" lẫn đè của homepage-figma.css.
+		 */
+		$text_class  = 'nntm-hero-slider__sidecard-text';
+		$text_styles = array();
+
+		if ( $text_size > 0 ) {
+			$text_styles[] = 'font-size:' . $text_size . 'px';
+		}
+
+		if ( $text_lines > 0 ) {
+			$text_class   .= ' nntm-hero-slider__sidecard-text--kep';
+			$text_styles[] = '--nntm-hero-sc-dong:' . $text_lines;
+		}
+
+		$text_style = implode( ';', $text_styles );
 
 		ob_start();
 		?>
@@ -371,7 +393,12 @@ if ( ! function_exists( 'nntm_hero_slider_render_sidecard' ) ) {
 			</p>
 
 			<?php if ( '' !== $excerpt ) : ?>
-				<p class="nntm-hero-slider__sidecard-text"><?php echo esc_html( wp_trim_words( $excerpt, 16, '…' ) ); ?></p>
+				<p
+					class="<?php echo esc_attr( $text_class ); ?>"
+					<?php if ( '' !== $text_style ) : ?>
+						style="<?php echo esc_attr( $text_style ); ?>"
+					<?php endif; ?>
+				><?php echo esc_html( wp_trim_words( $excerpt, $text_words, '…' ) ); ?></p>
 			<?php endif; ?>
 
 			<?php if ( '' !== trim( $cta_label ) ) : ?>

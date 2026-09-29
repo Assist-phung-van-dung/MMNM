@@ -85,7 +85,22 @@ $nntm_hs_sidecard_cta_label = isset( $attributes['sideCardCtaLabel'] ) && '' !==
 	? sanitize_text_field( (string) $attributes['sideCardCtaLabel'] )
 	: __( 'Xem thêm', 'nntm' );
 
-$nntm_hs_sidecard_html = nntm_hero_slider_render_sidecard( $nntm_hs_sidecard_article, $nntm_hs_sidecard_cta_label );
+$nntm_hs_sidecard_words = isset( $attributes['sideCardTextWords'] ) ? absint( $attributes['sideCardTextWords'] ) : 16;
+$nntm_hs_sidecard_words = max( 5, min( 60, $nntm_hs_sidecard_words ) );
+
+$nntm_hs_sidecard_size = isset( $attributes['sideCardTextSize'] ) ? absint( $attributes['sideCardTextSize'] ) : 0;
+$nntm_hs_sidecard_size = ( $nntm_hs_sidecard_size > 0 ) ? max( 12, min( 32, $nntm_hs_sidecard_size ) ) : 0;
+
+$nntm_hs_sidecard_lines = isset( $attributes['sideCardTextLines'] ) ? absint( $attributes['sideCardTextLines'] ) : 0;
+$nntm_hs_sidecard_lines = min( 6, $nntm_hs_sidecard_lines );
+
+$nntm_hs_sidecard_html = nntm_hero_slider_render_sidecard(
+	$nntm_hs_sidecard_article,
+	$nntm_hs_sidecard_cta_label,
+	$nntm_hs_sidecard_words,
+	$nntm_hs_sidecard_size,
+	$nntm_hs_sidecard_lines
+);
 
 $nntm_hs_wrapper_attributes = get_block_wrapper_attributes(
 	array(

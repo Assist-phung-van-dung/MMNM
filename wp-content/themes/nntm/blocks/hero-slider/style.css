@@ -355,6 +355,18 @@
 	color: var(--nntm-trang);
 }
 
+/*
+ * Kẹp số dòng: đặt NGAY SAU rule gốc và TRƯỚC mọi media query, để rule ẩn dòng
+ * trích dẫn ở mốc 767px (cùng nặng 0,1,0) vẫn thắng nhờ đứng sau.
+ */
+.nntm-hero-slider__sidecard-text--kep {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: var(--nntm-hero-sc-dong, 2);
+	line-clamp: var(--nntm-hero-sc-dong, 2);
+	overflow: hidden;
+}
+
 .nntm-hero-slider__sidecard-cta {
 	width: fit-content;
 	font-family: var(--nntm-font-sans);
